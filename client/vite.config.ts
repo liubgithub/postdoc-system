@@ -4,6 +4,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import unpluginAutoImport from "unplugin-auto-import/vite"
+import unpluginElementPlus from 'unplugin-element-plus/vite'
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 
 export default defineConfig({
@@ -11,6 +13,14 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    unpluginAutoImport({
+      dts: "./src/types/imports.d.ts",
+      include: [/\.[tj]sx?$/],
+      imports: [
+        "vue",
+      ],
+    }),
+    unpluginElementPlus({}),
     vanillaExtractPlugin(),
   ],
   resolve: {
