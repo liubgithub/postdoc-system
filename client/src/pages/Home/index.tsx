@@ -1,13 +1,11 @@
-import { defineComponent } from "vue"
-
-import Example from "@/coms/Example"
+import Example from "../Example"
 
 export default defineComponent({
   name: "Home",
   setup() {
     return () => (
       <>
-        <Example msg="Test!"/>
+        <Example/>
       </>
     )
   }
