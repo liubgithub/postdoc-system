@@ -4,17 +4,17 @@ export default defineComponent({
   name: "Sub", //非强制，用于在DevTools里显示名称
   props: ["extra"], //由于Vue限制，必须手动声明所有的props名称
   setup(p: {
-    //props类型定义
+    //Props类型定义
     //统一简写为p，永远使用p.xxx访问，不要解构
-    //JSX可以直接传节点、组件、函数，一般不要使用emits、slots
+    //Props可以直接传节点、组件、函数，一般不要使用emits、slots
     extra?: JSX.Element
   }) {
     //获取页面级store，感叹号表示不考虑获取不到的情况
-    //统一简写为ps，永远使用px.xxx访问，不要解构
+    //统一简写为ps，永远使用ps.xxx访问，不要解构
     const ps = inject(store)!
 
     //使用computed并返回一个JSX节点，是需要优化时的常用手段
-    //则可以使得当且仅当computed内使用的响应式变量变化时才重新生成返回的节点
+    //可以使得当且仅当computed内使用的响应式变量变化时才重新生成返回的节点
     //而不是和本组件渲染函数一起每次重新生成
     //本示例中可以看到，禁止修改后，本节点并未重新生成
     const x3 = computed(() => {

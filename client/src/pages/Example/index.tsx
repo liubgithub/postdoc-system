@@ -6,7 +6,7 @@ export default defineComponent({
   name: "Example", //非强制，用于在DevTools里显示名称
   setup() {
     //页面级store
-    //统一简写为ps，永远使用px.xxx访问，不要解构
+    //统一简写为ps，永远使用ps.xxx访问，不要解构
     const count = ref(0)
     const ps = reactive({
       count,
