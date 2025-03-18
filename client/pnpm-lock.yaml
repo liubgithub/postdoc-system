@@ -27,6 +27,9 @@ importers:
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
+      '@vanilla-extract/css':
+        specifier: ^1.17.1
+        version: 1.17.1
       '@vanilla-extract/vite-plugin':
         specifier: ^5.0.1
         version: 5.0.1(@types/node@22.13.9)(vite@6.2.0(@types/node@22.13.9))
