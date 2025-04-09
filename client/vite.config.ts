@@ -15,7 +15,7 @@ export default defineConfig({
     vueDevTools(),
     unpluginAutoImport({
       dts: "./src/types/imports.d.ts",
-      include: [/\.[tj]sx?$/],
+      include: [/\.ts?$/, /\.tsx?$/],
       imports: [
         "vue",
       ],

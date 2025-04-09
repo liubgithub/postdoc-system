@@ -1,4 +1,4 @@
-import store from "../store"
+import { usePageStore } from "../store"
 
 export default defineComponent({
   name: "Sub", //非强制，用于在DevTools里显示名称
@@ -11,7 +11,7 @@ export default defineComponent({
   }) {
     //获取页面级store，感叹号表示不考虑获取不到的情况
     //统一简写为ps，永远使用ps.xxx访问，不要解构
-    const ps = inject(store)!
+    const ps = usePageStore()
 
     //使用computed并返回一个JSX节点，是需要优化时的常用手段
     //可以使得当且仅当computed内使用的响应式变量变化时才重新生成返回的节点

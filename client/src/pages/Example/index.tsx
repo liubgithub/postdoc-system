@@ -1,4 +1,4 @@
-import store from "./store"
+import { useProvideStore } from "./store"
 
 import Sub from "./coms/sub"
 
@@ -7,14 +7,8 @@ export default defineComponent({
   setup() {
     //页面级store
     //统一简写为ps，永远使用ps.xxx访问，不要解构
-    const count = ref(0)
-    const ps = reactive({
-      count,
-      msg: computed(() => `Count: ${count.value}`),
-    })
-
-    //提供页面级store给子组件
-    provide(store, ps)
+    //在页面根组件上使用useProvideStore()
+    const ps = useProvideStore()
 
     //组件级state
     //统一简写为s，永远使用s.xxx访问，不要解构
@@ -25,6 +19,7 @@ export default defineComponent({
         ps.count += 1
       }}>+1</button>,
     })
+
     setTimeout(() => {
       console.log("禁止修改")
       s.extra = <>禁止修改</>
