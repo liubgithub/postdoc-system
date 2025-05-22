@@ -8,10 +8,12 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "genapi": "openapi-typescript ./.openapi/api.json -o ./src/api/api.d.ts"
   },
   "dependencies": {
     "element-plus": "^2.9.5",
+    "openapi-fetch": "^0.13.5",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
@@ -25,6 +27,7 @@
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vue/tsconfig": "^0.7.0",
     "npm-run-all2": "^7.0.2",
+    "openapi-typescript": "^7.6.1",
     "typescript": "~5.7.3",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-element-plus": "^0.9.1",
