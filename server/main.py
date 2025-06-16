@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import User
@@ -12,6 +13,14 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Postdoc API",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 用于获取当前用户的 token
@@ -31,7 +40,7 @@ from schemas import LoginInput
 @app.post("/register", summary="注册用户", description="注册新用户（默认角色为普通用户）")
 def register(data: LoginInput, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == data.username).first():
-        raise HTTPException(status_code=400, detail="用户名已存在")
+        raise HTTPException(status_code=422, detail="用户名已存在")
     user = User(
         username=data.username,
         hashed_password=auth.get_password_hash(data.password),
