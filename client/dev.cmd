@@ -1,0 +1,1 @@
+wt -w 0 nt --title "Dev" --suppressApplicationTitle -d . cmd /k pnpm dev
