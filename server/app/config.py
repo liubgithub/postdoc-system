@@ -4,14 +4,14 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # 数据库配置
-    DB_USER: str = "lhsd"
-    DB_PASSWORD: str = "LHsd123@"
-    DB_HOST: str = "pgm-bp1n6ip293s5y7fxco.pg.rds.aliyuncs.com"
-    DB_PORT: str = "5432"
-    DB_NAME: str = "postdoc"
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "postDOCS316..."
+    DB_HOST: str = "47.96.11.84"
+    DB_PORT: str = "10092"
+    DB_NAME: str = "postgres"
 
     # JWT配置
-    SECRET_KEY: str = "your-secret-key-change-in-production"
+    SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
