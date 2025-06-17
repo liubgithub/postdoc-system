@@ -30,7 +30,7 @@ const useUser = defineStore("user", () => {
 
         try {
             const formData = {
-                grant_type: '', // 必须设置为 'password'
+                grant_type: '',
                 username: name,
                 password: pass,
                 scope: '',
@@ -38,13 +38,13 @@ const useUser = defineStore("user", () => {
                 client_secret: '',
             }
 
-            const res = await fetch.raw.POST('/login', {
+            const res = await fetch.raw.POST('/auth/login', {
                 body: formData,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" }
             })
 
             if (res.response.status === 200) {
-
+                console.log(res.data,'res.data')
                 const token = res.data?.access_token
 
                 if (token) {
@@ -89,7 +89,7 @@ const useUser = defineStore("user", () => {
             localStorage.removeItem('username')
 
             // 重定向到登录页
-            router.push('/login')
+            router.push('/auth/login')
             ElMessage.success('退出登录成功！')
         }).catch(() => {
             // 取消退出

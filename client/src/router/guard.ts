@@ -2,7 +2,7 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import useUser from '@/stores/user'
 
 // 白名单 - 不需要认证的路径
-const whiteList = ['/login', '/register']
+const whiteList = ['/auth/login', '/register']
 
 export const authGuard = (
   to: RouteLocationNormalized,
@@ -25,7 +25,7 @@ export const authGuard = (
   } else {
     // 重定向到登录页，并携带目标路径
     next({
-      path: '/login',
+      path: '/auth/login',
       query: { redirect: encodeURIComponent(to.fullPath) }
     })
   }

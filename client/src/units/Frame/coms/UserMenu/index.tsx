@@ -35,7 +35,7 @@ export default defineComponent({
       } else {
         return (
           <div class={cls.btngroup}>
-              <ElButton onClick={() => {router.push("/login")}}>登录</ElButton>
+              <ElButton onClick={() => {router.push("/auth/login")}}>登录</ElButton>
               {/* <ElButton onClick={() => {router.push("/register")}}>注册</ElButton> */}
           </div>
         )
