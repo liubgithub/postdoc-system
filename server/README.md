@@ -130,29 +130,7 @@ HTTP请求 → 路由层 → 服务层 → 模型层 → 数据库
 HTTP响应 ← 路由层 ← 服务层 ← 模型层 ← 数据库
 ```
 
-## 🚀 快速开始
 
-### 📋 环境要求
-- Python 3.8+
-- PostgreSQL 数据库
-
-### 🔧 安装依赖
-```bash
-pip install -r requirements.txt
-conda install -r requirements.txt
-```
-
-### 🗄️ 数据库迁移
-```bash
-# 初始化Alembic（仅第一次）
-alembic init alembic
-
-# 创建迁移文件
-alembic revision --autogenerate -m "Initial migration"
-
-# 执行迁移
-alembic upgrade head
-```
 
 ### 🏃‍♂️ 启动应用
 ```bash
@@ -162,7 +140,7 @@ uvicorn app.main:app --reload
 访问 `http://localhost:8000/docs` 查看API文档。
 
 
-## 🧪 开发指南
+
 
 ### ➕ 添加新功能
 1. **创建数据模型** - 在 `models/` 中定义
@@ -170,3 +148,28 @@ uvicorn app.main:app --reload
 3. **实现业务逻辑** - 在 `services/` 中编写
 4. **创建路由接口** - 在 `routers/` 中定义
 5. **注册路由** - 在 `main.py` 中添加
+
+
+### 🗄️ 数据库
+```
+# 创建迁移文件（修改数据表结构时需执行）
+alembic revision --autogenerate -m "Initial migration"
+
+# 执行迁移（修改数据表结构时需执行）
+alembic upgrade head
+
+#服务器地址、密码
+服务器地址 47.96.11.84 
+用户 dyy Hzau!qaz
+
+#数据库账户、密码
+String url = "jdbc:postgresql://47.96.11.84:10092/postgres";
+String username = "postgres";
+String password = "postDOCS316...";
+
+#重启数据库
+sudo systemctl restart postgresql
+
+#数据库目录
+/etc/postgresql/14/main
+```
