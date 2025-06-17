@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/units/Login'
 import Frame from '@/units/Frame'
 import Home from '@/pages/Home'
+import UserInfo from '@/units/EnterWorksation'
 import { authGuard } from './guard'
 
 
@@ -26,6 +27,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/userInfo',
+      name: '/userInfo',
+      component: UserInfo
+    }
   ],
 })
 router.beforeEach(authGuard)

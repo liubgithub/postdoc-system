@@ -96,6 +96,9 @@ const useUser = defineStore("user", () => {
         })
     }
 
+    const userInfo = async()=>{
+        router.push('/userInfo')
+    }
     // 检查用户是否已认证
     const isAuthenticated = computed(() => !!info.value?.token)
 
@@ -103,6 +106,7 @@ const useUser = defineStore("user", () => {
         info,
         login,
         logout,
+        userInfo,
         isAuthenticated,
         initUser
     }

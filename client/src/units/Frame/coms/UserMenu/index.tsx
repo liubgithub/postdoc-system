@@ -25,7 +25,7 @@ export default defineComponent({
               ),
               dropdown: () => (
                 <ElDropdownMenu>
-                  <ElDropdownItem>个人中心</ElDropdownItem>
+                  <ElDropdownItem onClick={s_user.userInfo}>个人中心</ElDropdownItem>
                   <ElDropdownItem onClick={s_user.logout}>退出登录</ElDropdownItem>
                 </ElDropdownMenu>
               ),
