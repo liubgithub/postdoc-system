@@ -2,6 +2,7 @@ import { defineComponent, ref } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElDatePicker, ElMessage } from "element-plus";
 import { useRouter, useRoute, RouterView } from "vue-router";
 import * as styles from "./styles.css.ts";
+import useUser from "@/stores/user"
 
 const menuList = [
   { label: "个人情况", path: "/userinfo" },
@@ -16,6 +17,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
+    const s_user = useUser()
 
     const handleMenuClick = (path: string) => {
       router.push(path);
@@ -76,7 +78,7 @@ export default defineComponent({
         {/* 顶部欢迎栏 */}
         <div class={styles.headerBar}>
           <div class={styles.welcome}>
-            博士后XXX您好，欢迎使用华中农业大学园艺林学学院博士后信息管理系统
+            博士后{s_user.info!.name}您好，欢迎使用华中农业大学园艺林学学院博士后信息管理系统
           </div>
           <div class={styles.menuRow}>
             {menuList.map(item => (

@@ -57,8 +57,6 @@ export const formWrapper = style({
   borderRadius: '8px',
   boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)',
   padding: '32px 40px',
-  overflowY: 'auto',
-  maxHeight: 'calc(100vh - 80px)',
 });
 
 export const formRow = style({

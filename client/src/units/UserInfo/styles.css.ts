@@ -4,6 +4,7 @@ export const headerBar = style({
   background: '#0a47b1',
   padding: '24px 0 0 0',
   textAlign: 'center',
+  height: '20vh',
 });
 
 export const welcome = style({
@@ -39,7 +40,8 @@ export const menuBtnActive = style({
 export const contentArea = style({
   background: '#fff',
   padding: '32px',
-  minHeight: '400px',
+  height: 'calc(100vh - 20vh)',
+  overflow: 'auto',
 });
 
 export const formWrapper = style({
