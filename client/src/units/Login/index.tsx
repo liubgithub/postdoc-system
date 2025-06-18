@@ -39,7 +39,7 @@ export default defineComponent({
           const redirect = router.currentRoute.value.query.redirect
           
           // 跳转到目标页面或首页
-          router.replace(redirect ? decodeURIComponent(redirect as string) : '/')
+          router.replace(redirect ? decodeURIComponent(redirect as string) : '/UserInfo')
         }
       } else {
         ElMessage.error('请填写完整的登录信息')

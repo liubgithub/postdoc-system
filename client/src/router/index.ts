@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/units/Login'
 import Frame from '@/units/Frame'
 import Home from '@/pages/Home'
-import UserInfo from '@/units/EnterWorksation'
+import UserInfo from '@/units/UserInfo'
+import UserInfo1 from '@/units/EnterWorksation'
+import UserInfoRegister from "@/units/userinfoRegister"
 import { authGuard } from './guard'
 
 
@@ -28,9 +30,21 @@ const router = createRouter({
       ],
     },
     {
-      path: '/userInfo',
-      name: '/userInfo',
-      component: UserInfo
+      path: '/UserInfo',
+      name: '/UserInfo',
+      component: UserInfo,
+      children: [
+        {
+          path: '',
+          name: '/userInfoRegister',
+          component: UserInfoRegister
+        },
+        {
+          path: '/entry',
+          name: '/entry',
+          component: UserInfo1
+        },
+      ]
     }
   ],
 })
