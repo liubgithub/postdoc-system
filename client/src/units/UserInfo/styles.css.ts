@@ -40,4 +40,21 @@ export const contentArea = style({
   background: '#fff',
   padding: '32px',
   minHeight: '400px',
+});
+
+export const formWrapper = style({
+  width: '700px',
+  background: '#fff',
+  borderRadius: '8px',
+  boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)',
+  padding: '32px 40px',
+  overflowY: 'auto',
+  maxHeight: 'calc(100vh - 80px)',
+  scrollbarWidth: 'none',
+  msOverflowStyle: 'none',
+  selectors: {
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
 }); 
