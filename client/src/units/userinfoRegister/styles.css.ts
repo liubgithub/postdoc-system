@@ -40,15 +40,13 @@ export const menuBtnActive = style({
 });
 
 export const main = style({
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  padding: '40px 0',
+  // flex: 1,
+  // display: 'flex',
+  // flexDirection: 'column',
+  // alignItems: 'center',
+  // justifyContent: 'flex-start',
+  // padding: '40px 0',
   background: '#fff',
-  overflowY: 'auto',
-  maxHeight: '100vh',
 });
 
 export const formWrapper = style({

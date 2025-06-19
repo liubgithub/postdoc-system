@@ -53,9 +53,7 @@ globalStyle(`${opreateBtn} .el-button`, {
 
 export const container = {
     padding: "20px",
-    maxWidth: "1200px",
     margin: "0 auto",
-    height: "calc(100vh - 40px)", // 减去padding的高度
     overflowY: "auto", // 添加垂直滚动
     boxSizing: "border-box", // 确保padding不会增加总高度
 };

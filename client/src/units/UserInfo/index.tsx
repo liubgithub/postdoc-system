@@ -1,5 +1,5 @@
 import { defineComponent, ref } from "vue";
-import { ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElDatePicker, ElMessage } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElDatePicker, ElMessage, ElContainer, ElHeader, ElMain, ElMenu, ElMenuItem } from "element-plus";
 import { useRouter, useRoute, RouterView } from "vue-router";
 import * as styles from "./styles.css.ts";
 import useUser from "@/stores/user"
@@ -18,9 +18,11 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const s_user = useUser()
+    const activeMenu = ref(route.path)
 
     const handleMenuClick = (path: string) => {
       router.push(path);
+      activeMenu.value = path;
     };
 
     // 表单数据
@@ -74,31 +76,35 @@ export default defineComponent({
     };
 
     return () => (
-      <div>
-        {/* 顶部欢迎栏 */}
-        <div class={styles.headerBar}>
-          <div class={styles.welcome}>
-            博士后{s_user.info!.name}您好，欢迎使用华中农业大学园艺林学学院博士后信息管理系统
+      <ElContainer style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+        <ElHeader height="120px" style={{ padding: 0, background: 'none' }}>
+          <div class={styles.headerBar} style={{ height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+            <div class={styles.welcome} style={{ color: '#222', fontSize: '1.5rem', fontWeight: 'normal', marginBottom: '12px' }}>
+              博士后{s_user.info!.name}您好，欢迎使用华中农业大学园艺林学学院博士后信息管理系统
+            </div>
+            <ElMenu
+              mode="horizontal"
+              defaultActive={activeMenu.value}
+              onSelect={handleMenuClick}
+              style={{ justifyContent: 'center', background: 'transparent', borderBottom: 'none', marginTop: '0' }}
+            >
+              {menuList.map(item => (
+                <ElMenuItem
+                  index={item.path}
+                  style={{ fontSize: '16px', padding: '0 32px', height: '48px', display: 'flex', alignItems: 'center' }}
+                >
+                  {item.label}
+                </ElMenuItem>
+              ))}
+            </ElMenu>
           </div>
-          <div class={styles.menuRow}>
-            {menuList.map(item => (
-              <button
-                class={[
-                  styles.menuBtn,
-                  route.path === item.path ? styles.menuBtnActive : ""
-                ]}
-                onClick={() => handleMenuClick(item.path)}
-              >
-                {item.label}
-              </button>
-            ))}
+        </ElHeader>
+        <ElMain style={{ padding: 0 }}>
+          <div class={styles.contentArea}>
+            <RouterView />
           </div>
-        </div>
-        {/* 子路由内容区 */}
-        <div class={styles.contentArea}>
-          <RouterView />
-        </div>
-      </div>
+        </ElMain>
+      </ElContainer>
     );
   }
 });

@@ -1,6 +1,6 @@
 import { defineComponent, ref, reactive, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import { ElButton, ElForm, ElFormItem, ElInput, ElMessage } from "element-plus"
+import { ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElSelect, ElOption } from "element-plus"
 import useUser from "@/stores/user"
 import * as styles from './style.css'
 import loginBg from './images/loginbg.png'
@@ -15,6 +15,7 @@ export default defineComponent({
     const form = reactive({
       name: '',
       pass: '',
+      type: '',
     })
 
     // 如果用户已登录，重定向到首页
@@ -27,6 +28,7 @@ export default defineComponent({
     const rules = {
       name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
       pass: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+      type: [{ required: true, message: '请选择用户类型', trigger: 'change' }],
     }
 
     const handleLogin = async () => {
@@ -71,6 +73,14 @@ export default defineComponent({
                 type="password"
                 onKeydown={(e:any) => e.key === 'Enter' && handleLogin()}
               />
+            </ElFormItem>
+            <ElFormItem label="用户类型" prop="type">
+              <ElInput v-show={false} v-model={form.type} />
+              <ElSelect v-model={form.type} placeholder="请选择用户类型" style={{ width: '100%' }}>
+                <ElOption label="博士后" value="博士后" />
+                <ElOption label="合作导师" value="合作导师" />
+                <ElOption label="学院管理员" value="学院管理员" />
+              </ElSelect>
             </ElFormItem>
             <ElFormItem>
               <ElButton 

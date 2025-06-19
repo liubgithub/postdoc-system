@@ -22,7 +22,7 @@ export const leftImage = style({
 
 export const loginForm = style({
   width: '400px',
-  padding: '40px',
+  padding: '10px 20px',
   marginLeft: '50px',
   border: '1px solid #e4e7ed',
   borderRadius: '8px',
@@ -32,7 +32,7 @@ export const loginForm = style({
 
 export const title = style({
   textAlign: 'center',
-  marginBottom: '30px',
+  marginBottom: '10px',
 })
 
 export const submitButton = style({
