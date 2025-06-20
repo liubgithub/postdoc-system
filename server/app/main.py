@@ -5,6 +5,8 @@ from app.config import settings
 from app.database import Base, engine
 from app.routers import auth, users
 from app.userinfoRegister import routers as info_routers
+from app.enterWorkstation import routers as enter_workstation
+
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -28,6 +30,9 @@ app.include_router(users.router)
 
 # 个人信息登记路由
 app.include_router(info_routers.router)
+
+# 进站申请
+app.include_router(enter_workstation.router)
 
 @app.get("/", summary="服务状态")
 def root():

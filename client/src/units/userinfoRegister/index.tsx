@@ -23,11 +23,10 @@ export default defineComponent({
           <ElMenu
             defaultActive={activeMenu.value}
             class="el-menu-vertical"
-            style={{ borderRight: 'none', minHeight: '100vh' }}
             onSelect={handleMenuClick}
           >
             {menuList.map(item => (
-              <ElMenuItem index={item.key} style={{ fontSize: '16px', height: '56px', display: 'flex', alignItems: 'center' }}>
+              <ElMenuItem index={item.key}>
                 {item.label}
               </ElMenuItem>
             ))}

@@ -5,8 +5,8 @@ import Application from "./apply"
 
 
 interface TableRow {
-    id: string;
     subject: string;
+    id: string;
     postname: string;
     posttask: string;
     postqualification: string;
@@ -15,11 +15,19 @@ interface TableRow {
     remark: string;
 }
 
+const menuList = [
+    { label: "进站申请", key: "application" },
+    { label: "进站考核", key: "assessment" },
+    { label: "进站协议和成果考核", key: "agreement" },
+]
+
 export default defineComponent({
     name: "EnterWS",
     setup() {
         const activeMenu = ref('application')
         const showApplication = ref(true)
+        const showAssessment = ref(true)
+        const showAgreement = ref(true)
         const formData = ref({
             subject: '',
             id: '',
@@ -31,8 +39,8 @@ export default defineComponent({
             remark: ''
         })
         const tableData = ref<TableRow[]>([{
-            id: '',
             subject: '',
+            id: '',
             postname: '',
             posttask: '',
             postqualification: '',
@@ -51,26 +59,29 @@ export default defineComponent({
             showApplication.value = false
         }
 
+        const handleMenuClick = (key: string) => {
+            activeMenu.value = key
+            console.log(activeMenu.value,'sssss')
+        }
+
         return () => (
             <ElContainer>
                 <ElAside width="200px">
                     <ElMenu
-                        defaultActive={activeMenu.value}
-                        class="el-menu-vertical"
+                       defaultActive={activeMenu.value}
+                       class="el-menu-vertical"
+                       onSelect={handleMenuClick}
                     >
-                        <ElMenuItem index="application">
-                            进站申请
-                        </ElMenuItem>
-                        <ElMenuItem index="assessment">
-                            进站考核
-                        </ElMenuItem>
-                        <ElMenuItem index="agreement">
-                            进站协议和成果考核
-                        </ElMenuItem>
+                        {menuList.map(item => (
+                            <ElMenuItem index={item.key}>
+                                {item.label}
+                            </ElMenuItem>
+                        ))}
                     </ElMenu>
                 </ElAside>
                 <ElMain>
-                    {showApplication.value ? (
+                    {activeMenu.value === 'application' && (
+                    showApplication.value ? (
                         <ElTable data={tableData.value} class={cls.tableWidth}>
                             <ElTableColumn prop="subject" label="一级学科" width="80">
                                 {{
@@ -144,13 +155,20 @@ export default defineComponent({
                             </ElTableColumn>
                         </ElTable>
                     ) : (
-
                         <Application />
+                    ))}
+                    {/* {activeMenu.value === 'assessment' && (
+                       showAssessment.value ? (
+
+                       ) : (
+
+                       )
                     )}
-
-
-
+                    {activeMenu.value === 'agreement' && (
+                        
+                    )} */}
                 </ElMain>
+
             </ElContainer>
         )
     }
