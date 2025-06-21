@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     # 数据库配置
     DB_USER: str = "postgres"
     DB_PASSWORD: str = "postDOCS316..."
-    DB_HOST: str = "47.96.11.84"
+    DB_HOST: str = "localhost"
     DB_PORT: str = "10092"
     DB_NAME: str = "postgres"
 
