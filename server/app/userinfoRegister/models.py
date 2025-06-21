@@ -5,6 +5,7 @@ from app.database import Base
 class Info(Base):
     __tablename__ = 'bs_user_profile'
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), unique=True, nullable=False)
     name = Column(String(255), nullable=False)
     gender = Column(String(50))
     birth_year = Column(Integer)
@@ -18,6 +19,7 @@ class Info(Base):
     other = Column(Text)
     education_experience = relationship("EducationExperience", back_populates="user", cascade="all, delete-orphan")
     work_experience = relationship("WorkExperience", back_populates="user", cascade="all, delete-orphan")
+    user = relationship("User", backref="profile", uselist=False)
 
 class EducationExperience(Base):
     __tablename__ = 'bs_education_experience'

@@ -1,10 +1,13 @@
 import { defineComponent, ref } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage } from "element-plus";
 import * as styles from "./styles.css.ts";
+import fetch from '@/api';
+import useUser from '@/stores/user';
 
 export default defineComponent({
   name: "UserInfoForm",
   setup() {
+    const s_user = useUser();
     // 表单数据
     const form = ref({
       name: "",
@@ -48,8 +51,41 @@ export default defineComponent({
       form.value.work_experience.splice(index, 1);
     };
     // 提交
-    const handleSubmit = () => {
-      ElMessage.success("保存成功！");
+    const handleSubmit = async () => {
+      // 数据格式转换
+      const payload = {
+        ...form.value,
+        birth_year: form.value.birth_year ? Number(form.value.birth_year) : undefined,
+        is_religious_staff: form.value.is_religious_staff === '是',
+        education_experience: form.value.education_experience.map(e => ({
+          start_end: `${e.start}-${e.end}`,
+          school_major: `${e.school}-${e.major}`,
+          supervisor: e.supervisor || ""
+        })),
+        work_experience: form.value.work_experience.map(w => ({
+          start_end: `${w.start}-${w.end}`,
+          company_position: `${w.company}-${w.position}`
+        }))
+      };
+      try {
+        const token = s_user.info?.token || localStorage.getItem('token');
+        if (!token) {
+          ElMessage.error('请先登录');
+          return;
+        }
+        const res = await fetch.raw.POST('/info/submit', {
+          body: payload,
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.response.status === 200) {
+          ElMessage.success('保存成功！');
+        } else {
+          const msg = res.data?.detail || '保存失败';
+          ElMessage.error(msg);
+        }
+      } catch (e: any) {
+        ElMessage.error(e?.message || '保存失败');
+      }
     };
 
     return () => (
