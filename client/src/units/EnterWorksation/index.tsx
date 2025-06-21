@@ -25,8 +25,6 @@ export default defineComponent({
     setup() {
         const activeMenu = ref('application')
         const showApplication = ref(true)
-        const showAssessment = ref(true)
-        const showAgreement = ref(true)
         const formData = ref({
             subject: '',
             id: '',
@@ -157,14 +155,7 @@ export default defineComponent({
                             <Application />
                         )
                     )}
-                    {activeMenu.value === 'assessment' && (
-                        showAssessment.value ? (
-                            <StationAssessment />
-                        ) : (
-                            <div></div>
-                        )
-                    )}
-
+                    {activeMenu.value === 'assessment' && <StationAssessment />}
                 </ElMain>
 
             </ElContainer>

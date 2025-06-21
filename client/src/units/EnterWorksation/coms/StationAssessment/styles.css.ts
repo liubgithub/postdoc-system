@@ -2,50 +2,50 @@ import { style } from '@vanilla-extract/css'
 
 export const formContainer = style({
     padding: '20px',
+    border: '1px solid #dcdfe6',
     fontFamily: '"SimSun", "STSong", "serif"',
+    backgroundColor: '#f5f7fa',
 })
 
 export const header = style({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    textAlign: 'center',
     marginBottom: '20px',
     selectors: {
         '& h1': {
             fontSize: '24px',
-            textAlign: 'center',
-            flexGrow: 1,
+            fontWeight: 'bold',
         }
     }
 })
 
 export const formSection = style({
-    border: '1px solid black',
-    marginBottom: '-1px',
-})
+    marginBottom: '20px',
+});
 
-export const title = style({
-    padding: '10px',
+export const cardHeader = style({
     fontWeight: 'bold',
-    borderBottom: '1px solid black',
-    backgroundColor: '#f2f2f2',
-})
+    fontSize: '16px',
+});
 
-export const content = style({
-    padding: '20px',
-    selectors: {
-        '& p': {
-            margin: '0 0 10px 0',
-        }
-    }
+export const cardContent = style({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    minHeight: '120px',
+    lineHeight: 1.6,
 })
 
 export const para = style({
-    height: '60px',
+    marginBottom: '20px',
+})
+
+export const signatureWrapper = style({
+    alignSelf: 'flex-end',
+    textAlign: 'right'
 })
 
 export const signature = style({
-    textAlign: 'right',
+    marginTop: '10px'
 })
 
 export const voteInput = style({

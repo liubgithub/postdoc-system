@@ -56,10 +56,10 @@ export default defineComponent({
                     <OpenDetails onBack={handleBack} />
                 ) : (
                     <ElTable data={tableData.value}>
-                        <ElTableColumn prop="id" label="序号" width="80">
+                        <ElTableColumn prop="id" label="序号" width="60">
 
                         </ElTableColumn>
-                        <ElTableColumn prop="stuId" label="学号" width="80">
+                        <ElTableColumn prop="stuId" label="学号" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.stuId} />
@@ -73,28 +73,28 @@ export default defineComponent({
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="cotutor" label="合作导师姓名" width="80">
+                        <ElTableColumn prop="cotutor" label="合作导师姓名" width="120">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.cotutor} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="college" label="所在学院" width="80">
+                        <ElTableColumn prop="college" label="所在学院" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.college} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="subject" label="学科专业" width="80">
+                        <ElTableColumn prop="subject" label="学科专业" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.subject} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="applyTime" label="申请时间" width="80">
+                        <ElTableColumn prop="applyTime" label="申请时间" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.applyTime} />
@@ -115,7 +115,7 @@ export default defineComponent({
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="assessmentRes" label="最后考核结果" width="80">
+                        <ElTableColumn prop="assessmentRes" label="最后考核结果" width="120">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.assessmentRes} />
