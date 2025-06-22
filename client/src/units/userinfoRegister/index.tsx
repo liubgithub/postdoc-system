@@ -18,7 +18,7 @@ export default defineComponent({
     };
 
     return () => (
-      <ElContainer style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+      <ElContainer>
         <ElAside width="200px">
           <ElMenu
             defaultActive={activeMenu.value}
@@ -32,11 +32,9 @@ export default defineComponent({
             ))}
           </ElMenu>
         </ElAside>
-        <ElMain>
-          <div class={styles.main}>
+        <ElMain style={{ overflowY: 'auto' }}>
             {activeMenu.value === "userinfo" && <UserInfoForm />}
             {/* 这里可以根据activeMenu.value渲染其他内容 */}
-          </div>
         </ElMain>
       </ElContainer>
     );

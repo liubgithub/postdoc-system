@@ -76,7 +76,7 @@ export default defineComponent({
     };
 
     return () => (
-      <ElContainer style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+      <ElContainer style={{ minHeight: '100vh'}}>
         <ElHeader height="120px" style={{ padding: 0, background: 'none' }}>
           <div class={styles.headerBar} style={{ height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
             <div class={styles.welcome} style={{ color: '#222', fontSize: '1.5rem', fontWeight: 'normal', marginBottom: '12px' }}>
