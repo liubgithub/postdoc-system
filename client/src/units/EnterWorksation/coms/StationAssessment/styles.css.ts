@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css'
+import { style, globalStyle } from '@vanilla-extract/css'
 
 export const formContainer = style({
     padding: '20px',
@@ -10,12 +10,11 @@ export const formContainer = style({
 export const header = style({
     textAlign: 'center',
     marginBottom: '20px',
-    selectors: {
-        '& h1': {
-            fontSize: '24px',
-            fontWeight: 'bold',
-        }
-    }
+})
+
+globalStyle(`${header} h1`, {
+    fontSize: '24px',
+    fontWeight: 'bold',
 })
 
 export const formSection = style({
