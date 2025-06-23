@@ -2,6 +2,7 @@ import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElTable, ElTableColum
 import * as cls from "./styles.css"
 import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
+import StationProtocol from './coms/StationProtocol'
 
 interface TableRow {
     subject: string;
@@ -156,6 +157,7 @@ export default defineComponent({
                         )
                     )}
                     {activeMenu.value === 'assessment' && <StationAssessment />}
+                    {activeMenu.value === 'agreement' && <StationProtocol />}
                 </ElMain>
 
             </ElContainer>

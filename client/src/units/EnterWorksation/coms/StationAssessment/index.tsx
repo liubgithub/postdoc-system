@@ -1,4 +1,5 @@
 import { ElInput, ElTable, ElTableColumn, ElButton } from 'element-plus'
+import * as cls from './styles.css'
 import OpenDetails from './openDetails'
 
 interface TableRow {
@@ -55,18 +56,18 @@ export default defineComponent({
                 {showDetails.value ? (
                     <OpenDetails onBack={handleBack} />
                 ) : (
-                    <ElTable data={tableData.value}>
+                    <ElTable data={tableData.value} class={cls.tableWidth}>
                         <ElTableColumn prop="id" label="序号" width="60">
 
                         </ElTableColumn>
-                        <ElTableColumn prop="stuId" label="学号" width="100">
+                        <ElTableColumn prop="stuId" label="学号" width="120">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.stuId} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="name" label="姓名" width="80">
+                        <ElTableColumn prop="name" label="姓名" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.name} />
@@ -80,35 +81,35 @@ export default defineComponent({
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="college" label="所在学院" width="100">
+                        <ElTableColumn prop="college" label="所在学院" width="160">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.college} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="subject" label="学科专业" width="100">
+                        <ElTableColumn prop="subject" label="学科专业" width="140">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.subject} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="applyTime" label="申请时间" width="100">
+                        <ElTableColumn prop="applyTime" label="申请时间" width="120">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.applyTime} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="processStatus" label="流程状态" width="80">
+                        <ElTableColumn prop="processStatus" label="流程状态" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.processStatus} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="nodeName" label="节点名称" width="80">
+                        <ElTableColumn prop="nodeName" label="节点名称" width="100">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.nodeName} />
@@ -126,7 +127,7 @@ export default defineComponent({
                             {{
                                 default: ({ row }: { row: TableRow }) => (
                                     <>
-                                        <ElButton type="info" size="small" onClick={() => handleView(row)}>
+                                        <ElButton type="primary" size="small" onClick={() => handleView(row)}>
                                             查看
                                         </ElButton>
                                     </>

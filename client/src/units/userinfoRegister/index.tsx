@@ -32,7 +32,7 @@ export default defineComponent({
             ))}
           </ElMenu>
         </ElAside>
-        <ElMain style={{ overflowY: 'auto' }}>
+        <ElMain style={{ overflowY: 'auto', padding: '0' }}>
             {activeMenu.value === "userinfo" && <UserInfoForm />}
             {/* 这里可以根据activeMenu.value渲染其他内容 */}
         </ElMain>
