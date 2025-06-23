@@ -2,6 +2,7 @@ import { defineComponent, ref } from "vue";
 import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem } from "element-plus";
 import * as styles from "./styles.css.ts";
 import UserInfoForm from "./form";
+import PreEntryAchievementMain from "./pre_entry_achievement/main";
 
 const menuList = [
   { label: "个人信息登记", key: "userinfo" },
@@ -32,9 +33,9 @@ export default defineComponent({
             ))}
           </ElMenu>
         </ElAside>
-        <ElMain style={{ overflowY: 'auto', padding: '0' }}>
+        <ElMain style={{ overflowY: 'auto', margin: 0, padding: 0 }}>
             {activeMenu.value === "userinfo" && <UserInfoForm />}
-            {/* 这里可以根据activeMenu.value渲染其他内容 */}
+            {activeMenu.value === "preEntryAchievements" && <PreEntryAchievementMain />}
         </ElMain>
       </ElContainer>
     );

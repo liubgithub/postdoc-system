@@ -47,7 +47,7 @@ export const main = style({
   flexDirection: 'column',
   alignItems: 'center',
   margin: 0,
-  padding: 0
+  padding: 0,
 });
 
 export const formWrapper = style({
@@ -56,9 +56,28 @@ export const formWrapper = style({
   boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)',
   padding: '2em 4em',
   boxSizing: 'border-box',
-  maxHeight: '70vh',
+  maxHeight: '80vh',
   overflowY: 'auto',
-  margin: 0
+  margin: 0,
+  selectors: {
+    '&::-webkit-scrollbar': {
+      width: '8px',
+      background: 'rgba(0,0,0,0.03)',
+      borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#90caf9',
+      borderRadius: '8px',
+      minHeight: '24px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: '#42a5f5',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'rgba(0,0,0,0.01)',
+      borderRadius: '8px',
+    },
+  },
 });
 
 export const formRow = style({

@@ -1,5 +1,5 @@
 import { defineComponent, ref } from "vue";
-import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker } from "element-plus";
 import * as styles from "./styles.css.ts";
 import fetch from '@/api';
 import useUser from '@/stores/user';
@@ -59,12 +59,12 @@ export default defineComponent({
         is_religious_staff: form.value.is_religious_staff === '是',
         education_experience: form.value.education_experience.map(e => ({
           start_end: `${e.start}-${e.end}`,
-          school_major: `${e.school}-${e.major}`,
+          school_major: e.school,
           supervisor: e.supervisor || ""
         })),
         work_experience: form.value.work_experience.map(w => ({
           start_end: `${w.start}-${w.end}`,
-          company_position: `${w.company}-${w.position}`
+          company_position: w.company
         }))
       };
       try {
@@ -90,6 +90,7 @@ export default defineComponent({
 
     return () => (
       <div class={styles.formWrapper}>
+        <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>基本信息表</div>
         <ElForm model={form.value} rules={rules} labelWidth="100px">
           {/* 基本信息两列 */}
           <div class={styles.formRow}>
@@ -153,15 +154,32 @@ export default defineComponent({
             <ElInput v-model={form.value.research_direction} type="textarea" rows={2} />
           </ElFormItem>
           {/* 教育经历表格 */}
-          <ElFormItem label="教育经历">
+          <div style={{ fontWeight: 700, fontSize: '1.1em', margin: '1.5em 0 0.5em 0' }}>
+            教育经历 <span style={{ fontWeight: 400, fontSize: '0.95em' }}>(从高中填起，请勿间断)</span>
+          </div>
+          <ElFormItem label=" ">
             <ElTable data={form.value.education_experience} class={styles.table} style={{ width: "100%" }}>
               <ElTableColumn label="起止时间">
                 {{
                   default: ({ row }: any) => (
                     <>
-                      <ElInput v-model={row.start} placeholder="起" style={{ width: "80px" }} />
+                      <ElDatePicker
+                        v-model={row.start}
+                        type="date"
+                        placeholder="起"
+                        style={{ width: '120px' }}
+                        format="YYYY-MM-DD"
+                        value-format="YYYY-MM-DD"
+                      />
                       <span> - </span>
-                      <ElInput v-model={row.end} placeholder="止" style={{ width: "80px" }} />
+                      <ElDatePicker
+                        v-model={row.end}
+                        type="date"
+                        placeholder="止"
+                        style={{ width: '120px' }}
+                        format="YYYY-MM-DD"
+                        value-format="YYYY-MM-DD"
+                      />
                     </>
                   )
                 }}
@@ -169,10 +187,7 @@ export default defineComponent({
               <ElTableColumn label="毕业学校、专业及单位">
                 {{
                   default: ({ row }: any) => (
-                    <>
-                      <ElInput v-model={row.school} placeholder="学校" style={{ width: "120px" }} />
-                      <ElInput v-model={row.major} placeholder="专业" style={{ width: "80px" }} />
-                    </>
+                    <ElInput v-model={row.school} placeholder="毕业学校、专业及单位" style={{ width: "220px" }} />
                   )
                 }}
               </ElTableColumn>
@@ -194,15 +209,32 @@ export default defineComponent({
             <ElButton type="primary" size="small" onClick={addEducation} style={{ marginTop: "8px" }}>添加教育经历</ElButton>
           </ElFormItem>
           {/* 工作经历表格 */}
-          <ElFormItem label="工作经历">
+          <div style={{ fontWeight: 700, fontSize: '1.1em', margin: '1.5em 0 0.5em 0' }}>
+            工作经历 <span style={{ fontWeight: 400, fontSize: '0.95em' }}>(含博士后经历，请勿间断)</span>
+          </div>
+          <ElFormItem label=" ">
             <ElTable data={form.value.work_experience} class={styles.table} style={{ width: "100%" }}>
               <ElTableColumn label="起止时间">
                 {{
                   default: ({ row }: any) => (
                     <>
-                      <ElInput v-model={row.start} placeholder="起" style={{ width: "80px" }} />
+                      <ElDatePicker
+                        v-model={row.start}
+                        type="date"
+                        placeholder="起"
+                        style={{ width: '120px' }}
+                        format="YYYY-MM-DD"
+                        value-format="YYYY-MM-DD"
+                      />
                       <span> - </span>
-                      <ElInput v-model={row.end} placeholder="止" style={{ width: "80px" }} />
+                      <ElDatePicker
+                        v-model={row.end}
+                        type="date"
+                        placeholder="止"
+                        style={{ width: '120px' }}
+                        format="YYYY-MM-DD"
+                        value-format="YYYY-MM-DD"
+                      />
                     </>
                   )
                 }}
@@ -210,10 +242,7 @@ export default defineComponent({
               <ElTableColumn label="工作单位及职务">
                 {{
                   default: ({ row }: any) => (
-                    <>
-                      <ElInput v-model={row.company} placeholder="单位" style={{ width: "120px" }} />
-                      <ElInput v-model={row.position} placeholder="职务" style={{ width: "80px" }} />
-                    </>
+                    <ElInput v-model={row.company} placeholder="工作单位及职务" style={{ width: "220px" }} />
                   )
                 }}
               </ElTableColumn>
