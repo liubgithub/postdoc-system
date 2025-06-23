@@ -2,8 +2,9 @@ import { style } from '@vanilla-extract/css'
 
 export const headerBar = style({
   background: 'radial-gradient(ellipse at top,rgb(220, 241, 245),rgb(143, 242, 242))',
-  padding: '24px 0 0 0',
+  padding: '40px 0 10px 0',
   textAlign: 'center',
+  // height: '8vh',
 });
 
 export const welcome = style({
@@ -38,8 +39,8 @@ export const menuBtnActive = style({
 
 export const contentArea = style({
   background: '#fff',
-  padding: '32px',
-  height: 'calc(100vh - 120px)',
+  // padding: '32px',
+  height: '80vh',
 });
 
 export const formWrapper = style({

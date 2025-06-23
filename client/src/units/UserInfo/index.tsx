@@ -24,60 +24,9 @@ export default defineComponent({
       router.push(path);
       activeMenu.value = path;
     };
-
-    // 表单数据
-    const form = ref({
-      name: "",
-      gender: "",
-      birth_year: "",
-      nationality: "",
-      political_status: "",
-      phone: "",
-      religion: "",
-      id_number: "",
-      is_religious_staff: "",
-      research_direction: "",
-      education_experience: [
-        { start: "", end: "", school: "", major: "", supervisor: "" }
-      ],
-      work_experience: [
-        { start: "", end: "", company: "", position: "" }
-      ]
-    });
-
-    // 表单校验规则
-    const rules = {
-      name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-      birth_year: [{ required: true, message: "请输入出生年", trigger: "blur" }],
-      // 其他字段可按需添加
-    };
-
-    // 教育经历操作
-    const addEducation = () => {
-      form.value.education_experience.push({ start: "", end: "", school: "", major: "", supervisor: "" });
-    };
-    const removeEducation = (index: number) => {
-      form.value.education_experience.splice(index, 1);
-    };
-
-    // 工作经历操作
-    const addWork = () => {
-      form.value.work_experience.push({ start: "", end: "", company: "", position: "" });
-    };
-    const removeWork = (index: number) => {
-      form.value.work_experience.splice(index, 1);
-    };
-
-    // 提交
-    const handleSubmit = () => {
-      // TODO: 调用API保存
-      ElMessage.success("保存成功！");
-    };
-
     return () => (
       <ElContainer style={{ minHeight: '100vh', background: '#f5f7fa' }}>
-        <ElHeader height="120px" style={{ padding: 0, background: 'none' }}>
+        <ElHeader height="20vh" style={{ padding: 0, background: 'none' }}>
           <div class={styles.headerBar} style={{ height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
             <div class={styles.welcome} style={{ color: '#222', fontSize: '1.5rem', fontWeight: 'normal', marginBottom: '12px' }}>
               博士后{s_user.info!.name}您好，欢迎使用华中农业大学园艺林学学院博士后信息管理系统
@@ -99,11 +48,9 @@ export default defineComponent({
             </ElMenu>
           </div>
         </ElHeader>
-        <ElMain style={{ padding: 0 }}>
           <div class={styles.contentArea}>
             <RouterView />
           </div>
-        </ElMain>
       </ElContainer>
     );
   }

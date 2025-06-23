@@ -40,26 +40,31 @@ export const menuBtnActive = style({
 });
 
 export const main = style({
-  // flex: 1,
-  // display: 'flex',
-  // flexDirection: 'column',
-  // alignItems: 'center',
-  // justifyContent: 'flex-start',
-  // padding: '40px 0',
-  background: '#fff',
+  flex: 1,
+  overflow: 'hidden',
+  background: 'transparent',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  margin: 0,
+  padding: 0
 });
 
 export const formWrapper = style({
-  width: '700px',
+
   background: '#fff',
-  borderRadius: '8px',
-  boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)',
-  padding: '32px 40px',
+  borderRadius: '0.5em',
+  boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)',
+  padding: '2em 4em',
+  boxSizing: 'border-box',
+  maxHeight: '70vh',
+  overflowY: 'auto',
+  margin: 0
 });
 
 export const formRow = style({
   display: 'flex',
-  gap: '24px',
+  gap: '2vw',
 });
 
 export const formCol = style({
@@ -67,12 +72,12 @@ export const formCol = style({
 });
 
 export const table = style({
-  margin: '16px 0',
+  margin: '1em 0',
 });
 
 export const btnGroup = style({
   display: 'flex',
   justifyContent: 'center',
-  gap: '32px',
-  marginTop: '32px',
+  gap: '2em',
+  marginTop: '2em',
 }); 
