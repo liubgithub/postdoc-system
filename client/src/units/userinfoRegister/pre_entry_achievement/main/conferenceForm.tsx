@@ -28,6 +28,7 @@ export default defineComponent({
   setup(props) {
     const tableData = ref<any[]>([]);
     const showForm = ref(false);
+    const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
       confId: "",
@@ -70,16 +71,29 @@ export default defineComponent({
         reportFile: null,
         remark: ""
       };
+      editIndex.value = -1;
+      showForm.value = true;
+    };
+
+    const handleEdit = (row: any, index: number) => {
+      editData.value = { ...row };
+      editIndex.value = index;
       showForm.value = true;
     };
 
     const handleSave = () => {
-      tableData.value.push({ ...editData.value });
+      if (editIndex.value === -1) {
+        tableData.value.push({ ...editData.value });
+      } else {
+        tableData.value[editIndex.value] = { ...editData.value };
+      }
       showForm.value = false;
+      editIndex.value = -1;
     };
 
     const handleCancel = () => {
       showForm.value = false;
+      editIndex.value = -1;
     };
 
     // 文件上传回调
@@ -202,6 +216,13 @@ export default defineComponent({
                   }}
                 />
               ))}
+              <ElTableColumn label="操作" width="100">
+                {{
+                  default: ({ row, $index }: any) => (
+                    <ElButton type="primary" size="small" onClick={() => handleEdit(row, $index)}>编辑</ElButton>
+                  )
+                }}
+              </ElTableColumn>
             </ElTable>
             <div style={{ textAlign: 'center', marginTop: '2em' }}>
               <ElButton style={{ marginRight: '2em' }} onClick={evt => props.onBack && props.onBack(evt)}>返回</ElButton>

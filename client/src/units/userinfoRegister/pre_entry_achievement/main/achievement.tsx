@@ -2,9 +2,10 @@ import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElInput, ElButton } from "element-plus";
 import * as styles from "../../styles.css.ts";
 import ConferenceForm from "./conferenceForm";
+import PaperForm from "./paperForm";
 
 const categories = [
-  "学术会议信息", "专利信息", "发表论文信息", "著作信息", "参与项目信息",
+  "学术会议信息", "学术论文","专利信息" , "发表论文信息", "著作信息", "参与项目信息",
   "科技竞赛获奖信息", "课题研究信息", "行业标准信息", "新品种类型信息"
 ];
 
@@ -20,12 +21,15 @@ export default defineComponent({
       remark: ""
     })));
     const showConference = ref(false);
+    const showPaper = ref(false);
 
     // 可在此处 onMounted 加载后端数据
 
     const handleAdd = (row: any) => {
       if (row.category === "学术会议信息") {
         showConference.value = true;
+      } else if (row.category === "学术论文") {
+        showPaper.value = true;
       }
     };
 
@@ -33,6 +37,8 @@ export default defineComponent({
       showConference.value ? 
       (
         <ConferenceForm onBack={() => { showConference.value = false; }} />
+      ) : showPaper.value ? (
+        <PaperForm onBack={() => { showPaper.value = false; }} />
       ) : (
         <div>
           <div style={{ fontSize: '1.3em', fontWeight: 700, textAlign: 'left', marginBottom: '1em' }}>入站前已有成果登记</div>
