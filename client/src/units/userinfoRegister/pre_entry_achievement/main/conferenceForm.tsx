@@ -27,26 +27,7 @@ export default defineComponent({
     onBack: { type: Function, required: false }
   },
   setup(props) {
-    const tableData = ref([
-      {
-        id: 1,
-        stuId: "",
-        confId: "",
-        confName: "",
-        isAbroad: "",
-        location: "",
-        startDate: "",
-        endDate: "",
-        level: "",
-        form: "",
-        hostOrg: "",
-        org: "",
-        attendeeNum: "",
-        contact: "",
-        report: "",
-        remark: ""
-      }
-    ]);
+    const tableData = ref<any[]>([]);
 
     const handleAdd = () => {
       tableData.value.push({
@@ -69,6 +50,10 @@ export default defineComponent({
       });
     };
 
+    const handleEdit = (row: any, index: number) => {
+      // Implement the logic to open the edit form with the row data
+    };
+
     return () => (
       <div>
         <div style={{ marginBottom: '1em' }}>
@@ -79,21 +64,15 @@ export default defineComponent({
             <ElTableColumn
               label={col.label}
               prop={col.prop}
-              v-slots={col.prop === 'startDate' || col.prop === 'endDate' ? {
-                default: ({ row }: any) => (
-                  <ElDatePicker v-model={row[col.prop]} type="date" placeholder={col.label} style={{ width: '120px' }} />
-                )
-              } : {
-                default: ({ row }: any) => (
-                  <ElInput v-model={row[col.prop]} placeholder={col.label} />
-                )
+              v-slots={{
+                default: ({ row }: any) => row[col.prop] ?? ""
               }}
             />
           ))}
           <ElTableColumn label="操作" width="100">
             {{
-              default: ({ row }: any) => (
-                <ElButton type="primary" size="small">编辑</ElButton>
+              default: ({ row, $index }: any) => (
+                <ElButton type="primary" size="small" onClick={() => handleEdit(row, $index)}>编辑</ElButton>
               )
             }}
           </ElTableColumn>
