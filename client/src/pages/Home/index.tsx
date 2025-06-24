@@ -1,4 +1,5 @@
-import { ElCard } from "element-plus"
+import { defineComponent } from "vue"
+import { ElButton, ElCard } from "element-plus"
 
 import { jobs, news } from "./demo"
 
