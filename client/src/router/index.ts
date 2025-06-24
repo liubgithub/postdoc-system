@@ -30,8 +30,7 @@ const router = createRouter({
         {
           path: "",
           name: "home",
-          component: Home,
-          meta: { requiresAuth: true } // 需要认证
+          component: Home
         },
       ],
     },

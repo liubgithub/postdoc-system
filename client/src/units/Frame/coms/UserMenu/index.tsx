@@ -12,6 +12,9 @@ export default defineComponent({
     const router = useRouter()
     const s_user = useUser()
 
+    const handleLoginClick = () => {
+      window.open('/auth/login', '_blank', 'noopener,noreferrer')
+    }
     return () => {
       if (s_user.info) {
         return (
@@ -35,8 +38,7 @@ export default defineComponent({
       } else {
         return (
           <div class={cls.btngroup}>
-              <ElButton onClick={() => {router.push("/auth/login")}}>登录</ElButton>
-              {/* <ElButton onClick={() => {router.push("/register")}}>注册</ElButton> */}
+              <ElButton onClick={handleLoginClick}>登录</ElButton>
           </div>
         )
       }

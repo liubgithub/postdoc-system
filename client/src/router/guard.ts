@@ -2,7 +2,7 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import useUser from '@/stores/user'
 
 // 白名单 - 不需要认证的路径
-const whiteList = ['/auth/login', '/register']
+const whiteList = ['/auth/login', '/register', '/']
 
 export const authGuard = (
   to: RouteLocationNormalized,

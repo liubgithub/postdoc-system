@@ -49,8 +49,8 @@ const useUser = defineStore("user", () => {
 
                 if (token) {
                     // 存储 token 和用户名
-                    localStorage.setItem('token', token)
-                    localStorage.setItem('username', name)
+                    // localStorage.setItem('token', token)
+                    // localStorage.setItem('username', name)
                     info.value = { name, token }
 
                     loding.close()

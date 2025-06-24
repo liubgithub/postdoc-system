@@ -7,7 +7,12 @@ export const frame = style({
     height: "100%",
     display: 'flex',
     flexDirection: 'row',
-    overflow: "hidden",
+    // overflow: "hidden",
+})
+
+export const image = style({
+    backgroundColor: '#1473ef',
+    marginRight: '1rem',
 })
 export const header = style({
     //position
@@ -17,7 +22,7 @@ export const header = style({
     //flex
     display: 'flex',
     flexWrap: "nowrap",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: 'center',
     //size
     height: `${header_hight}px`,
@@ -28,7 +33,7 @@ export const header = style({
 export const header_left = style({
 })
 export const header_left_title = style({
-    fontSize: "23px",
+    fontSize: "2rem",
     fontWeight: 500,
 })
 export const header_right = style({
