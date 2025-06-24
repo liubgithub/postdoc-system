@@ -30,7 +30,8 @@ export default defineComponent({
     };
 
     return () => (
-      showConference.value ? (
+      showConference.value ? 
+      (
         <ConferenceForm onBack={() => { showConference.value = false; }} />
       ) : (
         <div>
