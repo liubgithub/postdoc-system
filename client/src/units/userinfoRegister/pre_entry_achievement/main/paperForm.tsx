@@ -2,24 +2,24 @@ import { defineComponent, ref } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload } from "element-plus";
 
 const columns = [
-  { label: "序号", prop: "id" },
-  { label: "学号", prop: "stuId" },
-  { label: "是否确认", prop: "confirmed" },
-  { label: "论文名称", prop: "title" },
-  { label: "第几作者", prop: "authorOrder" },
-  { label: "是否和学位论文相关", prop: "relatedToThesis" },
-  { label: "通讯作者", prop: "correspondingAuthor" },
-  { label: "导师署名排序", prop: "supervisorOrder" },
-  { label: "本校是否第一署名单位", prop: "isFirstAffiliation" },
-  { label: "第一署名单位", prop: "firstAffiliation" },
-  { label: "刊物名称", prop: "journal" },
-  { label: "发表状态", prop: "status" },
-  { label: "发表日期", prop: "publishDate" },
-  { label: "论文收录检索号", prop: "indexNumber" },
-  { label: "他引/次数", prop: "citationCount" },
-  { label: "出版号", prop: "issn" },
-  { label: "刊物级别", prop: "journalLevel" },
-  { label: "影响因子", prop: "impactFactor" }
+  { label: "序号", prop: "id", width: 60 },
+  { label: "学号", prop: "stuId", width: 100 },
+  { label: "是否确认", prop: "confirmed", width: 80 },
+  { label: "论文名称", prop: "title", width: 160 },
+  { label: "第几作者", prop: "authorOrder", width: 80 },
+  { label: "是否和学位论文相关", prop: "relatedToThesis", width: 120 },
+  { label: "通讯作者", prop: "correspondingAuthor", width: 100 },
+  { label: "导师署名排序", prop: "supervisorOrder", width: 110 },
+  { label: "本校是否第一署名单位", prop: "isFirstAffiliation", width: 120 },
+  { label: "第一署名单位", prop: "firstAffiliation", width: 120 },
+  { label: "刊物名称", prop: "journal", width: 120 },
+  { label: "发表状态", prop: "status", width: 100 },
+  { label: "发表日期", prop: "publishDate", width: 110 },
+  { label: "论文收录检索号", prop: "indexNumber", width: 130 },
+  { label: "他引/次数", prop: "citationCount", width: 90 },
+  { label: "出版号", prop: "issn", width: 100 },
+  { label: "刊物级别", prop: "journalLevel", width: 100 },
+  { label: "影响因子", prop: "impactFactor", width: 80 }
 ];
 
 export default defineComponent({
@@ -211,6 +211,7 @@ export default defineComponent({
                 <ElTableColumn
                   label={col.label}
                   prop={col.prop}
+                  width={col.width}
                   v-slots={{
                     default: ({ row }: any) => row[col.prop] ?? ""
                   }}

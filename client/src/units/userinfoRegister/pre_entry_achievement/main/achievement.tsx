@@ -42,8 +42,8 @@ export default defineComponent({
       ) : (
         <div>
           <div style={{ fontSize: '1.3em', fontWeight: 700, textAlign: 'left', marginBottom: '1em' }}>入站前已有成果登记</div>
-          <ElTable data={data.value} class={styles.table} style={{ width: "100%" }}>
-            <ElTableColumn label="学术成果类型（点击跳转填报）">
+          <ElTable data={data.value} class={styles.table} style={{ width: "90%" }}>
+            <ElTableColumn label="学术成果类型（点击跳转填报）" width='300'>
               {{
                 default: ({ row }: any) => (
                   <span>{row.category}</span>
