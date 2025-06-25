@@ -11,8 +11,9 @@ export const frame = style({
 })
 
 export const image = style({
-    backgroundColor: '#1473ef',
+    backgroundColor: '#004ea1',
     marginRight: '1rem',
+    
 })
 export const header = style({
     //position
@@ -33,10 +34,12 @@ export const header = style({
 export const header_left = style({
 })
 export const header_left_title = style({
-    fontSize: "2rem",
+    fontSize: "2.4rem",
     fontWeight: 500,
 })
 export const header_right = style({
+    position: 'absolute',
+    right: '2rem',
 })
 
 export const aside = style({

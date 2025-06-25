@@ -28,7 +28,7 @@ export default defineComponent({
       <ElContainer style={{ minHeight: '100vh' }}>
         <ElHeader height="20vh" style={{ padding: 0, background: 'none' }}>
           <div class={styles.headerBar} style={{ height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-            <div class={styles.welcome} style={{ color: '#222', fontSize: '1.5rem', fontWeight: 'normal', marginBottom: '12px' }}>
+            <div class={styles.welcome} style={{ color: '#fff', fontSize: '2rem', fontWeight: 'normal', marginBottom: '12px' }}>
               博士后{s_user.info!.name}您好，欢迎使用华中农业大学园艺林学学院博士后信息管理系统
             </div>
             <ElMenu
@@ -40,7 +40,7 @@ export default defineComponent({
               {menuList.map(item => (
                 <ElMenuItem
                   index={item.path}
-                  style={{ fontSize: '16px', padding: '0 32px', height: '48px', display: 'flex', alignItems: 'center' }}
+                  style={{ fontSize: '16px', padding: '0 32px', height: '48px', display: 'flex', alignItems: 'center',color: '#fff' }}
                 >
                   {item.label}
                 </ElMenuItem>

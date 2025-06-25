@@ -54,7 +54,7 @@ globalStyle(`${opreateBtn} .el-button`, {
 export const container = {
     padding: "20px",
     margin: "0 auto",
-    overflowY: "auto", // 添加垂直滚动
+    // overflowY: "auto", // 添加垂直滚动
     boxSizing: "border-box", // 确保padding不会增加总高度
 };
 
@@ -67,7 +67,3 @@ export const formWrapper = {
     boxShadow: "0 2px 12px 0 rgba(0,0,0,0.1)",
 };
 
-export const btnGroup = {
-    marginTop: "20px",
-    textAlign: "right",
-};

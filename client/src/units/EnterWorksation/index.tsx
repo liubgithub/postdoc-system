@@ -1,12 +1,12 @@
-import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
+import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElDialog, ElMessage } from 'element-plus'
 import * as cls from "./styles.css"
 import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
 import StationProtocol from './coms/StationProtocol'
-
+import fetch from '@/api';
 interface TableRow {
     subject: string;
-    id: string;
+    id: number;
     postname: string;
     posttask: string;
     postqualification: string;
@@ -28,7 +28,7 @@ export default defineComponent({
         const showApplication = ref(true)
         const formData = ref({
             subject: '',
-            id: '',
+            id: 1,
             postname: '',
             posttask: '',
             postqualification: '',
@@ -38,7 +38,7 @@ export default defineComponent({
         })
         const tableData = ref<TableRow[]>([{
             subject: '',
-            id: '',
+            id: 1,
             postname: '',
             posttask: '',
             postqualification: '',
@@ -46,10 +46,12 @@ export default defineComponent({
             allitutor: '',
             remark: ''
         }])
+        const dialogVisible = ref(false)
+        const viewRow = ref<TableRow | null>(null)
 
         const handleView = (row: TableRow) => {
-            // TODO: Implement view functionality
-            console.log('View data:', row)
+            viewRow.value = { ...row }
+            dialogVisible.value = true
         }
 
         const handleApply = (row: TableRow) => {
@@ -62,6 +64,21 @@ export default defineComponent({
             console.log(activeMenu.value, 'sssss')
         }
 
+        const handleSubmit = async () =>{
+            try {
+                const res = await fetch.raw.POST('/enterWorkstation/apply',{
+                    body: formData.value
+                })
+                if(res && res.response && (res.response as Response).status === 200){
+                    ElMessage.success('提交成功！')
+                    dialogVisible.value = false
+                }else{
+                    ElMessage.error('提交失败！')
+                }
+            }catch(e){
+                ElMessage.error('提交失败！')
+            }
+        }
         return () => (
             <ElContainer>
                 <ElAside width="200px">
@@ -80,80 +97,155 @@ export default defineComponent({
                 <ElMain>
                     {activeMenu.value === 'application' && (
                         showApplication.value ? (
-                            <ElTable data={tableData.value} class={cls.tableWidth}>
-                                <ElTableColumn prop="subject" label="一级学科" width="80">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.subject} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="id" label="序号" width="60">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.id} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="postname" label="岗位名称" width="120">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.postname} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="posttask" label="岗位目标任务（拟解决的科学问题）" width="280">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.posttask} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="postqualification" label="岗位资格条件" width="180">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.postqualification} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="cotutor" label="合作导师" width="80">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.cotutor} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="allitutor" label="挂靠导师" width="80">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.allitutor} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn prop="remark" label="备注" width="180">
-                                    {{
-                                        default: () => (
-                                            <ElInput v-model={formData.value.remark} />
-                                        )
-                                    }}
-                                </ElTableColumn>
-                                <ElTableColumn label="操作" width="160" class={cls.opreateBtn}>
-                                    {{
-                                        default: ({ row }: { row: TableRow }) => (
-                                            <>
-                                                <ElButton type="primary" size="small" onClick={() => handleApply(row)}>
-                                                    申请
-                                                </ElButton>
-                                                <ElButton type="info" size="small" onClick={() => handleView(row)}>
-                                                    查看
-                                                </ElButton>
-                                            </>
-                                        )
-                                    }}
-                                </ElTableColumn>
-                            </ElTable>
+                            <>
+                                <ElTable data={tableData.value} class={cls.tableWidth}>
+                                    <ElTableColumn prop="subject" label="一级学科" width="80">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.subject} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="id" label="序号" width="60">
+                                        {{
+                                            default: ({ row }: { row: TableRow }) => (
+                                                <span>{row.id}</span>
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="postname" label="岗位名称" width="120">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.postname} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="posttask" label="岗位目标任务（拟解决的科学问题）" width="280">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.posttask} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="postqualification" label="岗位资格条件" width="180">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.postqualification} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="cotutor" label="合作导师" width="80">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.cotutor} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="allitutor" label="挂靠导师" width="80">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.allitutor} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="remark" label="备注" width="180">
+                                        {{
+                                            default: () => (
+                                                <ElInput v-model={formData.value.remark} />
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn label="操作" width="160" class={cls.opreateBtn}>
+                                        {{
+                                            default: ({ row }: { row: TableRow }) => (
+                                                <>
+                                                    <ElButton type="primary" size="small" onClick={() => handleApply(row)}>
+                                                        申请
+                                                    </ElButton>
+                                                    <ElButton type="info" size="small" onClick={() => handleView(row)}>
+                                                        查看
+                                                    </ElButton>
+                                                </>
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                </ElTable>
+                                <ElDialog
+                                    v-model={dialogVisible.value}
+                                    title="查看详情"
+                                    width="90%"
+                                    style={{ maxWidth: '1100px' }}
+                                    onClose={() => (dialogVisible.value = false)}
+                                >
+                                    {viewRow.value && (
+                                        <ElTable data={[formData.value]} class={cls.tableWidth} style={{ marginBottom: '24px' }}>
+                                            <ElTableColumn prop="subject" label="一级学科" width="80">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.subject} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="id" label="序号" width="60">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <span>{row.id}</span>
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="postname" label="岗位名称" width="120">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.postname} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="posttask" label="岗位目标任务（拟解决的科学问题）" width="280">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.posttask} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="postqualification" label="岗位资格条件" width="180">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.postqualification} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="cotutor" label="合作导师" width="80">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.cotutor} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="allitutor" label="挂靠导师" width="80">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.allitutor} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                            <ElTableColumn prop="remark" label="备注" width="180">
+                                                {{
+                                                    default: ({ row }: { row: TableRow }) => (
+                                                        <ElInput modelValue={row.remark} readonly style={{ height: '338px', fontSize: '16px' }} />
+                                                    )
+                                                }}
+                                            </ElTableColumn>
+                                        </ElTable>
+                                    )}
+                                    <div style={{ textAlign: 'center', marginTop: '24px' }}>
+                                        <ElButton type="primary" size="large" style={{ fontSize: '20px', padding: '12px 48px' }} onClick={handleSubmit}>
+                                            确认提交
+                                        </ElButton>
+                                    </div>
+                                </ElDialog>
+                            </>
                         ) : (
-                            <Application />
+                            <Application onSubmitSuccess={() => { showApplication.value = true }} />
                         )
                     )}
                     {activeMenu.value === 'assessment' && <StationAssessment />}

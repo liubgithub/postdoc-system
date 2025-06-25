@@ -42,7 +42,7 @@ export default defineComponent({
             assessmentRes: ''
         }])
 
-        const handleView = (row: TableRow)=>{
+        const handleView = (row: TableRow) => {
             console.log('View data:', row)
             showDetails.value = true
         }
@@ -52,7 +52,7 @@ export default defineComponent({
         }
 
         return () => (
-            <div>
+            <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
                     <OpenDetails onBack={handleBack} />
                 ) : (

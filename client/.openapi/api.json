@@ -1,182 +1,46 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-      "title": "Postdoc API",
-      "description": "博士后管理系统API",
-      "version": "1.0.0"
-    },
-    "paths": {
-      "/auth/login": {
-        "post": {
-          "tags": [
-            "认证"
-          ],
-          "summary": "用户登录",
-          "description": "使用用户名和密码登录，获取 JWT Token",
-          "operationId": "login_auth_login_post",
-          "requestBody": {
-            "content": {
-              "application/x-www-form-urlencoded": {
-                "schema": {
-                  "$ref": "#/components/schemas/Body_login_auth_login_post"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Token"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/auth/me": {
-        "get": {
-          "tags": [
-            "认证"
-          ],
-          "summary": "获取当前用户信息",
-          "description": "通过 JWT Token 获取当前登录用户信息",
-          "operationId": "get_me_auth_me_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/UserResponse"
-                  }
-                }
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Postdoc API",
+    "description": "博士后管理系统API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "用户登录",
+        "description": "使用用户名和密码登录，获取 JWT Token",
+        "operationId": "login_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_auth_login_post"
               }
             }
           },
-          "security": [
-            {
-              "OAuth2PasswordBearer": []
-            }
-          ]
-        }
-      },
-      "/users/register": {
-        "post": {
-          "tags": [
-            "用户管理"
-          ],
-          "summary": "注册用户",
-          "description": "注册新用户（默认角色为普通用户）",
-          "operationId": "register_users_register_post",
-          "requestBody": {
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginInput"
+                  "$ref": "#/components/schemas/Token"
                 }
               }
-            },
-            "required": true
+            }
           },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/users/{username}": {
-        "delete": {
-          "tags": [
-            "用户管理"
-          ],
-          "summary": "删除用户",
-          "description": "仅管理员可删除普通用户，不能删除管理员",
-          "operationId": "delete_user_users__username__delete",
-          "security": [
-            {
-              "OAuth2PasswordBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "username",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Username"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/": {
-        "get": {
-          "summary": "服务状态",
-          "operationId": "root__get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -184,178 +48,654 @@
         }
       }
     },
-    "components": {
-      "schemas": {
-        "Body_login_auth_login_post": {
-          "properties": {
-            "grant_type": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "pattern": "password"
-                },
-                {
-                  "type": "null"
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "获取当前用户信息",
+        "description": "通过 JWT Token 获取当前登录用户信息",
+        "operationId": "get_me_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
                 }
-              ],
-              "title": "Grant Type"
-            },
-            "username": {
-              "type": "string",
-              "title": "Username"
-            },
-            "password": {
-              "type": "string",
-              "title": "Password"
-            },
-            "scope": {
-              "type": "string",
-              "title": "Scope",
-              "default": ""
-            },
-            "client_id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": [
+          "用户管理"
+        ],
+        "summary": "注册用户",
+        "description": "注册新用户（默认角色为普通用户）",
+        "operationId": "register_users_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
                 }
-              ],
-              "title": "Client Id"
-            },
-            "client_secret": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "Client Secret"
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "username",
-            "password"
-          ],
-          "title": "Body_login_auth_login_post"
-        },
-        "HTTPValidationError": {
-          "properties": {
-            "detail": {
-              "items": {
-                "$ref": "#/components/schemas/ValidationError"
-              },
-              "type": "array",
-              "title": "Detail"
-            }
-          },
-          "type": "object",
-          "title": "HTTPValidationError"
-        },
-        "LoginInput": {
-          "properties": {
-            "username": {
-              "type": "string",
-              "title": "Username"
-            },
-            "password": {
-              "type": "string",
-              "title": "Password"
-            }
-          },
-          "type": "object",
-          "required": [
-            "username",
-            "password"
-          ],
-          "title": "LoginInput"
-        },
-        "Token": {
-          "properties": {
-            "access_token": {
-              "type": "string",
-              "title": "Access Token"
-            },
-            "token_type": {
-              "type": "string",
-              "title": "Token Type"
-            }
-          },
-          "type": "object",
-          "required": [
-            "access_token",
-            "token_type"
-          ],
-          "title": "Token"
-        },
-        "UserResponse": {
-          "properties": {
-            "username": {
-              "type": "string",
-              "title": "Username"
-            },
-            "role": {
-              "type": "string",
-              "title": "Role"
-            }
-          },
-          "type": "object",
-          "required": [
-            "username",
-            "role"
-          ],
-          "title": "UserResponse"
-        },
-        "ValidationError": {
-          "properties": {
-            "loc": {
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ]
-              },
-              "type": "array",
-              "title": "Location"
-            },
-            "msg": {
-              "type": "string",
-              "title": "Message"
-            },
-            "type": {
-              "type": "string",
-              "title": "Error Type"
-            }
-          },
-          "type": "object",
-          "required": [
-            "loc",
-            "msg",
-            "type"
-          ],
-          "title": "ValidationError"
+          }
         }
-      },
-      "securitySchemes": {
-        "OAuth2PasswordBearer": {
-          "type": "oauth2",
-          "flows": {
-            "password": {
-              "scopes": {
-  
-              },
-              "tokenUrl": "/auth/login"
+      }
+    },
+    "/users/{username}": {
+      "delete": {
+        "tags": [
+          "用户管理"
+        ],
+        "summary": "删除用户",
+        "description": "仅管理员可删除普通用户，不能删除管理员",
+        "operationId": "delete_user_users__username__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/info/submit": {
+      "post": {
+        "tags": [
+          "个人信息登记"
+        ],
+        "summary": "Submit Info",
+        "operationId": "submit_info_info_submit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/enterWorkstation/apply": {
+      "post": {
+        "tags": [
+          "进站申请"
+        ],
+        "summary": "Enter Workstation",
+        "operationId": "enter_workstation_enterWorkstation_apply_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterWorkstationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "服务状态",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
             }
           }
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "Body_login_auth_login_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "password"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_auth_login_post"
+      },
+      "EducationExperienceIn": {
+        "properties": {
+          "start_end": {
+            "type": "string",
+            "title": "Start End"
+          },
+          "school_major": {
+            "type": "string",
+            "title": "School Major"
+          },
+          "supervisor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supervisor",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_end",
+          "school_major"
+        ],
+        "title": "EducationExperienceIn"
+      },
+      "EnterWorkstationIn": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "postname": {
+            "type": "string",
+            "title": "Postname"
+          },
+          "posttask": {
+            "type": "string",
+            "title": "Posttask"
+          },
+          "postqualification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postqualification"
+          },
+          "cotutor": {
+            "type": "string",
+            "title": "Cotutor"
+          },
+          "allitutor": {
+            "type": "string",
+            "title": "Allitutor"
+          },
+          "remark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remark"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "postname",
+          "posttask",
+          "postqualification",
+          "cotutor",
+          "allitutor",
+          "remark"
+        ],
+        "title": "EnterWorkstationIn"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InfoIn": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gender",
+            "default": ""
+          },
+          "birth_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Birth Year"
+          },
+          "nationality": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nationality",
+            "default": ""
+          },
+          "political_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Political Status",
+            "default": ""
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone",
+            "default": ""
+          },
+          "religion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Religion",
+            "default": ""
+          },
+          "id_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Number",
+            "default": ""
+          },
+          "is_religious_staff": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Religious Staff",
+            "default": false
+          },
+          "research_direction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Research Direction",
+            "default": ""
+          },
+          "other": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Other",
+            "default": ""
+          },
+          "education_experience": {
+            "items": {
+              "$ref": "#/components/schemas/EducationExperienceIn"
+            },
+            "type": "array",
+            "title": "Education Experience"
+          },
+          "work_experience": {
+            "items": {
+              "$ref": "#/components/schemas/WorkExperienceIn"
+            },
+            "type": "array",
+            "title": "Work Experience"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "education_experience",
+          "work_experience"
+        ],
+        "title": "InfoIn"
+      },
+      "LoginInput": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginInput"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type"
+        ],
+        "title": "Token"
+      },
+      "UserResponse": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "role"
+        ],
+        "title": "UserResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WorkExperienceIn": {
+        "properties": {
+          "start_end": {
+            "type": "string",
+            "title": "Start End"
+          },
+          "company_position": {
+            "type": "string",
+            "title": "Company Position"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_end",
+          "company_position"
+        ],
+        "title": "WorkExperienceIn"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {
+
+            },
+            "tokenUrl": "/auth/login"
+          }
+        }
+      }
+    }
   }
+}

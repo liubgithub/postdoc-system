@@ -5,6 +5,9 @@ export const formContainer = style({
     border: '1px solid #dcdfe6',
     fontFamily: '"SimSun", "STSong", "serif"',
     backgroundColor: '#f5f7fa',
+    boxSizing: 'border-box',
+    minHeight: '100vh',
+    overflowY: 'auto',
 })
 
 export const header = style({

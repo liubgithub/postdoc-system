@@ -1,10 +1,16 @@
 import { defineComponent, ref } from "vue";
-import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert } from "element-plus";
 import * as styles from "./styles.css.ts";
 
 export default defineComponent({
   name: "ResearchForm",
-  setup() {
+  props: {
+    onSubmitSuccess: {
+      type: Function,
+      required: false
+    }
+  },
+  setup(props) {
     const form = ref({
       previousWork: "",
       necessityAnalysis: "",
@@ -19,13 +25,13 @@ export default defineComponent({
 
     const handleSubmit = () => {
       // Handle form submission
+      props.onSubmitSuccess && props.onSubmitSuccess();
     };
 
     return () => (
       <div class={styles.formWrapper}>
         <ElForm model={form.value} labelWidth="200px">
           <h3>2. 相关科研情况填写</h3>
-          
           <ElFormItem label="1. 前期工作基础">
             <ElInput
               v-model={form.value.previousWork}
@@ -81,31 +87,38 @@ export default defineComponent({
 
           <h3>3. 本人承诺</h3>
           <ElFormItem label="承诺内容">
-            <ElInput
-              v-model={form.value.commitment}
-              type="textarea"
-              rows={3}
-              disabled
-            />
+            <div
+              style={{
+                width: '100%',
+                border: '1px solid #e4e7ed',
+                borderRadius: '6px',
+                padding: '16px',
+                background: '#fafbfc',
+                boxSizing: 'border-box',
+              }}
+            >
+              <ElAlert type="info" show-icon closable={false} style={{ marginBottom: '16px' }}>
+                <div>{form.value.commitment}</div>
+              </ElAlert>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <ElInput
+                    v-model={form.value.signature}
+                    placeholder="请在此处签名"
+                    style={{ width: '160px' }}
+                  />
+                  <ElDatePicker
+                    v-model={form.value.date}
+                    type="date"
+                    placeholder="选择日期"
+                    style={{ width: '140px' }}
+                  />
+                </div>
+              </div>
+            </div>
           </ElFormItem>
 
-          <ElFormItem label="签名">
-            <ElInput
-              v-model={form.value.signature}
-              placeholder="请在此处签名"
-              style={{ width: "200px" }}
-            />
-          </ElFormItem>
-
-          <ElFormItem label="日期">
-            <ElDatePicker
-              v-model={form.value.date}
-              type="date"
-              placeholder="选择日期"
-            />
-          </ElFormItem>
-
-          <div class={styles.btnGroup}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
             <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
           </div>
         </ElForm>

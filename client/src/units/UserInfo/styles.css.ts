@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css'
 
 export const headerBar = style({
-  background: 'radial-gradient(ellipse at top,rgb(220, 241, 245),rgb(143, 242, 242))',
+  backgroundColor: '#004ea1',
   padding: '40px 0 10px 0',
   textAlign: 'center',
   // height: '8vh',

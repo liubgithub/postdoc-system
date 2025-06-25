@@ -84,6 +84,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/info/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Info */
+        post: operations["submit_info_info_submit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterWorkstation/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enter Workstation */
+        post: operations["enter_workstation_enterWorkstation_apply_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -123,10 +157,95 @@ export interface components {
             /** Client Secret */
             client_secret?: string | null;
         };
+        /** EducationExperienceIn */
+        EducationExperienceIn: {
+            /** Start End */
+            start_end: string;
+            /** School Major */
+            school_major: string;
+            /**
+             * Supervisor
+             * @default
+             */
+            supervisor: string | null;
+        };
+        /** EnterWorkstationIn */
+        EnterWorkstationIn: {
+            /** Subject */
+            subject: string;
+            /** Postname */
+            postname: string;
+            /** Posttask */
+            posttask: string;
+            /** Postqualification */
+            postqualification: string | null;
+            /** Cotutor */
+            cotutor: string;
+            /** Allitutor */
+            allitutor: string;
+            /** Remark */
+            remark: string | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** InfoIn */
+        InfoIn: {
+            /** Name */
+            name: string;
+            /**
+             * Gender
+             * @default
+             */
+            gender: string | null;
+            /** Birth Year */
+            birth_year?: number | null;
+            /**
+             * Nationality
+             * @default
+             */
+            nationality: string | null;
+            /**
+             * Political Status
+             * @default
+             */
+            political_status: string | null;
+            /**
+             * Phone
+             * @default
+             */
+            phone: string | null;
+            /**
+             * Religion
+             * @default
+             */
+            religion: string | null;
+            /**
+             * Id Number
+             * @default
+             */
+            id_number: string | null;
+            /**
+             * Is Religious Staff
+             * @default false
+             */
+            is_religious_staff: boolean | null;
+            /**
+             * Research Direction
+             * @default
+             */
+            research_direction: string | null;
+            /**
+             * Other
+             * @default
+             */
+            other: string | null;
+            /** Education Experience */
+            education_experience: components["schemas"]["EducationExperienceIn"][];
+            /** Work Experience */
+            work_experience: components["schemas"]["WorkExperienceIn"][];
         };
         /** LoginInput */
         LoginInput: {
@@ -157,6 +276,13 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** WorkExperienceIn */
+        WorkExperienceIn: {
+            /** Start End */
+            start_end: string;
+            /** Company Position */
+            company_position: string;
         };
     };
     responses: never;
@@ -263,6 +389,72 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_info_info_submit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InfoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    enter_workstation_enterWorkstation_apply_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnterWorkstationIn"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {
