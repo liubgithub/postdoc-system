@@ -2,22 +2,22 @@ import { defineComponent, ref } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload } from "element-plus";
 
 const columns = [
-  { label: "序号", prop: "id" },
-  { label: "会议编号", prop: "confId" },
-  { label: "会议名称", prop: "confName" },
-  { label: "会议英文名称", prop: "confNameEn" },
-  { label: "主办单位", prop: "hostOrg" },
-  { label: "会议举办形式", prop: "form" },
-  { label: "会议等级", prop: "level" },
-  { label: "国家或地区", prop: "country" },
-  { label: "是否境外", prop: "isAbroad" },
-  { label: "会议起始日期", prop: "startDate" },
-  { label: "会议终止日期", prop: "endDate" },
-  { label: "举办单位", prop: "org" },
-  { label: "会议人数", prop: "attendeeNum" },
-  { label: "联系人电话", prop: "contact" },
-  { label: "会议地点", prop: "location" },
-  { label: "备注", prop: "remark" },
+  { label: "序号", prop: "id", width: 60 },
+  { label: "会议编号", prop: "confId", width: 100 },
+  { label: "会议名称", prop: "confName", width: 120 },
+  { label: "会议英文名称", prop: "confNameEn", width: 140 },
+  { label: "主办单位", prop: "hostOrg", width: 120 },
+  { label: "会议举办形式", prop: "form", width: 110 },
+  { label: "会议等级", prop: "level", width: 100 },
+  { label: "国家或地区", prop: "country", width: 100 },
+  { label: "是否境外", prop: "isAbroad", width: 80 },
+  { label: "会议起始日期", prop: "startDate", width: 110 },
+  { label: "会议终止日期", prop: "endDate", width: 110 },
+  { label: "举办单位", prop: "org", width: 120 },
+  { label: "会议人数", prop: "attendeeNum", width: 90 },
+  { label: "联系人电话", prop: "contact", width: 120 },
+  { label: "会议地点", prop: "location", width: 120 },
+  { label: "备注", prop: "remark", width: 120 },
 ];
 
 export default defineComponent({
@@ -28,6 +28,7 @@ export default defineComponent({
   setup(props) {
     const tableData = ref<any[]>([]);
     const showForm = ref(false);
+    const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
       confId: "",
@@ -70,16 +71,29 @@ export default defineComponent({
         reportFile: null,
         remark: ""
       };
+      editIndex.value = -1;
+      showForm.value = true;
+    };
+
+    const handleEdit = (row: any, index: number) => {
+      editData.value = { ...row };
+      editIndex.value = index;
       showForm.value = true;
     };
 
     const handleSave = () => {
-      tableData.value.push({ ...editData.value });
+      if (editIndex.value === -1) {
+        tableData.value.push({ ...editData.value });
+      } else {
+        tableData.value[editIndex.value] = { ...editData.value };
+      }
       showForm.value = false;
+      editIndex.value = -1;
     };
 
     const handleCancel = () => {
       showForm.value = false;
+      editIndex.value = -1;
     };
 
     // 文件上传回调
@@ -197,11 +211,19 @@ export default defineComponent({
                 <ElTableColumn
                   label={col.label}
                   prop={col.prop}
+                  width={col.width}
                   v-slots={{
                     default: ({ row }: any) => row[col.prop] ?? ""
                   }}
                 />
               ))}
+              <ElTableColumn label="操作" width="100">
+                {{
+                  default: ({ row, $index }: any) => (
+                    <ElButton type="primary" size="small" onClick={() => handleEdit(row, $index)}>编辑</ElButton>
+                  )
+                }}
+              </ElTableColumn>
             </ElTable>
             <div style={{ textAlign: 'center', marginTop: '2em' }}>
               <ElButton style={{ marginRight: '2em' }} onClick={evt => props.onBack && props.onBack(evt)}>返回</ElButton>
