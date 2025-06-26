@@ -35,7 +35,7 @@ export default defineComponent({
       ElMessage.error('上传失败')
     }
     return () => (
-      <div class={cls.formContainer} style={{ width: '900px', margin: '0 auto' }}>
+      <div class={cls.formContainer} style={{ width: '80vw', margin: '0 auto' }}>
         <div class={cls.header} style={{ textAlign: 'left', margin: '30px 0 20px 0' }}>
           <h1>基础信息</h1>
         </div>

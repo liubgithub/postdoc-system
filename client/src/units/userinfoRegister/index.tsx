@@ -20,7 +20,7 @@ export default defineComponent({
 
     return () => (
       <ElContainer style={{ minHeight: '100vh', background: '#f5f7fa', overflowY: 'auto', }}>
-        <ElAside width="200px">
+        <ElAside width="15vw">
           <ElMenu
             defaultActive={activeMenu.value}
             class="el-menu-vertical"

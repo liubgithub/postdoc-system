@@ -6,6 +6,7 @@ import Home from '@/pages/Home'
 import UserInfo from '@/units/UserInfo'
 import UserInfo1 from '@/units/EnterWorksation'
 import UserInfoRegister from "@/units/userinfoRegister"
+import InWorkstation from '@/units/InWorkstation'
 import { authGuard } from './guard'
 
 
@@ -49,6 +50,11 @@ const router = createRouter({
           name: '/entry',
           component: UserInfo1
         },
+        {
+          path: '/in-station',
+          name: '/in-station',
+          component: InWorkstation
+        }
       ]
     }
   ],

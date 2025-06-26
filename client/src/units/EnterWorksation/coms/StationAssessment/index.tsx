@@ -3,6 +3,7 @@ import * as cls from './styles.css'
 import OpenDetails from './openDetails'
 
 interface TableRow {
+    id: number,
     stuId: string,
     name: string,
     cotutor: string,
@@ -19,6 +20,7 @@ export default defineComponent({
     setup() {
         const showDetails = ref(false)
         const formData = ref({
+            id: 1,
             stuId: '',
             name: '',
             cotutor: '',
@@ -31,6 +33,7 @@ export default defineComponent({
         })
 
         const tableData = ref<TableRow[]>([{
+            id: 1,
             stuId: '',
             name: '',
             cotutor: '',
@@ -58,79 +61,83 @@ export default defineComponent({
                 ) : (
                     <ElTable data={tableData.value} class={cls.tableWidth}>
                         <ElTableColumn prop="id" label="序号" width="60">
-
+                            {{
+                                default: ({ row }: { row: TableRow }) => (
+                                    <span style={{ display: 'flex', justifyContent: 'center' }}>{row.id}</span>
+                                )
+                            }}
                         </ElTableColumn>
-                        <ElTableColumn prop="stuId" label="学号" width="120">
+                        <ElTableColumn prop="stuId" label="学号">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.stuId} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="name" label="姓名" width="100">
+                        <ElTableColumn prop="name" label="姓名">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.name} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="cotutor" label="合作导师姓名" width="120">
+                        <ElTableColumn prop="cotutor" label="合作导师姓名">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.cotutor} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="college" label="所在学院" width="160">
+                        <ElTableColumn prop="college" label="所在学院">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.college} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="subject" label="学科专业" width="140">
+                        <ElTableColumn prop="subject" label="学科专业">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.subject} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="applyTime" label="申请时间" width="120">
+                        <ElTableColumn prop="applyTime" label="申请时间">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.applyTime} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="processStatus" label="流程状态" width="100">
+                        <ElTableColumn prop="processStatus" label="流程状态">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.processStatus} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="nodeName" label="节点名称" width="100">
+                        <ElTableColumn prop="nodeName" label="节点名称">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.nodeName} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn prop="assessmentRes" label="最后考核结果" width="120">
+                        <ElTableColumn prop="assessmentRes" label="最后考核结果">
                             {{
                                 default: () => (
                                     <ElInput v-model={formData.value.assessmentRes} />
                                 )
                             }}
                         </ElTableColumn>
-                        <ElTableColumn label="操作" width="80">
+                        <ElTableColumn label="操作">
                             {{
                                 default: ({ row }: { row: TableRow }) => (
-                                    <>
+                                    <div style={{display: 'flex', justifyContent: 'center' }}>
                                         <ElButton type="primary" size="small" onClick={() => handleView(row)}>
                                             查看
                                         </ElButton>
-                                    </>
+                                    </div>
                                 )
                             }}
                         </ElTableColumn>
