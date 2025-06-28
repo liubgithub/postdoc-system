@@ -1,5 +1,6 @@
 import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElTable, ElTableColumn, ElRadioGroup, ElRadio } from 'element-plus'
 import * as styles from '@/units/userinfoRegister/styles.css'
+import Achievement from './achres_instation'
 export default defineComponent({
     name: "MidForm",
     setup() {
@@ -20,7 +21,33 @@ export default defineComponent({
             work_experience: [
                 { start: "", end: "", company: "", position: "" }
             ],
-            other: ""
+            other: "",
+            achievement: {
+                paper_title: '',
+                journal_name: '',
+                journal_type: '',
+                first_author_unit: '',
+                publish_time: '',
+                paper_rank: '',
+                project_title: '',
+                fund_name: '',
+                fund_amount: '',
+                project_unit: '',
+                approval_time: '',
+                project_rank: '',
+                patent_title: '',
+                patent_type_number: '',
+                patent_unit: '',
+                patent_other: '',
+                patent_apply_time: '',
+                patent_rank: '',
+                award_title: '',
+                award_dept_level: '',
+                award_other: '',
+                award_other2: '',
+                award_time: '',
+                award_rank: ''
+            }
         });
 
         const rules = {
@@ -28,7 +55,6 @@ export default defineComponent({
             gender: [{ required: true, message: "请选择性别", trigger: "change" }],
             birth_year: [{ required: true, message: "请输入出生年", trigger: "blur" }],
         };
-
 
         // 教育经历操作
         const addEducation = () => {
@@ -45,7 +71,10 @@ export default defineComponent({
             form.value.work_experience.splice(index, 1);
         };
 
-        const handleSubmit = async () => {}
+        const handleSubmit = async () => {
+            // 提交form.value，包括form.value.achievement
+            // await api.submitForm(form.value)
+        }
         return () => (
             <div class={styles.formWrapper}>
                 <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>基本信息表</div>
@@ -149,7 +178,7 @@ export default defineComponent({
                                     )
                                 }}
                             </ElTableColumn>
-                            <ElTableColumn label="导师">
+                            <ElTableColumn label="导师"> 
                                 {{
                                     default: ({ row }: any) => (
                                         <ElInput v-model={row.supervisor} placeholder="导师" style={{ width: "100px" }} />
@@ -218,6 +247,8 @@ export default defineComponent({
                     <ElFormItem label="其他说明">
                         <ElInput v-model={form.value.other} type="textarea" rows={2} placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" />
                     </ElFormItem>
+                    {/* 科研成果表单 */}
+                    <Achievement model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />
                     {/* 按钮组 */}
                     <div class={styles.btnGroup}>
                         <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>

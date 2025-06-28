@@ -1,5 +1,5 @@
 import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElDialog, ElMessage } from 'element-plus'
-
+import MidAssessment from './coms/MidAssessment/index'
 const menuList = [
     { label: "进站后成果登记", key: "registration" },
     { label: "中期考核", key: "midterm" },
@@ -28,6 +28,9 @@ export default defineComponent({
                         ))}
                     </ElMenu>
                 </ElAside>
+                <ElMain>
+                    {activeMenu.value === 'midterm' && <MidAssessment />}
+                </ElMain>
             </ElContainer>
         )
     }
