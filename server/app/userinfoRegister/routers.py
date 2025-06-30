@@ -1,79 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from app.database import get_db
-from ..dependencies import get_current_user
-from .models import Info, EducationExperience, WorkExperience
-from .schemas import InfoIn
+from fastapi import APIRouter
 
-router = APIRouter(prefix="/info", tags=["个人信息登记"])
+from .pre_entry_project.routers import router as pre_entry_project_router
+from .pre_entry_competition_award.routers import router as pre_entry_competition_award_router
+from .pre_entry_new_variety.routers import router as pre_entry_new_variety_router
+from .pre_entry_subject_research.routers import router as pre_entry_subject_research_router
+from .pre_entry_conference.routers import router as pre_entry_conference_router
+from .pre_entry_paper.routers import router as pre_entry_paper_router
+from .pre_entry_book.routers import router as pre_entry_book_router
+from .pre_entry_patent.routers import router as pre_entry_patent_router
+from .bs_user_profile.routers import router as bs_user_profile_router
+from app.dependencies import get_current_user  # 修正导入路径
+from .pre_entry_achievement import routers as pre_entry_achievement_routers
 
-@router.post("/submit")
-def submit_info(data: InfoIn, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    # 检查该用户是否已有信息
-    exist = db.query(Info).filter(Info.user_id == current_user.id).first()
-    if exist:
-        # 更新基本信息
-        exist.name = data.name
-        exist.gender = data.gender
-        exist.birth_year = data.birth_year
-        exist.nationality = data.nationality
-        exist.political_status = data.political_status
-        exist.phone = data.phone
-        exist.religion = data.religion
-        exist.id_number = data.id_number
-        exist.is_religious_staff = data.is_religious_staff
-        exist.research_direction = data.research_direction
-        exist.other = data.other
-        # 清空原有教育和工作经历
-        db.query(EducationExperience).filter(EducationExperience.user_id == exist.id).delete()
-        db.query(WorkExperience).filter(WorkExperience.user_id == exist.id).delete()
-        db.flush()
-        # 重新添加教育经历
-        for edu in data.education_experience:
-            db.add(EducationExperience(
-                user_id=exist.id,
-                start_end=edu.start_end,
-                school_major=edu.school_major,
-                supervisor=edu.supervisor
-            ))
-        # 重新添加工作经历
-        for work in data.work_experience:
-            db.add(WorkExperience(
-                user_id=exist.id,
-                start_end=work.start_end,
-                company_position=work.company_position
-            ))
-        db.commit()
-        return {"msg": "update success"}
-    else:
-        user_info = Info(
-            user_id=current_user.id,  # 关联用户
-            name=data.name,
-            gender=data.gender,
-            birth_year=data.birth_year,
-            nationality=data.nationality,
-            political_status=data.political_status,
-            phone=data.phone,
-            religion=data.religion,
-            id_number=data.id_number,
-            is_religious_staff=data.is_religious_staff,
-            research_direction=data.research_direction,
-            other=data.other,
-        )
-        db.add(user_info)
-        db.flush()  # 获取 user_info.id
-        for edu in data.education_experience:
-            db.add(EducationExperience(
-                user_id=user_info.id,
-                start_end=edu.start_end,
-                school_major=edu.school_major,
-                supervisor=edu.supervisor
-            ))
-        for work in data.work_experience:
-            db.add(WorkExperience(
-                user_id=user_info.id,
-                start_end=work.start_end,
-                company_position=work.company_position
-            ))
-        db.commit()
-        return {"msg": "success"} 
+router = APIRouter()
+router.include_router(pre_entry_project_router)
+router.include_router(pre_entry_competition_award_router)
+router.include_router(pre_entry_new_variety_router)
+router.include_router(pre_entry_subject_research_router)
+router.include_router(pre_entry_conference_router)
+router.include_router(pre_entry_paper_router)
+router.include_router(pre_entry_book_router)
+router.include_router(pre_entry_patent_router)
+router.include_router(bs_user_profile_router)
+router.include_router(pre_entry_achievement_routers.router)
