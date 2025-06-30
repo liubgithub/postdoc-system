@@ -1,0 +1,37 @@
+from sqlalchemy import Column, Integer, String, DateTime
+from app.database import Base
+from datetime import datetime
+
+class BsPreEntryPaper(Base):
+    __tablename__ = "bs_pre_entry_paper"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
+    论文名称 = Column(String(255))
+    刊物名称 = Column(String(255))
+    本人署名排序 = Column(String(128))
+    发表日期 = Column(DateTime)
+    起始页号 = Column(String(32))
+    刊物级别 = Column(String(128))
+    是否共同第一 = Column(String(32))
+    通讯作者 = Column(String(128))
+    论文类型 = Column(String(128))
+    影响因子 = Column(String(64))
+    作者名单 = Column(String(255))
+    第一作者 = Column(String(128))
+    导师署名排序 = Column(String(128))
+    本校是否第一 = Column(String(32))
+    第一署名单位 = Column(String(255))
+    发表状态 = Column(String(128))
+    论文收录检索 = Column(String(128))
+    他引次数 = Column(String(32))
+    是否和学位论文相关 = Column(String(32))
+    出版号 = Column(String(128))
+    出版社 = Column(String(255))
+    总期号 = Column(String(64))
+    刊物编号 = Column(String(128))
+    论文发表证书 = Column(String(255))
+    论文接收函 = Column(String(255))
+    论文电子版 = Column(String(255))
+    备注 = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

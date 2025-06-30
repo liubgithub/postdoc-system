@@ -24,3 +24,26 @@ class InfoIn(BaseModel):
     other: Optional[str] = ""
     education_experience: List[EducationExperienceIn]
     work_experience: List[WorkExperienceIn] 
+
+class EducationExperienceOut(EducationExperienceIn):
+    id: int
+
+class WorkExperienceOut(WorkExperienceIn):
+    id: int
+
+class InfoOut(BaseModel):
+    id: int
+    user_id: int
+    name: str
+    gender: Optional[str]
+    birth_year: Optional[int]
+    nationality: Optional[str]
+    political_status: Optional[str]
+    phone: Optional[str]
+    religion: Optional[str]
+    id_number: Optional[str]
+    is_religious_staff: Optional[bool]
+    research_direction: Optional[str]
+    other: Optional[str]
+    education_experience: List[EducationExperienceOut]
+    work_experience: List[WorkExperienceOut] 
