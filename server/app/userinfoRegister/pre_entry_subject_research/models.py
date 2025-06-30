@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from app.database import Base
 from datetime import datetime
 
-class BsPreEntrySubjectResearch(Base):
+class PreEntrySubjectResearch(Base):
     __tablename__ = "bs_pre_entry_subject_research"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)

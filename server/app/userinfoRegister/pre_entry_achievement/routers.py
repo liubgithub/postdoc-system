@@ -11,7 +11,7 @@ router = APIRouter(
 
 @router.post("/", response_model=schemas.PreEntryAchievement)
 def create_achievement(achievement: schemas.PreEntryAchievement, db: Session = Depends(get_db)):
-    db_achievement = models.BsPreEntryAchievement(
+    db_achievement = models.PreEntryAchievement(
         user_id=achievement.user_id,
         category=achievement.category,
         count=achievement.count,
@@ -24,18 +24,18 @@ def create_achievement(achievement: schemas.PreEntryAchievement, db: Session = D
 
 @router.get("/user/{user_id}", response_model=List[schemas.PreEntryAchievement])
 def get_achievements_by_user(user_id: int, db: Session = Depends(get_db)):
-    return db.query(models.BsPreEntryAchievement).filter(models.BsPreEntryAchievement.user_id == user_id).all()
+    return db.query(models.PreEntryAchievement).filter(models.PreEntryAchievement.user_id == user_id).all()
 
 @router.get("/{achievement_id}", response_model=schemas.PreEntryAchievement)
 def get_achievement(achievement_id: int, db: Session = Depends(get_db)):
-    achievement = db.query(models.BsPreEntryAchievement).filter(models.BsPreEntryAchievement.id == achievement_id).first()
+    achievement = db.query(models.PreEntryAchievement).filter(models.PreEntryAchievement.id == achievement_id).first()
     if not achievement:
         raise HTTPException(status_code=404, detail="Achievement not found")
     return achievement
 
 @router.put("/{achievement_id}", response_model=schemas.PreEntryAchievement)
 def update_achievement(achievement_id: int, achievement: schemas.PreEntryAchievement, db: Session = Depends(get_db)):
-    db_achievement = db.query(models.BsPreEntryAchievement).filter(models.BsPreEntryAchievement.id == achievement_id).first()
+    db_achievement = db.query(models.PreEntryAchievement).filter(models.PreEntryAchievement.id == achievement_id).first()
     if not db_achievement:
         raise HTTPException(status_code=404, detail="Achievement not found")
     db_achievement.category = achievement.category
@@ -47,7 +47,7 @@ def update_achievement(achievement_id: int, achievement: schemas.PreEntryAchieve
 
 @router.delete("/{achievement_id}")
 def delete_achievement(achievement_id: int, db: Session = Depends(get_db)):
-    db_achievement = db.query(models.BsPreEntryAchievement).filter(models.BsPreEntryAchievement.id == achievement_id).first()
+    db_achievement = db.query(models.PreEntryAchievement).filter(models.PreEntryAchievement.id == achievement_id).first()
     if not db_achievement:
         raise HTTPException(status_code=404, detail="Achievement not found")
     db.delete(db_achievement)

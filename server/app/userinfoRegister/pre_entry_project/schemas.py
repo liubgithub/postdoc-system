@@ -3,8 +3,8 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryProjectBase(BaseModel):
-    user_id: int
-    achievement_id: Optional[int] = None
+    # user_id: int
+    # achievement_id: Optional[int] = None
     项目编号: Optional[str] = None
     项目名称: Optional[str] = None
     项目类型: Optional[str] = None
@@ -31,6 +31,7 @@ class PreEntryProjectUpdate(PreEntryProjectBase):
 
 class PreEntryProject(PreEntryProjectBase):
     id: int
+    user_id: int
     created_at: datetime
     updated_at: datetime
 
