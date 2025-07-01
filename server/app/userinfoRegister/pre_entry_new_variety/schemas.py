@@ -3,8 +3,8 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryNewVarietyBase(BaseModel):
-    user_id: int
-    achievement_id: Optional[int] = None
+    # user_id: int
+    # achievement_id: Optional[int] = None
     署名排序: Optional[str] = None
     本校是否第一完成单位: Optional[str] = None
     公示年份: Optional[datetime] = None

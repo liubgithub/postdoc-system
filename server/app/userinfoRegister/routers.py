@@ -1,25 +1,19 @@
 from fastapi import APIRouter
-
-from .pre_entry_project.routers import router as pre_entry_project_router
-from .pre_entry_competition_award.routers import router as pre_entry_competition_award_router
-from .pre_entry_new_variety.routers import router as pre_entry_new_variety_router
-from .pre_entry_subject_research.routers import router as pre_entry_subject_research_router
-from .pre_entry_conference.routers import router as pre_entry_conference_router
-from .pre_entry_paper.routers import router as pre_entry_paper_router
 from .pre_entry_book.routers import router as pre_entry_book_router
+from .pre_entry_competition_award.routers import router as pre_entry_competition_award_router
+from .pre_entry_conference.routers import router as pre_entry_conference_router
+from .pre_entry_new_variety.routers import router as pre_entry_new_variety_router
+from .pre_entry_paper.routers import router as pre_entry_paper_router
 from .pre_entry_patent.routers import router as pre_entry_patent_router
-from .bs_user_profile.routers import router as bs_user_profile_router
-from app.dependencies import get_current_user  # 修正导入路径
-from .pre_entry_achievement import routers as pre_entry_achievement_routers
+from .pre_entry_project.routers import router as pre_entry_project_router
+from .pre_entry_subject_research.routers import router as pre_entry_subject_research_router
 
 router = APIRouter()
-router.include_router(pre_entry_project_router)
-router.include_router(pre_entry_competition_award_router)
-router.include_router(pre_entry_new_variety_router)
-router.include_router(pre_entry_subject_research_router)
-router.include_router(pre_entry_conference_router)
-router.include_router(pre_entry_paper_router)
 router.include_router(pre_entry_book_router)
+router.include_router(pre_entry_competition_award_router)
+router.include_router(pre_entry_conference_router)
+router.include_router(pre_entry_new_variety_router)
+router.include_router(pre_entry_paper_router)
 router.include_router(pre_entry_patent_router)
-router.include_router(bs_user_profile_router)
-router.include_router(pre_entry_achievement_routers.router)
+router.include_router(pre_entry_project_router)
+router.include_router(pre_entry_subject_research_router)

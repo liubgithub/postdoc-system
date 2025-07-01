@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from . import models, schemas
-from app.userinfoRegister.pre_entry_achievement.services import sync_achievement_count
 
 router = APIRouter(
     prefix="/pre_entry_project",
@@ -12,11 +11,10 @@ router = APIRouter(
 
 @router.post("/", response_model=schemas.PreEntryProject)
 def create_project(project: schemas.PreEntryProjectCreate, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    db_project = models.PreEntryProject(**project.dict(), user_id=current_user.id)
+    db_project = models.PreEntryProject(**project.dict(exclude={"user_id", "achievement_id"}), user_id=current_user.id)
     db.add(db_project)
     db.commit()
     db.refresh(db_project)
-    sync_achievement_count(db, current_user.id, "项目信息")
     return db_project
 
 @router.get("/me", response_model=list[schemas.PreEntryProject])
@@ -35,7 +33,7 @@ def update_project(id: int, project: schemas.PreEntryProjectUpdate, db: Session 
     db_project = db.query(models.PreEntryProject).filter(models.PreEntryProject.id == id, models.PreEntryProject.user_id == current_user.id).first()
     if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")
-    for key, value in project.dict(exclude_unset=True).items():
+    for key, value in project.dict(exclude_unset=True, exclude={"user_id", "achievement_id"}).items():
         setattr(db_project, key, value)
     db.commit()
     db.refresh(db_project)
@@ -48,5 +46,4 @@ def delete_project(id: int, db: Session = Depends(get_db), current_user=Depends(
         raise HTTPException(status_code=404, detail="Project not found")
     db.delete(db_project)
     db.commit()
-    sync_achievement_count(db, current_user.id, "项目信息")
     return {"ok": True}

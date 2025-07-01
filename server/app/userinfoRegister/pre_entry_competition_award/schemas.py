@@ -3,8 +3,8 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryCompetitionAwardBase(BaseModel):
-    user_id: int
-    achievement_id: Optional[int] = None
+    # user_id: int
+    # achievement_id: Optional[int] = None
     竞赛名称: Optional[str] = None
     获奖类别: Optional[str] = None
     获奖等级: Optional[str] = None
