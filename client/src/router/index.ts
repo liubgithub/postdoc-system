@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/units/Login'
-import Signin from '@/units/Signin'
+import Login from '@/pages/Login'
+import Signin from '@/pages/Signin'
 import Frame from '@/units/Frame'
 import Home from '@/pages/Home'
-import UserInfo from '@/units/UserInfo'
-import UserInfo1 from '@/units/EnterWorksation'
-import UserInfoRegister from "@/units/userinfoRegister"
-import InWorkstation from '@/units/InWorkstation'
+import UserInfo from '@/pages/UserInfo'
+import UserInfo1 from '@/pages/EnterWorksation'
+import UserInfoRegister from "@/pages/userinfoRegister"
+import InWorkstation from '@/pages/InWorkstation'
 import { authGuard } from './guard'
 
 

@@ -1,5 +1,5 @@
 import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElTable, ElTableColumn, ElRadioGroup, ElRadio } from 'element-plus'
-import * as styles from '@/units/userinfoRegister/styles.css'
+import * as styles from '@/pages/userinfoRegister/styles.css'
 import Achievement from './achres_instation'
 export default defineComponent({
     name: "MidForm",
