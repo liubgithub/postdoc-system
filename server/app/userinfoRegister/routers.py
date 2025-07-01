@@ -7,6 +7,7 @@ from .pre_entry_paper.routers import router as pre_entry_paper_router
 from .pre_entry_patent.routers import router as pre_entry_patent_router
 from .pre_entry_project.routers import router as pre_entry_project_router
 from .pre_entry_subject_research.routers import router as pre_entry_subject_research_router
+from .bs_user_profile.routers import router as bs_user_profile_router
 
 router = APIRouter()
 router.include_router(pre_entry_book_router)
@@ -17,3 +18,4 @@ router.include_router(pre_entry_paper_router)
 router.include_router(pre_entry_patent_router)
 router.include_router(pre_entry_project_router)
 router.include_router(pre_entry_subject_research_router)
+router.include_router(bs_user_profile_router)
