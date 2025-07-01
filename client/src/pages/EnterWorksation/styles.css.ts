@@ -36,20 +36,24 @@ globalStyle(`${tableWidth} .el-textarea__inner`, {
     padding: '8px'
 })
 
-export const opreateBtn = style({
-    width: "100%",
-    height: "100%",
-    padding: "0 10px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "10px"
+globalStyle(`${tableWidth} .el-table .el-table__cell`, {
+    textAlign: 'center'
 })
 
-globalStyle(`${opreateBtn} .el-button`, {
-    padding: '8px 20px',
-    fontSize: '14px'
-})
+// export const opreateBtn = style({
+//     width: "100%",
+//     height: "100%",
+//     padding: "0 10px",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     gap: "10px"
+// })
+
+// globalStyle(`${opreateBtn} .el-button`, {
+//     padding: '8px',
+//     fontSize: '16px'
+// })
 
 export const container = {
     padding: "20px",

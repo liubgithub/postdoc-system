@@ -49,8 +49,8 @@ const useUser = defineStore("user", () => {
 
                 if (token) {
                     // 存储 token 和用户名
-                    localStorage.setItem('token', token)
-                    localStorage.setItem('username', name)
+                    // localStorage.setItem('token', token)
+                    // localStorage.setItem('username', name)
                     info.value = { name, token }
 
                     loding.close()
@@ -99,6 +99,28 @@ const useUser = defineStore("user", () => {
     const userInfo = async()=>{
         router.push('/userInfo')
     }
+
+    const register = async (username: string, password: string) => {
+        try {
+            const res = await fetch.raw.POST('/users/register', {
+                body: { username, password },
+                headers: { 'Content-Type': 'application/json' }
+            })
+            if (res.response.status === 200) {
+                ElMessage.success('注册成功，请登录！')
+                router.replace('/login')
+                return true
+            } else {
+                ElMessage.error('注册失败')
+                return false
+            }
+        } catch (error) {
+            const errorMsg = (error as Error)?.message || '注册失败'
+            ElMessage.error(errorMsg)
+            return false
+        }
+    }
+
     // 检查用户是否已认证
     const isAuthenticated = computed(() => !!info.value?.token)
 
@@ -108,7 +130,8 @@ const useUser = defineStore("user", () => {
         logout,
         userInfo,
         isAuthenticated,
-        initUser
+        initUser,
+        register
     }
 })
 
