@@ -2,7 +2,7 @@ import { defineComponent, ref } from "vue";
 import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem } from "element-plus";
 import * as styles from "./styles.css.ts";
 import UserInfoForm from "./form";
-import PreEntryAchievementMain from "./pre_entry_achievement/main";
+import PreEntryAchievementMain from "./pre_entry_achievement";
 
 const menuList = [
   { label: "个人信息登记", key: "userinfo" },
