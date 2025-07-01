@@ -3,7 +3,7 @@ import { ElTable, ElTableColumn, ElButton, ElInput, ElIcon } from "element-plus"
 import { InfoFilled } from "@element-plus/icons-vue";
 import fetch from '@/api';
 import useUser from '@/stores/user';
-import * as styles from "../../styles.css.ts";
+import * as styles from "../styles.css.ts";
 import AchievementTable from "./achievement";
 
 const categories = [

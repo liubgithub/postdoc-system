@@ -1,4 +1,4 @@
-import * as cls from '@/units/EnterWorksation/coms/StationAssessment/styles.css.ts'
+import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import Midform from "./midform.tsx"
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'

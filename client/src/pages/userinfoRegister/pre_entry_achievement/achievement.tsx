@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElInput, ElButton } from "element-plus";
-import * as styles from "../../styles.css.ts";
+import * as styles from "../styles.css.ts";
 import ConferenceForm from "./conferenceForm";
 import PaperForm from "./paperForm";
 import PatentForm from "./patentForm";
