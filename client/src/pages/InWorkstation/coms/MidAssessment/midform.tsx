@@ -3,7 +3,13 @@ import * as styles from '@/pages/userinfoRegister/styles.css'
 import Achievement from './achres_instation'
 export default defineComponent({
     name: "MidForm",
-    setup() {
+    props: {
+        onBack: {
+            type: Function,
+            required: true
+        }
+    },
+    setup(props) {
         const form = ref({
             name: "",
             gender: "",

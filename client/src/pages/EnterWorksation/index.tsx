@@ -6,7 +6,6 @@ import StationProtocol from './coms/StationProtocol'
 import fetch from '@/api';
 interface TableRow {
     subject: string;
-    id: number;
     postname: string;
     posttask: string;
     postqualification: string;
@@ -28,7 +27,6 @@ export default defineComponent({
         const showApplication = ref(true)
         const formData = ref({
             subject: '',
-            id: 1,
             postname: '',
             posttask: '',
             postqualification: '',
@@ -38,7 +36,6 @@ export default defineComponent({
         })
         const tableData = ref<TableRow[]>([{
             subject: '',
-            id: 1,
             postname: '',
             posttask: '',
             postqualification: '',
@@ -106,13 +103,7 @@ export default defineComponent({
                                             )
                                         }}
                                     </ElTableColumn>
-                                    <ElTableColumn prop="id"  label="序号" width={60}>
-                                        {{
-                                            default: ({ row }: { row: TableRow }) => (
-                                                <span style={{display: 'flex', justifyContent: 'center' }}>{row.id}</span>
-                                            )
-                                        }}
-                                    </ElTableColumn>
+
                                     <ElTableColumn prop="postname" label="岗位名称">
                                         {{
                                             default: () => (
@@ -155,7 +146,7 @@ export default defineComponent({
                                             )
                                         }}
                                     </ElTableColumn>
-                                    <ElTableColumn label="操作" class={cls.opreateBtn}>
+                                    <ElTableColumn label="操作" align="center">
                                         {{
                                             default: ({ row }: { row: TableRow }) => (
                                                 <>
@@ -183,13 +174,6 @@ export default defineComponent({
                                                 {{
                                                     default: ({ row }: { row: TableRow }) => (
                                                         <ElInput modelValue={row.subject} readonly style={{ height: '338px', fontSize: '16px' }} />
-                                                    )
-                                                }}
-                                            </ElTableColumn>
-                                            <ElTableColumn prop="id" label="序号" width={60}>
-                                                {{
-                                                    default: ({ row }: { row: TableRow }) => (
-                                                        <span style={{display: 'flex', justifyContent: 'center' }}>{row.id}</span>
                                                     )
                                                 }}
                                             </ElTableColumn>

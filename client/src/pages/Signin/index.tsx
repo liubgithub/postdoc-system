@@ -3,6 +3,7 @@ import { useRouter } from "vue-router"
 import { ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElSelect, ElOption, ElDatePicker } from "element-plus"
 import * as styles from '../Login/style.css'
 import loginBg from '../Login/images/loginbg.png'
+import useUser from '@/stores/user'
 
 export default defineComponent({
     name: "Signin",
@@ -30,6 +31,7 @@ export default defineComponent({
         const emailCountdown = ref(0)
         let phoneTimer: any = null
         let emailTimer: any = null
+        const userStore = useUser()
 
         const rules = {
             username: [{ required: true, message: '请输入登录账号', trigger: 'blur' }],
@@ -98,9 +100,9 @@ export default defineComponent({
                 ElMessage.error('请填写完整的注册信息')
                 return
             }
-            // TODO: 调用后端注册接口
-            ElMessage.success('注册成功')
-            router.replace('/login')
+            // 只传username和password
+            const success = await userStore.register(form.username, form.password)
+            // 成功与否的提示已在store中处理
         }
 
         const handleBack = () => {
