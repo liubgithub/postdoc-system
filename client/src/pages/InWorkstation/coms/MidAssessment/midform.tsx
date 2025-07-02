@@ -1,6 +1,8 @@
 import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElTable, ElTableColumn, ElRadioGroup, ElRadio } from 'element-plus'
 import * as styles from '@/pages/userinfoRegister/styles.css'
 import Achievement from './achres_instation'
+import Achievement_1 from './achres_1'
+
 export default defineComponent({
     name: "MidForm",
     props: {
@@ -255,6 +257,7 @@ export default defineComponent({
                     </ElFormItem>
                     {/* 科研成果表单 */}
                     <Achievement model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />
+                    <Achievement_1 model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />    
                     {/* 按钮组 */}
                     <div class={styles.btnGroup}>
                         <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
