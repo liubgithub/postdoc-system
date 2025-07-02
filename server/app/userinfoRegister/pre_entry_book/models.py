@@ -15,7 +15,7 @@ class PreEntryBook(Base):
     作者名单 = Column(String(255))
     著作字数 = Column(String(64))
     出版号 = Column(String(128))
-    ISBN = Column(String(128))
+    isbn = Column(String(128))
     作者排名 = Column(String(128))
     上传文件 = Column(String(255))
     备注 = Column(String)
