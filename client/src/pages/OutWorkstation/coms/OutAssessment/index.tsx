@@ -1,12 +1,14 @@
-import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
-import AnnualAssessment from './annual_assess'
+
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
-import { ElButton } from 'element-plus'
+import { ElButton } from "element-plus"
+import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
+import CommonPart from "@/pages/OutWorkstation/commonPart"
 export default defineComponent({
-    name: "AnnualAssessment",
+    name: 'OutAssessment',
     setup() {
         const showDetails = ref(false)
+        const showAssessment = ref(true)
 
         const tableData = ref<TableRow[]>([{
             stuId: '',
@@ -32,26 +34,26 @@ export default defineComponent({
         ]
 
         const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
+
         const handleView = (row: TableRow) => {
-            console.log('View data:', row)
+            showDetails.value = true
+        }
+
+        const handleApply = () => {
+            showAssessment.value = false
             showDetails.value = true
         }
 
         const handleBack = () => {
             showDetails.value = false
         }
-
-        const handleApply = () => {
-            showDetails.value = true
-        }
-
         return () => (
-            <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+            <div>
                 {showDetails.value ? (
-                    <AnnualAssessment onBack={handleBack} />
+                    <CommonPart onBack={handleBack} showAssessment={showAssessment.value}/>
                 ) : (
                     <>
-                        <ElButton style={{marginBottom:'20px'}} onClick={handleApply}>申请考核</ElButton>
+                        <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>新增申请</ElButton>
                         <CommonTable
                             data={tableData.value}
                             columns={columns}
@@ -61,7 +63,6 @@ export default defineComponent({
                             tableClass={cls.tableWidth}
                         />
                     </>
-
                 )}
             </div>
         )

@@ -27,6 +27,9 @@ export default defineComponent({
     onView: {
       type: Function as PropType<(row: TableRow) => void>,
     },
+    onEdit: {
+      type: Function as PropType<(row: TableRow) => void>,
+    },
     tableClass: {
       type: String,
       default: '',
@@ -49,13 +52,22 @@ export default defineComponent({
             }}
           </ElTableColumn>
         ))}
-        {props.showAction && props.onView && (
+        {props.showAction && (props.onView || props.onEdit) && (
           <ElTableColumn label="操作" align="center">
             {{
               default: ({ row }: { row: TableRow }) => (
-                <ElButton type="primary" size="small" onClick={() => props.onView!(row)}>
-                  查看
-                </ElButton>
+                <>
+                  {props.onView && (
+                    <ElButton type="primary" size="small" onClick={() => props.onView!(row)}>
+                      查看
+                    </ElButton>
+                  )}
+                  {props.onEdit && (
+                    <ElButton type="success" size="small" onClick={() => props.onEdit!(row)} style="margin-left: 8px;">
+                      编辑
+                    </ElButton>
+                  )}
+                </>
               )
             }}
           </ElTableColumn>

@@ -31,7 +31,7 @@ export default defineComponent({
                         </div>
                         {/* 第二部分 */}
                         <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
-                            <ElFormItem label='博士后本人中期工作小结（包括项目进展情况、后期研究计划及参与的其它工作等' >
+                            <ElFormItem label='博士后本人在站工作小结（包括项目进展情况、后期研究计划及参与的其它工作等' >
                                 <ElInput
                                     type="textarea"
                                     autosize={{ minRows: 6 }}

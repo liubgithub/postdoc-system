@@ -2,10 +2,12 @@ import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.
 import Midform from "./midform.tsx"
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
+import { ElButton } from 'element-plus'
 export default defineComponent({
     name: "MidAssessment",
     setup() {
         const showDetails = ref(false)
+        const showAssessment = ref(true)
 
         const tableData = ref<TableRow[]>([{
             stuId: '',
@@ -19,7 +21,7 @@ export default defineComponent({
             assessmentRes: ''
         }])
         const columns = [
-            { prop: 'stuId', label: '学生ID' },
+            { prop: 'stuId', label: '学号' },
             { prop: 'name', label: '学生姓名' },
             { prop: 'cotutor', label: '导师' },
             { prop: 'college', label: '学院' },
@@ -33,6 +35,7 @@ export default defineComponent({
         const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
         const handleView = (row: TableRow) => {
             console.log('View data:', row)
+            showAssessment.value = true
             showDetails.value = true
         }
 
@@ -40,19 +43,27 @@ export default defineComponent({
             showDetails.value = false
         }
 
+        const handleApply = () => {
+            showAssessment.value = false
+            showDetails.value = true
+        }
+
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <Midform onBack={handleBack} />
+                    <Midform onBack={handleBack} showAssessment={showAssessment.value} />
                 ) : (
-                    <CommonTable 
-                    data={tableData.value} 
-                    columns={columns} 
-                    onView={handleView}
-                    editableFields={editableFields}
-                    showAction={true}
-                    tableClass={cls.tableWidth}
-                    />
+                    <>
+                        <ElButton style={{marginBottom:'20px'}} onClick={handleApply}>申请考核</ElButton>
+                        <CommonTable
+                            data={tableData.value}
+                            columns={columns}
+                            onView={handleView}
+                            editableFields={editableFields}
+                            showAction={true}
+                            tableClass={cls.tableWidth}
+                        />
+                    </>
                 )}
             </div>
         )
