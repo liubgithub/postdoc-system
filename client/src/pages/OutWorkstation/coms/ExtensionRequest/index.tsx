@@ -1,12 +1,15 @@
-import * as cls from './styles.css'
-import OpenDetails from './openDetails'
-import CommonTable from '@/units/CommonTable'
+
+import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
+import { ElButton } from "element-plus"
+import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
+import extensionApp from "./extensionApp"
 
 export default defineComponent({
-    name: "StationAssessment",
+    name: 'ExtensionRequest',
     setup() {
         const showDetails = ref(false)
+        const showAssessment = ref(true)
 
         const tableData = ref<TableRow[]>([{
             stuId: '',
@@ -32,8 +35,13 @@ export default defineComponent({
         ]
 
         const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
+
         const handleView = (row: TableRow) => {
-            console.log('View data:', row)
+            showDetails.value = true
+        }
+
+        const handleApply = () => {
+            showAssessment.value = false
             showDetails.value = true
         }
 
@@ -41,19 +49,26 @@ export default defineComponent({
             showDetails.value = false
         }
 
+        const handleEdit = ()=>{
+
+        }
         return () => (
-            <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+            <div>
                 {showDetails.value ? (
-                    <OpenDetails onBack={handleBack} />
+                   <extensionApp />
                 ) : (
-                    <CommonTable 
-                    data={tableData.value} 
-                    columns={columns} 
-                    onView={handleView}
-                    editableFields={editableFields}
-                    showAction={true}
-                    tableClass={cls.tableWidth}
-                    />
+                    <>
+                        <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>新增申请</ElButton>
+                        <CommonTable
+                            data={tableData.value}
+                            columns={columns}
+                            onView={handleView}
+                            onEdit={handleEdit}
+                            editableFields={editableFields}
+                            showAction={true}
+                            tableClass={cls.tableWidth}
+                        />
+                    </>
                 )}
             </div>
         )

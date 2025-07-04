@@ -1,12 +1,14 @@
-import * as cls from './styles.css'
-import OpenDetails from './openDetails'
-import CommonTable from '@/units/CommonTable'
-import type { TableRow } from '@/types/common-table'
 
+import CommonTable from "@/units/CommonTable/index.tsx"
+import type { TableRow } from '@/types/common-table'
+import { ElButton } from "element-plus"
+import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
+import CommonPart from "@/pages/OutWorkstation/commonPart"
 export default defineComponent({
-    name: "StationAssessment",
+    name: 'OutAssessment',
     setup() {
         const showDetails = ref(false)
+        const showAssessment = ref(true)
 
         const tableData = ref<TableRow[]>([{
             stuId: '',
@@ -32,28 +34,35 @@ export default defineComponent({
         ]
 
         const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
+
         const handleView = (row: TableRow) => {
-            console.log('View data:', row)
+            showDetails.value = true
+        }
+
+        const handleApply = () => {
+            showAssessment.value = false
             showDetails.value = true
         }
 
         const handleBack = () => {
             showDetails.value = false
         }
-
         return () => (
-            <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+            <div>
                 {showDetails.value ? (
-                    <OpenDetails onBack={handleBack} />
+                    <CommonPart onBack={handleBack} showAssessment={showAssessment.value}/>
                 ) : (
-                    <CommonTable 
-                    data={tableData.value} 
-                    columns={columns} 
-                    onView={handleView}
-                    editableFields={editableFields}
-                    showAction={true}
-                    tableClass={cls.tableWidth}
-                    />
+                    <>
+                        <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>
+                        <CommonTable
+                            data={tableData.value}
+                            columns={columns}
+                            onView={handleView}
+                            editableFields={editableFields}
+                            showAction={true}
+                            tableClass={cls.tableWidth}
+                        />
+                    </>
                 )}
             </div>
         )

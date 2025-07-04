@@ -1,6 +1,6 @@
 import { ElInput, ElCheckboxGroup, ElCheckbox, ElCard } from 'element-plus'
 import * as cls from './styles.css'
-
+import SignaturePad from '@/units/Signature/index'
 export default defineComponent({
     name: "OpenDetails",
     props: {
@@ -33,10 +33,12 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>实际导师签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                         <div class={cls.signature}>
                             <p>挂名导师签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                     </div>
@@ -47,6 +49,7 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>审核人签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                     </div>
@@ -58,6 +61,7 @@ export default defineComponent({
                         <div class={cls.signature}>
                             <p>党委盖章：</p>
                             <p>党委（党总支）书记签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                     </div>
@@ -76,6 +80,7 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>考核组组长签字：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                     </div>
@@ -85,8 +90,10 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>院长签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>党委盖章：</p>
                             <p>党委（党总支）书记签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                     </div>
@@ -97,6 +104,7 @@ export default defineComponent({
                         <div class={cls.signature}>
                             <p>流动站所在学校盖章：</p>
                             <p>负责人签名：</p>
+                            <SignaturePad onChange={val => {/* 保存签名base64 */}} />
                             <p>年 月 日</p>
                         </div>
                     </div>

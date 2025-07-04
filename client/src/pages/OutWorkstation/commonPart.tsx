@@ -5,7 +5,7 @@ import Achievement_1 from './achres_1'
 import Assessment from './assessment'
 
 export default defineComponent({
-    name: "MidForm",
+    name: "CommonPart",
     props: {
         onBack: {
             type: Function,
