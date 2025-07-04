@@ -80,8 +80,7 @@ export default defineComponent({
         if (res.response.status === 200) {
           ElMessage.success('保存成功！');
         } else {
-          const msg = res.data?.detail || '保存失败';
-          ElMessage.error(msg);
+          ElMessage.error('error');
         }
       } catch (e: any) {
         ElMessage.error(e?.message || '保存失败');
