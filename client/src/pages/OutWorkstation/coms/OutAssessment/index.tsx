@@ -53,7 +53,7 @@ export default defineComponent({
                     <CommonPart onBack={handleBack} showAssessment={showAssessment.value}/>
                 ) : (
                     <>
-                        <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>新增申请</ElButton>
+                        <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>
                         <CommonTable
                             data={tableData.value}
                             columns={columns}

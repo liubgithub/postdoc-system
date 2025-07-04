@@ -4,6 +4,7 @@ import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
 import CommonPart from './commonPart'
 import OutAssessment from './coms/OutAssessment/index.tsx'
+import ExtensionRequest from './coms/ExtensionRequest/index.tsx'
 const menuList = [
     { label: "出站申请", key: "outrequest" },
     { label: "出站考核", key: "outassessment" },
@@ -97,7 +98,7 @@ export default defineComponent({
                         )
                     )}
                     {activeMenu.value === 'outassessment' && <OutAssessment />}
-
+                    {activeMenu.value === 'extensionrequest' && <ExtensionRequest /> }
                 </ElMain>
             </ElContainer>
         )

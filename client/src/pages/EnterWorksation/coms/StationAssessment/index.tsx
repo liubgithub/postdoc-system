@@ -20,7 +20,7 @@ export default defineComponent({
             assessmentRes: ''
         }])
         const columns = [
-            { prop: 'stuId', label: '学生ID' },
+            { prop: 'stuId', label: '学号' },
             { prop: 'name', label: '学生姓名' },
             { prop: 'cotutor', label: '导师' },
             { prop: 'college', label: '学院' },
