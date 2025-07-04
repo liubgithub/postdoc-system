@@ -58,17 +58,32 @@ export default defineComponent({
             </div>
             <ElTable
               data={data.value}
-              class={styles.table}
-              style={{ width: "100%" }}
-              empty-text="暂无数据"
-              header-cell-style={{ textAlign: 'center' }}
-              cell-style={{ textAlign: 'center' }}
+              style={{
+                width: "100%",
+                borderRadius: "8px",
+                background: "#fafbfc",
+                boxShadow: "none",
+                fontSize: "15px",
+                border: "none"
+              }}
+              header-cell-style={{
+                textAlign: 'center',
+                fontWeight: 700,
+                background: "#f7f8fa",
+                color: "#333",
+                border: "none",
+                height: "48px"
+              }}
+              cell-style={{
+                textAlign: 'center',
+                background: "#fff",
+                border: "none",
+                height: "44px"
+              }}
+              row-class-name={() => "custom-table-row"}
             >
-              <ElTableColumn label="序号" prop="id" />
               <ElTableColumn label="学号" prop="stuId" />
               <ElTableColumn label="姓名" prop="name" />
-              <ElTableColumn label="流程状态" prop="status" />
-              <ElTableColumn label="节点名称" prop="node" />
               <ElTableColumn label="最后审批结果" prop="finalResult" />
               <ElTableColumn label="所在学院" prop="college" />
               <ElTableColumn label="一级学科" prop="subject1" />

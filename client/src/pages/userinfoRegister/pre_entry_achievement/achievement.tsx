@@ -1,6 +1,7 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElInput, ElButton } from "element-plus";
+import { ElTable, ElTableColumn, ElButton } from "element-plus";
 import * as styles from "../styles.css.ts";
+import { getAchievementStatistics } from "@/api/postdoctor/userinfoRegister/achievement";
 import ConferenceForm from "./conferenceForm";
 import PaperForm from "./paperForm";
 import PatentForm from "./patentForm";
@@ -24,8 +25,7 @@ export default defineComponent({
   setup(props) {
     const data = ref(categories.map(cat => ({
       category: cat,
-      count: 0,
-      remark: ""
+      count: 0
     })));
     const showConference = ref(false);
     const showPaper = ref(false);
@@ -37,7 +37,16 @@ export default defineComponent({
     const showIndustryStandard = ref(false);
     const showNewVariety = ref(false);
 
-    // 可在此处 onMounted 加载后端数据
+    // 加载统计数据
+    onMounted(async () => {
+      const stats = await getAchievementStatistics();
+      if (Array.isArray(stats)) {
+        data.value = categories.map(cat => {
+          const found = stats.find((item: any) => item.category === cat);
+          return { category: cat, count: found ? found.count : 0 };
+        });
+      }
+    });
 
     const handleAdd = (row: any) => {
       if (row.category === "学术会议信息") {
@@ -95,21 +104,14 @@ export default defineComponent({
             <ElTableColumn label="数量" width="80">
               {{
                 default: ({ row }: any) => (
-                  <ElInput v-model={row.count} type="number" style={{ width: "60px" }} />
+                  <span>{row.count}</span>
                 )
               }}
             </ElTableColumn>
-            <ElTableColumn label="操作" width="100">
+            <ElTableColumn label="操作" width="200">
               {{
                 default: ({ row }: any) => (
                   <ElButton type="primary" size="small" onClick={() => handleAdd(row)}>添加</ElButton>
-                )
-              }}
-            </ElTableColumn>
-            <ElTableColumn label="备注">
-              {{
-                default: ({ row }: any) => (
-                  <ElInput v-model={row.remark} placeholder="备注" />
                 )
               }}
             </ElTableColumn>

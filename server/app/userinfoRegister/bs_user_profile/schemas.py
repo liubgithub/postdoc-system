@@ -28,8 +28,14 @@ class InfoIn(BaseModel):
 class EducationExperienceOut(EducationExperienceIn):
     id: int
 
+    class Config:
+        from_attributes = True
+
 class WorkExperienceOut(WorkExperienceIn):
     id: int
+
+    class Config:
+        from_attributes = True
 
 class InfoOut(BaseModel):
     id: int
@@ -46,4 +52,7 @@ class InfoOut(BaseModel):
     research_direction: Optional[str]
     other: Optional[str]
     education_experience: List[EducationExperienceOut]
-    work_experience: List[WorkExperienceOut] 
+    work_experience: List[WorkExperienceOut]
+
+    class Config:
+        from_attributes = True 

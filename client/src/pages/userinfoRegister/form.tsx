@@ -1,13 +1,11 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker } from "element-plus";
 import * as styles from "./styles.css.ts";
-import fetch from '@/api';
-import useUser from '@/stores/user';
+import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
 
 export default defineComponent({
   name: "UserInfoForm",
   setup() {
-    const s_user = useUser();
     // 表单数据
     const form = ref({
       name: "",
@@ -35,6 +33,56 @@ export default defineComponent({
       gender: [{ required: true, message: "请选择性别", trigger: "change" }],
       birth_year: [{ required: true, message: "请输入出生年", trigger: "blur" }],
     };
+
+    // 加载用户信息
+    const fetchProfile = async () => {
+      try {
+        
+        const data = await getUserProfile();
+        console.log('111');
+        if (data) {
+          form.value = {
+            ...form.value,
+            ...data,
+            name: data.name ?? "",
+            gender: data.gender ?? "",
+            birth_year: data.birth_year ? String(data.birth_year) : "",
+            nationality: data.nationality ?? "",
+            political_status: data.political_status ?? "",
+            phone: data.phone ?? "",
+            religion: data.religion ?? "",
+            id_number: data.id_number ?? "",
+            is_religious_staff: data.is_religious_staff ? "是" : "否",
+            research_direction: data.research_direction ?? "",
+            other: data.other ?? "",
+            education_experience: (data.education_experience || []).map((e: any) => {
+              // 匹配两个日期（YYYY-MM-DD-YYYY-MM-DD）
+              const match = (e.start_end || "").match(/^(.{10})-(.{10})$/);
+              return {
+                start: match ? match[1] : "",
+                end: match ? match[2] : "",
+                school: e.school_major ?? "",
+                major: "",
+                supervisor: e.supervisor ?? ""
+              };
+            }),
+            work_experience: (data.work_experience || []).map((w: any) => {
+              const match = (w.start_end || "").match(/^(.{10})-(.{10})$/);
+              return {
+                start: match ? match[1] : "",
+                end: match ? match[2] : "",
+                company: w.company_position ?? "",
+                position: ""
+              };
+            })
+          };
+        }
+      } catch (e: any) {
+        // 未查到信息时不报错
+      }
+    };
+
+    onMounted(fetchProfile);
 
     // 教育经历操作
     const addEducation = () => {
@@ -68,22 +116,41 @@ export default defineComponent({
         }))
       };
       try {
-        const token = s_user.info?.token || localStorage.getItem('token');
-        if (!token) {
-          ElMessage.error('请先登录');
-          return;
-        }
-        const res = await fetch.raw.POST('/info/submit', {
-          body: payload,
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (res.response.status === 200) {
-          ElMessage.success('保存成功！');
-        } else {
-          ElMessage.error('error');
-        }
+        await submitUserProfile(payload);
+        ElMessage.success('保存成功！');
+        fetchProfile();
       } catch (e: any) {
         ElMessage.error(e?.message || '保存失败');
+      }
+    };
+
+    // 重置（删除）
+    const handleReset = async () => {
+      try {
+        await deleteUserProfile();
+        ElMessage.success('已重置！');
+        // 清空表单
+        form.value = {
+          name: "",
+          gender: "",
+          birth_year: "",
+          nationality: "",
+          political_status: "",
+          phone: "",
+          religion: "",
+          id_number: "",
+          is_religious_staff: "",
+          research_direction: "",
+          education_experience: [
+            { start: "", end: "", school: "", major: "", supervisor: "" }
+          ],
+          work_experience: [
+            { start: "", end: "", company: "", position: "" }
+          ],
+          other: ""
+        };
+      } catch (e: any) {
+        ElMessage.error(e?.message || '重置失败');
       }
     };
 
@@ -262,6 +329,7 @@ export default defineComponent({
           {/* 按钮组 */}
           <div class={styles.btnGroup}>
             <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
+            <ElButton type="warning" onClick={handleReset}>重置</ElButton>
           </div>
         </ElForm>
       </div>
