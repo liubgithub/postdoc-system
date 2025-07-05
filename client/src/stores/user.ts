@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import fetch from '@/api/index'
 import router from '@/router' // 导入路由实例
-
+import init_fetch from '@/api/fetch'
 const useUser = defineStore("user", () => {
+
+    const { raw } = init_fetch('/api')
+
     const info = ref<{
         name: string
         token: string
@@ -38,7 +40,7 @@ const useUser = defineStore("user", () => {
                 client_secret: '',
             }
 
-            const res = await fetch.raw.POST('/auth/login', {
+            const res = await raw.POST('/auth/login', {
                 body: formData,
                 headers: { "Content-Type": "application/x-www-form-urlencoded" }
             })
@@ -102,7 +104,7 @@ const useUser = defineStore("user", () => {
 
     const register = async (username: string, password: string) => {
         try {
-            const res = await fetch.raw.POST('/users/register', {
+                const res = await raw.POST('/users/register', {
                 body: { username, password },
                 headers: { 'Content-Type': 'application/json' }
             })

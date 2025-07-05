@@ -13,7 +13,7 @@ export default defineComponent({
     const s_user = useUser()
 
     const handleLoginClick = () => {
-      window.open('/auth/login', '_blank', 'noopener,noreferrer')
+      window.open(`${window.location.origin}/auth/login`, '_blank', 'noopener,noreferrer')
     }
     return () => {
       if (s_user.info) {
