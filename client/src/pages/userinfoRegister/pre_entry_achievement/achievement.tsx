@@ -37,8 +37,8 @@ export default defineComponent({
     const showIndustryStandard = ref(false);
     const showNewVariety = ref(false);
 
-    // 加载统计数据
-    onMounted(async () => {
+    // 封装获取统计数据的函数
+    const fetchStats = async () => {
       const stats = await getAchievementStatistics();
       if (Array.isArray(stats)) {
         data.value = categories.map(cat => {
@@ -46,7 +46,24 @@ export default defineComponent({
           return { category: cat, count: found ? found.count : 0 };
         });
       }
-    });
+    };
+
+    // 页面挂载时获取一次
+    onMounted(fetchStats);
+
+    // 返回主表时刷新
+    const handleBack = () => {
+      showConference.value = false;
+      showPaper.value = false;
+      showPatent.value = false;
+      showBook.value = false;
+      showProject.value = false;
+      showCompetitionAward.value = false;
+      showSubjectResearch.value = false;
+      showIndustryStandard.value = false;
+      showNewVariety.value = false;
+      fetchStats();
+    };
 
     const handleAdd = (row: any) => {
       if (row.category === "学术会议信息") {
@@ -73,23 +90,23 @@ export default defineComponent({
     return () => (
       showConference.value ? 
       (
-        <ConferenceForm onBack={() => { showConference.value = false; }} />
+        <ConferenceForm onBack={handleBack} />
       ) : showPaper.value ? (
-        <PaperForm onBack={() => { showPaper.value = false; }} />
+        <PaperForm onBack={handleBack} />
       ) : showPatent.value ? (
-        <PatentForm onBack={() => { showPatent.value = false; }} />
+        <PatentForm onBack={handleBack} />
       ) : showBook.value ? (
-        <BookForm onBack={() => { showBook.value = false; }} />
+        <BookForm onBack={handleBack} />
       ) : showProject.value ? (
-        <ProjectForm onBack={() => { showProject.value = false; }} />
+        <ProjectForm onBack={handleBack} />
       ) : showCompetitionAward.value ? (
-        <CompetitionAwardForm onBack={() => { showCompetitionAward.value = false; }} />
+        <CompetitionAwardForm onBack={handleBack} />
       ) : showSubjectResearch.value ? (
-        <SubjectResearchForm onBack={() => { showSubjectResearch.value = false; }} />
+        <SubjectResearchForm onBack={handleBack} />
       ) : showIndustryStandard.value ? (
-        <IndustryStandardForm onBack={() => { showIndustryStandard.value = false; }} />
+        <IndustryStandardForm onBack={handleBack} />
       ) : showNewVariety.value ? (
-        <NewVarietyForm onBack={() => { showNewVariety.value = false; }} />
+        <NewVarietyForm onBack={handleBack} />
       ) : (
         <div>
           <div style={{ fontSize: '1.3em', fontWeight: 700, textAlign: 'left', marginBottom: '1em' }}>入站前已有成果登记</div>

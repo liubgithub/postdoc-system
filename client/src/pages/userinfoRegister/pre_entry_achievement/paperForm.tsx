@@ -1,5 +1,8 @@
-import { defineComponent, ref } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload } from "element-plus";
+import { defineComponent, ref, onMounted } from "vue";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker } from "element-plus";
+import { Edit, Delete } from '@element-plus/icons-vue';
+import { getMyPapers, getPaperById, createPaper, updatePaper, deletePaper } from "@/api/postdoctor/userinfoRegister/paper";
+import dayjs from 'dayjs';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -21,6 +24,71 @@ const columns = [
   { label: "刊物级别", prop: "journalLevel", width: 100 },
   { label: "影响因子", prop: "impactFactor", width: 80 }
 ];
+
+function db2form(item: any) {
+  return {
+    id: item.id,
+    title: item["论文名称"] ?? "",
+    journal: item["刊物名称"] ?? "",
+    authorOrder: item["本人署名排序"] ?? "",
+    publishDate: item["发表日期"] ? new Date(item["发表日期"]).toISOString().slice(0, 10) : "",
+    startPage: item["起始页号"] ?? "",
+    journalLevel: item["刊物级别"] ?? "",
+    isCoFirstAuthor: item["是否共同第一"] ?? "",
+    correspondingAuthor: item["通讯作者"] ?? "",
+    journalType: item["论文类型"] ?? "",
+    impactFactor: item["影响因子"] ?? "",
+    authorName: item["作者名单"] ?? "",
+    firstAuthor: item["第一作者"] ?? "",
+    supervisorOrder: item["导师署名排序"] ?? "",
+    isFirstAffiliation: item["本校是否第一"] ?? "",
+    firstAffiliation: item["第一署名单位"] ?? "",
+    status: item["发表状态"] ?? "",
+    indexNumber: item["论文收录检索"] ?? "",
+    citationCount: item["他引次数"] ?? "",
+    relatedToThesis: item["是否和学位论文相关"] ?? "",
+    issn: item["出版号"] ?? "",
+    publisher: item["出版社"] ?? "",
+    totalIssue: item["总期号"] ?? "",
+    journalNumber: item["刊物编号"] ?? "",
+    paperScan: item["论文发表证书"] ?? null,
+    acceptanceLetter: item["论文接收函"] ?? null,
+    electronicVersion: item["论文电子版"] ?? null,
+    remark: item["备注"] ?? ""
+  };
+}
+
+function form2db(item: any) {
+  return {
+    "论文名称": item.title,
+    "刊物名称": item.journal,
+    "本人署名排序": item.authorOrder,
+    "发表日期": item.publishDate ? new Date(item.publishDate).toISOString() : null,
+    "起始页号": item.startPage,
+    "刊物级别": item.journalLevel,
+    "是否共同第一": item.isCoFirstAuthor,
+    "通讯作者": item.correspondingAuthor,
+    "论文类型": item.journalType,
+    "影响因子": item.impactFactor,
+    "作者名单": item.authorName,
+    "第一作者": item.firstAuthor,
+    "导师署名排序": item.supervisorOrder,
+    "本校是否第一": item.isFirstAffiliation,
+    "第一署名单位": item.firstAffiliation,
+    "发表状态": item.status,
+    "论文收录检索": item.indexNumber,
+    "他引次数": item.citationCount,
+    "是否和学位论文相关": item.relatedToThesis,
+    "出版号": item.issn,
+    "出版社": item.publisher,
+    "总期号": item.totalIssue,
+    "刊物编号": item.journalNumber,
+    "论文发表证书": item.paperScan,
+    "论文接收函": item.acceptanceLetter,
+    "论文电子版": item.electronicVersion,
+    "备注": item.remark
+  };
+}
 
 export default defineComponent({
   name: "PaperForm",
@@ -101,17 +169,22 @@ export default defineComponent({
       showForm.value = true;
     };
 
-    const handleEdit = (row: any, index: number) => {
-      editData.value = { ...row };
+    const handleEdit = async (row: any, index: number) => {
+      const res = await getPaperById(row.id);
+      editData.value = db2form(res);
       editIndex.value = index;
       showForm.value = true;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
+      const data = form2db(editData.value);
       if (editIndex.value === -1) {
-        tableData.value.push({ ...editData.value });
+        const res = await createPaper(data);
+        if (res) tableData.value.push(db2form(res));
       } else {
-        tableData.value[editIndex.value] = { ...editData.value };
+        const id = tableData.value[editIndex.value].id;
+        const res = await updatePaper(id, data);
+        if (res) tableData.value[editIndex.value] = db2form(res);
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -143,6 +216,16 @@ export default defineComponent({
       }
     };
 
+    const handleDelete = async (row: any, index: number) => {
+      await deletePaper(row.id);
+      tableData.value.splice(index, 1);
+    };
+
+    onMounted(async () => {
+      const data = await getMyPapers();
+      tableData.value = (data ?? []).map(db2form);
+    });
+
     return () => (
       <div>
         {showForm.value ? (
@@ -153,7 +236,17 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="论文名称"><ElInput v-model={editData.value.title} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="刊物名称"><ElInput v-model={editData.value.journal} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="本人署名排序"><ElInput v-model={editData.value.authorOrder} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="发表日期"><ElInput v-model={editData.value.publishDate} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="发表日期">
+                    <ElDatePicker
+                      v-model={editData.value.publishDate}
+                      type="date"
+                      value-format="YYYY-MM-DD"
+                      placeholder="选择日期"
+                      style={{ width: '100%' }}
+                    />
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="起始页码"><ElInput v-model={editData.value.startPage} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="刊物级别"><ElInput v-model={editData.value.journalLevel} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="是否共同第一作者"><ElInput v-model={editData.value.isCoFirstAuthor} /></ElFormItem></ElCol>
@@ -208,19 +301,34 @@ export default defineComponent({
             </div>
             <ElTable data={tableData.value} style={{ width: '100%' }} header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
-                <ElTableColumn
-                  label={col.label}
-                  prop={col.prop}
-                  width={col.width}
-                  v-slots={{
-                    default: ({ row }: any) => row[col.prop] ?? ""
-                  }}
-                />
+                col.prop === 'publishDate' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row.publishDate ? dayjs(row.publishDate).format('YYYY-MM-DD') : ''
+                    }}
+                  />
+                ) : (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) => row[col.prop] ?? ""
+                    }}
+                  />
+                )
               ))}
-              <ElTableColumn label="操作" width="100">
+              <ElTableColumn label="操作" width="160" align="center">
                 {{
                   default: ({ row, $index }: any) => (
-                    <ElButton type="primary" size="small" onClick={() => handleEdit(row, $index)}>编辑</ElButton>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                      <ElButton type="primary" size="small" icon={<Edit />} onClick={() => handleEdit(row, $index)}>编辑</ElButton>
+                      <ElButton type="danger" size="small" icon={<Delete />} onClick={() => handleDelete(row, $index)}>删除</ElButton>
+                    </div>
                   )
                 }}
               </ElTableColumn>

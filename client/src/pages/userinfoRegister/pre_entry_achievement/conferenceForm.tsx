@@ -1,5 +1,14 @@
-import { defineComponent, ref } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload } from "element-plus";
+import { defineComponent, ref, onMounted } from "vue";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker } from "element-plus";
+import {
+  getConferenceById,
+  createConference,
+  updateConference,
+  deleteConference,
+  getMyConferences
+} from "@/api/postdoctor/userinfoRegister/conference";
+import { Edit, Delete } from '@element-plus/icons-vue';
+import dayjs from 'dayjs';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -19,6 +28,49 @@ const columns = [
   { label: "会议地点", prop: "location", width: 120 },
   { label: "备注", prop: "remark", width: 120 },
 ];
+
+function db2form(item: any) {
+  return {
+    id: item.id,
+    confId: item["会议编号"] ?? "",
+    confName: item["会议名称"] ?? "",
+    confNameEn: item["会议英文名"] ?? "",
+    hostOrg: item["主办单位"] ?? "",
+    form: item["会议举办形式"] ?? "",
+    level: item["会议等级"] ?? "",
+    country: item["国家或地区"] ?? "",
+    isAbroad: item["是否境外"] ?? "",
+    startDate: item["会议起始日"] ?? "",
+    endDate: item["会议终止日"] ?? "",
+    org: item["举办单位"] ?? "",
+    attendeeNum: item["会议人数"] ?? "",
+    contact: item["联系人电话"] ?? "",
+    location: item["会议地点"] ?? "",
+    report: item["会议报告"] ?? "",
+    remark: item["备注"] ?? "",
+  };
+}
+
+function form2db(item: any) {
+  return {
+    "会议编号": item.confId,
+    "会议名称": item.confName,
+    "会议英文名": item.confNameEn,
+    "主办单位": item.hostOrg,
+    "会议举办形式": item.form,
+    "会议等级": item.level,
+    "国家或地区": item.country,
+    "是否境外": item.isAbroad,
+    "会议起始日": item.startDate ? new Date(item.startDate).toISOString() : null,
+    "会议终止日": item.endDate ? new Date(item.endDate).toISOString() : null,
+    "举办单位": item.org,
+    "会议人数": item.attendeeNum,
+    "联系人电话": item.contact,
+    "会议地点": item.location,
+    "会议报告": item.report,
+    "备注": item.remark,
+  };
+}
 
 export default defineComponent({
   name: "ConferenceForm",
@@ -75,17 +127,24 @@ export default defineComponent({
       showForm.value = true;
     };
 
-    const handleEdit = (row: any, index: number) => {
-      editData.value = { ...row };
+    const handleEdit = async (row: any, index: number) => {
+      const res = await getConferenceById(row.id);
+      editData.value = db2form(res);
       editIndex.value = index;
       showForm.value = true;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
+      const data = form2db(editData.value);
       if (editIndex.value === -1) {
-        tableData.value.push({ ...editData.value });
+        // 新增
+        const res = await createConference(data);
+        if (res) tableData.value.push(db2form(res));
       } else {
-        tableData.value[editIndex.value] = { ...editData.value };
+        // 编辑
+        const id = tableData.value[editIndex.value].id;
+        const res = await updateConference(id, data);
+        if (res) tableData.value[editIndex.value] = db2form(res);
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -100,6 +159,16 @@ export default defineComponent({
     const handleFileChange = (file: any) => {
       editData.value.reportFile = file.raw;
     };
+
+    const handleDelete = async (row: any, index: number) => {
+      await deleteConference(row.id);
+      tableData.value.splice(index, 1);
+    };
+
+    onMounted(async () => {
+      const data = await getMyConferences();
+      tableData.value = (data ?? []).map(db2form);
+    });
 
     return () => (
       <div>
@@ -150,12 +219,24 @@ export default defineComponent({
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议起始日期">
-                    <ElInput v-model={editData.value.startDate} />
+                    <ElDatePicker
+                      v-model={editData.value.startDate}
+                      type="date"
+                      value-format="YYYY-MM-DD"
+                      placeholder="选择日期"
+                      style={{ width: '100%' }}
+                    />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议终止日期">
-                    <ElInput v-model={editData.value.endDate} />
+                    <ElDatePicker
+                      v-model={editData.value.endDate}
+                      type="date"
+                      value-format="YYYY-MM-DD"
+                      placeholder="选择日期"
+                      style={{ width: '100%' }}
+                    />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
@@ -208,19 +289,44 @@ export default defineComponent({
             </div>
             <ElTable data={tableData.value} style={{ width: '100%' }} header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
-                <ElTableColumn
-                  label={col.label}
-                  prop={col.prop}
-                  width={col.width}
-                  v-slots={{
-                    default: ({ row }: any) => row[col.prop] ?? ""
-                  }}
-                />
+                col.prop === 'startDate' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row.startDate ? dayjs(row.startDate).format('YYYY-MM-DD') : ''
+                    }}
+                  />
+                ) : col.prop === 'endDate' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row.endDate ? dayjs(row.endDate).format('YYYY-MM-DD') : ''
+                    }}
+                  />
+                ) : (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) => row[col.prop] ?? ""
+                    }}
+                  />
+                )
               ))}
-              <ElTableColumn label="操作" width="100">
+              <ElTableColumn label="操作" width="160" align="center">
                 {{
                   default: ({ row, $index }: any) => (
-                    <ElButton type="primary" size="small" onClick={() => handleEdit(row, $index)}>编辑</ElButton>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                      <ElButton type="primary" size="small" icon={<Edit />} onClick={() => handleEdit(row, $index)}>编辑</ElButton>
+                      <ElButton type="danger" size="small" icon={<Delete />} onClick={() => handleDelete(row, $index)}>删除</ElButton>
+                    </div>
                   )
                 }}
               </ElTableColumn>
