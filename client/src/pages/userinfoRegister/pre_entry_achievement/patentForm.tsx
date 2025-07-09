@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker ,ElMessageBox,ElMessage } from "element-plus";
 import dayjs from 'dayjs';
 import { Edit, Delete } from '@element-plus/icons-vue';
 import { getMyPatents, getPatentById, createPatent, updatePatent, deletePatent } from "@/api/postdoctor/userinfoRegister/patent";
@@ -138,9 +138,16 @@ export default defineComponent({
       editData.value.certificateFile = file.raw;
     };
 
+
     const handleDelete = async (row: any, index: number) => {
+      await ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      });
       await deletePatent(row.id);
       tableData.value.splice(index, 1);
+      ElMessage.success('删除成功');
     };
 
     onMounted(async () => {
@@ -190,7 +197,16 @@ export default defineComponent({
             </div>
             <ElTable data={tableData.value} style={{ width: '100%' }} empty-text="暂无数据" header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
-                ["submitDate", "approvalDate", "grantDate", "terminationDate"].includes(col.prop) ? (
+                col.prop === 'id' ? (
+                  <ElTableColumn
+                    key={col.prop}
+                    label={col.label}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ $index }: any) => $index + 1
+                    }}
+                  />
+                ) : ["submitDate", "approvalDate", "grantDate", "terminationDate"].includes(col.prop) ? (
                   <ElTableColumn
                     key={col.prop}
                     label={col.label}

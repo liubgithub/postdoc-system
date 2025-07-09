@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker ,ElMessageBox,ElMessage } from "element-plus";
 import {
   getConferenceById,
   createConference,
@@ -161,8 +161,14 @@ export default defineComponent({
     };
 
     const handleDelete = async (row: any, index: number) => {
+      await ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      });
       await deleteConference(row.id);
       tableData.value.splice(index, 1);
+      ElMessage.success('删除成功');
     };
 
     onMounted(async () => {
@@ -289,7 +295,16 @@ export default defineComponent({
             </div>
             <ElTable data={tableData.value} style={{ width: '100%' }} header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
-                col.prop === 'startDate' ? (
+                col.prop === 'id' ? (
+                  <ElTableColumn
+                    key={col.prop}
+                    label={col.label}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ $index }: any) => $index + 1
+                    }}
+                  />
+                ) : col.prop === 'startDate' ? (
                   <ElTableColumn
                     label={col.label}
                     prop={col.prop}

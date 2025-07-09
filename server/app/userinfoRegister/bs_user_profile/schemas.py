@@ -52,7 +52,7 @@ class InfoOut(BaseModel):
     research_direction: Optional[str]
     other: Optional[str]
     education_experience: List[EducationExperienceOut]
-    work_experience: List[WorkExperienceOut]
+    work_experience: List[WorkExperienceOut] 
 
     class Config:
         from_attributes = True 

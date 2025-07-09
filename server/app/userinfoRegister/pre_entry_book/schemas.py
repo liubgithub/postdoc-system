@@ -14,7 +14,7 @@ class PreEntryBookBase(BaseModel):
     作者名单: Optional[str] = None
     著作字数: Optional[str] = None
     出版号: Optional[str] = None
-    ISBN: Optional[str] = None
+    isbn: Optional[str] = None
     作者排名: Optional[str] = None
     上传文件: Optional[str] = None
     备注: Optional[str] = None

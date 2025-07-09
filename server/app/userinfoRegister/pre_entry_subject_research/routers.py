@@ -3,6 +3,9 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from . import models, schemas
+from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel
 
 router = APIRouter(
     prefix="/pre_entry_subject_research",

@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker,ElMessageBox,ElMessage } from "element-plus";
 import { Edit, Delete } from '@element-plus/icons-vue';
 import { getMyPapers, getPaperById, createPaper, updatePaper, deletePaper } from "@/api/postdoctor/userinfoRegister/paper";
 import dayjs from 'dayjs';
@@ -217,8 +217,14 @@ export default defineComponent({
     };
 
     const handleDelete = async (row: any, index: number) => {
+      await ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      });
       await deletePaper(row.id);
       tableData.value.splice(index, 1);
+      ElMessage.success('删除成功');
     };
 
     onMounted(async () => {
@@ -301,14 +307,22 @@ export default defineComponent({
             </div>
             <ElTable data={tableData.value} style={{ width: '100%' }} header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
-                col.prop === 'publishDate' ? (
+                col.prop === 'id' ? (
+                  <ElTableColumn
+                    key={col.prop}
+                    label={col.label}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ $index }: any) => $index + 1
+                    }}
+                  />
+                ) : col.prop === 'publishDate' ? (
                   <ElTableColumn
                     label={col.label}
                     prop={col.prop}
                     width={col.width}
                     v-slots={{
-                      default: ({ row }: any) =>
-                        row.publishDate ? dayjs(row.publishDate).format('YYYY-MM-DD') : ''
+                      default: ({ row }: any) => row.publishDate ? dayjs(row.publishDate).format('YYYY-MM-DD') : ''
                     }}
                   />
                 ) : (
