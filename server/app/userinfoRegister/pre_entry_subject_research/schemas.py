@@ -3,8 +3,8 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntrySubjectResearchBase(BaseModel):
-    user_id: int
-    achievement_id: Optional[int] = None
+    # user_id: int
+    # achievement_id: Optional[int] = None
     课题名称: Optional[str] = None
     课题来源: Optional[str] = None
     开始时间: Optional[datetime] = None
