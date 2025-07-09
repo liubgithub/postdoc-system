@@ -9,6 +9,7 @@ from ..pre_entry_new_variety.models import PreEntryNewVariety
 from ..pre_entry_paper.models import PreEntryPaper
 from ..pre_entry_patent.models import PreEntryPatent
 from ..pre_entry_project.models import PreEntryProject
+from ..pre_entry_industry_standard.models import PreEntryIndustryStandard
 from ..pre_entry_subject_research.models import PreEntrySubjectResearch
 
 router = APIRouter()
@@ -23,6 +24,7 @@ def get_achievement_statistics(current_user: User = Depends(get_current_user), d
         "参与项目信息": PreEntryProject,
         "科技竞赛获奖信息": PreEntryCompetitionAward,
         "课题研究信息": PreEntrySubjectResearch,
+        "行业标准信息": PreEntryIndustryStandard,
         "新品种类型信息": PreEntryNewVariety,
     }
     result = []
