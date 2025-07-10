@@ -10,7 +10,7 @@ class EnterWorkstation(Base):
     subject = Column(String(255), nullable=False)
     postname = Column(String(255), nullable=False)
     posttask = Column(String(255), nullable=False)
-    postqualification = Column(String(255), nullable=False)
+    postqualification = Column(String(255), nullable=True)
     cotutor = Column(String(255), nullable=False)
     allitutor = Column(String(255), nullable=False)
     remark = Column(String(255), nullable=True)

@@ -2088,23 +2088,205 @@
         ]
       }
     },
-    "/enterWorkstation/apply": {
+    "/pre_entry_industry_standard/": {
       "post": {
         "tags": [
-          "进站申请"
+          "行业标准信息"
         ],
-        "summary": "Enter Workstation",
-        "operationId": "enter_workstation_enterWorkstation_apply_post",
+        "summary": "Create Standard",
+        "operationId": "create_standard_pre_entry_industry_standard__post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EnterWorkstationIn"
+                "$ref": "#/components/schemas/PreEntryIndustryStandardCreate"
               }
             }
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreEntryIndustryStandard"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/pre_entry_industry_standard/me": {
+      "get": {
+        "tags": [
+          "行业标准信息"
+        ],
+        "summary": "Get My Standards",
+        "operationId": "get_my_standards_pre_entry_industry_standard_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PreEntryIndustryStandard"
+                  },
+                  "type": "array",
+                  "title": "Response Get My Standards Pre Entry Industry Standard Me Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/pre_entry_industry_standard/{id}": {
+      "get": {
+        "tags": [
+          "行业标准信息"
+        ],
+        "summary": "Get Standard",
+        "operationId": "get_standard_pre_entry_industry_standard__id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreEntryIndustryStandard"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "行业标准信息"
+        ],
+        "summary": "Update Standard",
+        "operationId": "update_standard_pre_entry_industry_standard__id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreEntryIndustryStandardUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreEntryIndustryStandard"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "行业标准信息"
+        ],
+        "summary": "Delete Standard",
+        "operationId": "delete_standard_pre_entry_industry_standard__id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -2125,6 +2307,282 @@
             }
           }
         }
+      }
+    },
+    "/enterWorkstation/apply": {
+      "get": {
+        "tags": [
+          "进站申请"
+        ],
+        "summary": "Get Enter Workstation By User Id",
+        "description": "获取当前用户的进站申请记录",
+        "operationId": "get_enter_workstation_by_user_id_enterWorkstation_apply_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterWorkstationOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "进站申请"
+        ],
+        "summary": "Update Enter Workstation By User Id",
+        "description": "更新当前用户的进站申请记录",
+        "operationId": "update_enter_workstation_by_user_id_enterWorkstation_apply_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterWorkstationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterWorkstationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "进站申请"
+        ],
+        "summary": "Create Enter Workstation",
+        "description": "创建进站申请记录",
+        "operationId": "create_enter_workstation_enterWorkstation_apply_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterWorkstationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterWorkstationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "进站申请"
+        ],
+        "summary": "Delete Enter Workstation By User Id",
+        "description": "删除当前用户的进站申请记录",
+        "operationId": "delete_enter_workstation_by_user_id_enterWorkstation_apply_delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/enterRelation/": {
+      "get": {
+        "tags": [
+          "进站相关科研情况"
+        ],
+        "summary": "Get Relation",
+        "operationId": "get_relation_enterRelation__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterRelation"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "进站相关科研情况"
+        ],
+        "summary": "Update Relation",
+        "operationId": "update_relation_enterRelation__put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterRelationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterRelation"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "进站相关科研情况"
+        ],
+        "summary": "Create Relation",
+        "operationId": "create_relation_enterRelation__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterRelationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterRelation"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "进站相关科研情况"
+        ],
+        "summary": "Delete Relation",
+        "operationId": "delete_relation_enterRelation__delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
       }
     },
     "/": {
@@ -2268,6 +2726,260 @@
         ],
         "title": "EducationExperienceOut"
       },
+      "EnterRelation": {
+        "properties": {
+          "base_work": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Work"
+          },
+          "necessity_analysis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Necessity Analysis"
+          },
+          "resplan_expected": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resplan Expected"
+          },
+          "results": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results"
+          },
+          "other_achievements": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Other Achievements"
+          },
+          "academic_pursuits": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Academic Pursuits"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "EnterRelation"
+      },
+      "EnterRelationCreate": {
+        "properties": {
+          "base_work": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Work"
+          },
+          "necessity_analysis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Necessity Analysis"
+          },
+          "resplan_expected": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resplan Expected"
+          },
+          "results": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results"
+          },
+          "other_achievements": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Other Achievements"
+          },
+          "academic_pursuits": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Academic Pursuits"
+          }
+        },
+        "type": "object",
+        "title": "EnterRelationCreate"
+      },
+      "EnterRelationUpdate": {
+        "properties": {
+          "base_work": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Work"
+          },
+          "necessity_analysis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Necessity Analysis"
+          },
+          "resplan_expected": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resplan Expected"
+          },
+          "results": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results"
+          },
+          "other_achievements": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Other Achievements"
+          },
+          "academic_pursuits": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Academic Pursuits"
+          }
+        },
+        "type": "object",
+        "title": "EnterRelationUpdate"
+      },
       "EnterWorkstationIn": {
         "properties": {
           "subject": {
@@ -2318,12 +3030,99 @@
           "subject",
           "postname",
           "posttask",
-          "postqualification",
           "cotutor",
-          "allitutor",
-          "remark"
+          "allitutor"
         ],
         "title": "EnterWorkstationIn"
+      },
+      "EnterWorkstationOut": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "title": "Subject"
+          },
+          "postname": {
+            "type": "string",
+            "title": "Postname"
+          },
+          "posttask": {
+            "type": "string",
+            "title": "Posttask"
+          },
+          "postqualification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postqualification"
+          },
+          "cotutor": {
+            "type": "string",
+            "title": "Cotutor"
+          },
+          "allitutor": {
+            "type": "string",
+            "title": "Allitutor"
+          },
+          "remark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remark"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subject",
+          "postname",
+          "posttask",
+          "cotutor",
+          "allitutor",
+          "id",
+          "user_id"
+        ],
+        "title": "EnterWorkstationOut"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2765,7 +3564,7 @@
             ],
             "title": "出版号"
           },
-          "ISBN": {
+          "isbn": {
             "anyOf": [
               {
                 "type": "string"
@@ -2934,7 +3733,7 @@
             ],
             "title": "出版号"
           },
-          "ISBN": {
+          "isbn": {
             "anyOf": [
               {
                 "type": "string"
@@ -3084,7 +3883,7 @@
             ],
             "title": "出版号"
           },
-          "ISBN": {
+          "isbn": {
             "anyOf": [
               {
                 "type": "string"
@@ -4237,6 +5036,346 @@
         },
         "type": "object",
         "title": "PreEntryConferenceUpdate"
+      },
+      "PreEntryIndustryStandard": {
+        "properties": {
+          "标准名称": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "标准名称"
+          },
+          "标准编号": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "标准编号"
+          },
+          "发布日期": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "发布日期"
+          },
+          "实施日期": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "实施日期"
+          },
+          "归口单位": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "归口单位"
+          },
+          "起草单位": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "起草单位"
+          },
+          "适用范围": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "适用范围"
+          },
+          "上传文件": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "上传文件"
+          },
+          "备注": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "PreEntryIndustryStandard"
+      },
+      "PreEntryIndustryStandardCreate": {
+        "properties": {
+          "标准名称": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "标准名称"
+          },
+          "标准编号": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "标准编号"
+          },
+          "发布日期": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "发布日期"
+          },
+          "实施日期": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "实施日期"
+          },
+          "归口单位": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "归口单位"
+          },
+          "起草单位": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "起草单位"
+          },
+          "适用范围": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "适用范围"
+          },
+          "上传文件": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "上传文件"
+          },
+          "备注": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "备注"
+          }
+        },
+        "type": "object",
+        "title": "PreEntryIndustryStandardCreate"
+      },
+      "PreEntryIndustryStandardUpdate": {
+        "properties": {
+          "标准名称": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "标准名称"
+          },
+          "标准编号": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "标准编号"
+          },
+          "发布日期": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "发布日期"
+          },
+          "实施日期": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "实施日期"
+          },
+          "归口单位": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "归口单位"
+          },
+          "起草单位": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "起草单位"
+          },
+          "适用范围": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "适用范围"
+          },
+          "上传文件": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "上传文件"
+          },
+          "备注": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "备注"
+          }
+        },
+        "type": "object",
+        "title": "PreEntryIndustryStandardUpdate"
       },
       "PreEntryNewVariety": {
         "properties": {
@@ -6760,21 +7899,6 @@
       },
       "PreEntrySubjectResearch": {
         "properties": {
-          "user_id": {
-            "type": "integer",
-            "title": "User Id"
-          },
-          "achievement_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Achievement Id"
-          },
           "课题名称": {
             "anyOf": [
               {
@@ -6893,7 +8017,6 @@
         },
         "type": "object",
         "required": [
-          "user_id",
           "id",
           "created_at",
           "updated_at"
@@ -6902,21 +8025,6 @@
       },
       "PreEntrySubjectResearchCreate": {
         "properties": {
-          "user_id": {
-            "type": "integer",
-            "title": "User Id"
-          },
-          "achievement_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Achievement Id"
-          },
           "课题名称": {
             "anyOf": [
               {
@@ -7020,28 +8128,10 @@
           }
         },
         "type": "object",
-        "required": [
-          "user_id"
-        ],
         "title": "PreEntrySubjectResearchCreate"
       },
       "PreEntrySubjectResearchUpdate": {
         "properties": {
-          "user_id": {
-            "type": "integer",
-            "title": "User Id"
-          },
-          "achievement_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Achievement Id"
-          },
           "课题名称": {
             "anyOf": [
               {
@@ -7145,9 +8235,6 @@
           }
         },
         "type": "object",
-        "required": [
-          "user_id"
-        ],
         "title": "PreEntrySubjectResearchUpdate"
       },
       "Token": {

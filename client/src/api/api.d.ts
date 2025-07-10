@@ -561,7 +561,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/enterWorkstation/apply": {
+    "/pre_entry_industry_standard/": {
         parameters: {
             query?: never;
             header?: never;
@@ -570,9 +570,97 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Enter Workstation */
-        post: operations["enter_workstation_enterWorkstation_apply_post"];
+        /** Create Standard */
+        post: operations["create_standard_pre_entry_industry_standard__post"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_industry_standard/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Standards */
+        get: operations["get_my_standards_pre_entry_industry_standard_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_industry_standard/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Standard */
+        get: operations["get_standard_pre_entry_industry_standard__id__get"];
+        /** Update Standard */
+        put: operations["update_standard_pre_entry_industry_standard__id__put"];
+        post?: never;
+        /** Delete Standard */
+        delete: operations["delete_standard_pre_entry_industry_standard__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterWorkstation/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Enter Workstation By User Id
+         * @description 获取当前用户的进站申请记录
+         */
+        get: operations["get_enter_workstation_by_user_id_enterWorkstation_apply_get"];
+        /**
+         * Update Enter Workstation By User Id
+         * @description 更新当前用户的进站申请记录
+         */
+        put: operations["update_enter_workstation_by_user_id_enterWorkstation_apply_put"];
+        /**
+         * Create Enter Workstation
+         * @description 创建进站申请记录
+         */
+        post: operations["create_enter_workstation_enterWorkstation_apply_post"];
+        /**
+         * Delete Enter Workstation By User Id
+         * @description 删除当前用户的进站申请记录
+         */
+        delete: operations["delete_enter_workstation_by_user_id_enterWorkstation_apply_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterRelation/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Relation */
+        get: operations["get_relation_enterRelation__get"];
+        /** Update Relation */
+        put: operations["update_relation_enterRelation__put"];
+        /** Create Relation */
+        post: operations["create_relation_enterRelation__post"];
+        /** Delete Relation */
+        delete: operations["delete_relation_enterRelation__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -643,6 +731,59 @@ export interface components {
             /** Id */
             id: number;
         };
+        /** EnterRelation */
+        EnterRelation: {
+            /** Base Work */
+            base_work?: string | null;
+            /** Necessity Analysis */
+            necessity_analysis?: string | null;
+            /** Resplan Expected */
+            resplan_expected?: string | null;
+            /** Results */
+            results?: string | null;
+            /** Other Achievements */
+            other_achievements?: string | null;
+            /** Academic Pursuits */
+            academic_pursuits?: string | null;
+            /** User Id */
+            user_id: number;
+            /** Id */
+            id: number;
+            /** Created At */
+            created_at: string | null;
+            /** Updated At */
+            updated_at: string | null;
+        };
+        /** EnterRelationCreate */
+        EnterRelationCreate: {
+            /** Base Work */
+            base_work?: string | null;
+            /** Necessity Analysis */
+            necessity_analysis?: string | null;
+            /** Resplan Expected */
+            resplan_expected?: string | null;
+            /** Results */
+            results?: string | null;
+            /** Other Achievements */
+            other_achievements?: string | null;
+            /** Academic Pursuits */
+            academic_pursuits?: string | null;
+        };
+        /** EnterRelationUpdate */
+        EnterRelationUpdate: {
+            /** Base Work */
+            base_work?: string | null;
+            /** Necessity Analysis */
+            necessity_analysis?: string | null;
+            /** Resplan Expected */
+            resplan_expected?: string | null;
+            /** Results */
+            results?: string | null;
+            /** Other Achievements */
+            other_achievements?: string | null;
+            /** Academic Pursuits */
+            academic_pursuits?: string | null;
+        };
         /** EnterWorkstationIn */
         EnterWorkstationIn: {
             /** Subject */
@@ -652,13 +793,38 @@ export interface components {
             /** Posttask */
             posttask: string;
             /** Postqualification */
-            postqualification: string | null;
+            postqualification?: string | null;
             /** Cotutor */
             cotutor: string;
             /** Allitutor */
             allitutor: string;
             /** Remark */
-            remark: string | null;
+            remark?: string | null;
+        };
+        /** EnterWorkstationOut */
+        EnterWorkstationOut: {
+            /** Subject */
+            subject: string;
+            /** Postname */
+            postname: string;
+            /** Posttask */
+            posttask: string;
+            /** Postqualification */
+            postqualification?: string | null;
+            /** Cotutor */
+            cotutor: string;
+            /** Allitutor */
+            allitutor: string;
+            /** Remark */
+            remark?: string | null;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -782,7 +948,7 @@ export interface components {
             /** 出版号 */
             "\u51FA\u7248\u53F7"?: string | null;
             /** Isbn */
-            ISBN?: string | null;
+            isbn?: string | null;
             /** 作者排名 */
             "\u4F5C\u8005\u6392\u540D"?: string | null;
             /** 上传文件 */
@@ -823,7 +989,7 @@ export interface components {
             /** 出版号 */
             "\u51FA\u7248\u53F7"?: string | null;
             /** Isbn */
-            ISBN?: string | null;
+            isbn?: string | null;
             /** 作者排名 */
             "\u4F5C\u8005\u6392\u540D"?: string | null;
             /** 上传文件 */
@@ -852,7 +1018,7 @@ export interface components {
             /** 出版号 */
             "\u51FA\u7248\u53F7"?: string | null;
             /** Isbn */
-            ISBN?: string | null;
+            isbn?: string | null;
             /** 作者排名 */
             "\u4F5C\u8005\u6392\u540D"?: string | null;
             /** 上传文件 */
@@ -1085,6 +1251,81 @@ export interface components {
             "\u4F1A\u8BAE\u62A5\u544A"?: string | null;
             /** 会议报告全文 */
             "\u4F1A\u8BAE\u62A5\u544A\u5168\u6587"?: string | null;
+            /** 备注 */
+            "\u5907\u6CE8"?: string | null;
+        };
+        /** PreEntryIndustryStandard */
+        PreEntryIndustryStandard: {
+            /** 标准名称 */
+            "\u6807\u51C6\u540D\u79F0"?: string | null;
+            /** 标准编号 */
+            "\u6807\u51C6\u7F16\u53F7"?: string | null;
+            /** 发布日期 */
+            "\u53D1\u5E03\u65E5\u671F"?: string | null;
+            /** 实施日期 */
+            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
+            /** 归口单位 */
+            "\u5F52\u53E3\u5355\u4F4D"?: string | null;
+            /** 起草单位 */
+            "\u8D77\u8349\u5355\u4F4D"?: string | null;
+            /** 适用范围 */
+            "\u9002\u7528\u8303\u56F4"?: string | null;
+            /** 上传文件 */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 备注 */
+            "\u5907\u6CE8"?: string | null;
+            /** Id */
+            id: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** PreEntryIndustryStandardCreate */
+        PreEntryIndustryStandardCreate: {
+            /** 标准名称 */
+            "\u6807\u51C6\u540D\u79F0"?: string | null;
+            /** 标准编号 */
+            "\u6807\u51C6\u7F16\u53F7"?: string | null;
+            /** 发布日期 */
+            "\u53D1\u5E03\u65E5\u671F"?: string | null;
+            /** 实施日期 */
+            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
+            /** 归口单位 */
+            "\u5F52\u53E3\u5355\u4F4D"?: string | null;
+            /** 起草单位 */
+            "\u8D77\u8349\u5355\u4F4D"?: string | null;
+            /** 适用范围 */
+            "\u9002\u7528\u8303\u56F4"?: string | null;
+            /** 上传文件 */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 备注 */
+            "\u5907\u6CE8"?: string | null;
+        };
+        /** PreEntryIndustryStandardUpdate */
+        PreEntryIndustryStandardUpdate: {
+            /** 标准名称 */
+            "\u6807\u51C6\u540D\u79F0"?: string | null;
+            /** 标准编号 */
+            "\u6807\u51C6\u7F16\u53F7"?: string | null;
+            /** 发布日期 */
+            "\u53D1\u5E03\u65E5\u671F"?: string | null;
+            /** 实施日期 */
+            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
+            /** 归口单位 */
+            "\u5F52\u53E3\u5355\u4F4D"?: string | null;
+            /** 起草单位 */
+            "\u8D77\u8349\u5355\u4F4D"?: string | null;
+            /** 适用范围 */
+            "\u9002\u7528\u8303\u56F4"?: string | null;
+            /** 上传文件 */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
@@ -1602,10 +1843,6 @@ export interface components {
         };
         /** PreEntrySubjectResearch */
         PreEntrySubjectResearch: {
-            /** User Id */
-            user_id: number;
-            /** Achievement Id */
-            achievement_id?: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0"?: string | null;
             /** 课题来源 */
@@ -1639,10 +1876,6 @@ export interface components {
         };
         /** PreEntrySubjectResearchCreate */
         PreEntrySubjectResearchCreate: {
-            /** User Id */
-            user_id: number;
-            /** Achievement Id */
-            achievement_id?: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0"?: string | null;
             /** 课题来源 */
@@ -1664,10 +1897,6 @@ export interface components {
         };
         /** PreEntrySubjectResearchUpdate */
         PreEntrySubjectResearchUpdate: {
-            /** User Id */
-            user_id: number;
-            /** Achievement Id */
-            achievement_id?: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0"?: string | null;
             /** 课题来源 */
@@ -3178,7 +3407,177 @@ export interface operations {
             };
         };
     };
-    enter_workstation_enterWorkstation_apply_post: {
+    create_standard_pre_entry_industry_standard__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreEntryIndustryStandardCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_standards_pre_entry_industry_standard_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryIndustryStandard"][];
+                };
+            };
+        };
+    };
+    get_standard_pre_entry_industry_standard__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_standard_pre_entry_industry_standard__id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreEntryIndustryStandardUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_standard_pre_entry_industry_standard__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_enter_workstation_by_user_id_enterWorkstation_apply_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterWorkstationOut"];
+                };
+            };
+        };
+    };
+    update_enter_workstation_by_user_id_enterWorkstation_apply_put: {
         parameters: {
             query?: never;
             header?: never;
@@ -3197,7 +3596,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["EnterWorkstationOut"];
                 };
             };
             /** @description Validation Error */
@@ -3207,6 +3606,165 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_enter_workstation_enterWorkstation_apply_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnterWorkstationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterWorkstationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_enter_workstation_by_user_id_enterWorkstation_apply_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_relation_enterRelation__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterRelation"];
+                };
+            };
+        };
+    };
+    update_relation_enterRelation__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnterRelationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterRelation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_relation_enterRelation__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnterRelationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterRelation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_relation_enterRelation__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

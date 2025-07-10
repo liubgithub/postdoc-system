@@ -3,7 +3,7 @@ import * as cls from "./styles.css"
 import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
 import StationProtocol from './coms/StationProtocol'
-import fetch from '@/api';
+import { postEnterApply, getEnterApply } from '@/api/enterWorkstation/enterapply/apply'
 interface TableRow {
     subject: string;
     postname: string;
@@ -61,21 +61,16 @@ export default defineComponent({
             console.log(activeMenu.value, 'sssss')
         }
 
-        const handleSubmit = async () =>{
-            try {
-                const res = await fetch.raw.POST('/enterWorkstation/apply',{
-                    body: formData.value
-                })
-                if(res && res.response && (res.response as Response).status === 200){
-                    ElMessage.success('提交成功！')
-                    dialogVisible.value = false
-                }else{
-                    ElMessage.error('提交失败！')
-                }
-            }catch(e){
-                ElMessage.error('提交失败！')
-            }
+        const handleSubmit = async () => {
+            const data = await postEnterApply(formData.value)
+            ElMessage.success('提交成功！')
+            dialogVisible.value = false
         }
+
+        onMounted(async()=> {
+            const data = await getEnterApply()
+            formData.value = data
+        })
         return () => (
             <ElContainer>
                 <ElAside width="15vw">
