@@ -7,7 +7,7 @@ export const getMyNewVarieties = async () => {
 };
 
 export const getNewVarietyById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_new_variety/${id}`);
+  const res = await raw.GET(`/pre_entry_new_variety/{id}`, {params: { path: { id } }});
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createNewVariety = async (data: any) => {
 };
 
 export const updateNewVariety = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_new_variety/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_new_variety/{id}`, { params: { path: { id } },body: data });
   return res.data;
 };
 
 export const deleteNewVariety = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_new_variety/${id}`);
+  const res = await raw.DELETE(`/pre_entry_new_variety/{id}`, {params: { path: { id } }});
   return res.data;
 }; 

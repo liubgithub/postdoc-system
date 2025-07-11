@@ -69,7 +69,7 @@ export default defineComponent({
 
         onMounted(async()=> {
             const data = await getEnterApply()
-            formData.value = data
+            formData.value = data as any
         })
         return () => (
             <ElContainer>

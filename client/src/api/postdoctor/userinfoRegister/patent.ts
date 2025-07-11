@@ -7,7 +7,7 @@ export const getMyPatents = async () => {
 };
 
 export const getPatentById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_patent/${id}`);
+  const res = await raw.GET(`/pre_entry_patent/{id}`, { params: { path: { id } } });
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createPatent = async (data: any) => {
 };
 
 export const updatePatent = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_patent/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_patent/{id}`, { params: { path: { id } }, body: data });
   return res.data;
 };
 
 export const deletePatent = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_patent/${id}`);
+  const res = await raw.DELETE(`/pre_entry_patent/{id}`, { params: { path: { id } } });
   return res.data;
 }; 

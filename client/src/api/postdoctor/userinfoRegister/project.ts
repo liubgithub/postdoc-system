@@ -7,7 +7,7 @@ export const getMyProjects = async () => {
 };
 
 export const getProjectById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_project/${id}`);
+  const res = await raw.GET(`/pre_entry_project/{id}`, { params: { path: { id } } });
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createProject = async (data: any) => {
 };
 
 export const updateProject = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_project/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_project/{id}`, { params: { path: { id } }, body: data });
   return res.data;
 };
 
 export const deleteProject = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_project/${id}`);
+  const res = await raw.DELETE(`/pre_entry_project/{id}`, { params: { path: { id } } });
   return res.data;
 };

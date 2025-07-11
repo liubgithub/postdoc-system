@@ -7,7 +7,7 @@ export const getMyIndustryStandards = async () => {
 };
 
 export const getIndustryStandardById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_industry_standard/${id}`);
+  const res = await raw.GET(`/pre_entry_industry_standard/{id}`, {params: { path: { id } }});
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createIndustryStandard = async (data: any) => {
 };
 
 export const updateIndustryStandard = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_industry_standard/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_industry_standard/{id}`, { params: { path: { id } },body: data });
   return res.data;
 };
 
 export const deleteIndustryStandard = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_industry_standard/${id}`);
+  const res = await raw.DELETE(`/pre_entry_industry_standard/{id}`, {params: { path: { id } }});
   return res.data;
 }; 

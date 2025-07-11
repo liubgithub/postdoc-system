@@ -7,7 +7,7 @@ export const getMyPapers = async () => {
 };
 
 export const getPaperById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_paper/${id}`);
+  const res = await raw.GET(`/pre_entry_paper/{id}`, {params: { path: { id } }});
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createPaper = async (data: any) => {
 };
 
 export const updatePaper = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_paper/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_paper/{id}`, { params: { path: { id } }, body: data });
   return res.data;
 };
 
 export const deletePaper = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_paper/${id}`);
+  const res = await raw.DELETE(`/pre_entry_paper/{id}`, {params: { path: { id } }});
   return res.data;
 };

@@ -7,7 +7,7 @@ export const getMySubjectResearches = async () => {
 };
 
 export const getSubjectResearchById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_subject_research/${id}`);
+  const res = await raw.GET(`/pre_entry_subject_research/{id}`, { params: { path: { id } } });
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createSubjectResearch = async (data: any) => {
 };
 
 export const updateSubjectResearch = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_subject_research/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_subject_research/{id}`, { params: { path: { id } }, body: data });
   return res.data;
 };
 
 export const deleteSubjectResearch = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_subject_research/${id}`);
+  const res = await raw.DELETE(`/pre_entry_subject_research/{id}`, { params: { path: { id } } });
   return res.data;
 }; 

@@ -7,7 +7,7 @@ export const getMyConferences = async () => {
 };
 
 export const getConferenceById = async (id: number) => {
-    const res = await raw.GET(`/pre_entry_conference/${id}`);
+    const res = await raw.GET(`/pre_entry_conference/{id}`, {params: { path: { id } }});
     return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createConference = async (data: any) => {
 };
 
 export const updateConference = async (id: number, data: any) => {
-    const res = await raw.PUT(`/pre_entry_conference/${id}`, { body: data });
+    const res = await raw.PUT(`/pre_entry_conference/{id}`, { params: { path: { id } },body: data });
     return res.data;
 };
 
 export const deleteConference = async (id: number) => {
-    const res = await raw.DELETE(`/pre_entry_conference/${id}`);
+    const res = await raw.DELETE(`/pre_entry_conference/{id}`, {params: { path: { id } }});
     return res.data;
 };

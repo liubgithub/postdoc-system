@@ -7,7 +7,7 @@ export const getMyCompetitionAwards = async () => {
 };
 
 export const getCompetitionAwardById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_competition_award/${id}`);
+  const res = await raw.GET(`/pre_entry_competition_award/{id}`, {params: { path: { id } }});
   return res.data;
 };
 
@@ -17,11 +17,11 @@ export const createCompetitionAward = async (data: any) => {
 };
 
 export const updateCompetitionAward = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_competition_award/${id}`, { body: data });
+  const res = await raw.PUT(`/pre_entry_competition_award/{id}`, { params: { path: { id } }, body: data });
   return res.data;
 };
 
 export const deleteCompetitionAward = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_competition_award/${id}`);
+  const res = await raw.DELETE(`/pre_entry_competition_award/{id}`, {params: { path: { id } }});
   return res.data;
 }; 
