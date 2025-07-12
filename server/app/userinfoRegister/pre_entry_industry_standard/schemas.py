@@ -3,14 +3,13 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryIndustryStandardBase(BaseModel):
+    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
     标准名称: Optional[str] = None
+    标准类型: Optional[str] = None
+    标准级别: Optional[str] = None
+    发布时间: Optional[datetime] = None
     标准编号: Optional[str] = None
-    发布日期: Optional[datetime] = None
-    实施日期: Optional[datetime] = None
-    归口单位: Optional[str] = None
-    起草单位: Optional[str] = None
-    适用范围: Optional[str] = None
-    上传文件: Optional[str] = None
+    标准证书文件: Optional[str] = None
     备注: Optional[str] = None
 
 class PreEntryIndustryStandardCreate(PreEntryIndustryStandardBase):

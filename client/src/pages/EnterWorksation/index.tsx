@@ -3,7 +3,7 @@ import * as cls from "./styles.css"
 import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
 import StationProtocol from './coms/StationProtocol'
-import { postEnterApply, getEnterApply } from '@/api/enterWorkstation/enterapply/apply'
+import fetch from '@/api/index'
 interface TableRow {
     subject: string;
     postname: string;
@@ -23,6 +23,7 @@ const menuList = [
 export default defineComponent({
     name: "EnterWS",
     setup() {
+
         const activeMenu = ref('application')
         const showApplication = ref(true)
         const formData = ref({
@@ -62,14 +63,21 @@ export default defineComponent({
         }
 
         const handleSubmit = async () => {
-            const data = await postEnterApply(formData.value)
+            
             ElMessage.success('提交成功！')
             dialogVisible.value = false
         }
 
         onMounted(async()=> {
-            const data = await getEnterApply()
-            formData.value = data as any
+            try{
+                const res = await fetch.raw.GET('/enterWorkstation/apply')
+                console.log(res.data,'resssss')
+                formData.value = res.data as any
+            }catch(error){
+                console.info('...')
+            }
+      
+           
         })
         return () => (
             <ElContainer>

@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import UserinfoRegister from "../userinfoRegister/form";
+import UserinfoRegister from "./form.tsx";
 import ResearchForm from "./researchForm";
 import * as styles from "./styles.css.ts";
 
