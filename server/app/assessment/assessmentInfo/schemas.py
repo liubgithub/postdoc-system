@@ -16,7 +16,7 @@ class StudentOut(StudentIn):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class AssessmentApplicationIn(BaseModel):
     user_id: int
@@ -31,4 +31,4 @@ class AssessmentApplicationOut(AssessmentApplicationIn):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
