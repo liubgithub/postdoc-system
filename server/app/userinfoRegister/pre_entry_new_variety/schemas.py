@@ -3,20 +3,12 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryNewVarietyBase(BaseModel):
-    # user_id: int
-    # achievement_id: Optional[int] = None
-    署名排序: Optional[str] = None
-    本校是否第一完成单位: Optional[str] = None
-    公示年份: Optional[datetime] = None
-    第一完成单位: Optional[str] = None
-    动植物名称: Optional[str] = None
-    品种名称: Optional[str] = None
-    选育单位: Optional[str] = None
-    公告号: Optional[str] = None
+    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    新品种名称: Optional[str] = None
+    品种类型: Optional[str] = None
+    审定时间: Optional[datetime] = None
     审定编号: Optional[str] = None
-    审定单位: Optional[str] = None
-    作者名单: Optional[str] = None
-    上传新品种证明文件: Optional[str] = None
+    新品种证书文件: Optional[str] = None
     备注: Optional[str] = None
 
 class PreEntryNewVarietyCreate(PreEntryNewVarietyBase):

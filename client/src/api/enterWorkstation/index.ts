@@ -1,4 +1,4 @@
-import init_fetch from '@/api/fetch'
+import {init_fetch} from '@/api/fetch'
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 

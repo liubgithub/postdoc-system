@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryPaperBase(BaseModel):
+    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
     论文名称: Optional[str] = None
     刊物名称: Optional[str] = None
     本人署名排序: Optional[str] = None

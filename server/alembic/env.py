@@ -16,6 +16,18 @@ from app.database import Base
 # 导入所有模型（重要：确保所有表都被注册）
 from app.models.user import User
 
+# 导入userinfoRegister相关的所有模型
+from app.userinfoRegister.pre_entry_paper.models import PreEntryPaper
+from app.userinfoRegister.pre_entry_patent.models import PreEntryPatent
+from app.userinfoRegister.pre_entry_book.models import PreEntryBook
+from app.userinfoRegister.pre_entry_competition_award.models import PreEntryCompetitionAward
+from app.userinfoRegister.pre_entry_conference.models import PreEntryConference
+from app.userinfoRegister.pre_entry_new_variety.models import PreEntryNewVariety
+from app.userinfoRegister.pre_entry_project.models import PreEntryProject
+from app.userinfoRegister.pre_entry_subject_research.models import PreEntrySubjectResearch
+from app.userinfoRegister.pre_entry_industry_standard.models import PreEntryIndustryStandard
+from app.userinfoRegister.bs_user_profile.models import Info, EducationExperience, WorkExperience
+
 # 如果有其他模型，在这里导入
 # from app.models.post import Post
 
