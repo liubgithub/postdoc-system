@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博士后管理系统 - 演示界面</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #34495e;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .token {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            font-size: 12px;
+        }
+        .links {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 博士后管理系统演示</h1>
+        
+        <div class="section">
+            <h3>🔐 用户登录</h3>
+            <div class="form-group">
+                <label for="loginUsername">用户名:</label>
+                <input type="text" id="loginUsername" placeholder="输入用户名 (例如: admin)">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">密码:</label>
+                <input type="password" id="loginPassword" placeholder="输入密码 (例如: admin123)">
+            </div>
+            <button onclick="login()">登录</button>
+            <div id="loginResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>👤 获取用户信息</h3>
+            <p>需要先登录获得Token</p>
+            <button onclick="getCurrentUser()">获取当前用户信息</button>
+            <div id="userResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>📝 用户注册</h3>
+            <div class="form-group">
+                <label for="regUsername">用户名:</label>
+                <input type="text" id="regUsername" placeholder="输入新用户名">
+            </div>
+            <div class="form-group">
+                <label for="regPassword">密码:</label>
+                <input type="password" id="regPassword" placeholder="输入密码">
+            </div>
+            <button onclick="register()">注册用户</button>
+            <div id="registerResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>🗑️ 删除用户 (仅管理员)</h3>
+            <div class="form-group">
+                <label for="deleteUsername">要删除的用户名:</label>
+                <input type="text" id="deleteUsername" placeholder="输入要删除的用户名">
+            </div>
+            <button onclick="deleteUser()" class="btn-danger">删除用户</button>
+            <div id="deleteResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>📊 预设测试账户</h3>
+            <p><strong>管理员:</strong> admin / admin123</p>
+            <p><strong>测试用户:</strong> 博士后张三 / zhang123</p>
+            <p><strong>测试用户:</strong> 博士后李四 / li123</p>
+            <p><strong>测试用户:</strong> 导师王五 / wang123</p>
+        </div>
+
+        <div class="links">
+            <a href="/docs" target="_blank">📖 API 文档</a>
+            <a href="/" target="_blank">🏠 API 状态</a>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = localStorage.getItem('token') || '';
+
+        function showResponse(elementId, data, isError = false, isToken = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'response ' + (isError ? 'error' : isToken ? 'token' : 'success');
+            
+            if (typeof data === 'object') {
+                element.textContent = JSON.stringify(data, null, 2);
+            } else {
+                element.textContent = data;
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                showResponse('loginResponse', '请输入用户名和密码', true);
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.access_token;
+                    localStorage.setItem('token', currentToken);
+                    showResponse('loginResponse', '登录成功！Token已保存\n' + JSON.stringify(data, null, 2), false, true);
+                } else {
+                    showResponse('loginResponse', '登录失败: ' + data.detail, true);
+                }
+            } catch (error) {
+                showResponse('loginResponse', '请求错误: ' + error.message, true);
+            }
+        }
+
+        async function getCurrentUser() {
+            if (!currentToken) {
+                showResponse('userResponse', '请先登录获取Token', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + currentToken
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('userResponse', data);
+                } else {
+                    showResponse('userResponse', '获取用户信息失败: ' + data.detail, true);
+                }
+            } catch (error) {
+                showResponse('userResponse', '请求错误: ' + error.message, true);
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            
+            if (!username || !password) {
+                showResponse('registerResponse', '请输入用户名和密码', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('registerResponse', data);
+                    document.getElementById('regUsername').value = '';
+                    document.getElementById('regPassword').value = '';
+                } else {
+                    showResponse('registerResponse', '注册失败: ' + data.detail, true);
+                }
+            } catch (error) {
+                showResponse('registerResponse', '请求错误: ' + error.message, true);
+            }
+        }
+
+        async function deleteUser() {
+            const username = document.getElementById('deleteUsername').value;
+            
+            if (!username) {
+                showResponse('deleteResponse', '请输入要删除的用户名', true);
+                return;
+            }
+
+            if (!currentToken) {
+                showResponse('deleteResponse', '请先登录获取管理员Token', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/users/' + encodeURIComponent(username), {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + currentToken
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('deleteResponse', data);
+                    document.getElementById('deleteUsername').value = '';
+                } else {
+                    showResponse('deleteResponse', '删除失败: ' + data.detail, true);
+                }
+            } catch (error) {
+                showResponse('deleteResponse', '请求错误: ' + error.message, true);
+            }
+        }
+
+        // 页面加载时检查是否有保存的token
+        if (currentToken) {
+            showResponse('loginResponse', '发现已保存的Token，可以直接获取用户信息', false, true);
+        }
+    </script>
+</body>
+</html>
