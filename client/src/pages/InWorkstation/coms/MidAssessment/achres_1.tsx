@@ -11,6 +11,7 @@ export default defineComponent({
     emits: ['update:model'],
     setup(props, { emit }) {
         const onInput = (key: string, value: any) => {
+            console.log('value',value)
             emit('update:model', { ...props.model, [key]: value })
         }
         return () => (
@@ -36,14 +37,22 @@ export default defineComponent({
                                     type="textarea"
                                     autosize={{ minRows: 12 }}
                                     rows={12}
+                                    modelValue={props.model.summary}
+                                    onInput={val => onInput('summary', val)}
                                 />
                             </ElFormItem>
                             {/* 签字和日期 */}
                             <div style={{ position: 'absolute', right: '30px', bottom: '20px', textAlign: 'right', width: '300px', color: '#333' }}>
-                                <div style={{ marginBottom: '10px' }}>博士后签字</div>
-                                <SignaturePad onChange={val => {/* 保存签名base64 */}} />
+                                <div style={{ marginBottom: '10px',marginRight:'220px' }}>博士后签字</div>
+                                <SignaturePad onChange={val => onInput('signature', val)} />
                                 <ElFormItem label="日期" prop="guideGroupDate">
-                                    <ElDatePicker type="date" placeholder="选择日期" style={{ width: '100%' }} />
+                                    <ElDatePicker
+                                        type="date"
+                                        placeholder="选择日期"
+                                        modelValue={props.model.date}
+                                        onUpdate:modelValue={val => onInput('date', val)}
+                                        style={{ width: '100%' }}
+                                    />
                                 </ElFormItem>
                             </div>
                         </div>
