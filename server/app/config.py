@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DB_NAME: str = "postgres"
 
     # JWT配置
-    SECRET_KEY: str = ""
+    SECRET_KEY: str = "qzS7O-tPMxeWmm-LPh3CGA-JdoX8F1Ir1nHGv9WNFAk"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
