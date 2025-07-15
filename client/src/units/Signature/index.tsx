@@ -10,9 +10,6 @@ export default defineComponent({
     onMounted(() => {
       if (canvasRef.value) {
         signaturePad = new SignaturePad(canvasRef.value)
-        const emitChange = () => emit('change', signaturePad!.toDataURL())
-        canvasRef.value.addEventListener('mouseup', emitChange)
-        canvasRef.value.addEventListener('touchend', emitChange)
       }
     })
 
@@ -21,10 +18,22 @@ export default defineComponent({
       emit('change', '')
     }
 
+    // 新增：确认签名
+    const confirm = () => {
+      if (signaturePad && !signaturePad.isEmpty()) {
+        emit('change', signaturePad.toDataURL())
+      } else {
+        emit('change', '')
+      }
+    }
+
     return () => (
       <div>
         <canvas ref={canvasRef} width={300} height={100} style="border:1px solid #ccc;" />
-        <button type="button" onClick={clear}>清除</button>
+        <div>
+          <button type="button" onClick={clear}>清除</button>
+          <button type="button" onClick={confirm} style="margin-left:8px;">确认签名</button>
+        </div>
       </div>
     )
   }

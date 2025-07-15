@@ -1,6 +1,6 @@
-import { defineComponent, ref } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert } from "element-plus";
 import * as styles from "./styles.css.ts";
+import SignaturePad from '@/units/Signature/index'
 
 export default defineComponent({
   name: "ResearchForm",
@@ -27,10 +27,12 @@ export default defineComponent({
       // Handle form submission
       props.onSubmitSuccess && props.onSubmitSuccess();
     };
-
+    const onInput = (val: any) => {
+      console.log(val, 'signature')
+    }
     return () => (
       <div class={styles.formWrapper}>
-        <ElForm model={form.value} labelWidth="200px">
+        <ElForm model={form.value} labelPosition="top">
           <h3>2. 相关科研情况填写</h3>
           <ElFormItem label="1. 前期工作基础">
             <ElInput
@@ -100,18 +102,14 @@ export default defineComponent({
               <ElAlert type="info" show-icon closable={false} style={{ marginBottom: '16px' }}>
                 <div>{form.value.commitment}</div>
               </ElAlert>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                  <ElInput
-                    v-model={form.value.signature}
-                    placeholder="请在此处签名"
-                    style={{ width: '160px' }}
-                  />
+              <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
+                <div>
+                  <SignaturePad onChange={val => onInput(val)} />
                   <ElDatePicker
                     v-model={form.value.date}
                     type="date"
                     placeholder="选择日期"
-                    style={{ width: '140px' }}
+                    style={{ width: '300px' }}
                   />
                 </div>
               </div>
