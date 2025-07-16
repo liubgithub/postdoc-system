@@ -5,11 +5,12 @@ import type { TableRow } from '@/types/common-table'
 import CommonPart from './commonPart'
 import OutAssessment from './coms/OutAssessment/index.tsx'
 import ExtensionRequest from './coms/ExtensionRequest/index.tsx'
+import ExitRequest from './coms/ExitRequest/index.tsx'
 const menuList = [
     { label: "出站申请", key: "outrequest" },
     { label: "出站考核", key: "outassessment" },
     { label: "延期申请", key: "extensionrequest" },
-    { label: "退站申请", key: "exitreuqest" },
+    { label: "退站申请", key: "exitrequest" },
 ]
 
 export default defineComponent({
@@ -99,6 +100,7 @@ export default defineComponent({
                     )}
                     {activeMenu.value === 'outassessment' && <OutAssessment />}
                     {activeMenu.value === 'extensionrequest' && <ExtensionRequest /> }
+                    {activeMenu.value === 'exitrequest' && <ExitRequest />}
                 </ElMain>
             </ElContainer>
         )
