@@ -84,6 +84,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/pre_entry_book/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload Book */
+        post: operations["upload_book_pre_entry_book_upload_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/pre_entry_book/": {
         parameters: {
             query?: never;
@@ -132,6 +149,23 @@ export interface paths {
         post?: never;
         /** Delete Book */
         delete: operations["delete_book_pre_entry_book__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_book/download/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Book File */
+        get: operations["download_book_file_pre_entry_book_download__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -705,6 +739,38 @@ export interface components {
             /** Client Secret */
             client_secret?: string | null;
         };
+        /** Body_upload_book_pre_entry_book_upload_post */
+        Body_upload_book_pre_entry_book_upload_post: {
+            /** 著作中文名 */
+            "\u8457\u4F5C\u4E2D\u6587\u540D": string;
+            /** 出版社 */
+            "\u51FA\u7248\u793E": string;
+            /** 第几作者 */
+            "\u7B2C\u51E0\u4F5C\u8005": string;
+            /** 出版日期 */
+            "\u51FA\u7248\u65E5\u671F": string;
+            /** 著作编号 */
+            "\u8457\u4F5C\u7F16\u53F7": string;
+            /** 著作类别 */
+            "\u8457\u4F5C\u7C7B\u522B": string;
+            /** 作者名单 */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /** 著作字数 */
+            "\u8457\u4F5C\u5B57\u6570": string;
+            /** 出版号 */
+            "\u51FA\u7248\u53F7": string;
+            /** Isbn */
+            isbn: string;
+            /** 作者排名 */
+            "\u4F5C\u8005\u6392\u540D": string;
+            /** 备注 */
+            "\u5907\u6CE8"?: string;
+            /**
+             * File
+             * Format: binary
+             */
+            file: string;
+        };
         /** EducationExperienceIn */
         EducationExperienceIn: {
             /** Start End */
@@ -929,6 +995,11 @@ export interface components {
         };
         /** PreEntryBook */
         PreEntryBook: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 著作中文名 */
             "\u8457\u4F5C\u4E2D\u6587\u540D"?: string | null;
             /** 出版社 */
@@ -970,6 +1041,11 @@ export interface components {
         };
         /** PreEntryBookCreate */
         PreEntryBookCreate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 著作中文名 */
             "\u8457\u4F5C\u4E2D\u6587\u540D"?: string | null;
             /** 出版社 */
@@ -999,6 +1075,11 @@ export interface components {
         };
         /** PreEntryBookUpdate */
         PreEntryBookUpdate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 著作中文名 */
             "\u8457\u4F5C\u4E2D\u6587\u540D"?: string | null;
             /** 出版社 */
@@ -1028,32 +1109,21 @@ export interface components {
         };
         /** PreEntryCompetitionAward */
         PreEntryCompetitionAward: {
-            /** 竞赛名称 */
-            "\u7ADE\u8D5B\u540D\u79F0"?: string | null;
-            /** 获奖类别 */
-            "\u83B7\u5956\u7C7B\u522B"?: string | null;
-            /** 获奖等级 */
-            "\u83B7\u5956\u7B49\u7EA7"?: string | null;
-            /** 获奖时间 */
-            "\u83B7\u5956\u65F6\u95F4"?: string | null;
-            /** 本人署名 */
-            "\u672C\u4EBA\u7F72\u540D"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
+            /** 获奖名称 */
+            "\u83B7\u5956\u540D\u79F0"?: string | null;
             /** 获奖级别 */
             "\u83B7\u5956\u7EA7\u522B"?: string | null;
-            /** 颁奖单位 */
-            "\u9881\u5956\u5355\u4F4D"?: string | null;
-            /** 第一完成单位 */
-            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 完成单位排名 */
-            "\u5B8C\u6210\u5355\u4F4D\u6392\u540D"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 奖项名称 */
-            "\u5956\u9879\u540D\u79F0"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 上传获奖证书文件 */
-            "\u4E0A\u4F20\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
+            /** 获奖时间 */
+            "\u83B7\u5956\u65F6\u95F4"?: string | null;
+            /** 获奖排名 */
+            "\u83B7\u5956\u6392\u540D"?: string | null;
+            /** 获奖证书文件 */
+            "\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
             /** Id */
@@ -1071,100 +1141,65 @@ export interface components {
         };
         /** PreEntryCompetitionAwardCreate */
         PreEntryCompetitionAwardCreate: {
-            /** 竞赛名称 */
-            "\u7ADE\u8D5B\u540D\u79F0"?: string | null;
-            /** 获奖类别 */
-            "\u83B7\u5956\u7C7B\u522B"?: string | null;
-            /** 获奖等级 */
-            "\u83B7\u5956\u7B49\u7EA7"?: string | null;
-            /** 获奖时间 */
-            "\u83B7\u5956\u65F6\u95F4"?: string | null;
-            /** 本人署名 */
-            "\u672C\u4EBA\u7F72\u540D"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
+            /** 获奖名称 */
+            "\u83B7\u5956\u540D\u79F0"?: string | null;
             /** 获奖级别 */
             "\u83B7\u5956\u7EA7\u522B"?: string | null;
-            /** 颁奖单位 */
-            "\u9881\u5956\u5355\u4F4D"?: string | null;
-            /** 第一完成单位 */
-            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 完成单位排名 */
-            "\u5B8C\u6210\u5355\u4F4D\u6392\u540D"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 奖项名称 */
-            "\u5956\u9879\u540D\u79F0"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 上传获奖证书文件 */
-            "\u4E0A\u4F20\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
+            /** 获奖时间 */
+            "\u83B7\u5956\u65F6\u95F4"?: string | null;
+            /** 获奖排名 */
+            "\u83B7\u5956\u6392\u540D"?: string | null;
+            /** 获奖证书文件 */
+            "\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryCompetitionAwardUpdate */
         PreEntryCompetitionAwardUpdate: {
-            /** 竞赛名称 */
-            "\u7ADE\u8D5B\u540D\u79F0"?: string | null;
-            /** 获奖类别 */
-            "\u83B7\u5956\u7C7B\u522B"?: string | null;
-            /** 获奖等级 */
-            "\u83B7\u5956\u7B49\u7EA7"?: string | null;
-            /** 获奖时间 */
-            "\u83B7\u5956\u65F6\u95F4"?: string | null;
-            /** 本人署名 */
-            "\u672C\u4EBA\u7F72\u540D"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
+            /** 获奖名称 */
+            "\u83B7\u5956\u540D\u79F0"?: string | null;
             /** 获奖级别 */
             "\u83B7\u5956\u7EA7\u522B"?: string | null;
-            /** 颁奖单位 */
-            "\u9881\u5956\u5355\u4F4D"?: string | null;
-            /** 第一完成单位 */
-            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 完成单位排名 */
-            "\u5B8C\u6210\u5355\u4F4D\u6392\u540D"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 奖项名称 */
-            "\u5956\u9879\u540D\u79F0"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 上传获奖证书文件 */
-            "\u4E0A\u4F20\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
+            /** 获奖时间 */
+            "\u83B7\u5956\u65F6\u95F4"?: string | null;
+            /** 获奖排名 */
+            "\u83B7\u5956\u6392\u540D"?: string | null;
+            /** 获奖证书文件 */
+            "\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryConference */
         PreEntryConference: {
-            /** 会议编号 */
-            "\u4F1A\u8BAE\u7F16\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 会议名称 */
             "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
-            /** 会议英文名 */
-            "\u4F1A\u8BAE\u82F1\u6587\u540D"?: string | null;
-            /** 主办单位 */
-            "\u4E3B\u529E\u5355\u4F4D"?: string | null;
-            /** 会议举办形式 */
-            "\u4F1A\u8BAE\u4E3E\u529E\u5F62\u5F0F"?: string | null;
             /** 会议等级 */
-            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
-            /** 国家或地区 */
-            "\u56FD\u5BB6\u6216\u5730\u533A"?: string | null;
-            /** 是否境外 */
-            "\u662F\u5426\u5883\u5916"?: string | null;
-            /** 会议起始日 */
-            "\u4F1A\u8BAE\u8D77\u59CB\u65E5"?: string | null;
-            /** 会议终止日 */
-            "\u4F1A\u8BAE\u7EC8\u6B62\u65E5"?: string | null;
-            /** 举办单位 */
-            "\u4E3E\u529E\u5355\u4F4D"?: string | null;
-            /** 会议人数 */
-            "\u4F1A\u8BAE\u4EBA\u6570"?: string | null;
-            /** 联系人电话 */
-            "\u8054\u7CFB\u4EBA\u7535\u8BDD"?: string | null;
+            "\u4F1A\u8BAE\u7EA7\u522B"?: string | null;
+            /** 会议时间 */
+            "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
             /** 会议地点 */
             "\u4F1A\u8BAE\u5730\u70B9"?: string | null;
-            /** 会议报告 */
-            "\u4F1A\u8BAE\u62A5\u544A"?: string | null;
-            /** 会议报告全文 */
-            "\u4F1A\u8BAE\u62A5\u544A\u5168\u6587"?: string | null;
+            /** 报告类型 */
+            "\u62A5\u544A\u7C7B\u578B"?: string | null;
+            /** 报告题目 */
+            "\u62A5\u544A\u9898\u76EE"?: string | null;
+            /** 会议证书文件 */
+            "\u4F1A\u8BAE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
             /** Id */
@@ -1182,96 +1217,71 @@ export interface components {
         };
         /** PreEntryConferenceCreate */
         PreEntryConferenceCreate: {
-            /** 会议编号 */
-            "\u4F1A\u8BAE\u7F16\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 会议名称 */
             "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
-            /** 会议英文名 */
-            "\u4F1A\u8BAE\u82F1\u6587\u540D"?: string | null;
-            /** 主办单位 */
-            "\u4E3B\u529E\u5355\u4F4D"?: string | null;
-            /** 会议举办形式 */
-            "\u4F1A\u8BAE\u4E3E\u529E\u5F62\u5F0F"?: string | null;
             /** 会议等级 */
-            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
-            /** 国家或地区 */
-            "\u56FD\u5BB6\u6216\u5730\u533A"?: string | null;
-            /** 是否境外 */
-            "\u662F\u5426\u5883\u5916"?: string | null;
-            /** 会议起始日 */
-            "\u4F1A\u8BAE\u8D77\u59CB\u65E5"?: string | null;
-            /** 会议终止日 */
-            "\u4F1A\u8BAE\u7EC8\u6B62\u65E5"?: string | null;
-            /** 举办单位 */
-            "\u4E3E\u529E\u5355\u4F4D"?: string | null;
-            /** 会议人数 */
-            "\u4F1A\u8BAE\u4EBA\u6570"?: string | null;
-            /** 联系人电话 */
-            "\u8054\u7CFB\u4EBA\u7535\u8BDD"?: string | null;
+            "\u4F1A\u8BAE\u7EA7\u522B"?: string | null;
+            /** 会议时间 */
+            "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
             /** 会议地点 */
             "\u4F1A\u8BAE\u5730\u70B9"?: string | null;
-            /** 会议报告 */
-            "\u4F1A\u8BAE\u62A5\u544A"?: string | null;
-            /** 会议报告全文 */
-            "\u4F1A\u8BAE\u62A5\u544A\u5168\u6587"?: string | null;
+            /** 报告类型 */
+            "\u62A5\u544A\u7C7B\u578B"?: string | null;
+            /** 报告题目 */
+            "\u62A5\u544A\u9898\u76EE"?: string | null;
+            /** 会议证书文件 */
+            "\u4F1A\u8BAE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryConferenceUpdate */
         PreEntryConferenceUpdate: {
-            /** 会议编号 */
-            "\u4F1A\u8BAE\u7F16\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 会议名称 */
             "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
-            /** 会议英文名 */
-            "\u4F1A\u8BAE\u82F1\u6587\u540D"?: string | null;
-            /** 主办单位 */
-            "\u4E3B\u529E\u5355\u4F4D"?: string | null;
-            /** 会议举办形式 */
-            "\u4F1A\u8BAE\u4E3E\u529E\u5F62\u5F0F"?: string | null;
             /** 会议等级 */
-            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
-            /** 国家或地区 */
-            "\u56FD\u5BB6\u6216\u5730\u533A"?: string | null;
-            /** 是否境外 */
-            "\u662F\u5426\u5883\u5916"?: string | null;
-            /** 会议起始日 */
-            "\u4F1A\u8BAE\u8D77\u59CB\u65E5"?: string | null;
-            /** 会议终止日 */
-            "\u4F1A\u8BAE\u7EC8\u6B62\u65E5"?: string | null;
-            /** 举办单位 */
-            "\u4E3E\u529E\u5355\u4F4D"?: string | null;
-            /** 会议人数 */
-            "\u4F1A\u8BAE\u4EBA\u6570"?: string | null;
-            /** 联系人电话 */
-            "\u8054\u7CFB\u4EBA\u7535\u8BDD"?: string | null;
+            "\u4F1A\u8BAE\u7EA7\u522B"?: string | null;
+            /** 会议时间 */
+            "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
             /** 会议地点 */
             "\u4F1A\u8BAE\u5730\u70B9"?: string | null;
-            /** 会议报告 */
-            "\u4F1A\u8BAE\u62A5\u544A"?: string | null;
-            /** 会议报告全文 */
-            "\u4F1A\u8BAE\u62A5\u544A\u5168\u6587"?: string | null;
+            /** 报告类型 */
+            "\u62A5\u544A\u7C7B\u578B"?: string | null;
+            /** 报告题目 */
+            "\u62A5\u544A\u9898\u76EE"?: string | null;
+            /** 会议证书文件 */
+            "\u4F1A\u8BAE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryIndustryStandard */
         PreEntryIndustryStandard: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 标准名称 */
             "\u6807\u51C6\u540D\u79F0"?: string | null;
+            /** 标准类型 */
+            "\u6807\u51C6\u7C7B\u578B"?: string | null;
+            /** 标准级别 */
+            "\u6807\u51C6\u7EA7\u522B"?: string | null;
+            /** 发布时间 */
+            "\u53D1\u5E03\u65F6\u95F4"?: string | null;
             /** 标准编号 */
             "\u6807\u51C6\u7F16\u53F7"?: string | null;
-            /** 发布日期 */
-            "\u53D1\u5E03\u65E5\u671F"?: string | null;
-            /** 实施日期 */
-            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
-            /** 归口单位 */
-            "\u5F52\u53E3\u5355\u4F4D"?: string | null;
-            /** 起草单位 */
-            "\u8D77\u8349\u5355\u4F4D"?: string | null;
-            /** 适用范围 */
-            "\u9002\u7528\u8303\u56F4"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 标准证书文件 */
+            "\u6807\u51C6\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
             /** Id */
@@ -1289,72 +1299,65 @@ export interface components {
         };
         /** PreEntryIndustryStandardCreate */
         PreEntryIndustryStandardCreate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 标准名称 */
             "\u6807\u51C6\u540D\u79F0"?: string | null;
+            /** 标准类型 */
+            "\u6807\u51C6\u7C7B\u578B"?: string | null;
+            /** 标准级别 */
+            "\u6807\u51C6\u7EA7\u522B"?: string | null;
+            /** 发布时间 */
+            "\u53D1\u5E03\u65F6\u95F4"?: string | null;
             /** 标准编号 */
             "\u6807\u51C6\u7F16\u53F7"?: string | null;
-            /** 发布日期 */
-            "\u53D1\u5E03\u65E5\u671F"?: string | null;
-            /** 实施日期 */
-            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
-            /** 归口单位 */
-            "\u5F52\u53E3\u5355\u4F4D"?: string | null;
-            /** 起草单位 */
-            "\u8D77\u8349\u5355\u4F4D"?: string | null;
-            /** 适用范围 */
-            "\u9002\u7528\u8303\u56F4"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 标准证书文件 */
+            "\u6807\u51C6\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryIndustryStandardUpdate */
         PreEntryIndustryStandardUpdate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 标准名称 */
             "\u6807\u51C6\u540D\u79F0"?: string | null;
+            /** 标准类型 */
+            "\u6807\u51C6\u7C7B\u578B"?: string | null;
+            /** 标准级别 */
+            "\u6807\u51C6\u7EA7\u522B"?: string | null;
+            /** 发布时间 */
+            "\u53D1\u5E03\u65F6\u95F4"?: string | null;
             /** 标准编号 */
             "\u6807\u51C6\u7F16\u53F7"?: string | null;
-            /** 发布日期 */
-            "\u53D1\u5E03\u65E5\u671F"?: string | null;
-            /** 实施日期 */
-            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
-            /** 归口单位 */
-            "\u5F52\u53E3\u5355\u4F4D"?: string | null;
-            /** 起草单位 */
-            "\u8D77\u8349\u5355\u4F4D"?: string | null;
-            /** 适用范围 */
-            "\u9002\u7528\u8303\u56F4"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 标准证书文件 */
+            "\u6807\u51C6\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryNewVariety */
         PreEntryNewVariety: {
-            /** 署名排序 */
-            "\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 本校是否第一完成单位 */
-            "\u672C\u6821\u662F\u5426\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 公示年份 */
-            "\u516C\u793A\u5E74\u4EFD"?: string | null;
-            /** 第一完成单位 */
-            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 动植物名称 */
-            "\u52A8\u690D\u7269\u540D\u79F0"?: string | null;
-            /** 品种名称 */
-            "\u54C1\u79CD\u540D\u79F0"?: string | null;
-            /** 选育单位 */
-            "\u9009\u80B2\u5355\u4F4D"?: string | null;
-            /** 公告号 */
-            "\u516C\u544A\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
+            /** 新品种名称 */
+            "\u65B0\u54C1\u79CD\u540D\u79F0"?: string | null;
+            /** 品种类型 */
+            "\u54C1\u79CD\u7C7B\u578B"?: string | null;
+            /** 审定时间 */
+            "\u5BA1\u5B9A\u65F6\u95F4"?: string | null;
             /** 审定编号 */
             "\u5BA1\u5B9A\u7F16\u53F7"?: string | null;
-            /** 审定单位 */
-            "\u5BA1\u5B9A\u5355\u4F4D"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 上传新品种证明文件 */
-            "\u4E0A\u4F20\u65B0\u54C1\u79CD\u8BC1\u660E\u6587\u4EF6"?: string | null;
+            /** 新品种证书文件 */
+            "\u65B0\u54C1\u79CD\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
             /** Id */
@@ -1372,64 +1375,51 @@ export interface components {
         };
         /** PreEntryNewVarietyCreate */
         PreEntryNewVarietyCreate: {
-            /** 署名排序 */
-            "\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 本校是否第一完成单位 */
-            "\u672C\u6821\u662F\u5426\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 公示年份 */
-            "\u516C\u793A\u5E74\u4EFD"?: string | null;
-            /** 第一完成单位 */
-            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 动植物名称 */
-            "\u52A8\u690D\u7269\u540D\u79F0"?: string | null;
-            /** 品种名称 */
-            "\u54C1\u79CD\u540D\u79F0"?: string | null;
-            /** 选育单位 */
-            "\u9009\u80B2\u5355\u4F4D"?: string | null;
-            /** 公告号 */
-            "\u516C\u544A\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
+            /** 新品种名称 */
+            "\u65B0\u54C1\u79CD\u540D\u79F0"?: string | null;
+            /** 品种类型 */
+            "\u54C1\u79CD\u7C7B\u578B"?: string | null;
+            /** 审定时间 */
+            "\u5BA1\u5B9A\u65F6\u95F4"?: string | null;
             /** 审定编号 */
             "\u5BA1\u5B9A\u7F16\u53F7"?: string | null;
-            /** 审定单位 */
-            "\u5BA1\u5B9A\u5355\u4F4D"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 上传新品种证明文件 */
-            "\u4E0A\u4F20\u65B0\u54C1\u79CD\u8BC1\u660E\u6587\u4EF6"?: string | null;
+            /** 新品种证书文件 */
+            "\u65B0\u54C1\u79CD\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryNewVarietyUpdate */
         PreEntryNewVarietyUpdate: {
-            /** 署名排序 */
-            "\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 本校是否第一完成单位 */
-            "\u672C\u6821\u662F\u5426\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 公示年份 */
-            "\u516C\u793A\u5E74\u4EFD"?: string | null;
-            /** 第一完成单位 */
-            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D"?: string | null;
-            /** 动植物名称 */
-            "\u52A8\u690D\u7269\u540D\u79F0"?: string | null;
-            /** 品种名称 */
-            "\u54C1\u79CD\u540D\u79F0"?: string | null;
-            /** 选育单位 */
-            "\u9009\u80B2\u5355\u4F4D"?: string | null;
-            /** 公告号 */
-            "\u516C\u544A\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
+            /** 新品种名称 */
+            "\u65B0\u54C1\u79CD\u540D\u79F0"?: string | null;
+            /** 品种类型 */
+            "\u54C1\u79CD\u7C7B\u578B"?: string | null;
+            /** 审定时间 */
+            "\u5BA1\u5B9A\u65F6\u95F4"?: string | null;
             /** 审定编号 */
             "\u5BA1\u5B9A\u7F16\u53F7"?: string | null;
-            /** 审定单位 */
-            "\u5BA1\u5B9A\u5355\u4F4D"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 上传新品种证明文件 */
-            "\u4E0A\u4F20\u65B0\u54C1\u79CD\u8BC1\u660E\u6587\u4EF6"?: string | null;
+            /** 新品种证书文件 */
+            "\u65B0\u54C1\u79CD\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryPaper */
         PreEntryPaper: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 论文名称 */
             "\u8BBA\u6587\u540D\u79F0"?: string | null;
             /** 刊物名称 */
@@ -1499,6 +1489,11 @@ export interface components {
         };
         /** PreEntryPaperCreate */
         PreEntryPaperCreate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 论文名称 */
             "\u8BBA\u6587\u540D\u79F0"?: string | null;
             /** 刊物名称 */
@@ -1556,6 +1551,11 @@ export interface components {
         };
         /** PreEntryPaperUpdate */
         PreEntryPaperUpdate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 论文名称 */
             "\u8BBA\u6587\u540D\u79F0"?: string | null;
             /** 刊物名称 */
@@ -1613,6 +1613,11 @@ export interface components {
         };
         /** PreEntryPatent */
         PreEntryPatent: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 专利权人 */
             "\u4E13\u5229\u6743\u4EBA"?: string | null;
             /** 专利成果编码 */
@@ -1656,6 +1661,11 @@ export interface components {
         };
         /** PreEntryPatentCreate */
         PreEntryPatentCreate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 专利权人 */
             "\u4E13\u5229\u6743\u4EBA"?: string | null;
             /** 专利成果编码 */
@@ -1687,6 +1697,11 @@ export interface components {
         };
         /** PreEntryPatentUpdate */
         PreEntryPatentUpdate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 专利权人 */
             "\u4E13\u5229\u6743\u4EBA"?: string | null;
             /** 专利成果编码 */
@@ -1718,38 +1733,27 @@ export interface components {
         };
         /** PreEntryProject */
         PreEntryProject: {
-            /** 项目编号 */
-            "\u9879\u76EE\u7F16\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 项目名称 */
             "\u9879\u76EE\u540D\u79F0"?: string | null;
             /** 项目类型 */
             "\u9879\u76EE\u7C7B\u578B"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 项目标题 */
-            "\u9879\u76EE\u6807\u9898"?: string | null;
-            /** 立项日期 */
-            "\u7ACB\u9879\u65E5\u671F"?: string | null;
-            /** 项目层次 */
-            "\u9879\u76EE\u5C42\u6B21"?: string | null;
-            /** 是否结项 */
-            "\u662F\u5426\u7ED3\u9879"?: string | null;
-            /** 验收或鉴定日期 */
-            "\u9A8C\u6536\u6216\u9274\u5B9A\u65E5\u671F"?: string | null;
-            /** 项目执行状态 */
-            "\u9879\u76EE\u6267\u884C\u72B6\u6001"?: string | null;
-            /** 本人角色 */
-            "\u672C\u4EBA\u89D2\u8272"?: string | null;
-            /** 参与者总数 */
-            "\u53C2\u4E0E\u8005\u603B\u6570"?: string | null;
-            /** 参与者名单 */
-            "\u53C2\u4E0E\u8005\u540D\u5355"?: string | null;
-            /** 承担任务 */
-            "\u627F\u62C5\u4EFB\u52A1"?: string | null;
-            /** 项目经费说明 */
-            "\u9879\u76EE\u7ECF\u8D39\u8BF4\u660E"?: string | null;
-            /** 上传项目成果文件 */
-            "\u4E0A\u4F20\u9879\u76EE\u6210\u679C\u6587\u4EF6"?: string | null;
+            /** 项目级别 */
+            "\u9879\u76EE\u7EA7\u522B"?: string | null;
+            /** 项目开始时间 */
+            "\u9879\u76EE\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 项目结束时间 */
+            "\u9879\u76EE\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /** 项目经费 */
+            "\u9879\u76EE\u7ECF\u8D39"?: string | null;
+            /** 项目负责人 */
+            "\u9879\u76EE\u8D1F\u8D23\u4EBA"?: string | null;
+            /** 项目证书文件 */
+            "\u9879\u76EE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
             /** Id */
@@ -1769,96 +1773,79 @@ export interface components {
         };
         /** PreEntryProjectCreate */
         PreEntryProjectCreate: {
-            /** 项目编号 */
-            "\u9879\u76EE\u7F16\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 项目名称 */
             "\u9879\u76EE\u540D\u79F0"?: string | null;
             /** 项目类型 */
             "\u9879\u76EE\u7C7B\u578B"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 项目标题 */
-            "\u9879\u76EE\u6807\u9898"?: string | null;
-            /** 立项日期 */
-            "\u7ACB\u9879\u65E5\u671F"?: string | null;
-            /** 项目层次 */
-            "\u9879\u76EE\u5C42\u6B21"?: string | null;
-            /** 是否结项 */
-            "\u662F\u5426\u7ED3\u9879"?: string | null;
-            /** 验收或鉴定日期 */
-            "\u9A8C\u6536\u6216\u9274\u5B9A\u65E5\u671F"?: string | null;
-            /** 项目执行状态 */
-            "\u9879\u76EE\u6267\u884C\u72B6\u6001"?: string | null;
-            /** 本人角色 */
-            "\u672C\u4EBA\u89D2\u8272"?: string | null;
-            /** 参与者总数 */
-            "\u53C2\u4E0E\u8005\u603B\u6570"?: string | null;
-            /** 参与者名单 */
-            "\u53C2\u4E0E\u8005\u540D\u5355"?: string | null;
-            /** 承担任务 */
-            "\u627F\u62C5\u4EFB\u52A1"?: string | null;
-            /** 项目经费说明 */
-            "\u9879\u76EE\u7ECF\u8D39\u8BF4\u660E"?: string | null;
-            /** 上传项目成果文件 */
-            "\u4E0A\u4F20\u9879\u76EE\u6210\u679C\u6587\u4EF6"?: string | null;
+            /** 项目级别 */
+            "\u9879\u76EE\u7EA7\u522B"?: string | null;
+            /** 项目开始时间 */
+            "\u9879\u76EE\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 项目结束时间 */
+            "\u9879\u76EE\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /** 项目经费 */
+            "\u9879\u76EE\u7ECF\u8D39"?: string | null;
+            /** 项目负责人 */
+            "\u9879\u76EE\u8D1F\u8D23\u4EBA"?: string | null;
+            /** 项目证书文件 */
+            "\u9879\u76EE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryProjectUpdate */
         PreEntryProjectUpdate: {
-            /** 项目编号 */
-            "\u9879\u76EE\u7F16\u53F7"?: string | null;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 项目名称 */
             "\u9879\u76EE\u540D\u79F0"?: string | null;
             /** 项目类型 */
             "\u9879\u76EE\u7C7B\u578B"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 项目标题 */
-            "\u9879\u76EE\u6807\u9898"?: string | null;
-            /** 立项日期 */
-            "\u7ACB\u9879\u65E5\u671F"?: string | null;
-            /** 项目层次 */
-            "\u9879\u76EE\u5C42\u6B21"?: string | null;
-            /** 是否结项 */
-            "\u662F\u5426\u7ED3\u9879"?: string | null;
-            /** 验收或鉴定日期 */
-            "\u9A8C\u6536\u6216\u9274\u5B9A\u65E5\u671F"?: string | null;
-            /** 项目执行状态 */
-            "\u9879\u76EE\u6267\u884C\u72B6\u6001"?: string | null;
-            /** 本人角色 */
-            "\u672C\u4EBA\u89D2\u8272"?: string | null;
-            /** 参与者总数 */
-            "\u53C2\u4E0E\u8005\u603B\u6570"?: string | null;
-            /** 参与者名单 */
-            "\u53C2\u4E0E\u8005\u540D\u5355"?: string | null;
-            /** 承担任务 */
-            "\u627F\u62C5\u4EFB\u52A1"?: string | null;
-            /** 项目经费说明 */
-            "\u9879\u76EE\u7ECF\u8D39\u8BF4\u660E"?: string | null;
-            /** 上传项目成果文件 */
-            "\u4E0A\u4F20\u9879\u76EE\u6210\u679C\u6587\u4EF6"?: string | null;
+            /** 项目级别 */
+            "\u9879\u76EE\u7EA7\u522B"?: string | null;
+            /** 项目开始时间 */
+            "\u9879\u76EE\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 项目结束时间 */
+            "\u9879\u76EE\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /** 项目经费 */
+            "\u9879\u76EE\u7ECF\u8D39"?: string | null;
+            /** 项目负责人 */
+            "\u9879\u76EE\u8D1F\u8D23\u4EBA"?: string | null;
+            /** 项目证书文件 */
+            "\u9879\u76EE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntrySubjectResearch */
         PreEntrySubjectResearch: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0"?: string | null;
-            /** 课题来源 */
-            "\u8BFE\u9898\u6765\u6E90"?: string | null;
-            /** 开始时间 */
-            "\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 结束时间 */
-            "\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 课题负责人 */
-            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 本人承担部分 */
-            "\u672C\u4EBA\u627F\u62C5\u90E8\u5206"?: string | null;
+            /** 课题类型 */
+            "\u8BFE\u9898\u7C7B\u578B"?: string | null;
             /** 课题级别 */
             "\u8BFE\u9898\u7EA7\u522B"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 课题开始时间 */
+            "\u8BFE\u9898\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 课题结束时间 */
+            "\u8BFE\u9898\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /** 课题经费 */
+            "\u8BFE\u9898\u7ECF\u8D39"?: string | null;
+            /** 课题负责人 */
+            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
+            /** 课题证书文件 */
+            "\u8BFE\u9898\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
             /** Id */
@@ -1876,43 +1863,53 @@ export interface components {
         };
         /** PreEntrySubjectResearchCreate */
         PreEntrySubjectResearchCreate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0"?: string | null;
-            /** 课题来源 */
-            "\u8BFE\u9898\u6765\u6E90"?: string | null;
-            /** 开始时间 */
-            "\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 结束时间 */
-            "\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 课题负责人 */
-            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 本人承担部分 */
-            "\u672C\u4EBA\u627F\u62C5\u90E8\u5206"?: string | null;
+            /** 课题类型 */
+            "\u8BFE\u9898\u7C7B\u578B"?: string | null;
             /** 课题级别 */
             "\u8BFE\u9898\u7EA7\u522B"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 课题开始时间 */
+            "\u8BFE\u9898\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 课题结束时间 */
+            "\u8BFE\u9898\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /** 课题经费 */
+            "\u8BFE\u9898\u7ECF\u8D39"?: string | null;
+            /** 课题负责人 */
+            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
+            /** 课题证书文件 */
+            "\u8BFE\u9898\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
         /** PreEntrySubjectResearchUpdate */
         PreEntrySubjectResearchUpdate: {
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0"?: string | null;
-            /** 课题来源 */
-            "\u8BFE\u9898\u6765\u6E90"?: string | null;
-            /** 开始时间 */
-            "\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 结束时间 */
-            "\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 课题负责人 */
-            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 本人承担部分 */
-            "\u672C\u4EBA\u627F\u62C5\u90E8\u5206"?: string | null;
+            /** 课题类型 */
+            "\u8BFE\u9898\u7C7B\u578B"?: string | null;
             /** 课题级别 */
             "\u8BFE\u9898\u7EA7\u522B"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
+            /** 课题开始时间 */
+            "\u8BFE\u9898\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 课题结束时间 */
+            "\u8BFE\u9898\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /** 课题经费 */
+            "\u8BFE\u9898\u7ECF\u8D39"?: string | null;
+            /** 课题负责人 */
+            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
+            /** 课题证书文件 */
+            "\u8BFE\u9898\u8BC1\u4E66\u6587\u4EF6"?: string | null;
             /** 备注 */
             "\u5907\u6CE8"?: string | null;
         };
@@ -2081,6 +2078,39 @@ export interface operations {
             };
         };
     };
+    upload_book_pre_entry_book_upload_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_book_pre_entry_book_upload_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryBook"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_book_pre_entry_book__post: {
         parameters: {
             query?: never;
@@ -2201,6 +2231,37 @@ export interface operations {
         };
     };
     delete_book_pre_entry_book__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_book_file_pre_entry_book_download__id__get: {
         parameters: {
             query?: never;
             header?: never;
