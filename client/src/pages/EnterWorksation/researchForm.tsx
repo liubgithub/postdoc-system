@@ -1,6 +1,7 @@
 import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert } from "element-plus";
 import * as styles from "./styles.css.ts";
 import SignaturePad from '@/units/Signature/index'
+import fetch from '@/api/index.ts'
 
 export default defineComponent({
   name: "ResearchForm",
@@ -12,7 +13,7 @@ export default defineComponent({
   },
   setup(props) {
     const form = ref({
-      previousWork: "",
+      baseWork: "",
       necessityAnalysis: "",
       researchPlan: "",
       achievements: "",
@@ -24,19 +25,32 @@ export default defineComponent({
     });
 
     const handleSubmit = () => {
-      // Handle form submission
-      props.onSubmitSuccess && props.onSubmitSuccess();
+      // 判断是新增还是修改
+      // const method = form.value.id ? 'PUT' : 'POST';
+      // const url = '/enterRelation/';
+      // const payload = { ...form.value };
+      // const res = await fetch.raw.[method](url, payload);
+      // if (res && res.success) {
+      //   props.onSubmitSuccess && props.onSubmitSuccess();
+      // }
     };
     const onInput = (val: any) => {
       console.log(val, 'signature')
     }
+
+    onMounted(async () => {
+      const res = await fetch.raw.GET('/enterRelation/');
+      if (res && res.data) {
+        Object.assign(form.value, res.data);
+      }
+    });
     return () => (
       <div class={styles.formWrapper}>
         <ElForm model={form.value} labelPosition="top">
           <h3>2. 相关科研情况填写</h3>
           <ElFormItem label="1. 前期工作基础">
             <ElInput
-              v-model={form.value.previousWork}
+              v-model={form.value.baseWork}
               type="textarea"
               rows={4}
               placeholder="入站前的科研训练、相关进展，获得资助的情况等"
@@ -115,7 +129,6 @@ export default defineComponent({
               </div>
             </div>
           </ElFormItem>
-
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
             <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
           </div>
