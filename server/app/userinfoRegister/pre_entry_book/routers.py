@@ -15,7 +15,7 @@ router = APIRouter(
     tags=["著作信息"]
 )
 
-UPLOAD_DIR = os.getenv("BOOK_UPLOAD_DIR", "uploaded_files/pre_entry_book")
+UPLOAD_ROOT = os.getenv("UPLOAD_ROOT", os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../uploaded_files')))
 
 def get_unique_filename(filename: str) -> str:
     ext = os.path.splitext(filename)[1]
@@ -41,13 +41,13 @@ async def upload_book(
 ):
     file_url = None
     if file:
-        user_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
+        user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_book", "上传文件")
         os.makedirs(user_dir, exist_ok=True)
         unique_filename = get_unique_filename(file.filename)
         file_path = os.path.join(user_dir, unique_filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        file_url = f"/static/pre_entry_book/{current_user.id}/{unique_filename}"
+        file_url = f"/static/{current_user.id}/pre_entry_book/上传文件/{unique_filename}"
     try:
         pub_date = datetime.strptime(出版日期, "%Y-%m-%d")
     except Exception:
@@ -130,13 +130,13 @@ async def update_book(
     db_book.备注 = 备注
 
     if file:
-        user_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
+        user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_book", "上传文件")
         os.makedirs(user_dir, exist_ok=True)
         unique_filename = get_unique_filename(file.filename)
         file_path = os.path.join(user_dir, unique_filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        db_book.上传文件 = f"/static/pre_entry_book/{current_user.id}/{unique_filename}"
+        db_book.上传文件 = f"/static/{current_user.id}/pre_entry_book/上传文件/{unique_filename}"
     # 如果 file 为空，不覆盖 db_book.上传文件
 
     db.commit()
@@ -148,6 +148,14 @@ def delete_book(id: int, db: Session = Depends(get_db), current_user=Depends(get
     db_book = db.query(models.PreEntryBook).filter(models.PreEntryBook.id == id, models.PreEntryBook.user_id == current_user.id).first()
     if not db_book:
         raise HTTPException(status_code=404, detail="Book not found")
+    # 删除物理文件（如果有）
+    if db_book.上传文件:
+        file_path = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_book", "上传文件", os.path.basename(db_book.上传文件))
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except Exception:
+                pass  # 文件删除失败不影响主流程
     db.delete(db_book)
     db.commit()
     return {"ok": True}
@@ -157,8 +165,8 @@ def download_book_file(id: int, db: Session = Depends(get_db), current_user=Depe
     book = db.query(models.PreEntryBook).filter(models.PreEntryBook.id == id, models.PreEntryBook.user_id == current_user.id).first()
     if not book or not book.上传文件:
         raise HTTPException(status_code=404, detail="File not found")
-    # 还原物理路径，支持分用户子文件夹
-    file_path = os.path.join(UPLOAD_DIR, str(current_user.id), os.path.basename(book.上传文件))
+    # 还原物理路径，支持分用户、分表、分字段子文件夹
+    file_path = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_book", "上传文件", os.path.basename(book.上传文件))
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(file_path, filename=os.path.basename(file_path))

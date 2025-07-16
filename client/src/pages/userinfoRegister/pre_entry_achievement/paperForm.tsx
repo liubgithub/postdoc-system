@@ -1,7 +1,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker,ElMessageBox,ElMessage } from "element-plus";
 import { Edit, Delete } from '@element-plus/icons-vue';
-import { getMyPapers, getPaperById, createPaper, updatePaper, deletePaper } from "@/api/postdoctor/userinfoRegister/paper";
+import { getMyPapers, getPaperById, uploadPaper, updatePaper, deletePaper } from "@/api/postdoctor/userinfoRegister/paper";
 import dayjs from 'dayjs';
 
 const columns = [
@@ -23,6 +23,12 @@ const columns = [
   { label: "出版号", prop: "issn", width: 100 },
   { label: "刊物级别", prop: "journalLevel", width: 100 },
   { label: "影响因子", prop: "impactFactor", width: 80 }
+];
+
+const fileFields = [
+  { label: "论文发表证书", prop: "paperScan", field: "论文发表证书" },
+  { label: "论文接收函", prop: "acceptanceLetter", field: "论文接收函" },
+  { label: "论文电子版", prop: "electronicVersion", field: "论文电子版" }
 ];
 
 function db2form(item: any) {
@@ -171,20 +177,74 @@ export default defineComponent({
 
     const handleEdit = async (row: any, index: number) => {
       const res = await getPaperById(row.id);
-      editData.value = db2form(res);
+      // 兼容文件字段：如果是字符串（URL），保留；否则为 null
+      const form = db2form(res);
+      form.paperScan = form.paperScan || null;
+      form.acceptanceLetter = form.acceptanceLetter || null;
+      form.electronicVersion = form.electronicVersion || null;
+      editData.value = form;
       editIndex.value = index;
       showForm.value = true;
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      // 校验发表日期格式
+      if (!editData.value.publishDate || !/^\d{4}-\d{2}-\d{2}$/.test(editData.value.publishDate)) {
+        ElMessage.error('发表日期格式应为 YYYY-MM-DD');
+        return;
+      }
+      // 构造 FormData
+      const formData = new FormData();
+      formData.append("论文名称", editData.value.title);
+      formData.append("刊物名称", editData.value.journal);
+      formData.append("本人署名排序", editData.value.authorOrder);
+      formData.append("发表日期", editData.value.publishDate);
+      formData.append("起始页号", editData.value.startPage);
+      formData.append("刊物级别", editData.value.journalLevel);
+      formData.append("是否共同第一", editData.value.isCoFirstAuthor);
+      formData.append("通讯作者", editData.value.correspondingAuthor);
+      formData.append("论文类型", editData.value.journalType);
+      formData.append("影响因子", editData.value.impactFactor);
+      formData.append("作者名单", editData.value.authorName);
+      formData.append("第一作者", editData.value.firstAuthor);
+      formData.append("导师署名排序", editData.value.supervisorOrder);
+      formData.append("本校是否第一", editData.value.isFirstAffiliation);
+      formData.append("第一署名单位", editData.value.firstAffiliation);
+      formData.append("发表状态", editData.value.status);
+      formData.append("论文收录检索", editData.value.indexNumber);
+      formData.append("他引次数", editData.value.citationCount);
+      formData.append("是否和学位论文相关", editData.value.relatedToThesis);
+      formData.append("出版号", editData.value.issn);
+      formData.append("出版社", editData.value.publisher);
+      formData.append("总期号", editData.value.totalIssue);
+      formData.append("刊物编号", editData.value.journalNumber);
+      formData.append("备注", editData.value.remark ?? "");
+      // 多文件字段
+      if (editData.value.paperScan instanceof File) {
+        formData.append("论文发表证书", editData.value.paperScan);
+      }
+      if (editData.value.acceptanceLetter instanceof File) {
+        formData.append("论文接收函", editData.value.acceptanceLetter);
+      }
+      if (editData.value.electronicVersion instanceof File) {
+        formData.append("论文电子版", editData.value.electronicVersion);
+      }
+      let res;
       if (editIndex.value === -1) {
-        const res = await createPaper(data);
-        if (res) tableData.value.push(db2form(res));
+        // 新增
+        res = await uploadPaper(formData);
+        if (res) {
+          const data = await getMyPapers();
+          tableData.value = Array.isArray(data) ? data.map(db2form) : [];
+        }
       } else {
-        const id = tableData.value[editIndex.value].id;
-        const res = await updatePaper(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
+        // 编辑（无论是否有新文件）
+        const id = editData.value.id;
+        res = await updatePaper(id, formData);
+        if (res) {
+          const data = await getMyPapers();
+          tableData.value = Array.isArray(data) ? data.map(db2form) : [];
+        }
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -195,24 +255,21 @@ export default defineComponent({
       editIndex.value = -1;
     };
 
-    const handleFileChange1 = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.paperScan = file;
+    const handleFileChange1 = (fileObj: any) => {
+      if (fileObj && fileObj.raw) {
+        editData.value.paperScan = fileObj.raw;
       }
     };
 
-    const handleFileChange2 = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.acceptanceLetter = file;
+    const handleFileChange2 = (fileObj: any) => {
+      if (fileObj && fileObj.raw) {
+        editData.value.acceptanceLetter = fileObj.raw;
       }
     };
 
-    const handleFileChange3 = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.electronicVersion = file;
+    const handleFileChange3 = (fileObj: any) => {
+      if (fileObj && fileObj.raw) {
+        editData.value.electronicVersion = fileObj.raw;
       }
     };
 
@@ -229,7 +286,7 @@ export default defineComponent({
 
     onMounted(async () => {
       const data = await getMyPapers();
-      tableData.value = (data ?? []).map(db2form);
+      tableData.value = Array.isArray(data) ? data.map(db2form) : [];
     });
 
     return () => (
@@ -273,23 +330,41 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="总期号"><ElInput v-model={editData.value.totalIssue} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="刊物编号"><ElInput v-model={editData.value.journalNumber} /></ElFormItem></ElCol>
               </ElRow>
-              <ElFormItem label="论文发表扫描件">
+              {/* 文件上传表单项，风格与 bookForm 一致 */}
+              <ElFormItem label="论文发表证书">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange1}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.paperScan && <span style={{ marginLeft: 10 }}>{editData.value.paperScan.name}</span>}
+                {/* 新文件名 */}
+                {editData.value.paperScan && typeof editData.value.paperScan === 'object' && editData.value.paperScan.name && (
+                  <span style={{ marginLeft: 10 }}>{editData.value.paperScan.name}</span>
+                )}
+                {/* 原文件名 */}
+                {typeof editData.value.paperScan === 'string' && editData.value.paperScan && (
+                  <span style={{ marginLeft: 10 }}>{editData.value.paperScan.split('/').pop()}</span>
+                )}
               </ElFormItem>
               <ElFormItem label="论文接收函">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange2}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.acceptanceLetter && <span style={{ marginLeft: 10 }}>{editData.value.acceptanceLetter.name}</span>}
+                {editData.value.acceptanceLetter && typeof editData.value.acceptanceLetter === 'object' && editData.value.acceptanceLetter.name && (
+                  <span style={{ marginLeft: 10 }}>{editData.value.acceptanceLetter.name}</span>
+                )}
+                {typeof editData.value.acceptanceLetter === 'string' && editData.value.acceptanceLetter && (
+                  <span style={{ marginLeft: 10 }}>{editData.value.acceptanceLetter.split('/').pop()}</span>
+                )}
               </ElFormItem>
-              <ElFormItem label="论文电子版地址">
+              <ElFormItem label="论文电子版">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange3}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.electronicVersion && <span style={{ marginLeft: 10 }}>{editData.value.electronicVersion.name}</span>}
+                {editData.value.electronicVersion && typeof editData.value.electronicVersion === 'object' && editData.value.electronicVersion.name && (
+                  <span style={{ marginLeft: 10 }}>{editData.value.electronicVersion.name}</span>
+                )}
+                {typeof editData.value.electronicVersion === 'string' && editData.value.electronicVersion && (
+                  <span style={{ marginLeft: 10 }}>{editData.value.electronicVersion.split('/').pop()}</span>
+                )}
               </ElFormItem>
               <ElFormItem label="备注">
                 <ElInput type="textarea" rows={4} v-model={editData.value.remark} />
@@ -335,6 +410,23 @@ export default defineComponent({
                     }}
                   />
                 )
+              ))}
+              {/* 文件字段专用列 */}
+              {fileFields.map(f => (
+                <ElTableColumn
+                  key={f.prop}
+                  label={f.label}
+                  width={180}
+                  v-slots={{
+                    default: ({ row }: any) =>
+                      row[f.prop] ? (
+                        <span>
+                          <a href={row[f.prop]} target="_blank" rel="noopener noreferrer">{row[f.prop].split('/').pop()}</a>
+                          <ElButton size="small" style={{ marginLeft: 8 }} onClick={() => window.open(row[f.prop])}>预览</ElButton>
+                        </span>
+                      ) : <span style={{ color: '#aaa' }}>无</span>
+                  }}
+                />
               ))}
               <ElTableColumn label="操作" width="160" align="center">
                 {{

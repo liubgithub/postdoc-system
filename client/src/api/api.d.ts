@@ -101,23 +101,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_book/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Book */
-        post: operations["create_book_pre_entry_book__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/pre_entry_book/me": {
         parameters: {
             query?: never;
@@ -330,7 +313,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_paper/": {
+    "/pre_entry_paper/upload": {
         parameters: {
             query?: never;
             header?: never;
@@ -339,25 +322,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create Paper */
-        post: operations["create_paper_pre_entry_paper__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pre_entry_paper/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Papers */
-        get: operations["get_my_papers_pre_entry_paper_me_get"];
-        put?: never;
-        post?: never;
+        /** Upload Paper */
+        post: operations["upload_paper_pre_entry_paper_upload_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -378,6 +344,40 @@ export interface paths {
         post?: never;
         /** Delete Paper */
         delete: operations["delete_paper_pre_entry_paper__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_paper/download/{id}/{field}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Paper File */
+        get: operations["download_paper_file_pre_entry_paper_download__id___field__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_paper/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Papers */
+        get: operations["get_my_papers_pre_entry_paper_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -739,6 +739,104 @@ export interface components {
             /** Client Secret */
             client_secret?: string | null;
         };
+        /** Body_update_book_pre_entry_book__id__put */
+        Body_update_book_pre_entry_book__id__put: {
+            /** 著作中文名 */
+            "\u8457\u4F5C\u4E2D\u6587\u540D": string;
+            /** 出版社 */
+            "\u51FA\u7248\u793E": string;
+            /** 第几作者 */
+            "\u7B2C\u51E0\u4F5C\u8005": string;
+            /** 出版日期 */
+            "\u51FA\u7248\u65E5\u671F": string;
+            /** 著作编号 */
+            "\u8457\u4F5C\u7F16\u53F7": string;
+            /** 著作类别 */
+            "\u8457\u4F5C\u7C7B\u522B": string;
+            /** 作者名单 */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /** 著作字数 */
+            "\u8457\u4F5C\u5B57\u6570": string;
+            /** 出版号 */
+            "\u51FA\u7248\u53F7": string;
+            /** Isbn */
+            isbn: string;
+            /** 作者排名 */
+            "\u4F5C\u8005\u6392\u540D": string;
+            /** 备注 */
+            "\u5907\u6CE8"?: string;
+            /**
+             * File
+             * Format: binary
+             */
+            file?: string;
+        };
+        /** Body_update_paper_pre_entry_paper__id__put */
+        Body_update_paper_pre_entry_paper__id__put: {
+            /** 论文名称 */
+            "\u8BBA\u6587\u540D\u79F0": string;
+            /** 刊物名称 */
+            "\u520A\u7269\u540D\u79F0": string;
+            /** 本人署名排序 */
+            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F": string;
+            /** 发表日期 */
+            "\u53D1\u8868\u65E5\u671F": string;
+            /** 起始页号 */
+            "\u8D77\u59CB\u9875\u53F7": string;
+            /** 刊物级别 */
+            "\u520A\u7269\u7EA7\u522B": string;
+            /** 是否共同第一 */
+            "\u662F\u5426\u5171\u540C\u7B2C\u4E00": string;
+            /** 通讯作者 */
+            "\u901A\u8BAF\u4F5C\u8005": string;
+            /** 论文类型 */
+            "\u8BBA\u6587\u7C7B\u578B": string;
+            /** 影响因子 */
+            "\u5F71\u54CD\u56E0\u5B50": string;
+            /** 作者名单 */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /** 第一作者 */
+            "\u7B2C\u4E00\u4F5C\u8005": string;
+            /** 导师署名排序 */
+            "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F": string;
+            /** 本校是否第一 */
+            "\u672C\u6821\u662F\u5426\u7B2C\u4E00": string;
+            /** 第一署名单位 */
+            "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D": string;
+            /** 发表状态 */
+            "\u53D1\u8868\u72B6\u6001": string;
+            /** 论文收录检索 */
+            "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22": string;
+            /** 他引次数 */
+            "\u4ED6\u5F15\u6B21\u6570": string;
+            /** 是否和学位论文相关 */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
+            /** 出版号 */
+            "\u51FA\u7248\u53F7": string;
+            /** 出版社 */
+            "\u51FA\u7248\u793E": string;
+            /** 总期号 */
+            "\u603B\u671F\u53F7": string;
+            /** 刊物编号 */
+            "\u520A\u7269\u7F16\u53F7": string;
+            /** 备注 */
+            "\u5907\u6CE8"?: string;
+            /**
+             * 论文发表证书
+             * Format: binary
+             */
+            "\u8BBA\u6587\u53D1\u8868\u8BC1\u4E66"?: string;
+            /**
+             * 论文接收函
+             * Format: binary
+             */
+            "\u8BBA\u6587\u63A5\u6536\u51FD"?: string;
+            /**
+             * 论文电子版
+             * Format: binary
+             */
+            "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
+        };
         /** Body_upload_book_pre_entry_book_upload_post */
         Body_upload_book_pre_entry_book_upload_post: {
             /** 著作中文名 */
@@ -769,7 +867,73 @@ export interface components {
              * File
              * Format: binary
              */
-            file: string;
+            file?: string;
+        };
+        /** Body_upload_paper_pre_entry_paper_upload_post */
+        Body_upload_paper_pre_entry_paper_upload_post: {
+            /** 论文名称 */
+            "\u8BBA\u6587\u540D\u79F0": string;
+            /** 刊物名称 */
+            "\u520A\u7269\u540D\u79F0": string;
+            /** 本人署名排序 */
+            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F": string;
+            /** 发表日期 */
+            "\u53D1\u8868\u65E5\u671F": string;
+            /** 起始页号 */
+            "\u8D77\u59CB\u9875\u53F7": string;
+            /** 刊物级别 */
+            "\u520A\u7269\u7EA7\u522B": string;
+            /** 是否共同第一 */
+            "\u662F\u5426\u5171\u540C\u7B2C\u4E00": string;
+            /** 通讯作者 */
+            "\u901A\u8BAF\u4F5C\u8005": string;
+            /** 论文类型 */
+            "\u8BBA\u6587\u7C7B\u578B": string;
+            /** 影响因子 */
+            "\u5F71\u54CD\u56E0\u5B50": string;
+            /** 作者名单 */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /** 第一作者 */
+            "\u7B2C\u4E00\u4F5C\u8005": string;
+            /** 导师署名排序 */
+            "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F": string;
+            /** 本校是否第一 */
+            "\u672C\u6821\u662F\u5426\u7B2C\u4E00": string;
+            /** 第一署名单位 */
+            "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D": string;
+            /** 发表状态 */
+            "\u53D1\u8868\u72B6\u6001": string;
+            /** 论文收录检索 */
+            "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22": string;
+            /** 他引次数 */
+            "\u4ED6\u5F15\u6B21\u6570": string;
+            /** 是否和学位论文相关 */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
+            /** 出版号 */
+            "\u51FA\u7248\u53F7": string;
+            /** 出版社 */
+            "\u51FA\u7248\u793E": string;
+            /** 总期号 */
+            "\u603B\u671F\u53F7": string;
+            /** 刊物编号 */
+            "\u520A\u7269\u7F16\u53F7": string;
+            /** 备注 */
+            "\u5907\u6CE8"?: string;
+            /**
+             * 论文发表证书
+             * Format: binary
+             */
+            "\u8BBA\u6587\u53D1\u8868\u8BC1\u4E66"?: string;
+            /**
+             * 论文接收函
+             * Format: binary
+             */
+            "\u8BBA\u6587\u63A5\u6536\u51FD"?: string;
+            /**
+             * 论文电子版
+             * Format: binary
+             */
+            "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
         };
         /** EducationExperienceIn */
         EducationExperienceIn: {
@@ -1039,74 +1203,6 @@ export interface components {
              */
             updated_at: string;
         };
-        /** PreEntryBookCreate */
-        PreEntryBookCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 著作中文名 */
-            "\u8457\u4F5C\u4E2D\u6587\u540D"?: string | null;
-            /** 出版社 */
-            "\u51FA\u7248\u793E"?: string | null;
-            /** 第几作者 */
-            "\u7B2C\u51E0\u4F5C\u8005"?: string | null;
-            /** 出版日期 */
-            "\u51FA\u7248\u65E5\u671F"?: string | null;
-            /** 著作编号 */
-            "\u8457\u4F5C\u7F16\u53F7"?: string | null;
-            /** 著作类别 */
-            "\u8457\u4F5C\u7C7B\u522B"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 著作字数 */
-            "\u8457\u4F5C\u5B57\u6570"?: string | null;
-            /** 出版号 */
-            "\u51FA\u7248\u53F7"?: string | null;
-            /** Isbn */
-            isbn?: string | null;
-            /** 作者排名 */
-            "\u4F5C\u8005\u6392\u540D"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryBookUpdate */
-        PreEntryBookUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 著作中文名 */
-            "\u8457\u4F5C\u4E2D\u6587\u540D"?: string | null;
-            /** 出版社 */
-            "\u51FA\u7248\u793E"?: string | null;
-            /** 第几作者 */
-            "\u7B2C\u51E0\u4F5C\u8005"?: string | null;
-            /** 出版日期 */
-            "\u51FA\u7248\u65E5\u671F"?: string | null;
-            /** 著作编号 */
-            "\u8457\u4F5C\u7F16\u53F7"?: string | null;
-            /** 著作类别 */
-            "\u8457\u4F5C\u7C7B\u522B"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 著作字数 */
-            "\u8457\u4F5C\u5B57\u6570"?: string | null;
-            /** 出版号 */
-            "\u51FA\u7248\u53F7"?: string | null;
-            /** Isbn */
-            isbn?: string | null;
-            /** 作者排名 */
-            "\u4F5C\u8005\u6392\u540D"?: string | null;
-            /** 上传文件 */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
         /** PreEntryCompetitionAward */
         PreEntryCompetitionAward: {
             /**
@@ -1189,7 +1285,7 @@ export interface components {
             /** 会议名称 */
             "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
             /** 会议等级 */
-            "\u4F1A\u8BAE\u7EA7\u522B"?: string | null;
+            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
             /** 会议时间 */
             "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
             /** 会议地点 */
@@ -1225,7 +1321,7 @@ export interface components {
             /** 会议名称 */
             "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
             /** 会议等级 */
-            "\u4F1A\u8BAE\u7EA7\u522B"?: string | null;
+            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
             /** 会议时间 */
             "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
             /** 会议地点 */
@@ -1249,7 +1345,7 @@ export interface components {
             /** 会议名称 */
             "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
             /** 会议等级 */
-            "\u4F1A\u8BAE\u7EA7\u522B"?: string | null;
+            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
             /** 会议时间 */
             "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
             /** 会议地点 */
@@ -1486,130 +1582,6 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
-        };
-        /** PreEntryPaperCreate */
-        PreEntryPaperCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 论文名称 */
-            "\u8BBA\u6587\u540D\u79F0"?: string | null;
-            /** 刊物名称 */
-            "\u520A\u7269\u540D\u79F0"?: string | null;
-            /** 本人署名排序 */
-            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 发表日期 */
-            "\u53D1\u8868\u65E5\u671F"?: string | null;
-            /** 起始页号 */
-            "\u8D77\u59CB\u9875\u53F7"?: string | null;
-            /** 刊物级别 */
-            "\u520A\u7269\u7EA7\u522B"?: string | null;
-            /** 是否共同第一 */
-            "\u662F\u5426\u5171\u540C\u7B2C\u4E00"?: string | null;
-            /** 通讯作者 */
-            "\u901A\u8BAF\u4F5C\u8005"?: string | null;
-            /** 论文类型 */
-            "\u8BBA\u6587\u7C7B\u578B"?: string | null;
-            /** 影响因子 */
-            "\u5F71\u54CD\u56E0\u5B50"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 第一作者 */
-            "\u7B2C\u4E00\u4F5C\u8005"?: string | null;
-            /** 导师署名排序 */
-            "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 本校是否第一 */
-            "\u672C\u6821\u662F\u5426\u7B2C\u4E00"?: string | null;
-            /** 第一署名单位 */
-            "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D"?: string | null;
-            /** 发表状态 */
-            "\u53D1\u8868\u72B6\u6001"?: string | null;
-            /** 论文收录检索 */
-            "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22"?: string | null;
-            /** 他引次数 */
-            "\u4ED6\u5F15\u6B21\u6570"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 出版号 */
-            "\u51FA\u7248\u53F7"?: string | null;
-            /** 出版社 */
-            "\u51FA\u7248\u793E"?: string | null;
-            /** 总期号 */
-            "\u603B\u671F\u53F7"?: string | null;
-            /** 刊物编号 */
-            "\u520A\u7269\u7F16\u53F7"?: string | null;
-            /** 论文发表证书 */
-            "\u8BBA\u6587\u53D1\u8868\u8BC1\u4E66"?: string | null;
-            /** 论文接收函 */
-            "\u8BBA\u6587\u63A5\u6536\u51FD"?: string | null;
-            /** 论文电子版 */
-            "\u8BBA\u6587\u7535\u5B50\u7248"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryPaperUpdate */
-        PreEntryPaperUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 论文名称 */
-            "\u8BBA\u6587\u540D\u79F0"?: string | null;
-            /** 刊物名称 */
-            "\u520A\u7269\u540D\u79F0"?: string | null;
-            /** 本人署名排序 */
-            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 发表日期 */
-            "\u53D1\u8868\u65E5\u671F"?: string | null;
-            /** 起始页号 */
-            "\u8D77\u59CB\u9875\u53F7"?: string | null;
-            /** 刊物级别 */
-            "\u520A\u7269\u7EA7\u522B"?: string | null;
-            /** 是否共同第一 */
-            "\u662F\u5426\u5171\u540C\u7B2C\u4E00"?: string | null;
-            /** 通讯作者 */
-            "\u901A\u8BAF\u4F5C\u8005"?: string | null;
-            /** 论文类型 */
-            "\u8BBA\u6587\u7C7B\u578B"?: string | null;
-            /** 影响因子 */
-            "\u5F71\u54CD\u56E0\u5B50"?: string | null;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355"?: string | null;
-            /** 第一作者 */
-            "\u7B2C\u4E00\u4F5C\u8005"?: string | null;
-            /** 导师署名排序 */
-            "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F"?: string | null;
-            /** 本校是否第一 */
-            "\u672C\u6821\u662F\u5426\u7B2C\u4E00"?: string | null;
-            /** 第一署名单位 */
-            "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D"?: string | null;
-            /** 发表状态 */
-            "\u53D1\u8868\u72B6\u6001"?: string | null;
-            /** 论文收录检索 */
-            "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22"?: string | null;
-            /** 他引次数 */
-            "\u4ED6\u5F15\u6B21\u6570"?: string | null;
-            /** 是否和学位论文相关 */
-            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173"?: string | null;
-            /** 出版号 */
-            "\u51FA\u7248\u53F7"?: string | null;
-            /** 出版社 */
-            "\u51FA\u7248\u793E"?: string | null;
-            /** 总期号 */
-            "\u603B\u671F\u53F7"?: string | null;
-            /** 刊物编号 */
-            "\u520A\u7269\u7F16\u53F7"?: string | null;
-            /** 论文发表证书 */
-            "\u8BBA\u6587\u53D1\u8868\u8BC1\u4E66"?: string | null;
-            /** 论文接收函 */
-            "\u8BBA\u6587\u63A5\u6536\u51FD"?: string | null;
-            /** 论文电子版 */
-            "\u8BBA\u6587\u7535\u5B50\u7248"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryPatent */
         PreEntryPatent: {
@@ -2111,39 +2083,6 @@ export interface operations {
             };
         };
     };
-    create_book_pre_entry_book__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PreEntryBookCreate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryBook"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     get_my_books_pre_entry_book_me_get: {
         parameters: {
             query?: never;
@@ -2206,7 +2145,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryBookUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_book_pre_entry_book__id__put"];
             };
         };
         responses: {
@@ -2742,7 +2681,7 @@ export interface operations {
             };
         };
     };
-    create_paper_pre_entry_paper__post: {
+    upload_paper_pre_entry_paper_upload_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2751,7 +2690,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryPaperCreate"];
+                "multipart/form-data": components["schemas"]["Body_upload_paper_pre_entry_paper_upload_post"];
             };
         };
         responses: {
@@ -2771,26 +2710,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_my_papers_pre_entry_paper_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryPaper"][];
                 };
             };
         };
@@ -2837,7 +2756,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryPaperUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_paper_pre_entry_paper__id__put"];
             };
         };
         responses: {
@@ -2888,6 +2807,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_paper_file_pre_entry_paper_download__id___field__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+                field: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_papers_pre_entry_paper_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryPaper"][];
                 };
             };
         };

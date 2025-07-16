@@ -16,7 +16,8 @@ const columns = [
   { label: "出版号", prop: "publishNumber", width: 100 },
   { label: "ISBN号", prop: "isbn", width: 100 },
   // 新增上传文件列
-  { label: "上传文件", prop: "file", width: 160 }
+  { label: "上传文件", prop: "file", width: 160 },
+  { label: "备注", prop: "remark", width: 120 }
 ];
 
 // 数据库对象转为表单对象（用于编辑/展示）
