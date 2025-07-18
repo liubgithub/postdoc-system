@@ -84,7 +84,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_book/upload": {
+    "/pre_entry_book/": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,25 +93,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Upload Book */
-        post: operations["upload_book_pre_entry_book_upload_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pre_entry_book/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Books */
-        get: operations["get_my_books_pre_entry_book_me_get"];
-        put?: never;
-        post?: never;
+        /** Create Book */
+        post: operations["create_book_pre_entry_book__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -132,6 +115,23 @@ export interface paths {
         post?: never;
         /** Delete Book */
         delete: operations["delete_book_pre_entry_book__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_book/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Books */
+        get: operations["get_my_books_pre_entry_book_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -313,7 +313,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_paper/upload": {
+    "/pre_entry_paper/": {
         parameters: {
             query?: never;
             header?: never;
@@ -322,8 +322,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Upload Paper */
-        post: operations["upload_paper_pre_entry_paper_upload_post"];
+        /** Create Paper */
+        post: operations["create_paper_pre_entry_paper__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -453,23 +453,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_project/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Projects */
-        get: operations["get_my_projects_pre_entry_project_me_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/pre_entry_project/{id}": {
         parameters: {
             query?: never;
@@ -484,6 +467,23 @@ export interface paths {
         post?: never;
         /** Delete Project */
         delete: operations["delete_project_pre_entry_project__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_project/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Projects */
+        get: operations["get_my_projects_pre_entry_project_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -721,6 +721,279 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Body_create_book_pre_entry_book__post */
+        Body_create_book_pre_entry_book__post: {
+            /** 著作中文名 */
+            "\u8457\u4F5C\u4E2D\u6587\u540D": string;
+            /** 出版社 */
+            "\u51FA\u7248\u793E": string;
+            /** 出版日期 */
+            "\u51FA\u7248\u65E5\u671F": string;
+            /**
+             * 第几作者
+             * @default
+             */
+            "\u7B2C\u51E0\u4F5C\u8005": string;
+            /**
+             * 著作编号
+             * @default
+             */
+            "\u8457\u4F5C\u7F16\u53F7": string;
+            /**
+             * 著作类别
+             * @default
+             */
+            "\u8457\u4F5C\u7C7B\u522B": string;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /**
+             * 著作字数
+             * @default
+             */
+            "\u8457\u4F5C\u5B57\u6570": string;
+            /**
+             * 出版号
+             * @default
+             */
+            "\u51FA\u7248\u53F7": string;
+            /**
+             * Isbn
+             * @default
+             */
+            isbn: string;
+            /**
+             * 作者排名
+             * @default
+             */
+            "\u4F5C\u8005\u6392\u540D": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * File
+             * Format: binary
+             */
+            file?: string;
+        };
+        /** Body_create_paper_pre_entry_paper__post */
+        Body_create_paper_pre_entry_paper__post: {
+            /** 论文名称 */
+            "\u8BBA\u6587\u540D\u79F0": string;
+            /** 刊物名称 */
+            "\u520A\u7269\u540D\u79F0": string;
+            /** 发表日期 */
+            "\u53D1\u8868\u65E5\u671F": string;
+            /**
+             * 本人署名排序
+             * @default
+             */
+            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F": string;
+            /**
+             * 起始页号
+             * @default
+             */
+            "\u8D77\u59CB\u9875\u53F7": string;
+            /**
+             * 刊物级别
+             * @default
+             */
+            "\u520A\u7269\u7EA7\u522B": string;
+            /**
+             * 是否共同第一
+             * @default
+             */
+            "\u662F\u5426\u5171\u540C\u7B2C\u4E00": string;
+            /**
+             * 通讯作者
+             * @default
+             */
+            "\u901A\u8BAF\u4F5C\u8005": string;
+            /**
+             * 论文类型
+             * @default
+             */
+            "\u8BBA\u6587\u7C7B\u578B": string;
+            /**
+             * 影响因子
+             * @default
+             */
+            "\u5F71\u54CD\u56E0\u5B50": string;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /**
+             * 第一作者
+             * @default
+             */
+            "\u7B2C\u4E00\u4F5C\u8005": string;
+            /**
+             * 导师署名排序
+             * @default
+             */
+            "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F": string;
+            /**
+             * 本校是否第一
+             * @default
+             */
+            "\u672C\u6821\u662F\u5426\u7B2C\u4E00": string;
+            /**
+             * 第一署名单位
+             * @default
+             */
+            "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D": string;
+            /**
+             * 发表状态
+             * @default
+             */
+            "\u53D1\u8868\u72B6\u6001": string;
+            /**
+             * 论文收录检索
+             * @default
+             */
+            "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22": string;
+            /**
+             * 他引次数
+             * @default
+             */
+            "\u4ED6\u5F15\u6B21\u6570": string;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
+            /**
+             * 出版号
+             * @default
+             */
+            "\u51FA\u7248\u53F7": string;
+            /**
+             * 出版社
+             * @default
+             */
+            "\u51FA\u7248\u793E": string;
+            /**
+             * 总期号
+             * @default
+             */
+            "\u603B\u671F\u53F7": string;
+            /**
+             * 刊物编号
+             * @default
+             */
+            "\u520A\u7269\u7F16\u53F7": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 论文发表证书
+             * Format: binary
+             */
+            "\u8BBA\u6587\u53D1\u8868\u8BC1\u4E66"?: string;
+            /**
+             * 论文接收函
+             * Format: binary
+             */
+            "\u8BBA\u6587\u63A5\u6536\u51FD"?: string;
+            /**
+             * 论文电子版
+             * Format: binary
+             */
+            "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
+        };
+        /** Body_create_project_pre_entry_project__post */
+        Body_create_project_pre_entry_project__post: {
+            /**
+             * 项目编号
+             * @default
+             */
+            "\u9879\u76EE\u7F16\u53F7": string;
+            /** 项目名称 */
+            "\u9879\u76EE\u540D\u79F0": string;
+            /**
+             * 项目类型
+             * @default
+             */
+            "\u9879\u76EE\u7C7B\u578B": string;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
+            /**
+             * 项目标题
+             * @default
+             */
+            "\u9879\u76EE\u6807\u9898": string;
+            /**
+             * 立项日期
+             * @default
+             */
+            "\u7ACB\u9879\u65E5\u671F": string;
+            /**
+             * 项目层次
+             * @default
+             */
+            "\u9879\u76EE\u5C42\u6B21": string;
+            /**
+             * 是否结项
+             * @default
+             */
+            "\u662F\u5426\u7ED3\u9879": string;
+            /**
+             * 验收或鉴定日期
+             * @default
+             */
+            "\u9A8C\u6536\u6216\u9274\u5B9A\u65E5\u671F": string;
+            /**
+             * 项目执行状态
+             * @default
+             */
+            "\u9879\u76EE\u6267\u884C\u72B6\u6001": string;
+            /**
+             * 本人角色
+             * @default
+             */
+            "\u672C\u4EBA\u89D2\u8272": string;
+            /**
+             * 参与者总数
+             * @default
+             */
+            "\u53C2\u4E0E\u8005\u603B\u6570": string;
+            /**
+             * 参与者名单
+             * @default
+             */
+            "\u53C2\u4E0E\u8005\u540D\u5355": string;
+            /**
+             * 承担任务
+             * @default
+             */
+            "\u627F\u62C5\u4EFB\u52A1": string;
+            /**
+             * 项目经费说明
+             * @default
+             */
+            "\u9879\u76EE\u7ECF\u8D39\u8BF4\u660E": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * Achievementfile
+             * Format: binary
+             */
+            achievementFile?: string;
+        };
         /** Body_login_auth_login_post */
         Body_login_auth_login_post: {
             /** Grant Type */
@@ -745,26 +1018,53 @@ export interface components {
             "\u8457\u4F5C\u4E2D\u6587\u540D": string;
             /** 出版社 */
             "\u51FA\u7248\u793E": string;
-            /** 第几作者 */
-            "\u7B2C\u51E0\u4F5C\u8005": string;
             /** 出版日期 */
             "\u51FA\u7248\u65E5\u671F": string;
-            /** 著作编号 */
+            /**
+             * 第几作者
+             * @default
+             */
+            "\u7B2C\u51E0\u4F5C\u8005": string;
+            /**
+             * 著作编号
+             * @default
+             */
             "\u8457\u4F5C\u7F16\u53F7": string;
-            /** 著作类别 */
+            /**
+             * 著作类别
+             * @default
+             */
             "\u8457\u4F5C\u7C7B\u522B": string;
-            /** 作者名单 */
+            /**
+             * 作者名单
+             * @default
+             */
             "\u4F5C\u8005\u540D\u5355": string;
-            /** 著作字数 */
+            /**
+             * 著作字数
+             * @default
+             */
             "\u8457\u4F5C\u5B57\u6570": string;
-            /** 出版号 */
+            /**
+             * 出版号
+             * @default
+             */
             "\u51FA\u7248\u53F7": string;
-            /** Isbn */
+            /**
+             * Isbn
+             * @default
+             */
             isbn: string;
-            /** 作者排名 */
+            /**
+             * 作者排名
+             * @default
+             */
             "\u4F5C\u8005\u6392\u540D": string;
-            /** 备注 */
-            "\u5907\u6CE8"?: string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
             /**
              * File
              * Format: binary
@@ -777,50 +1077,113 @@ export interface components {
             "\u8BBA\u6587\u540D\u79F0": string;
             /** 刊物名称 */
             "\u520A\u7269\u540D\u79F0": string;
-            /** 本人署名排序 */
-            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F": string;
             /** 发表日期 */
             "\u53D1\u8868\u65E5\u671F": string;
-            /** 起始页号 */
+            /**
+             * 本人署名排序
+             * @default
+             */
+            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F": string;
+            /**
+             * 起始页号
+             * @default
+             */
             "\u8D77\u59CB\u9875\u53F7": string;
-            /** 刊物级别 */
+            /**
+             * 刊物级别
+             * @default
+             */
             "\u520A\u7269\u7EA7\u522B": string;
-            /** 是否共同第一 */
+            /**
+             * 是否共同第一
+             * @default
+             */
             "\u662F\u5426\u5171\u540C\u7B2C\u4E00": string;
-            /** 通讯作者 */
+            /**
+             * 通讯作者
+             * @default
+             */
             "\u901A\u8BAF\u4F5C\u8005": string;
-            /** 论文类型 */
+            /**
+             * 论文类型
+             * @default
+             */
             "\u8BBA\u6587\u7C7B\u578B": string;
-            /** 影响因子 */
+            /**
+             * 影响因子
+             * @default
+             */
             "\u5F71\u54CD\u56E0\u5B50": string;
-            /** 作者名单 */
+            /**
+             * 作者名单
+             * @default
+             */
             "\u4F5C\u8005\u540D\u5355": string;
-            /** 第一作者 */
+            /**
+             * 第一作者
+             * @default
+             */
             "\u7B2C\u4E00\u4F5C\u8005": string;
-            /** 导师署名排序 */
+            /**
+             * 导师署名排序
+             * @default
+             */
             "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F": string;
-            /** 本校是否第一 */
+            /**
+             * 本校是否第一
+             * @default
+             */
             "\u672C\u6821\u662F\u5426\u7B2C\u4E00": string;
-            /** 第一署名单位 */
+            /**
+             * 第一署名单位
+             * @default
+             */
             "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D": string;
-            /** 发表状态 */
+            /**
+             * 发表状态
+             * @default
+             */
             "\u53D1\u8868\u72B6\u6001": string;
-            /** 论文收录检索 */
+            /**
+             * 论文收录检索
+             * @default
+             */
             "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22": string;
-            /** 他引次数 */
+            /**
+             * 他引次数
+             * @default
+             */
             "\u4ED6\u5F15\u6B21\u6570": string;
-            /** 是否和学位论文相关 */
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
             "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
-            /** 出版号 */
+            /**
+             * 出版号
+             * @default
+             */
             "\u51FA\u7248\u53F7": string;
-            /** 出版社 */
+            /**
+             * 出版社
+             * @default
+             */
             "\u51FA\u7248\u793E": string;
-            /** 总期号 */
+            /**
+             * 总期号
+             * @default
+             */
             "\u603B\u671F\u53F7": string;
-            /** 刊物编号 */
+            /**
+             * 刊物编号
+             * @default
+             */
             "\u520A\u7269\u7F16\u53F7": string;
-            /** 备注 */
-            "\u5907\u6CE8"?: string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
             /**
              * 论文发表证书
              * Format: binary
@@ -837,103 +1200,90 @@ export interface components {
              */
             "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
         };
-        /** Body_upload_book_pre_entry_book_upload_post */
-        Body_upload_book_pre_entry_book_upload_post: {
-            /** 著作中文名 */
-            "\u8457\u4F5C\u4E2D\u6587\u540D": string;
-            /** 出版社 */
-            "\u51FA\u7248\u793E": string;
-            /** 第几作者 */
-            "\u7B2C\u51E0\u4F5C\u8005": string;
-            /** 出版日期 */
-            "\u51FA\u7248\u65E5\u671F": string;
-            /** 著作编号 */
-            "\u8457\u4F5C\u7F16\u53F7": string;
-            /** 著作类别 */
-            "\u8457\u4F5C\u7C7B\u522B": string;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355": string;
-            /** 著作字数 */
-            "\u8457\u4F5C\u5B57\u6570": string;
-            /** 出版号 */
-            "\u51FA\u7248\u53F7": string;
-            /** Isbn */
-            isbn: string;
-            /** 作者排名 */
-            "\u4F5C\u8005\u6392\u540D": string;
-            /** 备注 */
-            "\u5907\u6CE8"?: string;
+        /** Body_update_project_pre_entry_project__id__put */
+        Body_update_project_pre_entry_project__id__put: {
             /**
-             * File
-             * Format: binary
+             * 项目编号
+             * @default
              */
-            file?: string;
-        };
-        /** Body_upload_paper_pre_entry_paper_upload_post */
-        Body_upload_paper_pre_entry_paper_upload_post: {
-            /** 论文名称 */
-            "\u8BBA\u6587\u540D\u79F0": string;
-            /** 刊物名称 */
-            "\u520A\u7269\u540D\u79F0": string;
-            /** 本人署名排序 */
-            "\u672C\u4EBA\u7F72\u540D\u6392\u5E8F": string;
-            /** 发表日期 */
-            "\u53D1\u8868\u65E5\u671F": string;
-            /** 起始页号 */
-            "\u8D77\u59CB\u9875\u53F7": string;
-            /** 刊物级别 */
-            "\u520A\u7269\u7EA7\u522B": string;
-            /** 是否共同第一 */
-            "\u662F\u5426\u5171\u540C\u7B2C\u4E00": string;
-            /** 通讯作者 */
-            "\u901A\u8BAF\u4F5C\u8005": string;
-            /** 论文类型 */
-            "\u8BBA\u6587\u7C7B\u578B": string;
-            /** 影响因子 */
-            "\u5F71\u54CD\u56E0\u5B50": string;
-            /** 作者名单 */
-            "\u4F5C\u8005\u540D\u5355": string;
-            /** 第一作者 */
-            "\u7B2C\u4E00\u4F5C\u8005": string;
-            /** 导师署名排序 */
-            "\u5BFC\u5E08\u7F72\u540D\u6392\u5E8F": string;
-            /** 本校是否第一 */
-            "\u672C\u6821\u662F\u5426\u7B2C\u4E00": string;
-            /** 第一署名单位 */
-            "\u7B2C\u4E00\u7F72\u540D\u5355\u4F4D": string;
-            /** 发表状态 */
-            "\u53D1\u8868\u72B6\u6001": string;
-            /** 论文收录检索 */
-            "\u8BBA\u6587\u6536\u5F55\u68C0\u7D22": string;
-            /** 他引次数 */
-            "\u4ED6\u5F15\u6B21\u6570": string;
-            /** 是否和学位论文相关 */
+            "\u9879\u76EE\u7F16\u53F7": string;
+            /** 项目名称 */
+            "\u9879\u76EE\u540D\u79F0": string;
+            /**
+             * 项目类型
+             * @default
+             */
+            "\u9879\u76EE\u7C7B\u578B": string;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
             "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
-            /** 出版号 */
-            "\u51FA\u7248\u53F7": string;
-            /** 出版社 */
-            "\u51FA\u7248\u793E": string;
-            /** 总期号 */
-            "\u603B\u671F\u53F7": string;
-            /** 刊物编号 */
-            "\u520A\u7269\u7F16\u53F7": string;
-            /** 备注 */
-            "\u5907\u6CE8"?: string;
             /**
-             * 论文发表证书
+             * 项目标题
+             * @default
+             */
+            "\u9879\u76EE\u6807\u9898": string;
+            /**
+             * 立项日期
+             * @default
+             */
+            "\u7ACB\u9879\u65E5\u671F": string;
+            /**
+             * 项目层次
+             * @default
+             */
+            "\u9879\u76EE\u5C42\u6B21": string;
+            /**
+             * 是否结项
+             * @default
+             */
+            "\u662F\u5426\u7ED3\u9879": string;
+            /**
+             * 验收或鉴定日期
+             * @default
+             */
+            "\u9A8C\u6536\u6216\u9274\u5B9A\u65E5\u671F": string;
+            /**
+             * 项目执行状态
+             * @default
+             */
+            "\u9879\u76EE\u6267\u884C\u72B6\u6001": string;
+            /**
+             * 本人角色
+             * @default
+             */
+            "\u672C\u4EBA\u89D2\u8272": string;
+            /**
+             * 参与者总数
+             * @default
+             */
+            "\u53C2\u4E0E\u8005\u603B\u6570": string;
+            /**
+             * 参与者名单
+             * @default
+             */
+            "\u53C2\u4E0E\u8005\u540D\u5355": string;
+            /**
+             * 承担任务
+             * @default
+             */
+            "\u627F\u62C5\u4EFB\u52A1": string;
+            /**
+             * 项目经费说明
+             * @default
+             */
+            "\u9879\u76EE\u7ECF\u8D39\u8BF4\u660E": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * Achievementfile
              * Format: binary
              */
-            "\u8BBA\u6587\u53D1\u8868\u8BC1\u4E66"?: string;
-            /**
-             * 论文接收函
-             * Format: binary
-             */
-            "\u8BBA\u6587\u63A5\u6536\u51FD"?: string;
-            /**
-             * 论文电子版
-             * Format: binary
-             */
-            "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
+            achievementFile?: string;
         };
         /** EducationExperienceIn */
         EducationExperienceIn: {
@@ -1743,58 +2093,6 @@ export interface components {
              */
             updated_at: string;
         };
-        /** PreEntryProjectCreate */
-        PreEntryProjectCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 项目名称 */
-            "\u9879\u76EE\u540D\u79F0"?: string | null;
-            /** 项目类型 */
-            "\u9879\u76EE\u7C7B\u578B"?: string | null;
-            /** 项目级别 */
-            "\u9879\u76EE\u7EA7\u522B"?: string | null;
-            /** 项目开始时间 */
-            "\u9879\u76EE\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 项目结束时间 */
-            "\u9879\u76EE\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 项目经费 */
-            "\u9879\u76EE\u7ECF\u8D39"?: string | null;
-            /** 项目负责人 */
-            "\u9879\u76EE\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 项目证书文件 */
-            "\u9879\u76EE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryProjectUpdate */
-        PreEntryProjectUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 项目名称 */
-            "\u9879\u76EE\u540D\u79F0"?: string | null;
-            /** 项目类型 */
-            "\u9879\u76EE\u7C7B\u578B"?: string | null;
-            /** 项目级别 */
-            "\u9879\u76EE\u7EA7\u522B"?: string | null;
-            /** 项目开始时间 */
-            "\u9879\u76EE\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 项目结束时间 */
-            "\u9879\u76EE\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 项目经费 */
-            "\u9879\u76EE\u7ECF\u8D39"?: string | null;
-            /** 项目负责人 */
-            "\u9879\u76EE\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 项目证书文件 */
-            "\u9879\u76EE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
         /** PreEntrySubjectResearch */
         PreEntrySubjectResearch: {
             /**
@@ -2050,7 +2348,7 @@ export interface operations {
             };
         };
     };
-    upload_book_pre_entry_book_upload_post: {
+    create_book_pre_entry_book__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2059,7 +2357,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "multipart/form-data": components["schemas"]["Body_upload_book_pre_entry_book_upload_post"];
+                "multipart/form-data": components["schemas"]["Body_create_book_pre_entry_book__post"];
             };
         };
         responses: {
@@ -2079,26 +2377,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_my_books_pre_entry_book_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryBook"][];
                 };
             };
         };
@@ -2196,6 +2474,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_books_pre_entry_book_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryBook"][];
                 };
             };
         };
@@ -2681,7 +2979,7 @@ export interface operations {
             };
         };
     };
-    upload_paper_pre_entry_paper_upload_post: {
+    create_paper_pre_entry_paper__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2690,7 +2988,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "multipart/form-data": components["schemas"]["Body_upload_paper_pre_entry_paper_upload_post"];
+                "multipart/form-data": components["schemas"]["Body_create_paper_pre_entry_paper__post"];
             };
         };
         responses: {
@@ -3022,7 +3320,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryProjectCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_project_pre_entry_project__post"];
             };
         };
         responses: {
@@ -3042,26 +3340,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_my_projects_pre_entry_project_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryProject"][];
                 };
             };
         };
@@ -3108,7 +3386,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryProjectUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_project_pre_entry_project__id__put"];
             };
         };
         responses: {
@@ -3159,6 +3437,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_projects_pre_entry_project_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryProject"][];
                 };
             };
         };
