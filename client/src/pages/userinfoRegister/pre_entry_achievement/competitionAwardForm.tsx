@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import {
   getMyCompetitionAwards,
   getCompetitionAwardById,
-  createCompetitionAward,
+  uploadCompetitionAward,
   updateCompetitionAward,
   deleteCompetitionAward
 } from '@/api/postdoctor/userinfoRegister/competition_award';
@@ -47,24 +47,7 @@ function db2form(item: any) {
   };
 }
 
-function form2db(item: any) {
-  return {
-    "竞赛名称": item.competitionName,
-    "获奖级别": item.awardLevel,
-    "获奖类别": item.awardCategory,
-    "获奖等级": item.awardGrade,
-    "奖项名称": item.awardName,
-    "获奖时间": item.awardDate ? dayjs(item.awardDate).toISOString() : null,
-    "颁奖单位": item.organizer,
-    "第一完成单位": item.firstUnit,
-    "完成单位排名": item.unitRank,
-    "本人署名": item.author,
-    "是否和学位论文相关": item.relatedToThesis,
-    "作者名单": item.authorList,
-    "备注": item.remark,
-    "上传获奖证书文件": item.certificateFile
-  };
-}
+
 
 export default defineComponent({
   name: "CompetitionAwardForm",
@@ -128,15 +111,45 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      if (!editData.value.competitionName?.trim()) {
+        ElMessage.error('竞赛名称不能为空');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append("竞赛名称", editData.value.competitionName);
+      formData.append("获奖级别", editData.value.awardLevel || "");
+      formData.append("获奖类别", editData.value.awardCategory || "");
+      formData.append("获奖等级", editData.value.awardGrade || "");
+      formData.append("奖项名称", editData.value.awardName || "");
+      formData.append("获奖时间", editData.value.awardDate || "");
+      formData.append("颁奖单位", editData.value.organizer || "");
+      formData.append("第一完成单位", editData.value.firstUnit || "");
+      formData.append("完成单位排名", editData.value.unitRank || "");
+      formData.append("本人署名", editData.value.author || "");
+      formData.append("是否和学位论文相关", editData.value.relatedToThesis || "");
+      formData.append("作者名单", editData.value.authorList || "");
+      formData.append("备注", editData.value.remark || "");
+      if (editData.value.certificateFile instanceof File) {
+        formData.append("上传获奖证书文件", editData.value.certificateFile);
+      }
+      formData.append("achievement_type", "0");
+      
+      let res;
       if (editIndex.value === -1) {
-        const res = await createCompetitionAward(data);
-        if (res) tableData.value.push(db2form(res));
+        res = await uploadCompetitionAward(formData);
+        if (res) {
+          const data = await getMyCompetitionAwards();
+          tableData.value = (data ?? []).map(db2form);
+        }
         ElMessage.success('新增成功');
       } else {
-        const id = tableData.value[editIndex.value].id;
-        const res = await updateCompetitionAward(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
+        const id = editData.value.id;
+        res = await updateCompetitionAward(id, formData);
+        if (res) {
+          const data = await getMyCompetitionAwards();
+          tableData.value = (data ?? []).map(db2form);
+        }
         ElMessage.success('修改成功');
       }
       showForm.value = false;

@@ -2,7 +2,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker ,ElMessageBox,ElMessage } from "element-plus";
 import {
   getConferenceById,
-  createConference,
+  uploadConference,
   updateConference,
   deleteConference,
   getMyConferences
@@ -51,26 +51,7 @@ function db2form(item: any) {
   };
 }
 
-function form2db(item: any) {
-  return {
-    "会议编号": item.confId,
-    "会议名称": item.confName,
-    "会议英文名": item.confNameEn,
-    "主办单位": item.hostOrg,
-    "会议举办形式": item.form,
-    "会议等级": item.level,
-    "国家或地区": item.country,
-    "是否境外": item.isAbroad,
-    "会议起始日": item.startDate ? new Date(item.startDate).toISOString() : null,
-    "会议终止日": item.endDate ? new Date(item.endDate).toISOString() : null,
-    "举办单位": item.org,
-    "会议人数": item.attendeeNum,
-    "联系人电话": item.contact,
-    "会议地点": item.location,
-    "会议报告": item.report,
-    "备注": item.remark,
-  };
-}
+
 
 export default defineComponent({
   name: "ConferenceForm",
@@ -135,16 +116,49 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      if (!editData.value.confName?.trim()) {
+        ElMessage.error('会议名称不能为空');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append("会议编号", editData.value.confId || "");
+      formData.append("会议名称", editData.value.confName);
+      formData.append("会议英文名", editData.value.confNameEn || "");
+      formData.append("主办单位", editData.value.hostOrg || "");
+      formData.append("会议举办形式", editData.value.form || "");
+      formData.append("会议等级", editData.value.level || "");
+      formData.append("国家或地区", editData.value.country || "");
+      formData.append("是否境外", editData.value.isAbroad || "");
+      formData.append("会议起始日", editData.value.startDate || "");
+      formData.append("会议终止日", editData.value.endDate || "");
+      formData.append("举办单位", editData.value.org || "");
+      formData.append("会议人数", editData.value.attendeeNum || "");
+      formData.append("联系人电话", editData.value.contact || "");
+      formData.append("会议地点", editData.value.location || "");
+      formData.append("会议报告", editData.value.report || "");
+      if (editData.value.reportFile instanceof File) {
+        formData.append("会议报告全文", editData.value.reportFile);
+      }
+      formData.append("备注", editData.value.remark || "");
+      formData.append("achievement_type", "0");
+      
+      let res;
       if (editIndex.value === -1) {
         // 新增
-        const res = await createConference(data);
-        if (res) tableData.value.push(db2form(res));
+        res = await uploadConference(formData);
+        if (res) {
+          const data = await getMyConferences();
+          tableData.value = (data ?? []).map(db2form);
+        }
       } else {
         // 编辑
-        const id = tableData.value[editIndex.value].id;
-        const res = await updateConference(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
+        const id = editData.value.id;
+        res = await updateConference(id, formData);
+        if (res) {
+          const data = await getMyConferences();
+          tableData.value = (data ?? []).map(db2form);
+        }
       }
       showForm.value = false;
       editIndex.value = -1;

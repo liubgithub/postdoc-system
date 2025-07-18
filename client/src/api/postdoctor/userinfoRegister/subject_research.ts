@@ -11,13 +11,15 @@ export const getSubjectResearchById = async (id: number) => {
   return res.data;
 };
 
-export const createSubjectResearch = async (data: any) => {
-  const res = await raw.POST('/pre_entry_subject_research/', { body: data });
+// 创建操作：使用 POST /pre_entry_subject_research/
+export const uploadSubjectResearch = async (formData: FormData) => {
+  const res = await raw.POST('/pre_entry_subject_research/', { body: formData as any });
   return res.data;
 };
 
-export const updateSubjectResearch = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_subject_research/{id}`, { params: { path: { id } }, body: data });
+// 修改操作：使用 PUT /pre_entry_subject_research/{id}
+export const updateSubjectResearch = async (id: number, formData: FormData) => {
+  const res = await raw.PUT(`/pre_entry_subject_research/{id}`, { params: { path: { id } }, body: formData as any });
   return res.data;
 };
 
