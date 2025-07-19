@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker ,ElMessageBox,ElMessage } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
 import {
   getConferenceById,
   uploadConference,
@@ -12,42 +12,46 @@ import dayjs from 'dayjs';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "会议编号", prop: "confId", width: 100 },
-  { label: "会议名称", prop: "confName", width: 120 },
-  { label: "会议英文名称", prop: "confNameEn", width: 140 },
-  { label: "主办单位", prop: "hostOrg", width: 120 },
-  { label: "会议举办形式", prop: "form", width: 110 },
-  { label: "会议等级", prop: "level", width: 100 },
-  { label: "国家或地区", prop: "country", width: 100 },
-  { label: "是否境外", prop: "isAbroad", width: 80 },
-  { label: "会议起始日期", prop: "startDate", width: 110 },
-  { label: "会议终止日期", prop: "endDate", width: 110 },
-  { label: "举办单位", prop: "org", width: 120 },
-  { label: "会议人数", prop: "attendeeNum", width: 90 },
-  { label: "联系人电话", prop: "contact", width: 120 },
-  { label: "会议地点", prop: "location", width: 120 },
-  { label: "备注", prop: "remark", width: 120 },
+  { label: "会议编号", prop: "会议编号", width: 100 },
+  { label: "会议名称", prop: "会议名称", width: 120 },
+  { label: "会议英文名", prop: "会议英文名", width: 140 },
+  { label: "主办单位", prop: "主办单位", width: 120 },
+  { label: "会议举办形式", prop: "会议举办形式", width: 110 },
+  { label: "会议等级", prop: "会议等级", width: 100 },
+  { label: "国家或地区", prop: "国家或地区", width: 100 },
+  { label: "是否境外", prop: "是否境外", width: 80 },
+  { label: "会议起始日", prop: "会议起始日", width: 110 },
+  { label: "会议终止日", prop: "会议终止日", width: 110 },
+  { label: "举办单位", prop: "举办单位", width: 120 },
+  { label: "会议人数", prop: "会议人数", width: 90 },
+  { label: "联系人电话", prop: "联系人电话", width: 120 },
+  { label: "会议地点", prop: "会议地点", width: 120 },
+  { label: "会议报告", prop: "会议报告", width: 120 },
+  { label: "会议报告文件", prop: "会议报告文件", width: 120 },
+  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {
   return {
     id: item.id,
-    confId: item["会议编号"] ?? "",
-    confName: item["会议名称"] ?? "",
-    confNameEn: item["会议英文名"] ?? "",
-    hostOrg: item["主办单位"] ?? "",
-    form: item["会议举办形式"] ?? "",
-    level: item["会议等级"] ?? "",
-    country: item["国家或地区"] ?? "",
-    isAbroad: item["是否境外"] ?? "",
-    startDate: item["会议起始日"] ?? "",
-    endDate: item["会议终止日"] ?? "",
-    org: item["举办单位"] ?? "",
-    attendeeNum: item["会议人数"] ?? "",
-    contact: item["联系人电话"] ?? "",
-    location: item["会议地点"] ?? "",
-    report: item["会议报告"] ?? "",
-    remark: item["备注"] ?? "",
+    user_id: item.user_id,
+    会议编号: item["会议编号"] ?? "",
+    会议名称: item["会议名称"] ?? "",
+    会议英文名: item["会议英文名"] ?? "",
+    主办单位: item["主办单位"] ?? "",
+    会议举办形式: item["会议举办形式"] ?? "",
+    会议等级: item["会议等级"] ?? "",
+    国家或地区: item["国家或地区"] ?? "",
+    是否境外: item["是否境外"] ?? "",
+    会议起始日: item["会议起始日"] ? dayjs(item["会议起始日"]).format('YYYY-MM-DD') : "",
+    会议终止日: item["会议终止日"] ? dayjs(item["会议终止日"]).format('YYYY-MM-DD') : "",
+    举办单位: item["举办单位"] ?? "",
+    会议人数: item["会议人数"] ?? "",
+    联系人电话: item["联系人电话"] ?? "",
+    会议地点: item["会议地点"] ?? "",
+    会议报告: item["会议报告"] ?? "",
+    会议报告文件: item["会议报告文件"] ?? null,
+    备注: item["备注"] ?? "",
   };
 }
 
@@ -64,45 +68,45 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
-      confId: "",
-      confName: "",
-      confNameEn: "",
-      hostOrg: "",
-      form: "",
-      level: "",
-      country: "",
-      isAbroad: "",
-      startDate: "",
-      endDate: "",
-      org: "",
-      attendeeNum: "",
-      contact: "",
-      location: "",
-      report: "",
-      reportFile: null,
-      remark: ""
+      "会议编号": "",
+      "会议名称": "",
+      "会议英文名": "",
+      "主办单位": "",
+      "会议举办形式": "",
+      "会议等级": "",
+      "国家或地区": "",
+      "是否境外": "",
+      "会议起始日": "",
+      "会议终止日": "",
+      "举办单位": "",
+      "会议人数": "",
+      "联系人电话": "",
+      "会议地点": "",
+      "会议报告": "",
+      "会议报告文件": null,
+      "备注": "",
     });
 
     const handleAdd = () => {
       editData.value = {
         id: tableData.value.length + 1,
-        confId: "",
-        confName: "",
-        confNameEn: "",
-        hostOrg: "",
-        form: "",
-        level: "",
-        country: "",
-        isAbroad: "",
-        startDate: "",
-        endDate: "",
-        org: "",
-        attendeeNum: "",
-        contact: "",
-        location: "",
-        report: "",
-        reportFile: null,
-        remark: ""
+        "会议编号": "",
+        "会议名称": "",
+        "会议英文名": "",
+        "主办单位": "",
+        "会议举办形式": "",
+        "会议等级": "",
+        "国家或地区": "",
+        "是否境外": "",
+        "会议起始日": "",
+        "会议终止日": "",
+        "举办单位": "",
+        "会议人数": "",
+        "联系人电话": "",
+        "会议地点": "",
+        "会议报告": "",
+        "会议报告文件": null,
+        "备注": "",
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -116,33 +120,33 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      if (!editData.value.confName?.trim()) {
+      if (!editData.value.会议名称?.trim()) {
         ElMessage.error('会议名称不能为空');
         return;
       }
-      
+
       const formData = new FormData();
-      formData.append("会议编号", editData.value.confId || "");
-      formData.append("会议名称", editData.value.confName);
-      formData.append("会议英文名", editData.value.confNameEn || "");
-      formData.append("主办单位", editData.value.hostOrg || "");
-      formData.append("会议举办形式", editData.value.form || "");
-      formData.append("会议等级", editData.value.level || "");
-      formData.append("国家或地区", editData.value.country || "");
-      formData.append("是否境外", editData.value.isAbroad || "");
-      formData.append("会议起始日", editData.value.startDate || "");
-      formData.append("会议终止日", editData.value.endDate || "");
-      formData.append("举办单位", editData.value.org || "");
-      formData.append("会议人数", editData.value.attendeeNum || "");
-      formData.append("联系人电话", editData.value.contact || "");
-      formData.append("会议地点", editData.value.location || "");
-      formData.append("会议报告", editData.value.report || "");
-      if (editData.value.reportFile instanceof File) {
-        formData.append("会议报告全文", editData.value.reportFile);
+      formData.append("会议编号", editData.value.会议编号 || "");
+      formData.append("会议名称", editData.value.会议名称);
+      formData.append("会议英文名", editData.value.会议名称 || "");
+      formData.append("主办单位", editData.value.主办单位 || "");
+      formData.append("会议举办形式", editData.value.会议举办形式 || "");
+      formData.append("会议等级", editData.value.会议等级 || "");
+      formData.append("国家或地区", editData.value.国家或地区 || "");
+      formData.append("是否境外", editData.value.是否境外 || "");
+      formData.append("会议起始日", editData.value.会议起始日 || "");
+      formData.append("会议终止日", editData.value.会议终止日 || "");
+      formData.append("举办单位", editData.value.举办单位 || "");
+      formData.append("会议人数", editData.value.会议人数 || "");
+      formData.append("联系人电话", editData.value.联系人电话 || "");
+      formData.append("会议地点", editData.value.会议地点 || "");
+      formData.append("会议报告", editData.value.会议报告 || "");
+      if (editData.value.会议报告文件 instanceof File) {
+        formData.append("会议报告文件", editData.value.会议报告文件);
       }
-      formData.append("备注", editData.value.remark || "");
+      formData.append("备注", editData.value.备注 || "");
       formData.append("achievement_type", "0");
-      
+
       let res;
       if (editIndex.value === -1) {
         // 新增
@@ -171,7 +175,7 @@ export default defineComponent({
 
     // 文件上传回调
     const handleFileChange = (file: any) => {
-      editData.value.reportFile = file.raw;
+      editData.value.会议报告文件 = file.raw;
     };
 
     const handleDelete = async (row: any, index: number) => {
@@ -199,48 +203,48 @@ export default defineComponent({
               <ElRow gutter={20}>
                 <ElCol span={12}>
                   <ElFormItem label="会议编号">
-                    <ElInput v-model={editData.value.confId} />
+                    <ElInput v-model={editData.value.会议编号} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议名称">
-                    <ElInput v-model={editData.value.confName} />
+                    <ElInput v-model={editData.value.会议名称} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
-                  <ElFormItem label="会议英文名称">
-                    <ElInput v-model={editData.value.confNameEn} />
+                  <ElFormItem label="会议英文名">
+                    <ElInput v-model={editData.value.会议英文名} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="主办单位">
-                    <ElInput v-model={editData.value.hostOrg} />
+                    <ElInput v-model={editData.value.主办单位} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议举办形式">
-                    <ElInput v-model={editData.value.form} />
+                    <ElInput v-model={editData.value.会议举办形式} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议等级">
-                    <ElInput v-model={editData.value.level} />
+                    <ElInput v-model={editData.value.会议等级} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="国家或地区">
-                    <ElInput v-model={editData.value.country} />
+                    <ElInput v-model={editData.value.国家或地区} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="是否境外">
-                    <ElInput v-model={editData.value.isAbroad} />
+                    <ElInput v-model={editData.value.是否境外} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
-                  <ElFormItem label="会议起始日期">
+                  <ElFormItem label="会议起始日">
                     <ElDatePicker
-                      v-model={editData.value.startDate}
+                      v-model={editData.value.会议起始日}
                       type="date"
                       value-format="YYYY-MM-DD"
                       placeholder="选择日期"
@@ -249,9 +253,9 @@ export default defineComponent({
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
-                  <ElFormItem label="会议终止日期">
+                  <ElFormItem label="会议终止日">
                     <ElDatePicker
-                      v-model={editData.value.endDate}
+                      v-model={editData.value.会议终止日}
                       type="date"
                       value-format="YYYY-MM-DD"
                       placeholder="选择日期"
@@ -261,27 +265,27 @@ export default defineComponent({
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="举办单位">
-                    <ElInput v-model={editData.value.org} />
+                    <ElInput v-model={editData.value.举办单位} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议人数">
-                    <ElInput v-model={editData.value.attendeeNum} />
+                    <ElInput v-model={editData.value.会议人数} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="联系人电话">
-                    <ElInput v-model={editData.value.contact} />
+                    <ElInput v-model={editData.value.联系人电话} />
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议地点">
-                    <ElInput v-model={editData.value.location} />
+                    <ElInput v-model={editData.value.会议地点} />
                   </ElFormItem>
                 </ElCol>
               </ElRow>
               <ElFormItem label="会议报告">
-                <ElInput type="textarea" rows={4} v-model={editData.value.report} />
+                <ElInput type="textarea" rows={4} v-model={editData.value.会议报告} />
               </ElFormItem>
               <ElFormItem label="会议报告文件">
                 <ElUpload
@@ -291,10 +295,10 @@ export default defineComponent({
                 >
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.reportFile && <span style={{ marginLeft: 10 }}>{editData.value.reportFile.name}</span>}
+                {editData.value.会议报告文件 && <span style={{ marginLeft: 10 }}>{editData.value.会议报告文件.name}</span>}
               </ElFormItem>
               <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value.remark} />
+                <ElInput type="textarea" rows={4} v-model={editData.value.备注} />
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
@@ -318,24 +322,37 @@ export default defineComponent({
                       default: ({ $index }: any) => $index + 1
                     }}
                   />
-                ) : col.prop === 'startDate' ? (
+                ) : col.prop === '会议起始日' || col.prop === '会议终止日' ? (
                   <ElTableColumn
                     label={col.label}
                     prop={col.prop}
                     width={col.width}
                     v-slots={{
                       default: ({ row }: any) =>
-                        row.startDate ? dayjs(row.startDate).format('YYYY-MM-DD') : ''
+                        row[col.prop] ? dayjs(row[col.prop]).format('YYYY-MM-DD') : ''
                     }}
                   />
-                ) : col.prop === 'endDate' ? (
+                ) : col.prop === '会议报告' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) => row[col.prop] ?? ""
+                    }}
+                  />
+                ) : col.prop === '会议报告文件' ? (
                   <ElTableColumn
                     label={col.label}
                     prop={col.prop}
                     width={col.width}
                     v-slots={{
                       default: ({ row }: any) =>
-                        row.endDate ? dayjs(row.endDate).format('YYYY-MM-DD') : ''
+                        row["会议报告文件"] ? (
+                          <a href={row["会议报告文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                            {row["会议报告文件"].split('/').pop()}
+                          </a>
+                        ) : ""
                     }}
                   />
                 ) : (

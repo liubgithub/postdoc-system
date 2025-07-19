@@ -33,7 +33,7 @@ async def create_conference(
     联系人电话: str = Form(""),
     会议地点: str = Form(""),
     会议报告: str = Form(""),
-    会议报告全文: UploadFile = File(None),
+    会议报告文件: UploadFile = File(None),
     备注: str = Form(""),
     achievement_type: int = Form(0),
     db: Session = Depends(get_db),
@@ -65,10 +65,10 @@ async def create_conference(
     )
 
     # 文件上传
-    if 会议报告全文:
-        user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_conference", "会议报告全文")
+    if 会议报告文件:
+        user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_conference", "会议报告文件")
         os.makedirs(user_dir, exist_ok=True)
-        original_filename = 会议报告全文.filename
+        original_filename = 会议报告文件.filename
         safe_filename = "".join(c for c in original_filename if c.isalnum() or c in "._-")
         base_name, ext = os.path.splitext(safe_filename)
         counter = 1
@@ -78,8 +78,8 @@ async def create_conference(
             counter += 1
         file_path = os.path.join(user_dir, final_filename)
         with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(会议报告全文.file, buffer)
-        db_conference.会议报告全文 = f"/static/{current_user.id}/pre_entry_conference/会议报告全文/{final_filename}"
+            shutil.copyfileobj(会议报告文件.file, buffer)
+        db_conference.会议报告文件 = f"/static/{current_user.id}/pre_entry_conference/会议报告文件/{final_filename}"
 
     db.add(db_conference)
     db.commit()
@@ -104,7 +104,7 @@ async def update_conference(
     联系人电话: str = Form(""),
     会议地点: str = Form(""),
     会议报告: str = Form(""),
-    会议报告全文: UploadFile = File(None),
+    会议报告文件: UploadFile = File(None),
     备注: str = Form(""),
     achievement_type: int = Form(0),
     db: Session = Depends(get_db),
@@ -139,9 +139,9 @@ async def update_conference(
     db_conference.achievement_type = achievement_type
 
     # 文件上传
-    if 会议报告全文:
+    if 会议报告文件:
         # 删除旧文件
-        old_file_path = db_conference.会议报告全文
+        old_file_path = db_conference.会议报告文件
         if old_file_path:
             try:
                 old_file_relative = old_file_path.replace("/static/", "")
@@ -150,9 +150,9 @@ async def update_conference(
                     os.remove(old_file_absolute)
             except Exception:
                 pass
-        user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_conference", "会议报告全文")
+        user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_conference", "会议报告文件")
         os.makedirs(user_dir, exist_ok=True)
-        original_filename = 会议报告全文.filename
+        original_filename = 会议报告文件.filename
         safe_filename = "".join(c for c in original_filename if c.isalnum() or c in "._-")
         base_name, ext = os.path.splitext(safe_filename)
         counter = 1
@@ -162,8 +162,8 @@ async def update_conference(
             counter += 1
         file_path = os.path.join(user_dir, final_filename)
         with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(会议报告全文.file, buffer)
-        db_conference.会议报告全文 = f"/static/{current_user.id}/pre_entry_conference/会议报告全文/{final_filename}"
+            shutil.copyfileobj(会议报告文件.file, buffer)
+        db_conference.会议报告文件 = f"/static/{current_user.id}/pre_entry_conference/会议报告文件/{final_filename}"
 
     db.commit()
     db.refresh(db_conference)
@@ -186,9 +186,9 @@ def delete_conference(id: int, db: Session = Depends(get_db), current_user=Depen
     if not db_conference:
         raise HTTPException(status_code=404, detail="Conference not found")
     # 删除物理文件
-    if db_conference.会议报告全文:
+    if db_conference.会议报告文件:
         try:
-            old_file_relative = db_conference.会议报告全文.replace("/static/", "")
+            old_file_relative = db_conference.会议报告文件.replace("/static/", "")
             old_file_absolute = os.path.join(UPLOAD_ROOT, old_file_relative)
             if os.path.exists(old_file_absolute):
                 os.remove(old_file_absolute)
@@ -201,10 +201,10 @@ def delete_conference(id: int, db: Session = Depends(get_db), current_user=Depen
 @router.get("/download/{id}")
 def download_conference_file(id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     conference = db.query(models.PreEntryConference).filter(models.PreEntryConference.id == id, models.PreEntryConference.user_id == current_user.id).first()
-    if not conference or not conference.会议报告全文:
+    if not conference or not conference.会议报告文件:
         raise HTTPException(status_code=404, detail="File not found")
     
-    file_path = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_conference", "会议报告全文", os.path.basename(conference.会议报告全文))
+    file_path = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_conference", "会议报告文件", os.path.basename(conference.会议报告文件))
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(file_path, filename=os.path.basename(file_path))

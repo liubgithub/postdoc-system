@@ -19,7 +19,7 @@ class PreEntryConferenceBase(BaseModel):
     联系人电话: Optional[str] = ""
     会议地点: Optional[str] = ""
     会议报告: Optional[str] = ""
-    会议报告全文: Optional[str] = ""
+    会议报告文件: Optional[str] = ""
     备注: Optional[str] = ""
 
 class PreEntryConferenceCreate(PreEntryConferenceBase):

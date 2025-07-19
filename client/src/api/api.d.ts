@@ -163,25 +163,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create Award */
-        post: operations["create_award_pre_entry_competition_award__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pre_entry_competition_award/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Awards */
-        get: operations["get_my_awards_pre_entry_competition_award_me_get"];
-        put?: never;
-        post?: never;
+        /** Create Competition Award */
+        post: operations["create_competition_award_pre_entry_competition_award__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -195,13 +178,47 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Award */
-        get: operations["get_award_pre_entry_competition_award__id__get"];
-        /** Update Award */
-        put: operations["update_award_pre_entry_competition_award__id__put"];
+        /** Get Competition Award */
+        get: operations["get_competition_award_pre_entry_competition_award__id__get"];
+        /** Update Competition Award */
+        put: operations["update_competition_award_pre_entry_competition_award__id__put"];
         post?: never;
-        /** Delete Award */
-        delete: operations["delete_award_pre_entry_competition_award__id__delete"];
+        /** Delete Competition Award */
+        delete: operations["delete_competition_award_pre_entry_competition_award__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_competition_award/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Competition Awards */
+        get: operations["get_my_competition_awards_pre_entry_competition_award_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_competition_award/download/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Competition Award File */
+        get: operations["download_competition_award_file_pre_entry_competition_award_download__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -218,23 +235,6 @@ export interface paths {
         put?: never;
         /** Create Conference */
         post: operations["create_conference_pre_entry_conference__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pre_entry_conference/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Conferences */
-        get: operations["get_my_conferences_pre_entry_conference_me_get"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -260,6 +260,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/pre_entry_conference/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Conferences */
+        get: operations["get_my_conferences_pre_entry_conference_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_conference/download/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Conference File */
+        get: operations["download_conference_file_pre_entry_conference_download__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/pre_entry_new_variety/": {
         parameters: {
             query?: never;
@@ -269,25 +303,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create Variety */
-        post: operations["create_variety_pre_entry_new_variety__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pre_entry_new_variety/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Varieties */
-        get: operations["get_my_varieties_pre_entry_new_variety_me_get"];
-        put?: never;
-        post?: never;
+        /** Create New Variety */
+        post: operations["create_new_variety_pre_entry_new_variety__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -301,13 +318,47 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Variety */
-        get: operations["get_variety_pre_entry_new_variety__id__get"];
-        /** Update Variety */
-        put: operations["update_variety_pre_entry_new_variety__id__put"];
+        /** Get New Variety */
+        get: operations["get_new_variety_pre_entry_new_variety__id__get"];
+        /** Update New Variety */
+        put: operations["update_new_variety_pre_entry_new_variety__id__put"];
         post?: never;
-        /** Delete Variety */
-        delete: operations["delete_variety_pre_entry_new_variety__id__delete"];
+        /** Delete New Variety */
+        delete: operations["delete_new_variety_pre_entry_new_variety__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_new_variety/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My New Varieties */
+        get: operations["get_my_new_varieties_pre_entry_new_variety_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_new_variety/download/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download New Variety File */
+        get: operations["download_new_variety_file_pre_entry_new_variety_download__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -349,23 +400,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_paper/download/{id}/{field}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Download Paper File */
-        get: operations["download_paper_file_pre_entry_paper_download__id___field__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/pre_entry_paper/me": {
         parameters: {
             query?: never;
@@ -375,6 +409,23 @@ export interface paths {
         };
         /** Get My Papers */
         get: operations["get_my_papers_pre_entry_paper_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_paper/download/{id}/{field}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Paper File */
+        get: operations["download_paper_file_pre_entry_paper_download__id___field__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -400,6 +451,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/pre_entry_patent/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Patent */
+        get: operations["get_patent_pre_entry_patent__id__get"];
+        /** Update Patent */
+        put: operations["update_patent_pre_entry_patent__id__put"];
+        post?: never;
+        /** Delete Patent */
+        delete: operations["delete_patent_pre_entry_patent__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/pre_entry_patent/me": {
         parameters: {
             query?: never;
@@ -417,20 +487,18 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_patent/{id}": {
+    "/pre_entry_patent/download/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Patent */
-        get: operations["get_patent_pre_entry_patent__id__get"];
-        /** Update Patent */
-        put: operations["update_patent_pre_entry_patent__id__put"];
+        /** Download Patent File */
+        get: operations["download_patent_file_pre_entry_patent_download__id__get"];
+        put?: never;
         post?: never;
-        /** Delete Patent */
-        delete: operations["delete_patent_pre_entry_patent__id__delete"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -489,6 +557,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/pre_entry_project/download/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Project File */
+        get: operations["download_project_file_pre_entry_project_download__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/pre_entry_subject_research/": {
         parameters: {
             query?: never;
@@ -501,6 +586,25 @@ export interface paths {
         /** Create Subject */
         post: operations["create_subject_pre_entry_subject_research__post"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_subject_research/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Subject */
+        get: operations["get_subject_pre_entry_subject_research__id__get"];
+        /** Update Subject */
+        put: operations["update_subject_pre_entry_subject_research__id__put"];
+        post?: never;
+        /** Delete Subject Research */
+        delete: operations["delete_subject_research_pre_entry_subject_research__id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -523,20 +627,18 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pre_entry_subject_research/{id}": {
+    "/pre_entry_subject_research/download/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Subject */
-        get: operations["get_subject_pre_entry_subject_research__id__get"];
-        /** Update Subject */
-        put: operations["update_subject_pre_entry_subject_research__id__put"];
+        /** Download Subject Research File */
+        get: operations["download_subject_research_file_pre_entry_subject_research_download__id__get"];
+        put?: never;
         post?: never;
-        /** Delete Subject */
-        delete: operations["delete_subject_pre_entry_subject_research__id__delete"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -604,25 +706,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create Standard */
-        post: operations["create_standard_pre_entry_industry_standard__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pre_entry_industry_standard/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My Standards */
-        get: operations["get_my_standards_pre_entry_industry_standard_me_get"];
-        put?: never;
-        post?: never;
+        /** Create Industry Standard */
+        post: operations["create_industry_standard_pre_entry_industry_standard__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -636,13 +721,47 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Standard */
-        get: operations["get_standard_pre_entry_industry_standard__id__get"];
-        /** Update Standard */
-        put: operations["update_standard_pre_entry_industry_standard__id__put"];
+        /** Get Industry Standard */
+        get: operations["get_industry_standard_pre_entry_industry_standard__id__get"];
+        /** Update Industry Standard */
+        put: operations["update_industry_standard_pre_entry_industry_standard__id__put"];
         post?: never;
-        /** Delete Standard */
-        delete: operations["delete_standard_pre_entry_industry_standard__id__delete"];
+        /** Delete Industry Standard */
+        delete: operations["delete_industry_standard_pre_entry_industry_standard__id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_industry_standard/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Industry Standards */
+        get: operations["get_my_industry_standards_pre_entry_industry_standard_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pre_entry_industry_standard/download/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Industry Standard File */
+        get: operations["download_industry_standard_file_pre_entry_industry_standard_download__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -780,6 +899,246 @@ export interface components {
              */
             file?: string;
         };
+        /** Body_create_competition_award_pre_entry_competition_award__post */
+        Body_create_competition_award_pre_entry_competition_award__post: {
+            /** 获奖名称 */
+            "\u83B7\u5956\u540D\u79F0": string;
+            /**
+             * 获奖级别
+             * @default
+             */
+            "\u83B7\u5956\u7EA7\u522B": string;
+            /**
+             * 获奖日期
+             * @default
+             */
+            "\u83B7\u5956\u65E5\u671F": string;
+            /**
+             * 主办单位
+             * @default
+             */
+            "\u4E3B\u529E\u5355\u4F4D": string;
+            /**
+             * 获奖等级
+             * @default
+             */
+            "\u83B7\u5956\u7B49\u7EA7": string;
+            /**
+             * 本人角色
+             * @default
+             */
+            "\u672C\u4EBA\u89D2\u8272": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+        };
+        /** Body_create_conference_pre_entry_conference__post */
+        Body_create_conference_pre_entry_conference__post: {
+            /**
+             * 会议编号
+             * @default
+             */
+            "\u4F1A\u8BAE\u7F16\u53F7": string;
+            /** 会议名称 */
+            "\u4F1A\u8BAE\u540D\u79F0": string;
+            /**
+             * 会议英文名
+             * @default
+             */
+            "\u4F1A\u8BAE\u82F1\u6587\u540D": string;
+            /**
+             * 主办单位
+             * @default
+             */
+            "\u4E3B\u529E\u5355\u4F4D": string;
+            /**
+             * 会议举办形式
+             * @default
+             */
+            "\u4F1A\u8BAE\u4E3E\u529E\u5F62\u5F0F": string;
+            /**
+             * 会议等级
+             * @default
+             */
+            "\u4F1A\u8BAE\u7B49\u7EA7": string;
+            /**
+             * 国家或地区
+             * @default
+             */
+            "\u56FD\u5BB6\u6216\u5730\u533A": string;
+            /**
+             * 是否境外
+             * @default
+             */
+            "\u662F\u5426\u5883\u5916": string;
+            /**
+             * 会议起始日
+             * @default
+             */
+            "\u4F1A\u8BAE\u8D77\u59CB\u65E5": string;
+            /**
+             * 会议终止日
+             * @default
+             */
+            "\u4F1A\u8BAE\u7EC8\u6B62\u65E5": string;
+            /**
+             * 举办单位
+             * @default
+             */
+            "\u4E3E\u529E\u5355\u4F4D": string;
+            /**
+             * 会议人数
+             * @default
+             */
+            "\u4F1A\u8BAE\u4EBA\u6570": string;
+            /**
+             * 联系人电话
+             * @default
+             */
+            "\u8054\u7CFB\u4EBA\u7535\u8BDD": string;
+            /**
+             * 会议地点
+             * @default
+             */
+            "\u4F1A\u8BAE\u5730\u70B9": string;
+            /**
+             * 会议报告
+             * @default
+             */
+            "\u4F1A\u8BAE\u62A5\u544A": string;
+            /**
+             * 会议报告文件
+             * Format: binary
+             */
+            "\u4F1A\u8BAE\u62A5\u544A\u6587\u4EF6"?: string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number;
+        };
+        /** Body_create_industry_standard_pre_entry_industry_standard__post */
+        Body_create_industry_standard_pre_entry_industry_standard__post: {
+            /** 标准名称 */
+            "\u6807\u51C6\u540D\u79F0": string;
+            /**
+             * 标准编号
+             * @default
+             */
+            "\u6807\u51C6\u7F16\u53F7": string;
+            /**
+             * 发布日期
+             * @default
+             */
+            "\u53D1\u5E03\u65E5\u671F": string;
+            /**
+             * 实施日期
+             * @default
+             */
+            "\u5B9E\u65BD\u65E5\u671F": string;
+            /**
+             * 归口单位
+             * @default
+             */
+            "\u5F52\u53E3\u5355\u4F4D": string;
+            /**
+             * 起草单位
+             * @default
+             */
+            "\u8D77\u8349\u5355\u4F4D": string;
+            /**
+             * 适用范围
+             * @default
+             */
+            "\u9002\u7528\u8303\u56F4": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+        };
+        /** Body_create_new_variety_pre_entry_new_variety__post */
+        Body_create_new_variety_pre_entry_new_variety__post: {
+            /**
+             * 署名排序
+             * @default
+             */
+            "\u7F72\u540D\u6392\u5E8F": string;
+            /**
+             * 本校是否第一完成单位
+             * @default
+             */
+            "\u672C\u6821\u662F\u5426\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string;
+            /**
+             * 公示年份
+             * @default
+             */
+            "\u516C\u793A\u5E74\u4EFD": string;
+            /**
+             * 第一完成单位
+             * @default
+             */
+            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string;
+            /**
+             * 动植物名称
+             * @default
+             */
+            "\u52A8\u690D\u7269\u540D\u79F0": string;
+            /** 品种名称 */
+            "\u54C1\u79CD\u540D\u79F0": string;
+            /**
+             * 选育单位
+             * @default
+             */
+            "\u9009\u80B2\u5355\u4F4D": string;
+            /**
+             * 公告号
+             * @default
+             */
+            "\u516C\u544A\u53F7": string;
+            /**
+             * 审定编号
+             * @default
+             */
+            "\u5BA1\u5B9A\u7F16\u53F7": string;
+            /**
+             * 审定单位
+             * @default
+             */
+            "\u5BA1\u5B9A\u5355\u4F4D": string;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传新品种证明文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u65B0\u54C1\u79CD\u8BC1\u660E\u6587\u4EF6"?: string;
+        };
         /** Body_create_paper_pre_entry_paper__post */
         Body_create_paper_pre_entry_paper__post: {
             /** 论文名称 */
@@ -909,6 +1268,61 @@ export interface components {
              */
             "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
         };
+        /** Body_create_patent_pre_entry_patent__post */
+        Body_create_patent_pre_entry_patent__post: {
+            /** 专利名称 */
+            "\u4E13\u5229\u540D\u79F0": string;
+            /**
+             * 专利类型
+             * @default
+             */
+            "\u4E13\u5229\u7C7B\u578B": string;
+            /**
+             * 申请日期
+             * @default
+             */
+            "\u7533\u8BF7\u65E5\u671F": string;
+            /**
+             * 授权日期
+             * @default
+             */
+            "\u6388\u6743\u65E5\u671F": string;
+            /**
+             * 专利号
+             * @default
+             */
+            "\u4E13\u5229\u53F7": string;
+            /**
+             * 申请号
+             * @default
+             */
+            "\u7533\u8BF7\u53F7": string;
+            /**
+             * 发明人
+             * @default
+             */
+            "\u53D1\u660E\u4EBA": string;
+            /**
+             * 专利权人
+             * @default
+             */
+            "\u4E13\u5229\u6743\u4EBA": string;
+            /**
+             * 专利状态
+             * @default
+             */
+            "\u4E13\u5229\u72B6\u6001": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+        };
         /** Body_create_project_pre_entry_project__post */
         Body_create_project_pre_entry_project__post: {
             /**
@@ -989,10 +1403,55 @@ export interface components {
              */
             "\u5907\u6CE8": string;
             /**
-             * Achievementfile
+             * 上传项目成果文件
              * Format: binary
              */
-            achievementFile?: string;
+            "\u4E0A\u4F20\u9879\u76EE\u6210\u679C\u6587\u4EF6"?: string;
+        };
+        /** Body_create_subject_pre_entry_subject_research__post */
+        Body_create_subject_pre_entry_subject_research__post: {
+            /** 课题名称 */
+            "\u8BFE\u9898\u540D\u79F0": string;
+            /**
+             * 课题来源
+             * @default
+             */
+            "\u8BFE\u9898\u6765\u6E90": string;
+            /**
+             * 开始时间
+             * @default
+             */
+            "\u5F00\u59CB\u65F6\u95F4": string;
+            /**
+             * 结束时间
+             * @default
+             */
+            "\u7ED3\u675F\u65F6\u95F4": string;
+            /**
+             * 课题负责人
+             * @default
+             */
+            "\u8BFE\u9898\u8D1F\u8D23\u4EBA": string;
+            /**
+             * 本人承担部分
+             * @default
+             */
+            "\u672C\u4EBA\u627F\u62C5\u90E8\u5206": string;
+            /**
+             * 课题级别
+             * @default
+             */
+            "\u8BFE\u9898\u7EA7\u522B": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
         };
         /** Body_login_auth_login_post */
         Body_login_auth_login_post: {
@@ -1070,6 +1529,246 @@ export interface components {
              * Format: binary
              */
             file?: string;
+        };
+        /** Body_update_competition_award_pre_entry_competition_award__id__put */
+        Body_update_competition_award_pre_entry_competition_award__id__put: {
+            /** 获奖名称 */
+            "\u83B7\u5956\u540D\u79F0": string;
+            /**
+             * 获奖级别
+             * @default
+             */
+            "\u83B7\u5956\u7EA7\u522B": string;
+            /**
+             * 获奖日期
+             * @default
+             */
+            "\u83B7\u5956\u65E5\u671F": string;
+            /**
+             * 主办单位
+             * @default
+             */
+            "\u4E3B\u529E\u5355\u4F4D": string;
+            /**
+             * 获奖等级
+             * @default
+             */
+            "\u83B7\u5956\u7B49\u7EA7": string;
+            /**
+             * 本人角色
+             * @default
+             */
+            "\u672C\u4EBA\u89D2\u8272": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+        };
+        /** Body_update_conference_pre_entry_conference__id__put */
+        Body_update_conference_pre_entry_conference__id__put: {
+            /**
+             * 会议编号
+             * @default
+             */
+            "\u4F1A\u8BAE\u7F16\u53F7": string;
+            /** 会议名称 */
+            "\u4F1A\u8BAE\u540D\u79F0": string;
+            /**
+             * 会议英文名
+             * @default
+             */
+            "\u4F1A\u8BAE\u82F1\u6587\u540D": string;
+            /**
+             * 主办单位
+             * @default
+             */
+            "\u4E3B\u529E\u5355\u4F4D": string;
+            /**
+             * 会议举办形式
+             * @default
+             */
+            "\u4F1A\u8BAE\u4E3E\u529E\u5F62\u5F0F": string;
+            /**
+             * 会议等级
+             * @default
+             */
+            "\u4F1A\u8BAE\u7B49\u7EA7": string;
+            /**
+             * 国家或地区
+             * @default
+             */
+            "\u56FD\u5BB6\u6216\u5730\u533A": string;
+            /**
+             * 是否境外
+             * @default
+             */
+            "\u662F\u5426\u5883\u5916": string;
+            /**
+             * 会议起始日
+             * @default
+             */
+            "\u4F1A\u8BAE\u8D77\u59CB\u65E5": string;
+            /**
+             * 会议终止日
+             * @default
+             */
+            "\u4F1A\u8BAE\u7EC8\u6B62\u65E5": string;
+            /**
+             * 举办单位
+             * @default
+             */
+            "\u4E3E\u529E\u5355\u4F4D": string;
+            /**
+             * 会议人数
+             * @default
+             */
+            "\u4F1A\u8BAE\u4EBA\u6570": string;
+            /**
+             * 联系人电话
+             * @default
+             */
+            "\u8054\u7CFB\u4EBA\u7535\u8BDD": string;
+            /**
+             * 会议地点
+             * @default
+             */
+            "\u4F1A\u8BAE\u5730\u70B9": string;
+            /**
+             * 会议报告
+             * @default
+             */
+            "\u4F1A\u8BAE\u62A5\u544A": string;
+            /**
+             * 会议报告文件
+             * Format: binary
+             */
+            "\u4F1A\u8BAE\u62A5\u544A\u6587\u4EF6"?: string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number;
+        };
+        /** Body_update_industry_standard_pre_entry_industry_standard__id__put */
+        Body_update_industry_standard_pre_entry_industry_standard__id__put: {
+            /** 标准名称 */
+            "\u6807\u51C6\u540D\u79F0": string;
+            /**
+             * 标准编号
+             * @default
+             */
+            "\u6807\u51C6\u7F16\u53F7": string;
+            /**
+             * 发布日期
+             * @default
+             */
+            "\u53D1\u5E03\u65E5\u671F": string;
+            /**
+             * 实施日期
+             * @default
+             */
+            "\u5B9E\u65BD\u65E5\u671F": string;
+            /**
+             * 归口单位
+             * @default
+             */
+            "\u5F52\u53E3\u5355\u4F4D": string;
+            /**
+             * 起草单位
+             * @default
+             */
+            "\u8D77\u8349\u5355\u4F4D": string;
+            /**
+             * 适用范围
+             * @default
+             */
+            "\u9002\u7528\u8303\u56F4": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+        };
+        /** Body_update_new_variety_pre_entry_new_variety__id__put */
+        Body_update_new_variety_pre_entry_new_variety__id__put: {
+            /**
+             * 署名排序
+             * @default
+             */
+            "\u7F72\u540D\u6392\u5E8F": string;
+            /**
+             * 本校是否第一完成单位
+             * @default
+             */
+            "\u672C\u6821\u662F\u5426\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string;
+            /**
+             * 公示年份
+             * @default
+             */
+            "\u516C\u793A\u5E74\u4EFD": string;
+            /**
+             * 第一完成单位
+             * @default
+             */
+            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string;
+            /**
+             * 动植物名称
+             * @default
+             */
+            "\u52A8\u690D\u7269\u540D\u79F0": string;
+            /** 品种名称 */
+            "\u54C1\u79CD\u540D\u79F0": string;
+            /**
+             * 选育单位
+             * @default
+             */
+            "\u9009\u80B2\u5355\u4F4D": string;
+            /**
+             * 公告号
+             * @default
+             */
+            "\u516C\u544A\u53F7": string;
+            /**
+             * 审定编号
+             * @default
+             */
+            "\u5BA1\u5B9A\u7F16\u53F7": string;
+            /**
+             * 审定单位
+             * @default
+             */
+            "\u5BA1\u5B9A\u5355\u4F4D": string;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传新品种证明文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u65B0\u54C1\u79CD\u8BC1\u660E\u6587\u4EF6"?: string;
         };
         /** Body_update_paper_pre_entry_paper__id__put */
         Body_update_paper_pre_entry_paper__id__put: {
@@ -1200,6 +1899,61 @@ export interface components {
              */
             "\u8BBA\u6587\u7535\u5B50\u7248"?: string;
         };
+        /** Body_update_patent_pre_entry_patent__id__put */
+        Body_update_patent_pre_entry_patent__id__put: {
+            /** 专利名称 */
+            "\u4E13\u5229\u540D\u79F0": string;
+            /**
+             * 专利类型
+             * @default
+             */
+            "\u4E13\u5229\u7C7B\u578B": string;
+            /**
+             * 申请日期
+             * @default
+             */
+            "\u7533\u8BF7\u65E5\u671F": string;
+            /**
+             * 授权日期
+             * @default
+             */
+            "\u6388\u6743\u65E5\u671F": string;
+            /**
+             * 专利号
+             * @default
+             */
+            "\u4E13\u5229\u53F7": string;
+            /**
+             * 申请号
+             * @default
+             */
+            "\u7533\u8BF7\u53F7": string;
+            /**
+             * 发明人
+             * @default
+             */
+            "\u53D1\u660E\u4EBA": string;
+            /**
+             * 专利权人
+             * @default
+             */
+            "\u4E13\u5229\u6743\u4EBA": string;
+            /**
+             * 专利状态
+             * @default
+             */
+            "\u4E13\u5229\u72B6\u6001": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+        };
         /** Body_update_project_pre_entry_project__id__put */
         Body_update_project_pre_entry_project__id__put: {
             /**
@@ -1280,10 +2034,55 @@ export interface components {
              */
             "\u5907\u6CE8": string;
             /**
-             * Achievementfile
+             * 上传项目成果文件
              * Format: binary
              */
-            achievementFile?: string;
+            "\u4E0A\u4F20\u9879\u76EE\u6210\u679C\u6587\u4EF6"?: string;
+        };
+        /** Body_update_subject_pre_entry_subject_research__id__put */
+        Body_update_subject_pre_entry_subject_research__id__put: {
+            /** 课题名称 */
+            "\u8BFE\u9898\u540D\u79F0": string;
+            /**
+             * 课题来源
+             * @default
+             */
+            "\u8BFE\u9898\u6765\u6E90": string;
+            /**
+             * 开始时间
+             * @default
+             */
+            "\u5F00\u59CB\u65F6\u95F4": string;
+            /**
+             * 结束时间
+             * @default
+             */
+            "\u7ED3\u675F\u65F6\u95F4": string;
+            /**
+             * 课题负责人
+             * @default
+             */
+            "\u8BFE\u9898\u8D1F\u8D23\u4EBA": string;
+            /**
+             * 本人承担部分
+             * @default
+             */
+            "\u672C\u4EBA\u627F\u62C5\u90E8\u5206": string;
+            /**
+             * 课题级别
+             * @default
+             */
+            "\u8BFE\u9898\u7EA7\u522B": string;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string;
+            /**
+             * 上传文件
+             * Format: binary
+             */
+            "\u4E0A\u4F20\u6587\u4EF6"?: string;
         };
         /** EducationExperienceIn */
         EducationExperienceIn: {
@@ -1560,20 +2359,74 @@ export interface components {
              * @default 0
              */
             achievement_type: number | null;
-            /** 获奖名称 */
-            "\u83B7\u5956\u540D\u79F0"?: string | null;
-            /** 获奖级别 */
-            "\u83B7\u5956\u7EA7\u522B"?: string | null;
+            /** 竞赛名称 */
+            "\u7ADE\u8D5B\u540D\u79F0": string;
+            /**
+             * 获奖类别
+             * @default
+             */
+            "\u83B7\u5956\u7C7B\u522B": string | null;
+            /**
+             * 获奖等级
+             * @default
+             */
+            "\u83B7\u5956\u7B49\u7EA7": string | null;
             /** 获奖时间 */
             "\u83B7\u5956\u65F6\u95F4"?: string | null;
-            /** 获奖排名 */
-            "\u83B7\u5956\u6392\u540D"?: string | null;
-            /** 获奖证书文件 */
-            "\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            /**
+             * 本人署名
+             * @default
+             */
+            "\u672C\u4EBA\u7F72\u540D": string | null;
+            /**
+             * 获奖级别
+             * @default
+             */
+            "\u83B7\u5956\u7EA7\u522B": string | null;
+            /**
+             * 颁奖单位
+             * @default
+             */
+            "\u9881\u5956\u5355\u4F4D": string | null;
+            /**
+             * 第一完成单位
+             * @default
+             */
+            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string | null;
+            /**
+             * 完成单位排名
+             * @default
+             */
+            "\u5B8C\u6210\u5355\u4F4D\u6392\u540D": string | null;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string | null;
+            /**
+             * 奖项名称
+             * @default
+             */
+            "\u5956\u9879\u540D\u79F0": string | null;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string | null;
+            /**
+             * 上传获奖证书文件
+             * @default
+             */
+            "\u4E0A\u4F20\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
+            /** User Id */
+            user_id: number;
             /**
              * Created At
              * Format: date-time
@@ -1584,46 +2437,6 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
-        };
-        /** PreEntryCompetitionAwardCreate */
-        PreEntryCompetitionAwardCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 获奖名称 */
-            "\u83B7\u5956\u540D\u79F0"?: string | null;
-            /** 获奖级别 */
-            "\u83B7\u5956\u7EA7\u522B"?: string | null;
-            /** 获奖时间 */
-            "\u83B7\u5956\u65F6\u95F4"?: string | null;
-            /** 获奖排名 */
-            "\u83B7\u5956\u6392\u540D"?: string | null;
-            /** 获奖证书文件 */
-            "\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryCompetitionAwardUpdate */
-        PreEntryCompetitionAwardUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 获奖名称 */
-            "\u83B7\u5956\u540D\u79F0"?: string | null;
-            /** 获奖级别 */
-            "\u83B7\u5956\u7EA7\u522B"?: string | null;
-            /** 获奖时间 */
-            "\u83B7\u5956\u65F6\u95F4"?: string | null;
-            /** 获奖排名 */
-            "\u83B7\u5956\u6392\u540D"?: string | null;
-            /** 获奖证书文件 */
-            "\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryConference */
         PreEntryConference: {
@@ -1632,24 +2445,86 @@ export interface components {
              * @default 0
              */
             achievement_type: number | null;
+            /**
+             * 会议编号
+             * @default
+             */
+            "\u4F1A\u8BAE\u7F16\u53F7": string | null;
             /** 会议名称 */
-            "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
-            /** 会议等级 */
-            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
-            /** 会议时间 */
-            "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
-            /** 会议地点 */
-            "\u4F1A\u8BAE\u5730\u70B9"?: string | null;
-            /** 报告类型 */
-            "\u62A5\u544A\u7C7B\u578B"?: string | null;
-            /** 报告题目 */
-            "\u62A5\u544A\u9898\u76EE"?: string | null;
-            /** 会议证书文件 */
-            "\u4F1A\u8BAE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            "\u4F1A\u8BAE\u540D\u79F0": string;
+            /**
+             * 会议英文名
+             * @default
+             */
+            "\u4F1A\u8BAE\u82F1\u6587\u540D": string | null;
+            /**
+             * 主办单位
+             * @default
+             */
+            "\u4E3B\u529E\u5355\u4F4D": string | null;
+            /**
+             * 会议举办形式
+             * @default
+             */
+            "\u4F1A\u8BAE\u4E3E\u529E\u5F62\u5F0F": string | null;
+            /**
+             * 会议等级
+             * @default
+             */
+            "\u4F1A\u8BAE\u7B49\u7EA7": string | null;
+            /**
+             * 国家或地区
+             * @default
+             */
+            "\u56FD\u5BB6\u6216\u5730\u533A": string | null;
+            /**
+             * 是否境外
+             * @default
+             */
+            "\u662F\u5426\u5883\u5916": string | null;
+            /** 会议起始日 */
+            "\u4F1A\u8BAE\u8D77\u59CB\u65E5"?: string | null;
+            /** 会议终止日 */
+            "\u4F1A\u8BAE\u7EC8\u6B62\u65E5"?: string | null;
+            /**
+             * 举办单位
+             * @default
+             */
+            "\u4E3E\u529E\u5355\u4F4D": string | null;
+            /**
+             * 会议人数
+             * @default
+             */
+            "\u4F1A\u8BAE\u4EBA\u6570": string | null;
+            /**
+             * 联系人电话
+             * @default
+             */
+            "\u8054\u7CFB\u4EBA\u7535\u8BDD": string | null;
+            /**
+             * 会议地点
+             * @default
+             */
+            "\u4F1A\u8BAE\u5730\u70B9": string | null;
+            /**
+             * 会议报告
+             * @default
+             */
+            "\u4F1A\u8BAE\u62A5\u544A": string | null;
+            /**
+             * 会议报告文件
+             * @default
+             */
+            "\u4F1A\u8BAE\u62A5\u544A\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
+            /** User Id */
+            user_id: number;
             /**
              * Created At
              * Format: date-time
@@ -1660,54 +2535,6 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
-        };
-        /** PreEntryConferenceCreate */
-        PreEntryConferenceCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 会议名称 */
-            "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
-            /** 会议等级 */
-            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
-            /** 会议时间 */
-            "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
-            /** 会议地点 */
-            "\u4F1A\u8BAE\u5730\u70B9"?: string | null;
-            /** 报告类型 */
-            "\u62A5\u544A\u7C7B\u578B"?: string | null;
-            /** 报告题目 */
-            "\u62A5\u544A\u9898\u76EE"?: string | null;
-            /** 会议证书文件 */
-            "\u4F1A\u8BAE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryConferenceUpdate */
-        PreEntryConferenceUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 会议名称 */
-            "\u4F1A\u8BAE\u540D\u79F0"?: string | null;
-            /** 会议等级 */
-            "\u4F1A\u8BAE\u7B49\u7EA7"?: string | null;
-            /** 会议时间 */
-            "\u4F1A\u8BAE\u65F6\u95F4"?: string | null;
-            /** 会议地点 */
-            "\u4F1A\u8BAE\u5730\u70B9"?: string | null;
-            /** 报告类型 */
-            "\u62A5\u544A\u7C7B\u578B"?: string | null;
-            /** 报告题目 */
-            "\u62A5\u544A\u9898\u76EE"?: string | null;
-            /** 会议证书文件 */
-            "\u4F1A\u8BAE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryIndustryStandard */
         PreEntryIndustryStandard: {
@@ -1717,21 +2544,45 @@ export interface components {
              */
             achievement_type: number | null;
             /** 标准名称 */
-            "\u6807\u51C6\u540D\u79F0"?: string | null;
-            /** 标准类型 */
-            "\u6807\u51C6\u7C7B\u578B"?: string | null;
-            /** 标准级别 */
-            "\u6807\u51C6\u7EA7\u522B"?: string | null;
-            /** 发布时间 */
-            "\u53D1\u5E03\u65F6\u95F4"?: string | null;
-            /** 标准编号 */
-            "\u6807\u51C6\u7F16\u53F7"?: string | null;
-            /** 标准证书文件 */
-            "\u6807\u51C6\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            "\u6807\u51C6\u540D\u79F0": string;
+            /**
+             * 标准编号
+             * @default
+             */
+            "\u6807\u51C6\u7F16\u53F7": string | null;
+            /** 发布日期 */
+            "\u53D1\u5E03\u65E5\u671F"?: string | null;
+            /** 实施日期 */
+            "\u5B9E\u65BD\u65E5\u671F"?: string | null;
+            /**
+             * 归口单位
+             * @default
+             */
+            "\u5F52\u53E3\u5355\u4F4D": string | null;
+            /**
+             * 起草单位
+             * @default
+             */
+            "\u8D77\u8349\u5355\u4F4D": string | null;
+            /**
+             * 适用范围
+             * @default
+             */
+            "\u9002\u7528\u8303\u56F4": string | null;
+            /**
+             * 上传文件
+             * @default
+             */
+            "\u4E0A\u4F20\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
+            /** User Id */
+            user_id: number;
             /**
              * Created At
              * Format: date-time
@@ -1742,50 +2593,6 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
-        };
-        /** PreEntryIndustryStandardCreate */
-        PreEntryIndustryStandardCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 标准名称 */
-            "\u6807\u51C6\u540D\u79F0"?: string | null;
-            /** 标准类型 */
-            "\u6807\u51C6\u7C7B\u578B"?: string | null;
-            /** 标准级别 */
-            "\u6807\u51C6\u7EA7\u522B"?: string | null;
-            /** 发布时间 */
-            "\u53D1\u5E03\u65F6\u95F4"?: string | null;
-            /** 标准编号 */
-            "\u6807\u51C6\u7F16\u53F7"?: string | null;
-            /** 标准证书文件 */
-            "\u6807\u51C6\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryIndustryStandardUpdate */
-        PreEntryIndustryStandardUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 标准名称 */
-            "\u6807\u51C6\u540D\u79F0"?: string | null;
-            /** 标准类型 */
-            "\u6807\u51C6\u7C7B\u578B"?: string | null;
-            /** 标准级别 */
-            "\u6807\u51C6\u7EA7\u522B"?: string | null;
-            /** 发布时间 */
-            "\u53D1\u5E03\u65F6\u95F4"?: string | null;
-            /** 标准编号 */
-            "\u6807\u51C6\u7F16\u53F7"?: string | null;
-            /** 标准证书文件 */
-            "\u6807\u51C6\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryNewVariety */
         PreEntryNewVariety: {
@@ -1794,20 +2601,69 @@ export interface components {
              * @default 0
              */
             achievement_type: number | null;
-            /** 新品种名称 */
-            "\u65B0\u54C1\u79CD\u540D\u79F0"?: string | null;
-            /** 品种类型 */
-            "\u54C1\u79CD\u7C7B\u578B"?: string | null;
-            /** 审定时间 */
-            "\u5BA1\u5B9A\u65F6\u95F4"?: string | null;
-            /** 审定编号 */
-            "\u5BA1\u5B9A\u7F16\u53F7"?: string | null;
-            /** 新品种证书文件 */
-            "\u65B0\u54C1\u79CD\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            /**
+             * 署名排序
+             * @default
+             */
+            "\u7F72\u540D\u6392\u5E8F": string | null;
+            /**
+             * 本校是否第一完成单位
+             * @default
+             */
+            "\u672C\u6821\u662F\u5426\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string | null;
+            /** 公示年份 */
+            "\u516C\u793A\u5E74\u4EFD"?: string | null;
+            /**
+             * 第一完成单位
+             * @default
+             */
+            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string | null;
+            /**
+             * 动植物名称
+             * @default
+             */
+            "\u52A8\u690D\u7269\u540D\u79F0": string | null;
+            /** 品种名称 */
+            "\u54C1\u79CD\u540D\u79F0": string;
+            /**
+             * 选育单位
+             * @default
+             */
+            "\u9009\u80B2\u5355\u4F4D": string | null;
+            /**
+             * 公告号
+             * @default
+             */
+            "\u516C\u544A\u53F7": string | null;
+            /**
+             * 审定编号
+             * @default
+             */
+            "\u5BA1\u5B9A\u7F16\u53F7": string | null;
+            /**
+             * 审定单位
+             * @default
+             */
+            "\u5BA1\u5B9A\u5355\u4F4D": string | null;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string | null;
+            /**
+             * 上传新品种证明文件
+             * @default
+             */
+            "\u4E0A\u4F20\u65B0\u54C1\u79CD\u8BC1\u660E\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
+            /** User Id */
+            user_id: number;
             /**
              * Created At
              * Format: date-time
@@ -1818,46 +2674,6 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
-        };
-        /** PreEntryNewVarietyCreate */
-        PreEntryNewVarietyCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 新品种名称 */
-            "\u65B0\u54C1\u79CD\u540D\u79F0"?: string | null;
-            /** 品种类型 */
-            "\u54C1\u79CD\u7C7B\u578B"?: string | null;
-            /** 审定时间 */
-            "\u5BA1\u5B9A\u65F6\u95F4"?: string | null;
-            /** 审定编号 */
-            "\u5BA1\u5B9A\u7F16\u53F7"?: string | null;
-            /** 新品种证书文件 */
-            "\u65B0\u54C1\u79CD\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryNewVarietyUpdate */
-        PreEntryNewVarietyUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 新品种名称 */
-            "\u65B0\u54C1\u79CD\u540D\u79F0"?: string | null;
-            /** 品种类型 */
-            "\u54C1\u79CD\u7C7B\u578B"?: string | null;
-            /** 审定时间 */
-            "\u5BA1\u5B9A\u65F6\u95F4"?: string | null;
-            /** 审定编号 */
-            "\u5BA1\u5B9A\u7F16\u53F7"?: string | null;
-            /** 新品种证书文件 */
-            "\u65B0\u54C1\u79CD\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
         };
         /** PreEntryPaper */
         PreEntryPaper: {
@@ -1940,36 +2756,65 @@ export interface components {
              * @default 0
              */
             achievement_type: number | null;
-            /** 专利权人 */
-            "\u4E13\u5229\u6743\u4EBA"?: string | null;
-            /** 专利成果编码 */
-            "\u4E13\u5229\u6210\u679C\u7F16\u7801"?: string | null;
+            /**
+             * 专利权人
+             * @default
+             */
+            "\u4E13\u5229\u6743\u4EBA": string | null;
+            /**
+             * 专利成果编码
+             * @default
+             */
+            "\u4E13\u5229\u6210\u679C\u7F16\u7801": string | null;
             /** 专利成果名称 */
-            "\u4E13\u5229\u6210\u679C\u540D\u79F0"?: string | null;
-            /** 专利类型 */
-            "\u4E13\u5229\u7C7B\u578B"?: string | null;
+            "\u4E13\u5229\u6210\u679C\u540D\u79F0": string;
+            /**
+             * 专利类型
+             * @default
+             */
+            "\u4E13\u5229\u7C7B\u578B": string | null;
             /** 提交时间 */
             "\u63D0\u4EA4\u65F6\u95F4"?: string | null;
             /** 批准日期 */
             "\u6279\u51C6\u65E5\u671F"?: string | null;
             /** 授权公告日期 */
             "\u6388\u6743\u516C\u544A\u65E5\u671F"?: string | null;
-            /** 申请编号 */
-            "\u7533\u8BF7\u7F16\u53F7"?: string | null;
-            /** 专利证书编号 */
-            "\u4E13\u5229\u8BC1\u4E66\u7F16\u53F7"?: string | null;
+            /**
+             * 申请编号
+             * @default
+             */
+            "\u7533\u8BF7\u7F16\u53F7": string | null;
+            /**
+             * 专利证书编号
+             * @default
+             */
+            "\u4E13\u5229\u8BC1\u4E66\u7F16\u53F7": string | null;
             /** 专利终止日期 */
             "\u4E13\u5229\u7EC8\u6B62\u65E5\u671F"?: string | null;
-            /** 授权公告号 */
-            "\u6388\u6743\u516C\u544A\u53F7"?: string | null;
-            /** 作者排名 */
-            "\u4F5C\u8005\u6392\u540D"?: string | null;
-            /** 专利证书文文件 */
-            "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            /**
+             * 授权公告号
+             * @default
+             */
+            "\u6388\u6743\u516C\u544A\u53F7": string | null;
+            /**
+             * 作者排名
+             * @default
+             */
+            "\u4F5C\u8005\u6392\u540D": string | null;
+            /**
+             * 专利证书文文件
+             * @default
+             */
+            "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
+            /** User Id */
+            user_id: number;
             /**
              * Created At
              * Format: date-time
@@ -1981,78 +2826,6 @@ export interface components {
              */
             updated_at: string;
         };
-        /** PreEntryPatentCreate */
-        PreEntryPatentCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 专利权人 */
-            "\u4E13\u5229\u6743\u4EBA"?: string | null;
-            /** 专利成果编码 */
-            "\u4E13\u5229\u6210\u679C\u7F16\u7801"?: string | null;
-            /** 专利成果名称 */
-            "\u4E13\u5229\u6210\u679C\u540D\u79F0"?: string | null;
-            /** 专利类型 */
-            "\u4E13\u5229\u7C7B\u578B"?: string | null;
-            /** 提交时间 */
-            "\u63D0\u4EA4\u65F6\u95F4"?: string | null;
-            /** 批准日期 */
-            "\u6279\u51C6\u65E5\u671F"?: string | null;
-            /** 授权公告日期 */
-            "\u6388\u6743\u516C\u544A\u65E5\u671F"?: string | null;
-            /** 申请编号 */
-            "\u7533\u8BF7\u7F16\u53F7"?: string | null;
-            /** 专利证书编号 */
-            "\u4E13\u5229\u8BC1\u4E66\u7F16\u53F7"?: string | null;
-            /** 专利终止日期 */
-            "\u4E13\u5229\u7EC8\u6B62\u65E5\u671F"?: string | null;
-            /** 授权公告号 */
-            "\u6388\u6743\u516C\u544A\u53F7"?: string | null;
-            /** 作者排名 */
-            "\u4F5C\u8005\u6392\u540D"?: string | null;
-            /** 专利证书文文件 */
-            "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntryPatentUpdate */
-        PreEntryPatentUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 专利权人 */
-            "\u4E13\u5229\u6743\u4EBA"?: string | null;
-            /** 专利成果编码 */
-            "\u4E13\u5229\u6210\u679C\u7F16\u7801"?: string | null;
-            /** 专利成果名称 */
-            "\u4E13\u5229\u6210\u679C\u540D\u79F0"?: string | null;
-            /** 专利类型 */
-            "\u4E13\u5229\u7C7B\u578B"?: string | null;
-            /** 提交时间 */
-            "\u63D0\u4EA4\u65F6\u95F4"?: string | null;
-            /** 批准日期 */
-            "\u6279\u51C6\u65E5\u671F"?: string | null;
-            /** 授权公告日期 */
-            "\u6388\u6743\u516C\u544A\u65E5\u671F"?: string | null;
-            /** 申请编号 */
-            "\u7533\u8BF7\u7F16\u53F7"?: string | null;
-            /** 专利证书编号 */
-            "\u4E13\u5229\u8BC1\u4E66\u7F16\u53F7"?: string | null;
-            /** 专利终止日期 */
-            "\u4E13\u5229\u7EC8\u6B62\u65E5\u671F"?: string | null;
-            /** 授权公告号 */
-            "\u6388\u6743\u516C\u544A\u53F7"?: string | null;
-            /** 作者排名 */
-            "\u4F5C\u8005\u6392\u540D"?: string | null;
-            /** 专利证书文文件 */
-            "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
         /** PreEntryProject */
         PreEntryProject: {
             /**
@@ -2060,24 +2833,82 @@ export interface components {
              * @default 0
              */
             achievement_type: number | null;
+            /**
+             * 项目编号
+             * @default
+             */
+            "\u9879\u76EE\u7F16\u53F7": string | null;
             /** 项目名称 */
-            "\u9879\u76EE\u540D\u79F0"?: string | null;
-            /** 项目类型 */
-            "\u9879\u76EE\u7C7B\u578B"?: string | null;
-            /** 项目级别 */
-            "\u9879\u76EE\u7EA7\u522B"?: string | null;
-            /** 项目开始时间 */
-            "\u9879\u76EE\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 项目结束时间 */
-            "\u9879\u76EE\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 项目经费 */
-            "\u9879\u76EE\u7ECF\u8D39"?: string | null;
-            /** 项目负责人 */
-            "\u9879\u76EE\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 项目证书文件 */
-            "\u9879\u76EE\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            "\u9879\u76EE\u540D\u79F0": string;
+            /**
+             * 项目类型
+             * @default
+             */
+            "\u9879\u76EE\u7C7B\u578B": string | null;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string | null;
+            /**
+             * 项目标题
+             * @default
+             */
+            "\u9879\u76EE\u6807\u9898": string | null;
+            /** 立项日期 */
+            "\u7ACB\u9879\u65E5\u671F"?: string | null;
+            /**
+             * 项目层次
+             * @default
+             */
+            "\u9879\u76EE\u5C42\u6B21": string | null;
+            /**
+             * 是否结项
+             * @default
+             */
+            "\u662F\u5426\u7ED3\u9879": string | null;
+            /** 验收或鉴定日期 */
+            "\u9A8C\u6536\u6216\u9274\u5B9A\u65E5\u671F"?: string | null;
+            /**
+             * 项目执行状态
+             * @default
+             */
+            "\u9879\u76EE\u6267\u884C\u72B6\u6001": string | null;
+            /**
+             * 本人角色
+             * @default
+             */
+            "\u672C\u4EBA\u89D2\u8272": string | null;
+            /**
+             * 参与者总数
+             * @default
+             */
+            "\u53C2\u4E0E\u8005\u603B\u6570": string | null;
+            /**
+             * 参与者名单
+             * @default
+             */
+            "\u53C2\u4E0E\u8005\u540D\u5355": string | null;
+            /**
+             * 承担任务
+             * @default
+             */
+            "\u627F\u62C5\u4EFB\u52A1": string | null;
+            /**
+             * 项目经费说明
+             * @default
+             */
+            "\u9879\u76EE\u7ECF\u8D39\u8BF4\u660E": string | null;
+            /**
+             * 上传项目成果文件
+             * @default
+             */
+            "\u4E0A\u4F20\u9879\u76EE\u6210\u679C\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
             /** User Id */
@@ -2101,25 +2932,45 @@ export interface components {
              */
             achievement_type: number | null;
             /** 课题名称 */
-            "\u8BFE\u9898\u540D\u79F0"?: string | null;
-            /** 课题类型 */
-            "\u8BFE\u9898\u7C7B\u578B"?: string | null;
-            /** 课题级别 */
-            "\u8BFE\u9898\u7EA7\u522B"?: string | null;
-            /** 课题开始时间 */
-            "\u8BFE\u9898\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 课题结束时间 */
-            "\u8BFE\u9898\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 课题经费 */
-            "\u8BFE\u9898\u7ECF\u8D39"?: string | null;
-            /** 课题负责人 */
-            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 课题证书文件 */
-            "\u8BFE\u9898\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
+            "\u8BFE\u9898\u540D\u79F0": string;
+            /**
+             * 课题来源
+             * @default
+             */
+            "\u8BFE\u9898\u6765\u6E90": string | null;
+            /** 开始时间 */
+            "\u5F00\u59CB\u65F6\u95F4"?: string | null;
+            /** 结束时间 */
+            "\u7ED3\u675F\u65F6\u95F4"?: string | null;
+            /**
+             * 课题负责人
+             * @default
+             */
+            "\u8BFE\u9898\u8D1F\u8D23\u4EBA": string | null;
+            /**
+             * 本人承担部分
+             * @default
+             */
+            "\u672C\u4EBA\u627F\u62C5\u90E8\u5206": string | null;
+            /**
+             * 课题级别
+             * @default
+             */
+            "\u8BFE\u9898\u7EA7\u522B": string | null;
+            /**
+             * 上传文件
+             * @default
+             */
+            "\u4E0A\u4F20\u6587\u4EF6": string | null;
+            /**
+             * 备注
+             * @default
+             */
+            "\u5907\u6CE8": string | null;
             /** Id */
             id: number;
+            /** User Id */
+            user_id: number;
             /**
              * Created At
              * Format: date-time
@@ -2130,58 +2981,6 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
-        };
-        /** PreEntrySubjectResearchCreate */
-        PreEntrySubjectResearchCreate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 课题名称 */
-            "\u8BFE\u9898\u540D\u79F0"?: string | null;
-            /** 课题类型 */
-            "\u8BFE\u9898\u7C7B\u578B"?: string | null;
-            /** 课题级别 */
-            "\u8BFE\u9898\u7EA7\u522B"?: string | null;
-            /** 课题开始时间 */
-            "\u8BFE\u9898\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 课题结束时间 */
-            "\u8BFE\u9898\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 课题经费 */
-            "\u8BFE\u9898\u7ECF\u8D39"?: string | null;
-            /** 课题负责人 */
-            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 课题证书文件 */
-            "\u8BFE\u9898\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
-        };
-        /** PreEntrySubjectResearchUpdate */
-        PreEntrySubjectResearchUpdate: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            achievement_type: number | null;
-            /** 课题名称 */
-            "\u8BFE\u9898\u540D\u79F0"?: string | null;
-            /** 课题类型 */
-            "\u8BFE\u9898\u7C7B\u578B"?: string | null;
-            /** 课题级别 */
-            "\u8BFE\u9898\u7EA7\u522B"?: string | null;
-            /** 课题开始时间 */
-            "\u8BFE\u9898\u5F00\u59CB\u65F6\u95F4"?: string | null;
-            /** 课题结束时间 */
-            "\u8BFE\u9898\u7ED3\u675F\u65F6\u95F4"?: string | null;
-            /** 课题经费 */
-            "\u8BFE\u9898\u7ECF\u8D39"?: string | null;
-            /** 课题负责人 */
-            "\u8BFE\u9898\u8D1F\u8D23\u4EBA"?: string | null;
-            /** 课题证书文件 */
-            "\u8BFE\u9898\u8BC1\u4E66\u6587\u4EF6"?: string | null;
-            /** 备注 */
-            "\u5907\u6CE8"?: string | null;
         };
         /** Token */
         Token: {
@@ -2529,7 +3328,7 @@ export interface operations {
             };
         };
     };
-    create_award_pre_entry_competition_award__post: {
+    create_competition_award_pre_entry_competition_award__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2538,7 +3337,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryCompetitionAwardCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_competition_award_pre_entry_competition_award__post"];
             };
         };
         responses: {
@@ -2562,7 +3361,104 @@ export interface operations {
             };
         };
     };
-    get_my_awards_pre_entry_competition_award_me_get: {
+    get_competition_award_pre_entry_competition_award__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryCompetitionAward"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_competition_award_pre_entry_competition_award__id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_update_competition_award_pre_entry_competition_award__id__put"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryCompetitionAward"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_competition_award_pre_entry_competition_award__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_competition_awards_pre_entry_competition_award_me_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2582,73 +3478,7 @@ export interface operations {
             };
         };
     };
-    get_award_pre_entry_competition_award__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryCompetitionAward"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    update_award_pre_entry_competition_award__id__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PreEntryCompetitionAwardUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryCompetitionAward"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_award_pre_entry_competition_award__id__delete: {
+    download_competition_award_file_pre_entry_competition_award_download__id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2688,7 +3518,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryConferenceCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_conference_pre_entry_conference__post"];
             };
         };
         responses: {
@@ -2708,26 +3538,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_my_conferences_pre_entry_conference_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryConference"][];
                 };
             };
         };
@@ -2774,7 +3584,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryConferenceUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_conference_pre_entry_conference__id__put"];
             };
         };
         responses: {
@@ -2829,7 +3639,58 @@ export interface operations {
             };
         };
     };
-    create_variety_pre_entry_new_variety__post: {
+    get_my_conferences_pre_entry_conference_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryConference"][];
+                };
+            };
+        };
+    };
+    download_conference_file_pre_entry_conference_download__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_new_variety_pre_entry_new_variety__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2838,7 +3699,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryNewVarietyCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_new_variety_pre_entry_new_variety__post"];
             };
         };
         responses: {
@@ -2862,7 +3723,104 @@ export interface operations {
             };
         };
     };
-    get_my_varieties_pre_entry_new_variety_me_get: {
+    get_new_variety_pre_entry_new_variety__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryNewVariety"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_new_variety_pre_entry_new_variety__id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_update_new_variety_pre_entry_new_variety__id__put"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryNewVariety"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_new_variety_pre_entry_new_variety__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_new_varieties_pre_entry_new_variety_me_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2882,73 +3840,7 @@ export interface operations {
             };
         };
     };
-    get_variety_pre_entry_new_variety__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryNewVariety"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    update_variety_pre_entry_new_variety__id__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PreEntryNewVarietyUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryNewVariety"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_variety_pre_entry_new_variety__id__delete: {
+    download_new_variety_file_pre_entry_new_variety_download__id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3109,6 +4001,26 @@ export interface operations {
             };
         };
     };
+    get_my_papers_pre_entry_paper_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryPaper"][];
+                };
+            };
+        };
+    };
     download_paper_file_pre_entry_paper_download__id___field__get: {
         parameters: {
             query?: never;
@@ -3141,26 +4053,6 @@ export interface operations {
             };
         };
     };
-    get_my_papers_pre_entry_paper_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryPaper"][];
-                };
-            };
-        };
-    };
     create_patent_pre_entry_patent__post: {
         parameters: {
             query?: never;
@@ -3170,7 +4062,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryPatentCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_patent_pre_entry_patent__post"];
             };
         };
         responses: {
@@ -3190,26 +4082,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_my_patents_pre_entry_patent_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryPatent"][];
                 };
             };
         };
@@ -3256,7 +4128,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryPatentUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_patent_pre_entry_patent__id__put"];
             };
         };
         responses: {
@@ -3281,6 +4153,57 @@ export interface operations {
         };
     };
     delete_patent_pre_entry_patent__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_patents_pre_entry_patent_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryPatent"][];
+                };
+            };
+        };
+    };
+    download_patent_file_pre_entry_patent_download__id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3461,6 +4384,37 @@ export interface operations {
             };
         };
     };
+    download_project_file_pre_entry_project_download__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_subject_pre_entry_subject_research__post: {
         parameters: {
             query?: never;
@@ -3470,7 +4424,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntrySubjectResearchCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_subject_pre_entry_subject_research__post"];
             };
         };
         responses: {
@@ -3490,26 +4444,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_my_subjects_pre_entry_subject_research_me_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntrySubjectResearch"][];
                 };
             };
         };
@@ -3556,7 +4490,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntrySubjectResearchUpdate"];
+                "multipart/form-data": components["schemas"]["Body_update_subject_pre_entry_subject_research__id__put"];
             };
         };
         responses: {
@@ -3580,7 +4514,58 @@ export interface operations {
             };
         };
     };
-    delete_subject_pre_entry_subject_research__id__delete: {
+    delete_subject_research_pre_entry_subject_research__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_subjects_pre_entry_subject_research_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntrySubjectResearch"][];
+                };
+            };
+        };
+    };
+    download_subject_research_file_pre_entry_subject_research_download__id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3737,7 +4722,7 @@ export interface operations {
             };
         };
     };
-    create_standard_pre_entry_industry_standard__post: {
+    create_industry_standard_pre_entry_industry_standard__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -3746,7 +4731,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PreEntryIndustryStandardCreate"];
+                "multipart/form-data": components["schemas"]["Body_create_industry_standard_pre_entry_industry_standard__post"];
             };
         };
         responses: {
@@ -3770,7 +4755,104 @@ export interface operations {
             };
         };
     };
-    get_my_standards_pre_entry_industry_standard_me_get: {
+    get_industry_standard_pre_entry_industry_standard__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_industry_standard_pre_entry_industry_standard__id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_update_industry_standard_pre_entry_industry_standard__id__put"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_industry_standard_pre_entry_industry_standard__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_industry_standards_pre_entry_industry_standard_me_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3790,73 +4872,7 @@ export interface operations {
             };
         };
     };
-    get_standard_pre_entry_industry_standard__id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    update_standard_pre_entry_industry_standard__id__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PreEntryIndustryStandardUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreEntryIndustryStandard"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_standard_pre_entry_industry_standard__id__delete: {
+    download_industry_standard_file_pre_entry_industry_standard_download__id__get: {
         parameters: {
             query?: never;
             header?: never;

@@ -23,7 +23,7 @@ class PreEntryConference(Base):
     联系人电话 = Column(String(32))
     会议地点 = Column(String(255))
     会议报告 = Column(String(255))      # 文件路径
-    会议报告全文 = Column(String(255))  # 文件路径
+    会议报告文件 = Column(String(255))  # 文件路径
     备注 = Column(String)
     
     created_at = Column(DateTime, default=datetime.utcnow)
