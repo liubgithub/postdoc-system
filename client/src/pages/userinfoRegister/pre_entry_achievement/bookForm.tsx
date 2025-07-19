@@ -23,8 +23,8 @@ const columns = [
   { label: "出版号", prop: "出版号", width: 100 },
   { label: "ISBN", prop: "isbn", width: 100 },
   { label: "作者排名", prop: "作者排名", width: 100 },
-  { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
+  { label: "上传文件", prop: "上传文件", width: 120 },
+  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {
@@ -42,9 +42,8 @@ function db2form(item: any) {
     出版号: item["出版号"] ?? "",
     isbn: item["isbn"] ?? "",
     作者排名: item["作者排名"] ?? "",
-    上传文件: item["上传文件"] ?? "",
+    上传文件: item["上传文件"] ?? null,
     备注: item["备注"] ?? "",
-    achievement_type: item["achievement_type"] ?? 0,
   };
 }
 
@@ -72,7 +71,6 @@ export default defineComponent({
       "作者排名": "",
       "上传文件": null,
       "备注": "",
-      achievement_type: 0,
     });
 
     const loadBooks = async () => {
@@ -82,7 +80,7 @@ export default defineComponent({
 
     const handleAdd = () => {
       editData.value = {
-        id: null,
+        id: tableData.value.length + 1,
         "著作中文名": "",
         "出版社": "",
         "出版日期": "",
@@ -96,7 +94,6 @@ export default defineComponent({
         "作者排名": "",
         "上传文件": null,
         "备注": "",
-        achievement_type: 0,
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -135,21 +132,21 @@ export default defineComponent({
       formData.append("出版号", editData.value["出版号"] || "");
       formData.append("isbn", editData.value["isbn"] || "");
       formData.append("作者排名", editData.value["作者排名"] || "");
-      formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", editData.value["achievement_type"] || 0);
-      
       if (editData.value["上传文件"] instanceof File) {
-        formData.append("上传文件", editData.value["上传文件"]);
+        formData.append("file", editData.value["上传文件"]);
       }
+      formData.append("备注", editData.value["备注"] || "");
       
       let res;
       if (editIndex.value === -1) {
+        // 新增
         res = await uploadBook(formData);
         if (res) {
           const data = await getMyBooks();
           tableData.value = (data ?? []).map(db2form);
         }
       } else {
+        // 编辑
         const id = editData.value.id;
         res = await updateBook(id, formData);
         if (res) {
@@ -177,10 +174,9 @@ export default defineComponent({
       ElMessage.success('删除成功');
     };
 
-    const handleFileChange = (fileObj: any) => {
-      if (fileObj && fileObj.raw) {
-        editData.value["上传文件"] = fileObj.raw;
-      }
+    // 文件上传回调
+    const handleFileChange = (file: any) => {
+      editData.value["上传文件"] = file.raw;
     };
 
     onMounted(loadBooks);
@@ -208,17 +204,14 @@ export default defineComponent({
               </ElRow>
               
               <ElFormItem label="上传文件">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
+                <ElUpload
+                  show-file-list={false}
+                  before-upload={() => false}
+                  on-change={handleFileChange}
+                >
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {/* 新文件名 */}
-                {editData.value["上传文件"] && editData.value["上传文件"] instanceof File && (
-                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["上传文件"].name}</span>
-                )}
-                {/* 原文件名 */}
-                {editData.value["上传文件"] && typeof editData.value["上传文件"] === 'string' && (
-                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["上传文件"].split('/').pop()}</span>
-                )}
+                {editData.value["上传文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传文件"].name}</span>}
               </ElFormItem>
               
               <ElFormItem label="备注">
@@ -247,23 +240,41 @@ export default defineComponent({
                       default: ({ $index }: any) => $index + 1
                     }}
                   />
+                ) : col.prop === '出版日期' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row[col.prop] ? dayjs(row[col.prop]).format('YYYY-MM-DD') : ''
+                    }}
+                  />
+                ) : col.prop === '上传文件' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row["上传文件"] ? (
+                          <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                            {row["上传文件"].split('/').pop()}
+                          </a>
+                        ) : ""
+                    }}
+                  />
                 ) : (
-                  <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) => row[col.prop] ?? ""
+                    }}
+                  />
                 )
               ))}
-              <ElTableColumn label="上传文件" width="180">
-                {{
-                  default: ({ row }: any) => (
-                    <div>
-                      {row["上传文件"] && (
-                        <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                          {row["上传文件"].split('/').pop()}
-                        </a>
-                      )}
-                    </div>
-                  )
-                }}
-              </ElTableColumn>
               <ElTableColumn label="操作" width="160" align="center">
                 {{
                   default: ({ row, $index }: any) => (
