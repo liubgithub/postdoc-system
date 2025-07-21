@@ -26,10 +26,12 @@ class AuthService:
         return None
 
     @staticmethod
-    def create_access_token(username: str) -> str:
+    def create_access_token(username: str, role: str = None) -> str:
         """创建访问令牌"""
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode = {"sub": username, "exp": expire}
+        if role:
+            to_encode["role"] = role
         return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
     @staticmethod

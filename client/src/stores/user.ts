@@ -9,14 +9,16 @@ const useUser = defineStore("user", () => {
     const info = ref<{
         name: string
         token: string
+        role: string
     } | null>(null)
 
     // 初始化时检查 localStorage 中的 token
     const initUser = () => {
         const token = localStorage.getItem('token')
         const name = localStorage.getItem('username')
+        const role = localStorage.getItem('userRole')
         if (token && name) {
-            info.value = { name, token }
+            info.value = { name, token, role: role || 'user' }
         }
     }
 
@@ -46,19 +48,33 @@ const useUser = defineStore("user", () => {
             })
 
             if (res.response.status === 200) {
-                console.log(res.data,'res.data')
                 const token = res.data?.access_token
-
                 if (token) {
                     // 存储 token 和用户名
                     localStorage.setItem('token', token)
                     localStorage.setItem('username', name)
-                    info.value = { name, token }
+
+                    // 用 token 再请求 /auth/me 获取角色
+                    const meRes = await raw.GET('/auth/me', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                    const role = meRes.data?.role || 'user'
+                    localStorage.setItem('userRole', role)
+                    info.value = { name, token, role }
 
                     loding.close()
                     ElMessage.success('登录成功！')
 
-                    // 返回登录成功标志
+                    // 关键：打印调试
+                    console.log('登录角色:', role);
+
+                    // 根据角色跳转到不同页面
+                    if (role === 'teacher') {
+                        router.push('/teacher')
+                    } else {
+                        router.push('/UserInfo')
+                    }
+
                     return true
                 }
             } else if (res.response.status === 401) {
@@ -89,6 +105,7 @@ const useUser = defineStore("user", () => {
             info.value = null
             localStorage.removeItem('token')
             localStorage.removeItem('username')
+            localStorage.removeItem('userRole')
 
             // 重定向到登录页
             router.push('/auth/login')
@@ -126,12 +143,18 @@ const useUser = defineStore("user", () => {
     // 检查用户是否已认证
     const isAuthenticated = computed(() => !!info.value?.token)
 
+    // 检查用户角色
+    const isTeacher = computed(() => info.value?.role === 'teacher')
+    const isUser = computed(() => info.value?.role === 'user')
+
     return {
         info,
         login,
         logout,
         userInfo,
         isAuthenticated,
+        isTeacher,
+        isUser,
         initUser,
         register
     }
