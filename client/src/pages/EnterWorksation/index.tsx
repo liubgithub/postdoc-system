@@ -3,7 +3,7 @@ import * as cls from "./styles.css"
 import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
 import StationProtocol from './coms/StationProtocol'
-import fetch from '@/api';
+import fetch from '@/api/index'
 interface TableRow {
     subject: string;
     postname: string;
@@ -23,6 +23,7 @@ const menuList = [
 export default defineComponent({
     name: "EnterWS",
     setup() {
+
         const activeMenu = ref('application')
         const showApplication = ref(true)
         const formData = ref({
@@ -45,6 +46,7 @@ export default defineComponent({
         }])
         const dialogVisible = ref(false)
         const viewRow = ref<TableRow | null>(null)
+        const hasApplied = ref(false);
 
         const handleView = (row: TableRow) => {
             viewRow.value = { ...row }
@@ -61,21 +63,33 @@ export default defineComponent({
             console.log(activeMenu.value, 'sssss')
         }
 
-        const handleSubmit = async () =>{
+        const handleSubmit = async () => {
             try {
-                const res = await fetch.raw.POST('/enterWorkstation/apply',{
-                    body: formData.value
-                })
-                if(res && res.response && (res.response as Response).status === 200){
-                    ElMessage.success('提交成功！')
-                    dialogVisible.value = false
-                }else{
-                    ElMessage.error('提交失败！')
+                if (hasApplied.value) {
+                    // 已提交过，调用 PUT
+                    await fetch.raw.PUT('/enterWorkstation/apply', { body: formData.value });
+                    ElMessage.success('修改成功！');
+                } else {
+                    // 没提交过，调用 POST
+                    await fetch.raw.POST('/enterWorkstation/apply', { body: formData.value });
+                    ElMessage.success('提交成功！');
+                    hasApplied.value = true; // 提交后状态变为已提交
                 }
-            }catch(e){
-                ElMessage.error('提交失败！')
+                dialogVisible.value = false;
+            } catch (error) {
+                ElMessage.error('提交失败！');
             }
-        }
+        };
+
+        onMounted(async () => {
+            try {
+                const res = await fetch.raw.GET('/enterWorkstation/apply');
+                formData.value = res.data as any;
+                hasApplied.value = true; // 已经提交过
+            } catch (error) {
+                hasApplied.value = false; // 没有提交过
+            }
+        });
         return () => (
             <ElContainer>
                 <ElAside width="15vw">

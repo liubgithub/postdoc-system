@@ -1,61 +1,45 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker ,ElMessageBox,ElMessage } from "element-plus";
-import dayjs from 'dayjs';
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
 import { Edit, Delete } from '@element-plus/icons-vue';
-import { getMyPatents, getPatentById, createPatent, updatePatent, deletePatent } from "@/api/postdoctor/userinfoRegister/patent";
+import dayjs from 'dayjs';
+import {
+  getMyPatents,
+  getPatentById,
+  uploadPatent,
+  updatePatent,
+  deletePatent
+} from '@/api/postdoctor/userinfoRegister/patent';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "专利类型", prop: "patentType", width: 100 },
-  { label: "专利成果名称", prop: "patentName", width: 140 },
-  { label: "专利编号", prop: "patentNumber", width: 120 },
-  { label: "专利权人", prop: "patentee", width: 120 },
-  { label: "授权公告日期", prop: "grantDate", width: 120 },
-  { label: "申请编号", prop: "applicationNumber", width: 120 },
-  { label: "专利证书编号", prop: "certificateNumber", width: 120 },
-  { label: "授权公告号", prop: "grantAnnouncementNumber", width: 120 },
-  { label: "批准日期", prop: "approvalDate", width: 120 },
-  { label: "专利终止日期", prop: "terminationDate", width: 120 },
-  { label: "提交日期", prop: "submitDate", width: 120 },
-  { label: "备注", prop: "remark", width: 120 }
+  { label: "专利名称", prop: "专利名称", width: 150 },
+  { label: "专利类型", prop: "专利类型", width: 100 },
+  { label: "申请日期", prop: "申请日期", width: 110 },
+  { label: "授权日期", prop: "授权日期", width: 110 },
+  { label: "专利号", prop: "专利号", width: 100 },
+  { label: "申请号", prop: "申请号", width: 100 },
+  { label: "发明人", prop: "发明人", width: 100 },
+  { label: "专利权人", prop: "专利权人", width: 120 },
+  { label: "专利状态", prop: "专利状态", width: 100 },
+  { label: "上传文件", prop: "上传文件", width: 120 },
+  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {
   return {
     id: item.id,
-    patentee: item["专利权人"] ?? "",
-    patentNumber: item["专利成果编码"] ?? "",
-    patentName: item["专利成果名称"] ?? "",
-    patentType: item["专利类型"] ?? "",
-    submitDate: item["提交时间"] ? dayjs(item["提交时间"]).format('YYYY-MM-DD') : "",
-    approvalDate: item["批准日期"] ? dayjs(item["批准日期"]).format('YYYY-MM-DD') : "",
-    grantDate: item["授权公告日期"] ? dayjs(item["授权公告日期"]).format('YYYY-MM-DD') : "",
-    applicationNumber: item["申请编号"] ?? "",
-    certificateNumber: item["专利证书编号"] ?? "",
-    terminationDate: item["专利终止日期"] ? dayjs(item["专利终止日期"]).format('YYYY-MM-DD') : "",
-    grantAnnouncementNumber: item["授权公告号"] ?? "",
-    authorOrder: item["作者排名"] ?? "",
-    certificateFile: item["专利证书文文件"] ?? null,
-    remark: item["备注"] ?? ""
-  };
-}
-
-function form2db(item: any) {
-  return {
-    "专利权人": item.patentee,
-    "专利成果编码": item.patentNumber,
-    "专利成果名称": item.patentName,
-    "专利类型": item.patentType,
-    "提交时间": item.submitDate ? new Date(item.submitDate).toISOString() : null,
-    "批准日期": item.approvalDate ? new Date(item.approvalDate).toISOString() : null,
-    "授权公告日期": item.grantDate ? new Date(item.grantDate).toISOString() : null,
-    "申请编号": item.applicationNumber,
-    "专利证书编号": item.certificateNumber,
-    "专利终止日期": item.terminationDate ? new Date(item.terminationDate).toISOString() : null,
-    "授权公告号": item.grantAnnouncementNumber,
-    "作者排名": item.authorOrder,
-    "专利证书文文件": item.certificateFile,
-    "备注": item.remark
+    user_id: item.user_id,
+    专利名称: item["专利成果名称"] ?? "",
+    专利类型: item["专利类型"] ?? "",
+    申请日期: item["提交时间"] ? dayjs(item["提交时间"]).format('YYYY-MM-DD') : "",
+    授权日期: item["批准日期"] ? dayjs(item["批准日期"]).format('YYYY-MM-DD') : "",
+    专利号: item["授权公告号"] ?? "",
+    申请号: item["申请编号"] ?? "",
+    发明人: item["作者排名"] ?? "",
+    专利权人: item["专利权人"] ?? "",
+    专利状态: item["专利成果编码"] ?? "",
+    上传文件: item["专利证书文文件"] ?? null,
+    备注: item["备注"] ?? "",
   };
 }
 
@@ -70,39 +54,38 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
-      patentType: "",
-      patentName: "",
-      patentNumber: "",
-      patentee: "",
-      grantDate: "",
-      applicationNumber: "",
-      certificateNumber: "",
-      grantAnnouncementNumber: "",
-      approvalDate: "",
-      terminationDate: "",
-      submitDate: "",
-      authorOrder: "",
-      certificateFile: null,
-      remark: ""
+      "专利名称": "",
+      "专利类型": "",
+      "申请日期": "",
+      "授权日期": "",
+      "专利号": "",
+      "申请号": "",
+      "发明人": "",
+      "专利权人": "",
+      "专利状态": "",
+      "上传文件": null,
+      "备注": "",
     });
+
+    const loadPatents = async () => {
+      const data = await getMyPatents();
+      tableData.value = (data ?? []).map(db2form);
+    };
 
     const handleAdd = () => {
       editData.value = {
-        id: null,
-        patentType: "",
-        patentName: "",
-        patentNumber: "",
-        patentee: "",
-        grantDate: "",
-        applicationNumber: "",
-        certificateNumber: "",
-        grantAnnouncementNumber: "",
-        approvalDate: "",
-        terminationDate: "",
-        submitDate: "",
-        authorOrder: "",
-        certificateFile: null,
-        remark: ""
+        id: tableData.value.length + 1,
+        "专利名称": "",
+        "专利类型": "",
+        "申请日期": "",
+        "授权日期": "",
+        "专利号": "",
+        "申请号": "",
+        "发明人": "",
+        "专利权人": "",
+        "专利状态": "",
+        "上传文件": null,
+        "备注": "",
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -116,14 +99,43 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      if (!editData.value["专利名称"]?.trim()) {
+        ElMessage.error('专利名称不能为空');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append("专利成果名称", editData.value["专利名称"]);
+      formData.append("专利类型", editData.value["专利类型"] || "");
+      formData.append("提交时间", editData.value["申请日期"] || "");
+      formData.append("批准日期", editData.value["授权日期"] || "");
+      formData.append("授权公告号", editData.value["专利号"] || "");
+      formData.append("申请编号", editData.value["申请号"] || "");
+      formData.append("作者排名", editData.value["发明人"] || "");
+      formData.append("专利权人", editData.value["专利权人"] || "");
+      formData.append("专利成果编码", editData.value["专利状态"] || "");
+      if (editData.value["上传文件"] instanceof File) {
+        formData.append("专利证书文文件", editData.value["上传文件"]);
+      }
+      formData.append("备注", editData.value["备注"] || "");
+      formData.append("achievement_type", "0");
+      
+      let res;
       if (editIndex.value === -1) {
-        const res = await createPatent(data);
-        if (res) tableData.value.push(db2form(res));
+        // 新增
+        res = await uploadPatent(formData);
+        if (res) {
+          const data = await getMyPatents();
+          tableData.value = (data ?? []).map(db2form);
+        }
       } else {
-        const id = tableData.value[editIndex.value].id;
-        const res = await updatePatent(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
+        // 编辑
+        const id = editData.value.id;
+        res = await updatePatent(id, formData);
+        if (res) {
+          const data = await getMyPatents();
+          tableData.value = (data ?? []).map(db2form);
+        }
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -134,13 +146,13 @@ export default defineComponent({
       editIndex.value = -1;
     };
 
+    // 文件上传回调
     const handleFileChange = (file: any) => {
-      editData.value.certificateFile = file.raw;
+      editData.value["上传文件"] = file.raw;
     };
 
-
     const handleDelete = async (row: any, index: number) => {
-      await ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
+      await ElMessageBox.confirm('确定要删除该专利吗？', '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -150,10 +162,7 @@ export default defineComponent({
       ElMessage.success('删除成功');
     };
 
-    onMounted(async () => {
-      const data = await getMyPatents();
-      tableData.value = (data ?? []).map(db2form);
-    });
+    onMounted(loadPatents);
 
     return () => (
       <div>
@@ -162,28 +171,36 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>专利信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="专利权人"><ElInput v-model={editData.value.patentee} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="专利成果编号"><ElInput v-model={editData.value.patentNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="专利成果名称"><ElInput v-model={editData.value.patentName} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="专利类型"><ElInput v-model={editData.value.patentType} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="提交日期"><ElDatePicker v-model={editData.value.submitDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="批准日期"><ElDatePicker v-model={editData.value.approvalDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="授权公告日期"><ElDatePicker v-model={editData.value.grantDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="申请编号"><ElInput v-model={editData.value.applicationNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="专利证书编号"><ElInput v-model={editData.value.certificateNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="专利终止日期"><ElDatePicker v-model={editData.value.terminationDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="授权公告号"><ElInput v-model={editData.value.grantAnnouncementNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="作者排名"><ElInput v-model={editData.value.authorOrder} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="专利名称"><ElInput v-model={editData.value["专利名称"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="专利类型"><ElInput v-model={editData.value["专利类型"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="申请日期">
+                  <ElDatePicker v-model={editData.value["申请日期"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="授权日期">
+                  <ElDatePicker v-model={editData.value["授权日期"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="专利号"><ElInput v-model={editData.value["专利号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="申请号"><ElInput v-model={editData.value["申请号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="发明人"><ElInput v-model={editData.value["发明人"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="专利权人"><ElInput v-model={editData.value["专利权人"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="专利状态"><ElInput v-model={editData.value["专利状态"]} /></ElFormItem></ElCol>
               </ElRow>
-              <ElFormItem label="专利证书文件">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
+              
+              <ElFormItem label="上传文件">
+                <ElUpload
+                  show-file-list={false}
+                  before-upload={() => false}
+                  on-change={handleFileChange}
+                >
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.certificateFile && <span style={{ marginLeft: 10 }}>{editData.value.certificateFile.name}</span>}
+                {editData.value["上传文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传文件"].name}</span>}
               </ElFormItem>
+              
               <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value.remark} />
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
+              
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
                 <ElButton onClick={handleCancel}>返回</ElButton>
@@ -192,10 +209,10 @@ export default defineComponent({
           </div>
         ) : (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1em' }}>
+            <div style={{ marginBottom: '1em' }}>
               <ElButton type="primary" size="small" onClick={handleAdd}>添加</ElButton>
             </div>
-            <ElTable data={tableData.value} style={{ width: '100%' }} empty-text="暂无数据" header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
+            <ElTable data={tableData.value} style={{ width: '100%' }} header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
                 col.prop === 'id' ? (
                   <ElTableColumn
@@ -206,18 +223,39 @@ export default defineComponent({
                       default: ({ $index }: any) => $index + 1
                     }}
                   />
-                ) : ["submitDate", "approvalDate", "grantDate", "terminationDate"].includes(col.prop) ? (
+                ) : col.prop === '申请日期' || col.prop === '授权日期' ? (
                   <ElTableColumn
-                    key={col.prop}
                     label={col.label}
                     prop={col.prop}
                     width={col.width}
                     v-slots={{
-                      default: ({ row }: any) => row[col.prop] ? dayjs(row[col.prop]).format('YYYY-MM-DD') : ''
+                      default: ({ row }: any) =>
+                        row[col.prop] ? dayjs(row[col.prop]).format('YYYY-MM-DD') : ''
+                    }}
+                  />
+                ) : col.prop === '上传文件' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row["上传文件"] ? (
+                          <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                            {row["上传文件"].split('/').pop()}
+                          </a>
+                        ) : ""
                     }}
                   />
                 ) : (
-                  <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) => row[col.prop] ?? ""
+                    }}
+                  />
                 )
               ))}
               <ElTableColumn label="操作" width="160" align="center">
@@ -232,7 +270,7 @@ export default defineComponent({
               </ElTableColumn>
             </ElTable>
             <div style={{ textAlign: 'center', marginTop: '2em' }}>
-              <ElButton onClick={e => typeof props.onBack === 'function' && props.onBack(e)}>返回</ElButton>
+              <ElButton style={{ marginRight: '2em' }} onClick={evt => props.onBack && props.onBack(evt)}>返回</ElButton>
             </div>
           </div>
         )}

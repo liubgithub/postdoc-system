@@ -1,55 +1,49 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker , ElMessageBox, ElMessage } from "element-plus";
-import dayjs from 'dayjs';
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
 import { Edit, Delete } from '@element-plus/icons-vue';
-import { getMyBooks, getBookById, createBook, updateBook, deleteBook } from "@/api/postdoctor/userinfoRegister/book";
+import dayjs from 'dayjs';
+import {
+  getMyBooks,
+  getBookById,
+  uploadBook,
+  updateBook,
+  deleteBook
+} from '@/api/postdoctor/userinfoRegister/book';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "著作中文名称", prop: "bookName", width: 140 },
-  { label: "作者名单", prop: "authors", width: 140 },
-  { label: "著作类别", prop: "bookType", width: 100 },
-  { label: "出版社", prop: "publisher", width: 120 },
-  { label: "出版日期", prop: "publishDate", width: 120 },
-  { label: "著作字数", prop: "wordCount", width: 100 },
-  { label: "出版号", prop: "publishNumber", width: 100 },
-  { label: "ISBN号", prop: "isbn", width: 100 }
+  { label: "著作中文名", prop: "著作中文名", width: 150 },
+  { label: "出版社", prop: "出版社", width: 120 },
+  { label: "出版日期", prop: "出版日期", width: 110 },
+  { label: "第几作者", prop: "第几作者", width: 100 },
+  { label: "著作编号", prop: "著作编号", width: 100 },
+  { label: "著作类别", prop: "著作类别", width: 100 },
+  { label: "作者名单", prop: "作者名单", width: 120 },
+  { label: "著作字数", prop: "著作字数", width: 100 },
+  { label: "出版号", prop: "出版号", width: 100 },
+  { label: "ISBN", prop: "isbn", width: 100 },
+  { label: "作者排名", prop: "作者排名", width: 100 },
+  { label: "上传文件", prop: "上传文件", width: 120 },
+  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {
   return {
     id: item.id,
-    bookName: item["著作中文名"] ?? "",
-    authors: item["作者名单"] ?? "",
-    bookType: item["著作类别"] ?? "",
-    publisher: item["出版社"] ?? "",
-    publishDate: item["出版日期"] ? dayjs(item["出版日期"]).format('YYYY-MM-DD') : "",
-    wordCount: item["著作字数"] ?? "",
-    publishNumber: item["出版号"] ?? "",
+    user_id: item.user_id,
+    著作中文名: item["著作中文名"] ?? "",
+    出版社: item["出版社"] ?? "",
+    出版日期: item["出版日期"] ? dayjs(item["出版日期"]).format('YYYY-MM-DD') : "",
+    第几作者: item["第几作者"] ?? "",
+    著作编号: item["著作编号"] ?? "",
+    著作类别: item["著作类别"] ?? "",
+    作者名单: item["作者名单"] ?? "",
+    著作字数: item["著作字数"] ?? "",
+    出版号: item["出版号"] ?? "",
     isbn: item["isbn"] ?? "",
-    authorOrder: item["作者排名"] ?? "",
-    edition: item["第几作者"] ?? "",
-    bookNumber: item["著作编号"] ?? "",
-    file: item["上传文件"] ?? null,
-    remark: item["备注"] ?? ""
-  };
-}
-
-function form2db(item: any) {
-  return {
-    "著作中文名": item.bookName,
-    "作者名单": item.authors,
-    "著作类别": item.bookType,
-    "出版社": item.publisher,
-    "出版日期": item.publishDate ? (item.publishDate instanceof Date ? item.publishDate.toISOString() : new Date(item.publishDate).toISOString()) : null,
-    "著作字数": item.wordCount,
-    "出版号": item.publishNumber,
-    "isbn": item.isbn,
-    "作者排名": item.authorOrder,
-    "第几作者": item.edition,
-    "著作编号": item.bookNumber,
-    "上传文件": item.file && item.file.name ? item.file.name : null,
-    "备注": item.remark
+    作者排名: item["作者排名"] ?? "",
+    上传文件: item["上传文件"] ?? null,
+    备注: item["备注"] ?? "",
   };
 }
 
@@ -64,37 +58,42 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
-      bookName: "",
-      authors: "",
-      bookType: "",
-      publisher: "",
-      publishDate: "",
-      wordCount: "",
-      publishNumber: "",
-      isbn: "",
-      authorOrder: "",
-      edition: "",
-      bookNumber: "",
-      file: null,
-      remark: ""
+      "著作中文名": "",
+      "出版社": "",
+      "出版日期": "",
+      "第几作者": "",
+      "著作编号": "",
+      "著作类别": "",
+      "作者名单": "",
+      "著作字数": "",
+      "出版号": "",
+      "isbn": "",
+      "作者排名": "",
+      "上传文件": null,
+      "备注": "",
     });
+
+    const loadBooks = async () => {
+      const data = await getMyBooks();
+      tableData.value = (data ?? []).map(db2form);
+    };
 
     const handleAdd = () => {
       editData.value = {
-        id: null,
-        bookName: "",
-        authors: "",
-        bookType: "",
-        publisher: "",
-        publishDate: "",
-        wordCount: "",
-        publishNumber: "",
-        isbn: "",
-        authorOrder: "",
-        edition: "",
-        bookNumber: "",
-        file: null,
-        remark: ""
+        id: tableData.value.length + 1,
+        "著作中文名": "",
+        "出版社": "",
+        "出版日期": "",
+        "第几作者": "",
+        "著作编号": "",
+        "著作类别": "",
+        "作者名单": "",
+        "著作字数": "",
+        "出版号": "",
+        "isbn": "",
+        "作者排名": "",
+        "上传文件": null,
+        "备注": "",
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -108,14 +107,52 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      if (!editData.value["著作中文名"]?.trim()) {
+        ElMessage.error('著作中文名不能为空');
+        return;
+      }
+      if (!editData.value["出版社"]?.trim()) {
+        ElMessage.error('出版社不能为空');
+        return;
+      }
+      if (!editData.value["出版日期"]?.trim()) {
+        ElMessage.error('出版日期不能为空');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append("著作中文名", editData.value["著作中文名"]);
+      formData.append("出版社", editData.value["出版社"]);
+      formData.append("出版日期", editData.value["出版日期"]);
+      formData.append("第几作者", editData.value["第几作者"] || "");
+      formData.append("著作编号", editData.value["著作编号"] || "");
+      formData.append("著作类别", editData.value["著作类别"] || "");
+      formData.append("作者名单", editData.value["作者名单"] || "");
+      formData.append("著作字数", editData.value["著作字数"] || "");
+      formData.append("出版号", editData.value["出版号"] || "");
+      formData.append("isbn", editData.value["isbn"] || "");
+      formData.append("作者排名", editData.value["作者排名"] || "");
+      if (editData.value["上传文件"] instanceof File) {
+        formData.append("file", editData.value["上传文件"]);
+      }
+      formData.append("备注", editData.value["备注"] || "");
+      
+      let res;
       if (editIndex.value === -1) {
-        const res = await createBook(data);
-        if (res) tableData.value.push(db2form(res));
+        // 新增
+        res = await uploadBook(formData);
+        if (res) {
+          const data = await getMyBooks();
+          tableData.value = (data ?? []).map(db2form);
+        }
       } else {
-        const id = tableData.value[editIndex.value].id;
-        const res = await updateBook(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
+        // 编辑
+        const id = editData.value.id;
+        res = await updateBook(id, formData);
+        if (res) {
+          const data = await getMyBooks();
+          tableData.value = (data ?? []).map(db2form);
+        }
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -126,13 +163,8 @@ export default defineComponent({
       editIndex.value = -1;
     };
 
-    const handleFileChange = (file: any) => {
-      editData.value.file = file.raw;
-    };
-
-
     const handleDelete = async (row: any, index: number) => {
-      await ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
+      await ElMessageBox.confirm('确定要删除该著作吗？', '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -142,10 +174,12 @@ export default defineComponent({
       ElMessage.success('删除成功');
     };
 
-    onMounted(async () => {
-      const data = await getMyBooks();
-      tableData.value = (data ?? []).map(db2form);
-    });
+    // 文件上传回调
+    const handleFileChange = (file: any) => {
+      editData.value["上传文件"] = file.raw;
+    };
+
+    onMounted(loadBooks);
 
     return () => (
       <div>
@@ -154,39 +188,48 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>著作信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="著作中文名称"><ElInput v-model={editData.value.bookName} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value.publisher} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="第几作者"><ElInput v-model={editData.value.edition} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="出版日期"><ElDatePicker v-model={editData.value.publishDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="著作编号"><ElInput v-model={editData.value.bookNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="著作类别"><ElInput v-model={editData.value.bookType} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="作者名单"><ElInput v-model={editData.value.authors} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="著作字数"><ElInput v-model={editData.value.wordCount} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value.publishNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="ISBN"><ElInput v-model={editData.value.isbn} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="作者排名"><ElInput v-model={editData.value.authorOrder} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="著作中文名"><ElInput v-model={editData.value["著作中文名"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value["出版社"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="出版日期">
+                  <ElDatePicker v-model={editData.value["出版日期"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="第几作者"><ElInput v-model={editData.value["第几作者"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="著作编号"><ElInput v-model={editData.value["著作编号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="著作类别"><ElInput v-model={editData.value["著作类别"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="作者名单"><ElInput v-model={editData.value["作者名单"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="著作字数"><ElInput v-model={editData.value["著作字数"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value["出版号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="ISBN"><ElInput v-model={editData.value["isbn"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="作者排名"><ElInput v-model={editData.value["作者排名"]} /></ElFormItem></ElCol>
               </ElRow>
+              
               <ElFormItem label="上传文件">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
+                <ElUpload
+                  show-file-list={false}
+                  before-upload={() => false}
+                  on-change={handleFileChange}
+                >
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.file && <span style={{ marginLeft: 10 }}>{editData.value.file.name}</span>}
+                {editData.value["上传文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传文件"].name}</span>}
               </ElFormItem>
+              
               <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value.remark} />
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
+              
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
-                <ElButton onClick={handleCancel}>取消</ElButton>
+                <ElButton onClick={handleCancel}>返回</ElButton>
               </div>
             </ElForm>
           </div>
         ) : (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1em' }}>
+            <div style={{ marginBottom: '1em' }}>
               <ElButton type="primary" size="small" onClick={handleAdd}>添加</ElButton>
             </div>
-            <ElTable data={tableData.value} style={{ width: '100%' }} empty-text="暂无数据" header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
+            <ElTable data={tableData.value} style={{ width: '100%' }} header-cell-style={{ textAlign: 'center' }} cell-style={{ textAlign: 'center' }}>
               {columns.map(col => (
                 col.prop === 'id' ? (
                   <ElTableColumn
@@ -197,18 +240,39 @@ export default defineComponent({
                       default: ({ $index }: any) => $index + 1
                     }}
                   />
-                ) : col.prop === 'publishDate' ? (
+                ) : col.prop === '出版日期' ? (
                   <ElTableColumn
-                    key={col.prop}
                     label={col.label}
                     prop={col.prop}
                     width={col.width}
                     v-slots={{
-                      default: ({ row }: any) => row.publishDate ? dayjs(row.publishDate).format('YYYY-MM-DD') : ''
+                      default: ({ row }: any) =>
+                        row[col.prop] ? dayjs(row[col.prop]).format('YYYY-MM-DD') : ''
+                    }}
+                  />
+                ) : col.prop === '上传文件' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row["上传文件"] ? (
+                          <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                            {row["上传文件"].split('/').pop()}
+                          </a>
+                        ) : ""
                     }}
                   />
                 ) : (
-                  <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={col.width}
+                    v-slots={{
+                      default: ({ row }: any) => row[col.prop] ?? ""
+                    }}
+                  />
                 )
               ))}
               <ElTableColumn label="操作" width="160" align="center">
@@ -223,7 +287,7 @@ export default defineComponent({
               </ElTableColumn>
             </ElTable>
             <div style={{ textAlign: 'center', marginTop: '2em' }}>
-              <ElButton onClick={e => typeof props.onBack === 'function' && props.onBack(e)}>返回</ElButton>
+              <ElButton style={{ marginRight: '2em' }} onClick={evt => props.onBack && props.onBack(evt)}>返回</ElButton>
             </div>
           </div>
         )}

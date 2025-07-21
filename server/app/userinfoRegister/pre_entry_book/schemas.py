@@ -1,10 +1,11 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 
 class PreEntryBookBase(BaseModel):
     # user_id: int
     # achievement_id: Optional[int] = None
+    achievement_type: Optional[int] = 0 
     著作中文名: Optional[str] = None
     出版社: Optional[str] = None
     第几作者: Optional[str] = None

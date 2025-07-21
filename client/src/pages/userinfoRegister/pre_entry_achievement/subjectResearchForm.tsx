@@ -5,48 +5,38 @@ import dayjs from 'dayjs';
 import {
   getMySubjectResearches,
   getSubjectResearchById,
-  createSubjectResearch,
+  uploadSubjectResearch,
   updateSubjectResearch,
   deleteSubjectResearch
 } from '@/api/postdoctor/userinfoRegister/subject_research';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "课题名称", prop: "subjectName", width: 120 },
-  { label: "课题来源", prop: "subjectSource", width: 120 },
-  { label: "开始时间", prop: "startDate", width: 110 },
-  { label: "结束时间", prop: "endDate", width: 110 },
-  { label: "课题负责人", prop: "leader", width: 120 },
-  { label: "本人承担部分", prop: "myPart", width: 120 },
-  { label: "课题级别", prop: "subjectLevel", width: 100 }
+  { label: "课题名称", prop: "课题名称", width: 120 },
+  { label: "课题来源", prop: "课题来源", width: 120 },
+  { label: "开始时间", prop: "开始时间", width: 110 },
+  { label: "结束时间", prop: "结束时间", width: 110 },
+  { label: "课题负责人", prop: "课题负责人", width: 120 },
+  { label: "本人承担部分", prop: "本人承担部分", width: 120 },
+  { label: "课题级别", prop: "课题级别", width: 100 },
+  { label: "备注", prop: "备注", width: 120 },
+  { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
 
 function db2form(item: any) {
   return {
     id: item.id,
-    subjectName: item["课题名称"] ?? "",
-    subjectSource: item["课题来源"] ?? "",
-    startDate: item["开始时间"] ? dayjs(item["开始时间"]).format('YYYY-MM-DD') : "",
-    endDate: item["结束时间"] ? dayjs(item["结束时间"]).format('YYYY-MM-DD') : "",
-    leader: item["课题负责人"] ?? "",
-    myPart: item["本人承担部分"] ?? "",
-    subjectLevel: item["课题级别"] ?? "",
-    file: item["上传文件"] ?? null,
-    remark: item["备注"] ?? ""
-  };
-}
-
-function form2db(item: any) {
-  return {
-    "课题名称": item.subjectName,
-    "课题来源": item.subjectSource,
-    "开始时间": item.startDate ? dayjs(item.startDate).toISOString() : null,
-    "结束时间": item.endDate ? dayjs(item.endDate).toISOString() : null,
-    "课题负责人": item.leader,
-    "本人承担部分": item.myPart,
-    "课题级别": item.subjectLevel,
-    "上传文件": item.file,
-    "备注": item.remark
+    user_id: item.user_id,
+    课题名称: item["课题名称"] ?? "",
+    课题来源: item["课题来源"] ?? "",
+    开始时间: item["开始时间"] ? dayjs(item["开始时间"]).format('YYYY-MM-DD') : "",
+    结束时间: item["结束时间"] ? dayjs(item["结束时间"]).format('YYYY-MM-DD') : "",
+    课题负责人: item["课题负责人"] ?? "",
+    本人承担部分: item["本人承担部分"] ?? "",
+    课题级别: item["课题级别"] ?? "",
+    上传文件: item["上传文件"] ?? "",
+    备注: item["备注"] ?? "",
+    achievement_type: item["achievement_type"] ?? 0,
   };
 }
 
@@ -61,15 +51,16 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
-      subjectName: "",
-      subjectSource: "",
-      startDate: "",
-      endDate: "",
-      leader: "",
-      myPart: "",
-      subjectLevel: "",
-      file: null,
-      remark: ""
+      "课题名称": "",
+      "课题来源": "",
+      "开始时间": "",
+      "结束时间": "",
+      "课题负责人": "",
+      "本人承担部分": "",
+      "课题级别": "",
+      "备注": "",
+      "上传文件": null,
+      achievement_type: 0,
     });
 
     const loadSubjects = async () => {
@@ -80,15 +71,16 @@ export default defineComponent({
     const handleAdd = () => {
       editData.value = {
         id: null,
-        subjectName: "",
-        subjectSource: "",
-        startDate: "",
-        endDate: "",
-        leader: "",
-        myPart: "",
-        subjectLevel: "",
-        file: null,
-        remark: ""
+        "课题名称": "",
+        "课题来源": "",
+        "开始时间": "",
+        "结束时间": "",
+        "课题负责人": "",
+        "本人承担部分": "",
+        "课题级别": "",
+        "备注": "",
+        "上传文件": null,
+        achievement_type: 0,
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -102,16 +94,38 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      if (!editData.value["课题名称"]?.trim()) {
+        ElMessage.error('课题名称不能为空');
+        return;
+      }
+      const formData = new FormData();
+      formData.append("课题名称", editData.value["课题名称"]);
+      formData.append("课题来源", editData.value["课题来源"] || "");
+      formData.append("开始时间", editData.value["开始时间"] || "");
+      formData.append("结束时间", editData.value["结束时间"] || "");
+      formData.append("课题负责人", editData.value["课题负责人"] || "");
+      formData.append("本人承担部分", editData.value["本人承担部分"] || "");
+      formData.append("课题级别", editData.value["课题级别"] || "");
+      if (editData.value["上传文件"] instanceof File) {
+        formData.append("上传文件", editData.value["上传文件"]);
+      }
+      formData.append("备注", editData.value["备注"] || "");
+      formData.append("achievement_type", editData.value["achievement_type"] || 0);
+      
+      let res;
       if (editIndex.value === -1) {
-        const res = await createSubjectResearch(data);
-        if (res) tableData.value.push(db2form(res));
-        ElMessage.success('新增成功');
+        res = await uploadSubjectResearch(formData);
+        if (res) {
+          const data = await getMySubjectResearches();
+          tableData.value = (data ?? []).map(db2form);
+        }
       } else {
-        const id = tableData.value[editIndex.value].id;
-        const res = await updateSubjectResearch(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
-        ElMessage.success('修改成功');
+        const id = editData.value.id;
+        res = await updateSubjectResearch(id, formData);
+        if (res) {
+          const data = await getMySubjectResearches();
+          tableData.value = (data ?? []).map(db2form);
+        }
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -123,7 +137,7 @@ export default defineComponent({
     };
 
     const handleDelete = async (row: any, index: number) => {
-      await ElMessageBox.confirm('确定要删除该课题研究信息吗？', '提示', {
+      await ElMessageBox.confirm('确定要删除该课题吗？', '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -133,10 +147,9 @@ export default defineComponent({
       ElMessage.success('删除成功');
     };
 
-    const handleFileChange = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.file = file;
+    const handleFileChange = (fileObj: any) => {
+      if (fileObj && fileObj.raw) {
+        editData.value["上传文件"] = fileObj.raw;
       }
     };
 
@@ -149,26 +162,35 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>课题研究信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="课题名称"><ElInput v-model={editData.value.subjectName} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="课题来源"><ElInput v-model={editData.value.subjectSource} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="课题名称"><ElInput v-model={editData.value["课题名称"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="课题来源"><ElInput v-model={editData.value["课题来源"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="开始时间">
-                  <ElDatePicker v-model={editData.value.startDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                  <ElDatePicker v-model={editData.value["开始时间"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="结束时间">
-                  <ElDatePicker v-model={editData.value.endDate} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                  <ElDatePicker v-model={editData.value["结束时间"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="课题负责人"><ElInput v-model={editData.value.leader} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="本人承担部分"><ElInput v-model={editData.value.myPart} /></ElFormItem></ElCol>
-                <ElCol span={24}><ElFormItem label="课题级别"><ElInput v-model={editData.value.subjectLevel} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="课题负责人"><ElInput v-model={editData.value["课题负责人"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="课题级别"><ElInput v-model={editData.value["课题级别"]} /></ElFormItem></ElCol>
               </ElRow>
+              <ElFormItem label="本人承担部分">
+                <ElInput type="textarea" rows={4} v-model={editData.value["本人承担部分"]} />
+              </ElFormItem>
               <ElFormItem label="上传文件">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.file && <span style={{ marginLeft: 10 }}>{editData.value.file.name}</span>}
+                {/* 新文件名 */}
+                {editData.value["上传文件"] && editData.value["上传文件"] instanceof File && (
+                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["上传文件"].name}</span>
+                )}
+                {/* 原文件名 */}
+                {editData.value["上传文件"] && typeof editData.value["上传文件"] === 'string' && (
+                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["上传文件"].split('/').pop()}</span>
+                )}
               </ElFormItem>
               <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value.remark} />
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
@@ -192,27 +214,23 @@ export default defineComponent({
                       default: ({ $index }: any) => $index + 1
                     }}
                   />
-                ) : col.prop === 'startDate' || col.prop === 'endDate' ? (
-                  <ElTableColumn
-                    label={col.label}
-                    prop={col.prop}
-                    width={col.width}
-                    v-slots={{
-                      default: ({ row }: any) =>
-                        row[col.prop] ? dayjs(row[col.prop]).format('YYYY-MM-DD') : ''
-                    }}
-                  />
                 ) : (
-                  <ElTableColumn
-                    label={col.label}
-                    prop={col.prop}
-                    width={col.width}
-                    v-slots={{
-                      default: ({ row }: any) => row[col.prop] ?? ""
-                    }}
-                  />
+                  <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
                 )
               ))}
+              <ElTableColumn label="上传文件" width="150">
+                {{
+                  default: ({ row }: any) => (
+                    <div>
+                      {row["上传文件"] && (
+                        <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                          {row["上传文件"].split('/').pop()}
+                        </a>
+                      )}
+                    </div>
+                  )
+                }}
+              </ElTableColumn>
               <ElTableColumn label="操作" width="160" align="center">
                 {{
                   default: ({ row, $index }: any) => (

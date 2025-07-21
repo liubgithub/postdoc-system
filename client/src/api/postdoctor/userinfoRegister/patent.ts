@@ -7,21 +7,23 @@ export const getMyPatents = async () => {
 };
 
 export const getPatentById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_patent/${id}`);
+  const res = await raw.GET(`/pre_entry_patent/{id}`, { params: { path: { id } } });
   return res.data;
 };
 
-export const createPatent = async (data: any) => {
-  const res = await raw.POST('/pre_entry_patent/', { body: data });
+// 创建操作：使用 POST /pre_entry_patent/
+export const uploadPatent = async (formData: FormData) => {
+  const res = await raw.POST('/pre_entry_patent/', { body: formData as any });
   return res.data;
 };
 
-export const updatePatent = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_patent/${id}`, { body: data });
+// 修改操作：使用 PUT /pre_entry_patent/{id}
+export const updatePatent = async (id: number, formData: FormData) => {
+  const res = await raw.PUT(`/pre_entry_patent/{id}`, { params: { path: { id } }, body: formData as any });
   return res.data;
 };
 
 export const deletePatent = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_patent/${id}`);
+  const res = await raw.DELETE(`/pre_entry_patent/{id}`, { params: { path: { id } } });
   return res.data;
 }; 

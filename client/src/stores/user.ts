@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router' // 导入路由实例
-import init_fetch from '@/api/fetch'
+import { init_login } from '@/api/fetch'
 const useUser = defineStore("user", () => {
 
-    const { raw } = init_fetch('/api')
+    const { raw } = init_login('/api')
 
     const info = ref<{
         name: string

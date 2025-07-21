@@ -7,21 +7,23 @@ export const getMyPapers = async () => {
 };
 
 export const getPaperById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_paper/${id}`);
+  const res = await raw.GET(`/pre_entry_paper/{id}`, { params: { path: { id } } });
   return res.data;
 };
 
-export const createPaper = async (data: any) => {
-  const res = await raw.POST('/pre_entry_paper/', { body: data });
+// 创建操作：使用 POST /pre_entry_paper/
+export const uploadPaper = async (formData: FormData) => {
+  const res = await raw.POST('/pre_entry_paper/', { body: formData as any });
   return res.data;
 };
 
-export const updatePaper = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_paper/${id}`, { body: data });
+// 修改操作：使用 PUT /pre_entry_paper/{id}
+export const updatePaper = async (id: number, formData: FormData) => {
+  const res = await raw.PUT(`/pre_entry_paper/{id}`, { params: { path: { id } }, body: formData as any });
   return res.data;
 };
 
 export const deletePaper = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_paper/${id}`);
+  const res = await raw.DELETE(`/pre_entry_paper/{id}`, { params: { path: { id } } });
   return res.data;
 };

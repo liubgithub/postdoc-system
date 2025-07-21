@@ -1,92 +1,76 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker,ElMessageBox,ElMessage } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
 import { Edit, Delete } from '@element-plus/icons-vue';
-import { getMyPapers, getPaperById, createPaper, updatePaper, deletePaper } from "@/api/postdoctor/userinfoRegister/paper";
 import dayjs from 'dayjs';
+import {
+  getMyPapers,
+  getPaperById,
+  uploadPaper,
+  updatePaper,
+  deletePaper
+} from '@/api/postdoctor/userinfoRegister/paper';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "学号", prop: "stuId", width: 100 },
-  { label: "是否确认", prop: "confirmed", width: 80 },
-  { label: "论文名称", prop: "title", width: 160 },
-  { label: "第几作者", prop: "authorOrder", width: 80 },
-  { label: "是否和学位论文相关", prop: "relatedToThesis", width: 120 },
-  { label: "通讯作者", prop: "correspondingAuthor", width: 100 },
-  { label: "导师署名排序", prop: "supervisorOrder", width: 110 },
-  { label: "本校是否第一署名单位", prop: "isFirstAffiliation", width: 120 },
-  { label: "第一署名单位", prop: "firstAffiliation", width: 120 },
-  { label: "刊物名称", prop: "journal", width: 120 },
-  { label: "发表状态", prop: "status", width: 100 },
-  { label: "发表日期", prop: "publishDate", width: 110 },
-  { label: "论文收录检索号", prop: "indexNumber", width: 130 },
-  { label: "他引/次数", prop: "citationCount", width: 90 },
-  { label: "出版号", prop: "issn", width: 100 },
-  { label: "刊物级别", prop: "journalLevel", width: 100 },
-  { label: "影响因子", prop: "impactFactor", width: 80 }
+  { label: "论文名称", prop: "论文名称", width: 150 },
+  { label: "刊物名称", prop: "刊物名称", width: 120 },
+  { label: "发表日期", prop: "发表日期", width: 110 },
+  { label: "本人署名排序", prop: "本人署名排序", width: 120 },
+  { label: "起始页号", prop: "起始页号", width: 100 },
+  { label: "刊物级别", prop: "刊物级别", width: 100 },
+  { label: "是否共同第一", prop: "是否共同第一", width: 120 },
+  { label: "通讯作者", prop: "通讯作者", width: 100 },
+  { label: "论文类型", prop: "论文类型", width: 100 },
+  { label: "影响因子", prop: "影响因子", width: 100 },
+  { label: "作者名单", prop: "作者名单", width: 120 },
+  { label: "第一作者", prop: "第一作者", width: 100 },
+  { label: "导师署名排序", prop: "导师署名排序", width: 120 },
+  { label: "本校是否第一", prop: "本校是否第一", width: 120 },
+  { label: "第一署名单位", prop: "第一署名单位", width: 120 },
+  { label: "发表状态", prop: "发表状态", width: 100 },
+  { label: "论文收录检索", prop: "论文收录检索", width: 120 },
+  { label: "他引次数", prop: "他引次数", width: 100 },
+  { label: "是否和学位论文相关", prop: "是否和学位论文相关", width: 140 },
+  { label: "出版号", prop: "出版号", width: 100 },
+  { label: "出版社", prop: "出版社", width: 100 },
+  { label: "总期号", prop: "总期号", width: 100 },
+  { label: "刊物编号", prop: "刊物编号", width: 100 },
+  { label: "备注", prop: "备注", width: 120 },
+  { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
 
 function db2form(item: any) {
   return {
     id: item.id,
-    title: item["论文名称"] ?? "",
-    journal: item["刊物名称"] ?? "",
-    authorOrder: item["本人署名排序"] ?? "",
-    publishDate: item["发表日期"] ? new Date(item["发表日期"]).toISOString().slice(0, 10) : "",
-    startPage: item["起始页号"] ?? "",
-    journalLevel: item["刊物级别"] ?? "",
-    isCoFirstAuthor: item["是否共同第一"] ?? "",
-    correspondingAuthor: item["通讯作者"] ?? "",
-    journalType: item["论文类型"] ?? "",
-    impactFactor: item["影响因子"] ?? "",
-    authorName: item["作者名单"] ?? "",
-    firstAuthor: item["第一作者"] ?? "",
-    supervisorOrder: item["导师署名排序"] ?? "",
-    isFirstAffiliation: item["本校是否第一"] ?? "",
-    firstAffiliation: item["第一署名单位"] ?? "",
-    status: item["发表状态"] ?? "",
-    indexNumber: item["论文收录检索"] ?? "",
-    citationCount: item["他引次数"] ?? "",
-    relatedToThesis: item["是否和学位论文相关"] ?? "",
-    issn: item["出版号"] ?? "",
-    publisher: item["出版社"] ?? "",
-    totalIssue: item["总期号"] ?? "",
-    journalNumber: item["刊物编号"] ?? "",
-    paperScan: item["论文发表证书"] ?? null,
-    acceptanceLetter: item["论文接收函"] ?? null,
-    electronicVersion: item["论文电子版"] ?? null,
-    remark: item["备注"] ?? ""
-  };
-}
-
-function form2db(item: any) {
-  return {
-    "论文名称": item.title,
-    "刊物名称": item.journal,
-    "本人署名排序": item.authorOrder,
-    "发表日期": item.publishDate ? new Date(item.publishDate).toISOString() : null,
-    "起始页号": item.startPage,
-    "刊物级别": item.journalLevel,
-    "是否共同第一": item.isCoFirstAuthor,
-    "通讯作者": item.correspondingAuthor,
-    "论文类型": item.journalType,
-    "影响因子": item.impactFactor,
-    "作者名单": item.authorName,
-    "第一作者": item.firstAuthor,
-    "导师署名排序": item.supervisorOrder,
-    "本校是否第一": item.isFirstAffiliation,
-    "第一署名单位": item.firstAffiliation,
-    "发表状态": item.status,
-    "论文收录检索": item.indexNumber,
-    "他引次数": item.citationCount,
-    "是否和学位论文相关": item.relatedToThesis,
-    "出版号": item.issn,
-    "出版社": item.publisher,
-    "总期号": item.totalIssue,
-    "刊物编号": item.journalNumber,
-    "论文发表证书": item.paperScan,
-    "论文接收函": item.acceptanceLetter,
-    "论文电子版": item.electronicVersion,
-    "备注": item.remark
+    user_id: item.user_id,
+    论文名称: item["论文名称"] ?? "",
+    刊物名称: item["刊物名称"] ?? "",
+    发表日期: item["发表日期"] ? dayjs(item["发表日期"]).format('YYYY-MM-DD') : "",
+    本人署名排序: item["本人署名排序"] ?? "",
+    起始页号: item["起始页号"] ?? "",
+    刊物级别: item["刊物级别"] ?? "",
+    是否共同第一: item["是否共同第一"] ?? "",
+    通讯作者: item["通讯作者"] ?? "",
+    论文类型: item["论文类型"] ?? "",
+    影响因子: item["影响因子"] ?? "",
+    作者名单: item["作者名单"] ?? "",
+    第一作者: item["第一作者"] ?? "",
+    导师署名排序: item["导师署名排序"] ?? "",
+    本校是否第一: item["本校是否第一"] ?? "",
+    第一署名单位: item["第一署名单位"] ?? "",
+    发表状态: item["发表状态"] ?? "",
+    论文收录检索: item["论文收录检索"] ?? "",
+    他引次数: item["他引次数"] ?? "",
+    是否和学位论文相关: item["是否和学位论文相关"] ?? "",
+    出版号: item["出版号"] ?? "",
+    出版社: item["出版社"] ?? "",
+    总期号: item["总期号"] ?? "",
+    刊物编号: item["刊物编号"] ?? "",
+    论文发表证书: item["论文发表证书"] ?? "",
+    论文接收函: item["论文接收函"] ?? "",
+    论文电子版: item["论文电子版"] ?? "",
+    备注: item["备注"] ?? "",
+    achievement_type: item["achievement_type"] ?? 0,
   };
 }
 
@@ -101,69 +85,72 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
-      stuId: "",
-      confirmed: "",
-      title: "",
-      authorOrder: "",
-      relatedToThesis: "",
-      correspondingAuthor: "",
-      supervisorOrder: "",
-      isFirstAffiliation: "",
-      firstAffiliation: "",
-      journal: "",
-      status: "",
-      publishDate: "",
-      indexNumber: "",
-      citationCount: "",
-      issn: "",
-      journalLevel: "",
-      impactFactor: "",
-      startPage: "",
-      isCoFirstAuthor: "",
-      journalType: "",
-      authorName: "",
-      firstAuthor: "",
-      publisher: "",
-      totalIssue: "",
-      journalNumber: "",
-      paperScan: null,
-      acceptanceLetter: null,
-      electronicVersion: null,
-      remark: ""
+      "论文名称": "",
+      "刊物名称": "",
+      "发表日期": "",
+      "本人署名排序": "",
+      "起始页号": "",
+      "刊物级别": "",
+      "是否共同第一": "",
+      "通讯作者": "",
+      "论文类型": "",
+      "影响因子": "",
+      "作者名单": "",
+      "第一作者": "",
+      "导师署名排序": "",
+      "本校是否第一": "",
+      "第一署名单位": "",
+      "发表状态": "",
+      "论文收录检索": "",
+      "他引次数": "",
+      "是否和学位论文相关": "",
+      "出版号": "",
+      "出版社": "",
+      "总期号": "",
+      "刊物编号": "",
+      "论文发表证书": null,
+      "论文接收函": null,
+      "论文电子版": null,
+      "备注": "",
+      achievement_type: 0,
     });
+
+    const loadPapers = async () => {
+      const data = await getMyPapers();
+      tableData.value = (data ?? []).map(db2form);
+    };
 
     const handleAdd = () => {
       editData.value = {
-        id: tableData.value.length + 1,
-        stuId: "",
-        confirmed: "",
-        title: "",
-        authorOrder: "",
-        relatedToThesis: "",
-        correspondingAuthor: "",
-        supervisorOrder: "",
-        isFirstAffiliation: "",
-        firstAffiliation: "",
-        journal: "",
-        status: "",
-        publishDate: "",
-        indexNumber: "",
-        citationCount: "",
-        issn: "",
-        journalLevel: "",
-        impactFactor: "",
-        startPage: "",
-        isCoFirstAuthor: "",
-        journalType: "",
-        authorName: "",
-        firstAuthor: "",
-        publisher: "",
-        totalIssue: "",
-        journalNumber: "",
-        paperScan: null,
-        acceptanceLetter: null,
-        electronicVersion: null,
-        remark: ""
+        id: null,
+        "论文名称": "",
+        "刊物名称": "",
+        "发表日期": "",
+        "本人署名排序": "",
+        "起始页号": "",
+        "刊物级别": "",
+        "是否共同第一": "",
+        "通讯作者": "",
+        "论文类型": "",
+        "影响因子": "",
+        "作者名单": "",
+        "第一作者": "",
+        "导师署名排序": "",
+        "本校是否第一": "",
+        "第一署名单位": "",
+        "发表状态": "",
+        "论文收录检索": "",
+        "他引次数": "",
+        "是否和学位论文相关": "",
+        "出版号": "",
+        "出版社": "",
+        "总期号": "",
+        "刊物编号": "",
+        "论文发表证书": null,
+        "论文接收函": null,
+        "论文电子版": null,
+        "备注": "",
+        achievement_type: 0,
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -177,14 +164,71 @@ export default defineComponent({
     };
 
     const handleSave = async () => {
-      const data = form2db(editData.value);
+      if (!editData.value["论文名称"]?.trim()) {
+        ElMessage.error('论文名称不能为空');
+        return;
+      }
+      if (!editData.value["刊物名称"]?.trim()) {
+        ElMessage.error('刊物名称不能为空');
+        return;
+      }
+      if (!editData.value["发表日期"]?.trim()) {
+        ElMessage.error('发表日期不能为空');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append("论文名称", editData.value["论文名称"]);
+      formData.append("刊物名称", editData.value["刊物名称"]);
+      formData.append("发表日期", editData.value["发表日期"]);
+      formData.append("本人署名排序", editData.value["本人署名排序"] || "");
+      formData.append("起始页号", editData.value["起始页号"] || "");
+      formData.append("刊物级别", editData.value["刊物级别"] || "");
+      formData.append("是否共同第一", editData.value["是否共同第一"] || "");
+      formData.append("通讯作者", editData.value["通讯作者"] || "");
+      formData.append("论文类型", editData.value["论文类型"] || "");
+      formData.append("影响因子", editData.value["影响因子"] || "");
+      formData.append("作者名单", editData.value["作者名单"] || "");
+      formData.append("第一作者", editData.value["第一作者"] || "");
+      formData.append("导师署名排序", editData.value["导师署名排序"] || "");
+      formData.append("本校是否第一", editData.value["本校是否第一"] || "");
+      formData.append("第一署名单位", editData.value["第一署名单位"] || "");
+      formData.append("发表状态", editData.value["发表状态"] || "");
+      formData.append("论文收录检索", editData.value["论文收录检索"] || "");
+      formData.append("他引次数", editData.value["他引次数"] || "");
+      formData.append("是否和学位论文相关", editData.value["是否和学位论文相关"] || "");
+      formData.append("出版号", editData.value["出版号"] || "");
+      formData.append("出版社", editData.value["出版社"] || "");
+      formData.append("总期号", editData.value["总期号"] || "");
+      formData.append("刊物编号", editData.value["刊物编号"] || "");
+      formData.append("备注", editData.value["备注"] || "");
+      formData.append("achievement_type", editData.value["achievement_type"] || 0);
+      
+      // 处理文件上传
+      if (editData.value["论文发表证书"] instanceof File) {
+        formData.append("论文发表证书", editData.value["论文发表证书"]);
+      }
+      if (editData.value["论文接收函"] instanceof File) {
+        formData.append("论文接收函", editData.value["论文接收函"]);
+      }
+      if (editData.value["论文电子版"] instanceof File) {
+        formData.append("论文电子版", editData.value["论文电子版"]);
+      }
+      
+      let res;
       if (editIndex.value === -1) {
-        const res = await createPaper(data);
-        if (res) tableData.value.push(db2form(res));
+        res = await uploadPaper(formData);
+        if (res) {
+          const data = await getMyPapers();
+          tableData.value = (data ?? []).map(db2form);
+        }
       } else {
-        const id = tableData.value[editIndex.value].id;
-        const res = await updatePaper(id, data);
-        if (res) tableData.value[editIndex.value] = db2form(res);
+        const id = editData.value.id;
+        res = await updatePaper(id, formData);
+        if (res) {
+          const data = await getMyPapers();
+          tableData.value = (data ?? []).map(db2form);
+        }
       }
       showForm.value = false;
       editIndex.value = -1;
@@ -195,29 +239,8 @@ export default defineComponent({
       editIndex.value = -1;
     };
 
-    const handleFileChange1 = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.paperScan = file;
-      }
-    };
-
-    const handleFileChange2 = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.acceptanceLetter = file;
-      }
-    };
-
-    const handleFileChange3 = (event: any) => {
-      const file = event.file;
-      if (file) {
-        editData.value.electronicVersion = file;
-      }
-    };
-
     const handleDelete = async (row: any, index: number) => {
-      await ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
+      await ElMessageBox.confirm('确定要删除该论文吗？', '提示', {
         type: 'warning',
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -227,10 +250,13 @@ export default defineComponent({
       ElMessage.success('删除成功');
     };
 
-    onMounted(async () => {
-      const data = await getMyPapers();
-      tableData.value = (data ?? []).map(db2form);
-    });
+    const handleFileChange = (fieldName: string) => (fileObj: any) => {
+      if (fileObj && fileObj.raw) {
+        editData.value[fieldName] = fileObj.raw;
+      }
+    };
+
+    onMounted(loadPapers);
 
     return () => (
       <div>
@@ -239,61 +265,79 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>学术论文信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="论文名称"><ElInput v-model={editData.value.title} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="刊物名称"><ElInput v-model={editData.value.journal} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="本人署名排序"><ElInput v-model={editData.value.authorOrder} /></ElFormItem></ElCol>
-                <ElCol span={12}>
-                  <ElFormItem label="发表日期">
-                    <ElDatePicker
-                      v-model={editData.value.publishDate}
-                      type="date"
-                      value-format="YYYY-MM-DD"
-                      placeholder="选择日期"
-                      style={{ width: '100%' }}
-                    />
-                  </ElFormItem>
-                </ElCol>
-                <ElCol span={12}><ElFormItem label="起始页码"><ElInput v-model={editData.value.startPage} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="刊物级别"><ElInput v-model={editData.value.journalLevel} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="是否共同第一作者"><ElInput v-model={editData.value.isCoFirstAuthor} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="通讯作者"><ElInput v-model={editData.value.correspondingAuthor} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="刊物类型"><ElInput v-model={editData.value.journalType} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="影响因子"><ElInput v-model={editData.value.impactFactor} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="作者名称"><ElInput v-model={editData.value.authorName} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="第一作者"><ElInput v-model={editData.value.firstAuthor} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="导师署名排序"><ElInput v-model={editData.value.supervisorOrder} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="本校是否第一署名单位"><ElInput v-model={editData.value.isFirstAffiliation} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="第一署名单位"><ElInput v-model={editData.value.firstAffiliation} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="发表状态"><ElInput v-model={editData.value.status} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="论文收录检索号"><ElInput v-model={editData.value.indexNumber} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="他引/次数"><ElInput v-model={editData.value.citationCount} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="是否和学位论文相关"><ElInput v-model={editData.value.relatedToThesis} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value.issn} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value.publisher} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="总期号"><ElInput v-model={editData.value.totalIssue} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="刊物编号"><ElInput v-model={editData.value.journalNumber} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="论文名称"><ElInput v-model={editData.value["论文名称"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="刊物名称"><ElInput v-model={editData.value["刊物名称"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="发表日期">
+                  <ElDatePicker v-model={editData.value["发表日期"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="本人署名排序"><ElInput v-model={editData.value["本人署名排序"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="起始页号"><ElInput v-model={editData.value["起始页号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="刊物级别"><ElInput v-model={editData.value["刊物级别"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="是否共同第一"><ElInput v-model={editData.value["是否共同第一"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="通讯作者"><ElInput v-model={editData.value["通讯作者"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="论文类型"><ElInput v-model={editData.value["论文类型"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="影响因子"><ElInput v-model={editData.value["影响因子"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="作者名单"><ElInput v-model={editData.value["作者名单"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="第一作者"><ElInput v-model={editData.value["第一作者"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="导师署名排序"><ElInput v-model={editData.value["导师署名排序"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="本校是否第一"><ElInput v-model={editData.value["本校是否第一"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="第一署名单位"><ElInput v-model={editData.value["第一署名单位"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="发表状态"><ElInput v-model={editData.value["发表状态"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="论文收录检索"><ElInput v-model={editData.value["论文收录检索"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="他引次数"><ElInput v-model={editData.value["他引次数"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="是否和学位论文相关"><ElInput v-model={editData.value["是否和学位论文相关"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value["出版号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value["出版社"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="总期号"><ElInput v-model={editData.value["总期号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="刊物编号"><ElInput v-model={editData.value["刊物编号"]} /></ElFormItem></ElCol>
               </ElRow>
-              <ElFormItem label="论文发表扫描件">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange1}>
+              
+              <ElFormItem label="论文发表证书">
+                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文发表证书")}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.paperScan && <span style={{ marginLeft: 10 }}>{editData.value.paperScan.name}</span>}
+                {/* 新文件名 */}
+                {editData.value["论文发表证书"] && editData.value["论文发表证书"] instanceof File && (
+                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["论文发表证书"].name}</span>
+                )}
+                {/* 原文件名 */}
+                {editData.value["论文发表证书"] && typeof editData.value["论文发表证书"] === 'string' && (
+                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文发表证书"].split('/').pop()}</span>
+                )}
               </ElFormItem>
+              
               <ElFormItem label="论文接收函">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange2}>
+                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文接收函")}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.acceptanceLetter && <span style={{ marginLeft: 10 }}>{editData.value.acceptanceLetter.name}</span>}
+                {/* 新文件名 */}
+                {editData.value["论文接收函"] && editData.value["论文接收函"] instanceof File && (
+                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["论文接收函"].name}</span>
+                )}
+                {/* 原文件名 */}
+                {editData.value["论文接收函"] && typeof editData.value["论文接收函"] === 'string' && (
+                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文接收函"].split('/').pop()}</span>
+                )}
               </ElFormItem>
-              <ElFormItem label="论文电子版地址">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange3}>
+              
+              <ElFormItem label="论文电子版">
+                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文电子版")}>
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
-                {editData.value.electronicVersion && <span style={{ marginLeft: 10 }}>{editData.value.electronicVersion.name}</span>}
+                {/* 新文件名 */}
+                {editData.value["论文电子版"] && editData.value["论文电子版"] instanceof File && (
+                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["论文电子版"].name}</span>
+                )}
+                {/* 原文件名 */}
+                {editData.value["论文电子版"] && typeof editData.value["论文电子版"] === 'string' && (
+                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文电子版"].split('/').pop()}</span>
+                )}
               </ElFormItem>
+              
               <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value.remark} />
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
+              
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
                 <ElButton onClick={handleCancel}>返回</ElButton>
@@ -316,26 +360,49 @@ export default defineComponent({
                       default: ({ $index }: any) => $index + 1
                     }}
                   />
-                ) : col.prop === 'publishDate' ? (
-                  <ElTableColumn
-                    label={col.label}
-                    prop={col.prop}
-                    width={col.width}
-                    v-slots={{
-                      default: ({ row }: any) => row.publishDate ? dayjs(row.publishDate).format('YYYY-MM-DD') : ''
-                    }}
-                  />
                 ) : (
-                  <ElTableColumn
-                    label={col.label}
-                    prop={col.prop}
-                    width={col.width}
-                    v-slots={{
-                      default: ({ row }: any) => row[col.prop] ?? ""
-                    }}
-                  />
+                  <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
                 )
               ))}
+              <ElTableColumn label="论文发表证书" width="150">
+                {{
+                  default: ({ row }: any) => (
+                    <div>
+                      {row["论文发表证书"] && (
+                        <a href={row["论文发表证书"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                          {row["论文发表证书"].split('/').pop()}
+                        </a>
+                      )}
+                    </div>
+                  )
+                }}
+              </ElTableColumn>
+              <ElTableColumn label="论文接收函" width="150">
+                {{
+                  default: ({ row }: any) => (
+                    <div>
+                      {row["论文接收函"] && (
+                        <a href={row["论文接收函"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                          {row["论文接收函"].split('/').pop()}
+                        </a>
+                      )}
+                    </div>
+                  )
+                }}
+              </ElTableColumn>
+              <ElTableColumn label="论文电子版" width="150">
+                {{
+                  default: ({ row }: any) => (
+                    <div>
+                      {row["论文电子版"] && (
+                        <a href={row["论文电子版"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
+                          {row["论文电子版"].split('/').pop()}
+                        </a>
+                      )}
+                    </div>
+                  )
+                }}
+              </ElTableColumn>
               <ElTableColumn label="操作" width="160" align="center">
                 {{
                   default: ({ row, $index }: any) => (

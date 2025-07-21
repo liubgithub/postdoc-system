@@ -17,7 +17,7 @@ export default defineComponent({
         return () => (
             <div>
                 <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>博士后在站期间取得的科研成果</div>
-                <ElForm labelWidth="100px">
+                <ElForm labelWidth="100px" labelPosition="top">
                     <div class={styles.achievementRow}>
                         <div class={styles.achievementCell}>
                             <ElFormItem label="发表论文名称">

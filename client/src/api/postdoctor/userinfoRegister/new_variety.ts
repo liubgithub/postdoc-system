@@ -7,21 +7,23 @@ export const getMyNewVarieties = async () => {
 };
 
 export const getNewVarietyById = async (id: number) => {
-  const res = await raw.GET(`/pre_entry_new_variety/${id}`);
+  const res = await raw.GET(`/pre_entry_new_variety/{id}`, { params: { path: { id } } });
   return res.data;
 };
 
-export const createNewVariety = async (data: any) => {
-  const res = await raw.POST('/pre_entry_new_variety/', { body: data });
+// 创建操作：使用 POST /pre_entry_new_variety/
+export const uploadNewVariety = async (formData: FormData) => {
+  const res = await raw.POST('/pre_entry_new_variety/', { body: formData as any });
   return res.data;
 };
 
-export const updateNewVariety = async (id: number, data: any) => {
-  const res = await raw.PUT(`/pre_entry_new_variety/${id}`, { body: data });
+// 修改操作：使用 PUT /pre_entry_new_variety/{id}
+export const updateNewVariety = async (id: number, formData: FormData) => {
+  const res = await raw.PUT(`/pre_entry_new_variety/{id}`, { params: { path: { id } }, body: formData as any });
   return res.data;
 };
 
 export const deleteNewVariety = async (id: number) => {
-  const res = await raw.DELETE(`/pre_entry_new_variety/${id}`);
+  const res = await raw.DELETE(`/pre_entry_new_variety/{id}`, { params: { path: { id } } });
   return res.data;
 }; 

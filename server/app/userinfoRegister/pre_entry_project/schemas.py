@@ -3,31 +3,30 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryProjectBase(BaseModel):
-    # user_id: int
-    # achievement_id: Optional[int] = None
-    项目编号: Optional[str] = None
-    项目名称: Optional[str] = None
-    项目类型: Optional[str] = None
-    是否和学位论文相关: Optional[str] = None
-    项目标题: Optional[str] = None
+    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    项目编号: Optional[str] = ""
+    项目名称: str
+    项目类型: Optional[str] = ""
+    是否和学位论文相关: Optional[str] = ""
+    项目标题: Optional[str] = ""
     立项日期: Optional[datetime] = None
-    项目层次: Optional[str] = None
-    是否结项: Optional[str] = None
+    项目层次: Optional[str] = ""
+    是否结项: Optional[str] = ""
     验收或鉴定日期: Optional[datetime] = None
-    项目执行状态: Optional[str] = None
-    本人角色: Optional[str] = None
-    参与者总数: Optional[str] = None
-    参与者名单: Optional[str] = None
-    承担任务: Optional[str] = None
-    项目经费说明: Optional[str] = None
-    上传项目成果文件: Optional[str] = None
-    备注: Optional[str] = None
+    项目执行状态: Optional[str] = ""
+    本人角色: Optional[str] = ""
+    参与者总数: Optional[str] = ""
+    参与者名单: Optional[str] = ""
+    承担任务: Optional[str] = ""
+    项目经费说明: Optional[str] = ""
+    上传项目成果文件: Optional[str] = ""
+    备注: Optional[str] = ""
 
 class PreEntryProjectCreate(PreEntryProjectBase):
     pass
 
 class PreEntryProjectUpdate(PreEntryProjectBase):
-    pass
+    项目名称: Optional[str] = None
 
 class PreEntryProject(PreEntryProjectBase):
     id: int

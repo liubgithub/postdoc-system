@@ -1,6 +1,8 @@
 # main.py (在项目根目录)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 from app.config import settings
 from app.database import Base, engine
 from app.routers import auth, users
@@ -24,6 +26,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 文件代理
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_ROOT = os.path.join(BASE_DIR, '..', 'uploaded_files')
+app.mount(
+    "/static",
+    StaticFiles(directory=os.path.abspath(UPLOAD_ROOT)),
+    name="static"
+)
+
 # 注册路由
 app.include_router(auth.router)
 app.include_router(users.router)
