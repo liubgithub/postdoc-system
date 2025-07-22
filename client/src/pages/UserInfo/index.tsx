@@ -5,10 +5,10 @@ import * as styles from "./styles.css.ts";
 import useUser from "@/stores/user"
 
 const menuList = [
-  { label: "个人情况", path: "/userinfo" },
-  { label: "进站", path: "/entry" },
-  { label: "在站管理", path: "/in-station" },
-  { label: "出站", path: "/out-station" },
+  { label: "个人情况", path: "/UserInfo" },
+  { label: "进站", path: "/UserInfo/entry" },
+  { label: "在站管理", path: "/UserInfo/in-station" },
+  { label: "出站", path: "/UserInfo/out-station" },
 ];
 
 export default defineComponent({
@@ -20,6 +20,7 @@ export default defineComponent({
     const activeMenu = ref(route.path)
 
     const handleMenuClick = (path: string) => {
+      console.log(path,'path')
       router.push(path);
       activeMenu.value = path;
     };

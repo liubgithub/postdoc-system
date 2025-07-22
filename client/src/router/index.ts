@@ -58,17 +58,17 @@ const router = createRouter({
           component: UserInfoRegister
         },
         {
-          path: '/entry',
+          path: 'entry',
           name: '/entry',
           component: UserInfo1
         },
         {
-          path: '/in-station',
+          path: 'in-station',
           name: '/in-station',
           component: InWorkstation
         },
         {
-          path: '/out-station',
+          path: 'out-station',
           name: '/out-station',
           component: OutWorkstation
         }
