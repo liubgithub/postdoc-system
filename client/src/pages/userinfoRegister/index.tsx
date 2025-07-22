@@ -6,7 +6,7 @@ import PreEntryAchievementMain from "./pre_entry_achievement";
 
 const menuList = [
   { label: "个人信息登记", key: "userinfo" },
-  { label: "入站前已有成果登记", key: "preEntryAchievements" },
+  { label: "入站前已有成果登记", key: "AchievementTable" },
 ];
 
 export default defineComponent({
@@ -35,7 +35,7 @@ export default defineComponent({
         </ElAside>
         <ElMain style={{ overflowY: 'auto', margin: 0, padding: 0 }}>
             {activeMenu.value === "userinfo" && <UserInfoForm />}
-            {activeMenu.value === "preEntryAchievements" && <PreEntryAchievementMain />}
+            {activeMenu.value === "AchievementTable" && <PreEntryAchievementMain />}
         </ElMain>
       </ElContainer>
     );
