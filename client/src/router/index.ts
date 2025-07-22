@@ -8,6 +8,8 @@ import UserInfo1 from '@/pages/EnterWorksation'
 import UserInfoRegister from "@/pages/userinfoRegister"
 import InWorkstation from '@/pages/InWorkstation'
 import OutWorkstation from '@/pages/OutWorkstation'
+import Teacher from '@/pages/Teacher'
+import EntryManagePage from '@/pages/Teacher/EntryManage';
 import { authGuard } from './guard'
 
 
@@ -35,6 +37,15 @@ const router = createRouter({
           component: Home
         },
       ],
+    },
+    {
+      path: '/teacher',
+      name: 'teacher',
+      component: Teacher,
+    },
+    {
+      path: '/teacher/entryManage',
+      component: EntryManagePage,
     },
     {
       path: '/UserInfo',

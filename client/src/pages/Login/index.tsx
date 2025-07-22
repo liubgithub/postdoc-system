@@ -35,16 +35,8 @@ export default defineComponent({
       const valid = await formRef.value?.validate()
       
       if (valid) {
-        const success = await s_user.login(form.name, form.pass)
-        
-        // 只有在登录成功后才跳转
-        if (success) {
-          // 尝试获取重定向路径
-          const redirect = router.currentRoute.value.query.redirect
-          
-          // 跳转到目标页面或首页
-          router.replace(redirect ? decodeURIComponent(redirect as string) : '/UserInfo')
-        }
+        await s_user.login(form.name, form.pass)
+        // 不要再做 router.replace，跳转交给 userStore.login 内部处理
       } else {
         ElMessage.error('请填写完整的登录信息')
       }

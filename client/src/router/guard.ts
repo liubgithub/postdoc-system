@@ -4,6 +4,12 @@ import useUser from '@/stores/user'
 // 白名单 - 不需要认证的路径
 const whiteList = ['/auth/login', '/register', '/']
 
+// 角色权限配置
+const rolePermissions = {
+  teacher: ['/teacher', '/teacher/*'], // teacher可以访问的路径
+  user: ['/', '/UserInfo', '/UserInfo/*'] // 普通用户可以访问的路径
+}
+
 export const authGuard = (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
@@ -21,7 +27,28 @@ export const authGuard = (
 
   // 检查用户是否已认证  
   if (userStore.isAuthenticated) {
-    next()
+    // 检查角色权限
+    const userRole = userStore.info?.role || 'user'
+    const allowedPaths = rolePermissions[userRole] || []
+    
+    // 检查用户是否有权限访问当前路径
+    const hasPermission = allowedPaths.some(path => {
+      if (path.endsWith('/*')) {
+        return to.path.startsWith(path.slice(0, -2))
+      }
+      return to.path === path
+    })
+    
+    if (hasPermission) {
+      next()
+    } else {
+      // 没有权限，重定向到对应角色的首页
+      if (userRole === 'teacher') {
+        next('/teacher')
+      } else {
+        next('/')
+      }
+    }
   } else {
     // 重定向到登录页，并携带目标路径
     next({

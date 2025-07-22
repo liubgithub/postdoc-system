@@ -60,6 +60,8 @@ class AuthService:
         return None
 
     @staticmethod
+    def create_access_token(username: str, role: str = None) -> str:
+        """创建访问令牌"""
     def create_access_token(username: str) -> str:
         """
         创建JWT访问令牌
@@ -75,6 +77,8 @@ class AuthService:
         
         # 构造令牌载荷数据
         to_encode = {"sub": username, "exp": expire}
+        if role:
+            to_encode["role"] = role
         
         # 使用密钥和算法编码JWT令牌
         return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
