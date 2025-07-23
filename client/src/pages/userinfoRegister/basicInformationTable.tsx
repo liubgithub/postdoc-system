@@ -3,6 +3,9 @@ import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, 
 import * as styles from "./styles.css.ts";
 import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
 import AchievementForm from "./achievementForm.tsx";
+
+// 引入 Pinia store
+import { useAchievementStore } from "./store.ts";
 export default defineComponent({
   name: "UserInfoForm",
   setup() {
@@ -24,7 +27,8 @@ export default defineComponent({
       work_experience: [
         { start: "", end: "", company: "", position: "" }
       ],
-      other: ""
+      other: "",
+      otherachievements: ""
     });
 
     // 表单校验规则
@@ -37,7 +41,6 @@ export default defineComponent({
     // 加载用户信息
     const fetchProfile = async () => {
       try {
-        
         const data = await getUserProfile();
         console.log('111');
         if (data) {
@@ -55,6 +58,7 @@ export default defineComponent({
             is_religious_staff: data.is_religious_staff ? "是" : "否",
             research_direction: data.research_direction ?? "",
             other: data.other ?? "",
+            otherachievements: data.otherachievements ?? "",
             education_experience: (data.education_experience || []).map((e: any) => {
               // 匹配两个日期（YYYY-MM-DD-YYYY-MM-DD）
               const match = (e.start_end || "").match(/^(.{10})-(.{10})$/);
@@ -82,7 +86,12 @@ export default defineComponent({
       }
     };
 
+    // 页面挂载时获取用户信息
     onMounted(fetchProfile);
+
+    // 获取store中的成就统计数据
+    const achievementStore = useAchievementStore();
+    const totalAchievements = computed(() => achievementStore.getTotalAchievements());
 
     // 教育经历操作
     const addEducation = () => {
@@ -125,34 +134,34 @@ export default defineComponent({
     };
 
     // 重置（删除）
-    const handleReset = async () => {
-      try {
-        await deleteUserProfile();
-        ElMessage.success('已重置！');
-        // 清空表单
-        form.value = {
-          name: "",
-          gender: "",
-          birth_year: "",
-          nationality: "",
-          political_status: "",
-          phone: "",
-          religion: "",
-          id_number: "",
-          is_religious_staff: "",
-          research_direction: "",
-          education_experience: [
-            { start: "", end: "", school: "", major: "", supervisor: "" }
-          ],
-          work_experience: [
-            { start: "", end: "", company: "", position: "" }
-          ],
-          other: ""
-        };
-      } catch (e: any) {
-        ElMessage.error(e?.message || '重置失败');
-      }
-    };
+    // const handleReset = async () => {
+    //   try {
+    //     await deleteUserProfile();
+    //     ElMessage.success('已重置！');
+    //     // 清空表单
+    //     form.value = {
+    //       name: "",
+    //       gender: "",
+    //       birth_year: "",
+    //       nationality: "",
+    //       political_status: "",
+    //       phone: "",
+    //       religion: "",
+    //       id_number: "",
+    //       is_religious_staff: "",
+    //       research_direction: "",
+    //       education_experience: [
+    //         { start: "", end: "", school: "", major: "", supervisor: "" }
+    //       ],
+    //       work_experience: [
+    //         { start: "", end: "", company: "", position: "" }
+    //       ],
+    //       other: ""
+    //     };
+    //   } catch (e: any) {
+    //     ElMessage.error(e?.message || '重置失败');
+    //   }
+    // };
 
     // 
 
@@ -328,11 +337,16 @@ export default defineComponent({
           <ElFormItem label="其他说明">
             <ElInput v-model={form.value.other} type="textarea" rows={2} placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" />
           </ElFormItem>
-
           <AchievementForm />
+          {/* 其他成果 */}
+          <ElFormItem label="其他成果">
+            <ElInput v-model={form.value.otherachievements} type="textarea" rows={2} placeholder="其他成果" />
+          </ElFormItem>
+          {/* 累计成果个数 */}
+          <div style={{ margin: '2em 0 1em 0', fontWeight: 700 }}>累计成果个数：{totalAchievements.value}</div>
           {/* 按钮组 */}
           <div class={styles.btnGroup}>
-            <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
+            <ElButton type="primary" onClick={handleSubmit}>提交</ElButton> 
             <ElButton type="warning">返回</ElButton>
           </div>
         </ElForm>

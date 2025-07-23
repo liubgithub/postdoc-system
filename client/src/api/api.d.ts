@@ -901,43 +901,78 @@ export interface components {
         };
         /** Body_create_competition_award_pre_entry_competition_award__post */
         Body_create_competition_award_pre_entry_competition_award__post: {
-            /** 获奖名称 */
-            "\u83B7\u5956\u540D\u79F0": string;
+            /** 竞赛名称 */
+            "\u7ADE\u8D5B\u540D\u79F0": string;
             /**
-             * 获奖级别
+             * 获奖类别
              * @default
              */
-            "\u83B7\u5956\u7EA7\u522B": string;
-            /**
-             * 获奖日期
-             * @default
-             */
-            "\u83B7\u5956\u65E5\u671F": string;
-            /**
-             * 主办单位
-             * @default
-             */
-            "\u4E3B\u529E\u5355\u4F4D": string;
+            "\u83B7\u5956\u7C7B\u522B": string;
             /**
              * 获奖等级
              * @default
              */
             "\u83B7\u5956\u7B49\u7EA7": string;
             /**
-             * 本人角色
+             * 获奖时间
              * @default
              */
-            "\u672C\u4EBA\u89D2\u8272": string;
+            "\u83B7\u5956\u65F6\u95F4": string;
+            /**
+             * 本人署名
+             * @default
+             */
+            "\u672C\u4EBA\u7F72\u540D": string;
+            /**
+             * 获奖级别
+             * @default
+             */
+            "\u83B7\u5956\u7EA7\u522B": string;
+            /**
+             * 颁奖单位
+             * @default
+             */
+            "\u9881\u5956\u5355\u4F4D": string;
+            /**
+             * 第一完成单位
+             * @default
+             */
+            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string;
+            /**
+             * 完成单位排名
+             * @default
+             */
+            "\u5B8C\u6210\u5355\u4F4D\u6392\u540D": string;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
+            /**
+             * 奖项名称
+             * @default
+             */
+            "\u5956\u9879\u540D\u79F0": string;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string;
             /**
              * 备注
              * @default
              */
             "\u5907\u6CE8": string;
             /**
-             * 上传文件
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number;
+            /**
+             * 上传获奖证书文件
              * Format: binary
              */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+            "\u4E0A\u4F20\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string;
         };
         /** Body_create_conference_pre_entry_conference__post */
         Body_create_conference_pre_entry_conference__post: {
@@ -1270,58 +1305,63 @@ export interface components {
         };
         /** Body_create_patent_pre_entry_patent__post */
         Body_create_patent_pre_entry_patent__post: {
-            /** 专利名称 */
-            "\u4E13\u5229\u540D\u79F0": string;
+            /** 专利成果名称 */
+            "\u4E13\u5229\u6210\u679C\u540D\u79F0": string;
             /**
              * 专利类型
              * @default
              */
             "\u4E13\u5229\u7C7B\u578B": string;
             /**
-             * 申请日期
+             * 提交时间
              * @default
              */
-            "\u7533\u8BF7\u65E5\u671F": string;
+            "\u63D0\u4EA4\u65F6\u95F4": string;
             /**
-             * 授权日期
+             * 批准日期
              * @default
              */
-            "\u6388\u6743\u65E5\u671F": string;
+            "\u6279\u51C6\u65E5\u671F": string;
             /**
-             * 专利号
+             * 授权公告号
              * @default
              */
-            "\u4E13\u5229\u53F7": string;
+            "\u6388\u6743\u516C\u544A\u53F7": string;
             /**
-             * 申请号
+             * 申请编号
              * @default
              */
-            "\u7533\u8BF7\u53F7": string;
+            "\u7533\u8BF7\u7F16\u53F7": string;
             /**
-             * 发明人
+             * 作者排名
              * @default
              */
-            "\u53D1\u660E\u4EBA": string;
+            "\u4F5C\u8005\u6392\u540D": string;
             /**
              * 专利权人
              * @default
              */
             "\u4E13\u5229\u6743\u4EBA": string;
             /**
-             * 专利状态
+             * 专利成果编码
              * @default
              */
-            "\u4E13\u5229\u72B6\u6001": string;
+            "\u4E13\u5229\u6210\u679C\u7F16\u7801": string;
             /**
              * 备注
              * @default
              */
             "\u5907\u6CE8": string;
             /**
-             * 上传文件
+             * 专利证书文文件
              * Format: binary
              */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+            "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number;
         };
         /** Body_create_project_pre_entry_project__post */
         Body_create_project_pre_entry_project__post: {
@@ -1532,43 +1572,78 @@ export interface components {
         };
         /** Body_update_competition_award_pre_entry_competition_award__id__put */
         Body_update_competition_award_pre_entry_competition_award__id__put: {
-            /** 获奖名称 */
-            "\u83B7\u5956\u540D\u79F0": string;
+            /** 竞赛名称 */
+            "\u7ADE\u8D5B\u540D\u79F0": string;
             /**
-             * 获奖级别
+             * 获奖类别
              * @default
              */
-            "\u83B7\u5956\u7EA7\u522B": string;
-            /**
-             * 获奖日期
-             * @default
-             */
-            "\u83B7\u5956\u65E5\u671F": string;
-            /**
-             * 主办单位
-             * @default
-             */
-            "\u4E3B\u529E\u5355\u4F4D": string;
+            "\u83B7\u5956\u7C7B\u522B": string;
             /**
              * 获奖等级
              * @default
              */
             "\u83B7\u5956\u7B49\u7EA7": string;
             /**
-             * 本人角色
+             * 获奖时间
              * @default
              */
-            "\u672C\u4EBA\u89D2\u8272": string;
+            "\u83B7\u5956\u65F6\u95F4": string;
+            /**
+             * 本人署名
+             * @default
+             */
+            "\u672C\u4EBA\u7F72\u540D": string;
+            /**
+             * 获奖级别
+             * @default
+             */
+            "\u83B7\u5956\u7EA7\u522B": string;
+            /**
+             * 颁奖单位
+             * @default
+             */
+            "\u9881\u5956\u5355\u4F4D": string;
+            /**
+             * 第一完成单位
+             * @default
+             */
+            "\u7B2C\u4E00\u5B8C\u6210\u5355\u4F4D": string;
+            /**
+             * 完成单位排名
+             * @default
+             */
+            "\u5B8C\u6210\u5355\u4F4D\u6392\u540D": string;
+            /**
+             * 是否和学位论文相关
+             * @default
+             */
+            "\u662F\u5426\u548C\u5B66\u4F4D\u8BBA\u6587\u76F8\u5173": string;
+            /**
+             * 奖项名称
+             * @default
+             */
+            "\u5956\u9879\u540D\u79F0": string;
+            /**
+             * 作者名单
+             * @default
+             */
+            "\u4F5C\u8005\u540D\u5355": string;
             /**
              * 备注
              * @default
              */
             "\u5907\u6CE8": string;
             /**
-             * 上传文件
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number;
+            /**
+             * 上传获奖证书文件
              * Format: binary
              */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+            "\u4E0A\u4F20\u83B7\u5956\u8BC1\u4E66\u6587\u4EF6"?: string;
         };
         /** Body_update_conference_pre_entry_conference__id__put */
         Body_update_conference_pre_entry_conference__id__put: {
@@ -1901,58 +1976,63 @@ export interface components {
         };
         /** Body_update_patent_pre_entry_patent__id__put */
         Body_update_patent_pre_entry_patent__id__put: {
-            /** 专利名称 */
-            "\u4E13\u5229\u540D\u79F0": string;
+            /** 专利成果名称 */
+            "\u4E13\u5229\u6210\u679C\u540D\u79F0": string;
             /**
              * 专利类型
              * @default
              */
             "\u4E13\u5229\u7C7B\u578B": string;
             /**
-             * 申请日期
+             * 提交时间
              * @default
              */
-            "\u7533\u8BF7\u65E5\u671F": string;
+            "\u63D0\u4EA4\u65F6\u95F4": string;
             /**
-             * 授权日期
+             * 批准日期
              * @default
              */
-            "\u6388\u6743\u65E5\u671F": string;
+            "\u6279\u51C6\u65E5\u671F": string;
             /**
-             * 专利号
+             * 授权公告号
              * @default
              */
-            "\u4E13\u5229\u53F7": string;
+            "\u6388\u6743\u516C\u544A\u53F7": string;
             /**
-             * 申请号
+             * 申请编号
              * @default
              */
-            "\u7533\u8BF7\u53F7": string;
+            "\u7533\u8BF7\u7F16\u53F7": string;
             /**
-             * 发明人
+             * 作者排名
              * @default
              */
-            "\u53D1\u660E\u4EBA": string;
+            "\u4F5C\u8005\u6392\u540D": string;
             /**
              * 专利权人
              * @default
              */
             "\u4E13\u5229\u6743\u4EBA": string;
             /**
-             * 专利状态
+             * 专利成果编码
              * @default
              */
-            "\u4E13\u5229\u72B6\u6001": string;
+            "\u4E13\u5229\u6210\u679C\u7F16\u7801": string;
             /**
              * 备注
              * @default
              */
             "\u5907\u6CE8": string;
             /**
-             * 上传文件
+             * 专利证书文文件
              * Format: binary
              */
-            "\u4E0A\u4F20\u6587\u4EF6"?: string;
+            "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string;
+            /**
+             * Achievement Type
+             * @default 0
+             */
+            achievement_type: number;
         };
         /** Body_update_project_pre_entry_project__id__put */
         Body_update_project_pre_entry_project__id__put: {
@@ -2261,6 +2341,11 @@ export interface components {
              * @default
              */
             other: string | null;
+            /**
+             * Otherachievements
+             * @default
+             */
+            otherachievements: string | null;
             /** Education Experience */
             education_experience: components["schemas"]["EducationExperienceIn"][];
             /** Work Experience */
@@ -2298,6 +2383,8 @@ export interface components {
             education_experience: components["schemas"]["EducationExperienceOut"][];
             /** Work Experience */
             work_experience: components["schemas"]["WorkExperienceOut"][];
+            /** Otherachievements */
+            otherachievements: string | null;
         };
         /** LoginInput */
         LoginInput: {
@@ -2305,6 +2392,11 @@ export interface components {
             username: string;
             /** Password */
             password: string;
+            /**
+             * Role
+             * @default user
+             */
+            role: string;
         };
         /** PreEntryBook */
         PreEntryBook: {

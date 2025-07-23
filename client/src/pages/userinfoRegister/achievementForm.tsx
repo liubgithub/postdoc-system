@@ -11,6 +11,11 @@ import CompetitionAwardForm from "./pre_entry_achievement/competitionAwardForm.t
 import SubjectResearchForm from "./pre_entry_achievement/subjectResearchForm.tsx";
 import IndustryStandardForm from "./pre_entry_achievement/industryStandardForm.tsx";
 import NewVarietyForm from "./pre_entry_achievement/newVarietyForm.tsx";
+import { computed } from "vue";
+import { useAchievementStore } from "./store.ts";
+
+
+
 
 const categories = [
   "学术会议信息", "学术论文", "专利信息", "著作信息", "参与项目信息",
@@ -49,6 +54,20 @@ export default defineComponent({
         console.log('Updated data:', data.value); // 调试日志
       }
     };
+
+    // 计算一个累计成果总数
+    const totalAchievements = computed(() => {
+      return data.value.reduce((sum, item) => sum + Number(item.count || 0), 0);
+    });
+    const achievementStore = useAchievementStore();
+    // 监听 totalAchievements 的变化并更新 store
+    watch(
+      totalAchievements,
+      (val) => {
+        achievementStore.setTotalAchievements(val);
+      },
+      { immediate: true } // 立即执行以设置初始值
+    );
 
     // 页面挂载时获取一次
     onMounted(fetchStats);
@@ -135,11 +154,6 @@ export default defineComponent({
               }}
             </ElTableColumn>
           </ElTable>
-          <div style={{ margin: '2em 0 1em 0', fontWeight: 700 }}>累计成果个数：{data.value.reduce((sum, item) => sum + Number(item.count || 0), 0)}</div>
-          {/* <div class={styles.btnGroup}>
-            <ElButton v-show={!!props.onBack} onClick={evt => props.onBack && props.onBack(evt)}>返回</ElButton>
-            <ElButton type="primary">提交</ElButton>
-          </div> */}
         </div>
       )
     );
