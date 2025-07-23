@@ -2,7 +2,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker } from "element-plus";
 import * as styles from "./styles.css.ts";
 import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
-
+import AchievementForm from "./achievementForm.tsx";
 export default defineComponent({
   name: "UserInfoForm",
   setup() {
@@ -153,6 +153,8 @@ export default defineComponent({
         ElMessage.error(e?.message || '重置失败');
       }
     };
+
+    // 
 
     return () => (
       <div class={styles.formWrapper}>
@@ -326,10 +328,12 @@ export default defineComponent({
           <ElFormItem label="其他说明">
             <ElInput v-model={form.value.other} type="textarea" rows={2} placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" />
           </ElFormItem>
+
+          <AchievementForm />
           {/* 按钮组 */}
           <div class={styles.btnGroup}>
             <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
-            <ElButton type="warning" onClick={handleReset}>重置</ElButton>
+            <ElButton type="warning">返回</ElButton>
           </div>
         </ElForm>
       </div>
