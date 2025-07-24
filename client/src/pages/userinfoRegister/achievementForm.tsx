@@ -14,6 +14,17 @@ import NewVarietyForm from "./pre_entry_achievement/newVarietyForm.tsx";
 import { computed } from "vue";
 import { useAchievementStore } from "./store.ts";
 
+// 导入所有成果的 API
+import { getMyPapers } from "@/api/postdoctor/userinfoRegister/paper";
+import { getMyPatents } from "@/api/postdoctor/userinfoRegister/patent";
+import { getMyCompetitionAwards } from "@/api/postdoctor/userinfoRegister/competition_award";
+import { getMyProjects } from "@/api/postdoctor/userinfoRegister/project";
+import { getMyConferences } from "@/api/postdoctor/userinfoRegister/conference";
+import { getMyBooks } from "@/api/postdoctor/userinfoRegister/book";
+import { getMyIndustryStandards } from "@/api/postdoctor/userinfoRegister/industry_standard";
+import { getMyNewVarieties } from "@/api/postdoctor/userinfoRegister/new_variety";
+import { getMySubjectResearches } from "@/api/postdoctor/userinfoRegister/subject_research";
+
 
 
 
@@ -45,8 +56,32 @@ export default defineComponent({
     // 封装获取统计数据的函数
     const fetchStats = async () => {
       const stats = await getAchievementStatistics();
-      console.log('Fetched stats:', stats); // 调试日志
+      console.log('Fetched stats:', stats);
       if (Array.isArray(stats)) {
+        // 同时更新所有成果列表到 store
+        const [paperList, patentList, awardList, projectList, conferenceList, bookList, standardList, varietyList, subjectResearchList] = await Promise.all([
+          getMyPapers(),
+          getMyPatents(),
+          getMyCompetitionAwards(),
+          getMyProjects(),
+          getMyConferences(),
+          getMyBooks(),
+          getMyIndustryStandards(),
+          getMyNewVarieties(),
+          getMySubjectResearches()
+        ]);
+
+        // 转换数据格式
+        // 直接存储原始数据到 store
+        achievementStore.setPaperList(paperList || []);
+        achievementStore.setPatentList(patentList || []);
+        achievementStore.setAwardList(awardList || []);
+        achievementStore.setProjectList(projectList || []);
+        achievementStore.setConferenceList(conferenceList || []);
+        achievementStore.setBookList(bookList || []);
+        achievementStore.setStandardList(standardList || []);
+        achievementStore.setVarietyList(varietyList || []);
+        achievementStore.setSubjectResearchList(subjectResearchList || []);
         data.value = categories.map(cat => {
           const found = stats.find((item: any) => item.category === cat);
           return { category: cat, count: found ? found.count : 0 };
