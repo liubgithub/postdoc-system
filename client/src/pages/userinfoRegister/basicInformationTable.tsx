@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker, ElSelect, ElOption } from "element-plus";
 import * as styles from "./styles.css.ts";
 import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
 import AchievementForm from "./achievementForm.tsx";
@@ -33,9 +33,26 @@ export default defineComponent({
 
     // 表单校验规则
     const rules = {
-      name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-      birth_year: [{ required: true, message: "请输入出生年", trigger: "blur" }],
+      name: [
+        { required: false, message: "请输入姓名", trigger: "blur" },
+        { pattern: /^[\u4e00-\u9fa5a-zA-Z]+$/, message: "姓名只能包含中文或英文字符", trigger: "blur" },
+      ],
+      birth_year: [
+        { required: false, message: "请输入出生年", trigger: "blur" },
+        { pattern: /^(19|20)\d{2}$/, message: "请输入有效的年份（1900-2099）", trigger: "blur" },
+      ],
+      nationality: [
+        { required: false, message: "请输入国籍", trigger: "blur" },
+        { pattern: /^[\u4e00-\u9fa5a-zA-Z]+$/, message: "国籍只能包含中文或英文字符", trigger: "blur" },
+      ],
+      id_number: [
+        { required: true, message: "请输入身份证号", trigger: "blur" },
+        { pattern: /^[1-9]\d{5}(18|19|20|21)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}(\d|X|x)$/, message: "请输入有效的身份证号", trigger: "blur" },
+      ],
+      phone: [
+        { required: false, message: "请输入电话号码", trigger: "blur" },
+        { pattern: /^1[3-9]\d{9}$/, message: "请输入有效的手机号码", trigger: "blur" },
+      ],
     };
 
     // 加载用户信息
@@ -133,38 +150,6 @@ export default defineComponent({
       }
     };
 
-    // 重置（删除）
-    // const handleReset = async () => {
-    //   try {
-    //     await deleteUserProfile();
-    //     ElMessage.success('已重置！');
-    //     // 清空表单
-    //     form.value = {
-    //       name: "",
-    //       gender: "",
-    //       birth_year: "",
-    //       nationality: "",
-    //       political_status: "",
-    //       phone: "",
-    //       religion: "",
-    //       id_number: "",
-    //       is_religious_staff: "",
-    //       research_direction: "",
-    //       education_experience: [
-    //         { start: "", end: "", school: "", major: "", supervisor: "" }
-    //       ],
-    //       work_experience: [
-    //         { start: "", end: "", company: "", position: "" }
-    //       ],
-    //       other: ""
-    //     };
-    //   } catch (e: any) {
-    //     ElMessage.error(e?.message || '重置失败');
-    //   }
-    // };
-
-    // 
-
     return () => (
       <div class={styles.formWrapper}>
         <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>基本信息表</div>
@@ -178,10 +163,10 @@ export default defineComponent({
             </div>
             <div class={styles.formCol}>
               <ElFormItem label="性别" prop="gender">
-                <ElRadioGroup v-model={form.value.gender}>
-                  <ElRadio label="男">男</ElRadio>
-                  <ElRadio label="女">女</ElRadio>
-                </ElRadioGroup>
+                <ElSelect v-model={form.value.gender} placeholder="请选择性别" style={{ width: "100%" }} clearable>
+                  <ElOption label="男" value="男" />
+                  <ElOption label="女" value="女" />
+                </ElSelect>
               </ElFormItem>
             </div>
             <div class={styles.formCol}>
@@ -192,29 +177,50 @@ export default defineComponent({
           </div>
           <div class={styles.formRow}>
             <div class={styles.formCol}>
-              <ElFormItem label="国籍">
+              <ElFormItem label="国籍" prop="nationality">
                 <ElInput v-model={form.value.nationality} />
               </ElFormItem>
             </div>
             <div class={styles.formCol}>
-              <ElFormItem label="政治面貌">
-                <ElInput v-model={form.value.political_status} />
+              <ElFormItem label="政治面貌" prop="political_status">
+                <ElSelect v-model={form.value.political_status} placeholder="请选择政治面貌" style={{ width: "100%" }} clearable>
+                  <ElOption label="中共党员" value="中共党员" />
+                  <ElOption label="中共预备党员" value="中共预备党员" />
+                  <ElOption label="共青团员" value="共青团员" />
+                  <ElOption label="民革党员" value="民革党员" />
+                  <ElOption label="民盟盟员" value="民盟盟员" />
+                  <ElOption label="民建会员" value="民建会员" />
+                  <ElOption label="民进会员" value="民进会员" />
+                  <ElOption label="农工党党员" value="农工党党员" />
+                  <ElOption label="致公党党员" value="致公党党员" />
+                  <ElOption label="九三学社社员" value="九三学社社员" />
+                  <ElOption label="台盟盟员" value="台盟盟员" />
+                  <ElOption label="无党派人士" value="无党派人士" />
+                  <ElOption label="群众" value="群众" />
+                </ElSelect>
               </ElFormItem>
             </div>
             <div class={styles.formCol}>
-              <ElFormItem label="电话">
+              <ElFormItem label="电话" prop="phone">
                 <ElInput v-model={form.value.phone} />
               </ElFormItem>
             </div>
           </div>
           <div class={styles.formRow}>
             <div class={styles.formCol}>
-              <ElFormItem label="宗教信仰">
-                <ElInput v-model={form.value.religion} />
+              <ElFormItem label="宗教信仰" prop="religion">
+                <ElSelect v-model={form.value.religion} placeholder="请选择宗教信仰" style={{ width: "100%" }} clearable>
+                  <ElOption label="佛教" value="佛教" />
+                  <ElOption label="道教" value="道教" />
+                  <ElOption label="伊斯兰教" value="伊斯兰教" />
+                  <ElOption label="天主教" value="天主教" />
+                  <ElOption label="基督教" value="基督教" />
+                  <ElOption label="其他" value="其他" />
+                </ElSelect>
               </ElFormItem>
             </div>
-            <div class={styles.formCol}>
-              <ElFormItem label="证件号">
+            <div class={styles.formCol} >
+              <ElFormItem label="证件号" prop="id_number">
                 <ElInput v-model={form.value.id_number} />
               </ElFormItem>
             </div>
@@ -227,14 +233,21 @@ export default defineComponent({
               </ElFormItem>
             </div>
           </div>
-          <ElFormItem label="博士期间研究方向">
-            <ElInput v-model={form.value.research_direction} type="textarea" rows={2} />
+          <ElFormItem label="博士期间研究方向" prop="research_direction">
+            <ElInput
+              v-model={form.value.research_direction}
+              type="textarea"
+              rows={2}
+              maxlength="100"
+              show-word-limit
+              placeholder="请输入博士期间研究方向（最多100字）"
+            />
           </ElFormItem>
           {/* 教育经历表格 */}
           <div style={{ fontWeight: 700, fontSize: '1.1em', margin: '1.5em 0 0.5em 0' }}>
             教育经历 <span style={{ fontWeight: 400, fontSize: '0.95em' }}>(从高中填起，请勿间断)</span>
           </div>
-          <ElFormItem label=" ">
+          <ElFormItem label="">
             <ElTable data={form.value.education_experience} class={styles.table} style={{ width: "100%" }}>
               <ElTableColumn label="起止时间">
                 {{
@@ -261,17 +274,17 @@ export default defineComponent({
                   )
                 }}
               </ElTableColumn>
-              <ElTableColumn label="毕业学校、专业及单位">
+              <ElTableColumn label="毕业学校及专业">
                 {{
                   default: ({ row }: any) => (
-                    <ElInput v-model={row.school} placeholder="毕业学校、专业及单位" style={{ width: "220px" }} />
+                    <ElInput v-model={row.school} placeholder="毕业学校及专业" style={{ width: "220px" }} />
                   )
                 }}
               </ElTableColumn>
-              <ElTableColumn label="导师">
+              <ElTableColumn label="证明人">
                 {{
                   default: ({ row }: any) => (
-                    <ElInput v-model={row.supervisor} placeholder="导师" style={{ width: "100px" }} />
+                    <ElInput v-model={row.supervisor} placeholder="证明人" style={{ width: "100px" }} />
                   )
                 }}
               </ElTableColumn>
@@ -335,18 +348,18 @@ export default defineComponent({
           </ElFormItem>
           {/* 其他说明 */}
           <ElFormItem label="其他说明">
-            <ElInput v-model={form.value.other} type="textarea" rows={2} placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" />
+            <ElInput v-model={form.value.other} type="textarea" rows={2} maxlength="100" show-word-limit placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" />
           </ElFormItem>
           <AchievementForm />
           {/* 其他成果 */}
-          <ElFormItem label="其他成果">
-            <ElInput v-model={form.value.otherachievements} type="textarea" rows={2} placeholder="其他成果" />
+          <ElFormItem label="其他成果" prop="otherachievements">
+            <ElInput v-model={form.value.otherachievements} type="textarea" rows={2} maxlength="100" show-word-limit placeholder="其他成果" />
           </ElFormItem>
           {/* 累计成果个数 */}
           <div style={{ margin: '2em 0 1em 0', fontWeight: 700 }}>累计成果个数：{totalAchievements.value}</div>
           {/* 按钮组 */}
           <div class={styles.btnGroup}>
-            <ElButton type="primary" onClick={handleSubmit}>提交</ElButton> 
+            <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
             <ElButton type="warning">返回</ElButton>
           </div>
         </ElForm>
