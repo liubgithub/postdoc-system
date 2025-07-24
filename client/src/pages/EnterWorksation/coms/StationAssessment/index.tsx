@@ -1,13 +1,19 @@
+import { defineComponent, ref } from 'vue'
 import * as cls from './styles.css'
 import OpenDetails from './openDetails'
 import CommonTable from '@/units/CommonTable'
 import type { TableRow } from '@/types/common-table'
+import { ElButton, ElDialog } from 'element-plus'
+import ProcessStatus from '@/units/ProcessStatus'
 
 export default defineComponent({
     name: "StationAssessment",
     setup() {
         const showDetails = ref(false)
+        const showProcess = ref(false)
+        const currentSteps = ref([])
 
+        // 示例数据，实际应从后端获取
         const tableData = ref<TableRow[]>([{
             stuId: '',
             name: '',
@@ -15,9 +21,14 @@ export default defineComponent({
             college: '',
             subject: '',
             applyTime: '',
-            processStatus: '',
+            processStatus: '已通过',
             nodeName: '',
-            assessmentRes: ''
+            assessmentRes: '',
+            processSteps: [
+                { status: '发起', role: '学生申请', time: '2025-03-12 19:59:28' },
+                { status: '通过', role: '导师审核', time: '2025-03-31 20:44:48' },
+                { status: '结束', role: '', time: '' }
+            ]
         }])
         const columns = [
             { prop: 'stuId', label: '学号' },
@@ -26,8 +37,32 @@ export default defineComponent({
             { prop: 'college', label: '学院' },
             { prop: 'subject', label: '研究方向' },
             { prop: 'applyTime', label: '申请时间' },
-            { prop: 'processStatus', label: '处理状态' },
-            { prop: 'nodeName', label: '节点名称' },
+            {
+                prop: 'processStatus',
+                label: '处理状态',
+                render: ({ row }: { row: TableRow }) => (
+                    <div>
+                        <ElButton
+                            type="primary"
+                            size="small"
+                            style="margin-left:8px"
+                            onClick={() => {
+                                currentSteps.value = row.processSteps
+                                showProcess.value = true
+                            }}
+                        >
+                            查看流程
+                        </ElButton>
+                    </div>
+                )
+            },
+            {
+                prop: 'nodeName',
+                label: '节点名称',
+                render: ({ row }: { row: TableRow }) => (
+                    <span>{row.nodeName}</span>
+                )
+            },
             { prop: 'assessmentRes', label: '考核结果' }
         ]
 
@@ -46,14 +81,24 @@ export default defineComponent({
                 {showDetails.value ? (
                     <OpenDetails onBack={handleBack} />
                 ) : (
-                    <CommonTable 
-                    data={tableData.value} 
-                    columns={columns} 
-                    onView={handleView}
-                    editableFields={editableFields}
-                    showAction={true}
-                    tableClass={cls.tableWidth}
-                    />
+                    <>
+                        <CommonTable 
+                            data={tableData.value} 
+                            columns={columns} 
+                            onView={handleView}
+                            editableFields={editableFields}
+                            showAction={true}
+                            tableClass={cls.tableWidth}
+                        />
+                        <ElDialog
+                            v-model={showProcess.value}
+                            title="流程状态"
+                            width="600px"
+                            destroyOnClose
+                        >
+                            <ProcessStatus steps={currentSteps.value} />
+                        </ElDialog>
+                    </>
                 )}
             </div>
         )
