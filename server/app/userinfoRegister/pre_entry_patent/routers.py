@@ -29,7 +29,7 @@ async def create_patent(
     专利成果编码: str = Form(""),
     备注: str = Form(""),
     专利证书文文件: UploadFile = File(None),
-    achievement_type: int = Form(0),
+    time: int = Form(0),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -39,7 +39,7 @@ async def create_patent(
 
     db_patent = models.PreEntryPatent(
         user_id=current_user.id,
-        achievement_type=achievement_type,
+        time=time,
         专利成果名称=专利成果名称,
         专利类型=专利类型,
         提交时间=apply_date,
@@ -88,7 +88,7 @@ async def update_patent(
     专利成果编码: str = Form(""),
     备注: str = Form(""),
     专利证书文文件: UploadFile = File(None),
-    achievement_type: int = Form(0),
+    time: int = Form(0),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -112,7 +112,7 @@ async def update_patent(
     db_patent.专利权人 = 专利权人
     db_patent.专利成果编码 = 专利成果编码
     db_patent.备注 = 备注
-    db_patent.achievement_type = achievement_type
+    db_patent.time = time
 
     # 文件上传
     if 专利证书文文件:

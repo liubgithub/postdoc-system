@@ -31,7 +31,7 @@ async def create_competition_award(
     奖项名称: str = Form(""),
     作者名单: str = Form(""),
     备注: str = Form(""),
-    achievement_type: int = Form(0),
+    time: int = Form(0),
     上传获奖证书文件: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
@@ -41,7 +41,7 @@ async def create_competition_award(
 
     db_award = models.PreEntryCompetitionAward(
         user_id=current_user.id,
-        achievement_type=achievement_type,
+        time=time,
         竞赛名称=竞赛名称,
         获奖类别=获奖类别,
         获奖等级=获奖等级,
@@ -95,7 +95,7 @@ async def update_competition_award(
     奖项名称: str = Form(""),
     作者名单: str = Form(""),
     备注: str = Form(""),
-    achievement_type: int = Form(0),
+    time: int = Form(0),
     上传获奖证书文件: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
@@ -122,7 +122,7 @@ async def update_competition_award(
     db_award.奖项名称 = 奖项名称
     db_award.作者名单 = 作者名单
     db_award.备注 = 备注
-    db_award.achievement_type = achievement_type
+    db_award.time = time
 
     # 文件上传
     if 上传获奖证书文件:

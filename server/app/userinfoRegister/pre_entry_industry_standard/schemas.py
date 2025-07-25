@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryIndustryStandardBase(BaseModel):
-    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    time: Optional[int] = 0  # 0: 入站前, 1: 在站
     标准名称: str
     标准编号: Optional[str] = ""
     发布日期: Optional[datetime] = None

@@ -14,14 +14,14 @@ export const submitUserProfile = async (data: any) => {
     return res.data;
 };
 
-// 修改当前用户个人信息
-export const updateUserProfile = async (data: any) => {
-    const res = await raw.PUT('/info/me', { body: data });
-    return res.data;
-};
+// // 修改当前用户个人信息
+// export const updateUserProfile = async (data: any) => {
+//     const res = await raw.PUT('/info/me', { body: data });
+//     return res.data;
+// };
 
-// 删除当前用户个人信息
-export const deleteUserProfile = async () => {
-    const res = await raw.DELETE('/info/me');
-    return res.data;
-};
+// // 删除当前用户个人信息
+// export const deleteUserProfile = async () => {
+//     const res = await raw.DELETE('/info/me');
+//     return res.data;
+// };

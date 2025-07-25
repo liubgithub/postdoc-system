@@ -1,7 +1,7 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker, ElSelect, ElOption } from "element-plus";
 import * as styles from "./styles.css.ts";
-import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
+import { getUserProfile, submitUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
 import AchievementForm from "./achievementForm.tsx";
 import { Document, Paragraph, TextRun, Table, TableCell, TableRow, HeadingLevel, Packer } from "docx";
 import { saveAs } from "file-saver";

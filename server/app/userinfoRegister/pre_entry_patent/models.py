@@ -6,7 +6,7 @@ class PreEntryPatent(Base):
     __tablename__ = "bs_pre_entry_patent"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    achievement_type = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
+    time = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
     专利权人 = Column(String(255))
     专利成果编码 = Column(String(128))
     专利成果名称 = Column(String(255))

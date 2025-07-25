@@ -129,7 +129,7 @@ export default defineComponent({
         formData.append("上传获奖证书文件", editData.value["上传获奖证书文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", "0");
+      formData.append("time", "0");
 
       let res;
       if (editIndex.value === -1) {

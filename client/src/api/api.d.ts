@@ -967,7 +967,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number;
+            time: number;
             /**
              * 上传获奖证书文件
              * Format: binary
@@ -1062,7 +1062,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number;
+            time: number;
         };
         /** Body_create_industry_standard_pre_entry_industry_standard__post */
         Body_create_industry_standard_pre_entry_industry_standard__post: {
@@ -1361,7 +1361,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number;
+            time: number;
         };
         /** Body_create_project_pre_entry_project__post */
         Body_create_project_pre_entry_project__post: {
@@ -1638,7 +1638,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number;
+            time: number;
             /**
              * 上传获奖证书文件
              * Format: binary
@@ -1733,7 +1733,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number;
+            time: number;
         };
         /** Body_update_industry_standard_pre_entry_industry_standard__id__put */
         Body_update_industry_standard_pre_entry_industry_standard__id__put: {
@@ -2032,7 +2032,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number;
+            time: number;
         };
         /** Body_update_project_pre_entry_project__id__put */
         Body_update_project_pre_entry_project__id__put: {
@@ -2404,7 +2404,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /** 著作中文名 */
             "\u8457\u4F5C\u4E2D\u6587\u540D"?: string | null;
             /** 出版社 */
@@ -2450,7 +2450,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /** 竞赛名称 */
             "\u7ADE\u8D5B\u540D\u79F0": string;
             /**
@@ -2536,7 +2536,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /**
              * 会议编号
              * @default
@@ -2634,7 +2634,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /** 标准名称 */
             "\u6807\u51C6\u540D\u79F0": string;
             /**
@@ -2692,7 +2692,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /**
              * 署名排序
              * @default
@@ -2773,7 +2773,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /** 论文名称 */
             "\u8BBA\u6587\u540D\u79F0"?: string | null;
             /** 刊物名称 */
@@ -2847,7 +2847,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /**
              * 专利权人
              * @default
@@ -2924,7 +2924,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /**
              * 项目编号
              * @default
@@ -3022,7 +3022,7 @@ export interface components {
              * Achievement Type
              * @default 0
              */
-            achievement_type: number | null;
+            time: number | null;
             /** 课题名称 */
             "\u8BFE\u9898\u540D\u79F0": string;
             /**

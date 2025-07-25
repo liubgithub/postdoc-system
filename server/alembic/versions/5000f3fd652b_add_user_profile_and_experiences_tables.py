@@ -42,7 +42,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -68,7 +68,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -94,7 +94,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -125,7 +125,7 @@ def upgrade() -> None:
     )
 
     with op.batch_alter_table('bs_pre_entry_industry_standard', schema=None) as batch_op:
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -152,7 +152,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -178,7 +178,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -204,7 +204,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -265,11 +265,11 @@ def upgrade() -> None:
                existing_type=sa.VARCHAR(length=32),
                type_=sa.String(length=255),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
-        batch_op.drop_index(batch_op.f('ix_bs_pre_entry_project_achievement_type'))
+        batch_op.drop_index(batch_op.f('ix_bs_pre_entry_project_time'))
         batch_op.create_index(batch_op.f('ix_bs_pre_entry_project_id'), ['id'], unique=False)
         batch_op.create_index(batch_op.f('ix_bs_pre_entry_project_user_id'), ['user_id'], unique=False)
         batch_op.drop_table_comment(
@@ -280,7 +280,7 @@ def upgrade() -> None:
         batch_op.alter_column('user_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=None,
                existing_nullable=True)
@@ -363,7 +363,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -378,8 +378,8 @@ def downgrade() -> None:
     )
         batch_op.drop_index(batch_op.f('ix_bs_pre_entry_project_user_id'))
         batch_op.drop_index(batch_op.f('ix_bs_pre_entry_project_id'))
-        batch_op.create_index(batch_op.f('ix_bs_pre_entry_project_achievement_type'), ['achievement_type'], unique=False)
-        batch_op.alter_column('achievement_type',
+        batch_op.create_index(batch_op.f('ix_bs_pre_entry_project_time'), ['time'], unique=False)
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -441,7 +441,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -468,7 +468,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -495,7 +495,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -523,7 +523,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -555,7 +555,7 @@ def downgrade() -> None:
                existing_type=sa.String(length=16),
                type_=sa.VARCHAR(length=32),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -582,7 +582,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)
@@ -609,7 +609,7 @@ def downgrade() -> None:
                existing_type=sa.String(),
                type_=sa.TEXT(),
                existing_nullable=True)
-        batch_op.alter_column('achievement_type',
+        batch_op.alter_column('time',
                existing_type=sa.INTEGER(),
                server_default=sa.text('0'),
                existing_nullable=True)

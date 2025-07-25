@@ -28,7 +28,7 @@ def submit_info(data: InfoIn, db: Session = Depends(get_db), current_user=Depend
         exist.otherachievements = data.otherachievements
         db.query(EducationExperience).filter(EducationExperience.user_id == exist.id).delete()
         db.query(WorkExperience).filter(WorkExperience.user_id == exist.id).delete()
-        db.flush()
+        db.flush() 
         for edu in data.education_experience:
             db.add(EducationExperience(
                 user_id=exist.id,

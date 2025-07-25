@@ -70,7 +70,7 @@ function db2form(item: any) {
     论文接收函: item["论文接收函"] ?? "",
     论文电子版: item["论文电子版"] ?? "",
     备注: item["备注"] ?? "",
-    achievement_type: item["achievement_type"] ?? 0,
+    time: item["time"] ?? 0,
   };
 }
 
@@ -112,7 +112,7 @@ export default defineComponent({
       "论文接收函": null,
       "论文电子版": null,
       "备注": "",
-      achievement_type: 0,
+      time: 0,
     });
 
     const loadPapers = async () => {
@@ -150,7 +150,7 @@ export default defineComponent({
         "论文接收函": null,
         "论文电子版": null,
         "备注": "",
-        achievement_type: 0,
+        time: 0,
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -202,7 +202,7 @@ export default defineComponent({
       formData.append("总期号", editData.value["总期号"] || "");
       formData.append("刊物编号", editData.value["刊物编号"] || "");
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", editData.value["achievement_type"] || 0);
+      formData.append("time", editData.value["time"] || 0);
       
       // 处理文件上传
       if (editData.value["论文发表证书"] instanceof File) {

@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryPatentBase(BaseModel):
-    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    time: Optional[int] = 0  # 0: 入站前, 1: 在站
     专利权人: Optional[str] = ""
     专利成果编码: Optional[str] = ""
     专利成果名称: str

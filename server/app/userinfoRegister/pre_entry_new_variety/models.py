@@ -6,7 +6,7 @@ class PreEntryNewVariety(Base):
     __tablename__ = "bs_pre_entry_new_variety"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    achievement_type = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
+    time = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
     署名排序 = Column(String(128))
     本校是否第一完成单位 = Column(String(32))
     公示年份 = Column(DateTime)

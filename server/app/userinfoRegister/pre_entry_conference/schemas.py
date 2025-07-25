@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryConferenceBase(BaseModel):
-    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    time: Optional[datetime] = None  
     会议编号: Optional[str] = ""
     会议名称: str
     会议英文名: Optional[str] = ""

@@ -6,8 +6,7 @@ class PreEntryConference(Base):
     __tablename__ = "bs_pre_entry_conference"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    achievement_type = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
-
+    time = Column(DateTime, default=datetime.utcnow, index=True)
     会议编号 = Column(String(128))
     会议名称 = Column(String(255))
     会议英文名 = Column(String(255))
