@@ -5,6 +5,7 @@ import CommonTable from '@/units/CommonTable'
 import type { TableRow } from '@/types/common-table'
 import { ElButton, ElDialog } from 'element-plus'
 import ProcessStatus from '@/units/ProcessStatus'
+import fetch from '@/api/index.ts'
 
 export default defineComponent({
     name: "StationAssessment",
@@ -76,6 +77,9 @@ export default defineComponent({
             showDetails.value = false
         }
 
+        onMounted(async()=>{
+            const res = await fetch.raw.GET('/assessment/student/') 1稍等还是的风格11·
+        })
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (

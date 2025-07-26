@@ -41,7 +41,7 @@ def get_relation(
 ):
     db_relation = db.query(EnterRelation).filter_by(user_id=current_user.id).first()
     if not db_relation:
-        raise HTTPException(status_code=404, detail="未找到相关科研情况")
+        return None
     return db_relation
 
 

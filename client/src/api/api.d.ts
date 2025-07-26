@@ -776,19 +776,15 @@ export interface paths {
         };
         /**
          * Get Enter Workstation By User Id
-         * @description 获取当前用户的进站申请记录
+         * @description 获取当前用户的进站申请记录（无则返回null）
          */
         get: operations["get_enter_workstation_by_user_id_enterWorkstation_apply_get"];
+        put?: never;
         /**
-         * Update Enter Workstation By User Id
-         * @description 更新当前用户的进站申请记录
+         * Upsert Enter Workstation
+         * @description 创建或更新进站申请记录（有则更新，无则创建）
          */
-        put: operations["update_enter_workstation_by_user_id_enterWorkstation_apply_put"];
-        /**
-         * Create Enter Workstation
-         * @description 创建进站申请记录
-         */
-        post: operations["create_enter_workstation_enterWorkstation_apply_post"];
+        post: operations["upsert_enter_workstation_enterWorkstation_apply_post"];
         /**
          * Delete Enter Workstation By User Id
          * @description 删除当前用户的进站申请记录
@@ -808,12 +804,30 @@ export interface paths {
         };
         /** Get Relation */
         get: operations["get_relation_enterRelation__get"];
-        /** Update Relation */
-        put: operations["update_relation_enterRelation__put"];
-        /** Create Relation */
-        post: operations["create_relation_enterRelation__post"];
+        put?: never;
+        /** Upsert Enter Relation */
+        post: operations["upsert_enter_relation_enterRelation__post"];
         /** Delete Relation */
         delete: operations["delete_relation_enterRelation__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/student/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Student By User Id */
+        get: operations["get_student_by_user_id_assessment_student__get"];
+        put?: never;
+        /** Upsert Student */
+        post: operations["upsert_student_assessment_student__post"];
+        /** Delete Student By User Id */
+        delete: operations["delete_student_by_user_id_assessment_student__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -964,7 +978,7 @@ export interface components {
              */
             "\u5907\u6CE8": string;
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number;
@@ -1059,10 +1073,10 @@ export interface components {
              */
             "\u5907\u6CE8": string;
             /**
-             * Achievement Type
-             * @default 0
+             * Time
+             * @default
              */
-            time: number;
+            time: string;
         };
         /** Body_create_industry_standard_pre_entry_industry_standard__post */
         Body_create_industry_standard_pre_entry_industry_standard__post: {
@@ -1358,7 +1372,7 @@ export interface components {
              */
             "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string;
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number;
@@ -1635,7 +1649,7 @@ export interface components {
              */
             "\u5907\u6CE8": string;
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number;
@@ -1730,10 +1744,10 @@ export interface components {
              */
             "\u5907\u6CE8": string;
             /**
-             * Achievement Type
-             * @default 0
+             * Time
+             * @default
              */
-            time: number;
+            time: string;
         };
         /** Body_update_industry_standard_pre_entry_industry_standard__id__put */
         Body_update_industry_standard_pre_entry_industry_standard__id__put: {
@@ -2029,7 +2043,7 @@ export interface components {
              */
             "\u4E13\u5229\u8BC1\u4E66\u6587\u6587\u4EF6"?: string;
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number;
@@ -2190,8 +2204,23 @@ export interface components {
             /** Id */
             id: number;
         };
-        /** EnterRelation */
-        EnterRelation: {
+        /** EnterRelationBase */
+        EnterRelationBase: {
+            /** Base Work */
+            base_work?: string | null;
+            /** Necessity Analysis */
+            necessity_analysis?: string | null;
+            /** Resplan Expected */
+            resplan_expected?: string | null;
+            /** Results */
+            results?: string | null;
+            /** Other Achievements */
+            other_achievements?: string | null;
+            /** Academic Pursuits */
+            academic_pursuits?: string | null;
+        };
+        /** EnterRelationInDBBase */
+        EnterRelationInDBBase: {
             /** Base Work */
             base_work?: string | null;
             /** Necessity Analysis */
@@ -2212,36 +2241,6 @@ export interface components {
             created_at: string | null;
             /** Updated At */
             updated_at: string | null;
-        };
-        /** EnterRelationCreate */
-        EnterRelationCreate: {
-            /** Base Work */
-            base_work?: string | null;
-            /** Necessity Analysis */
-            necessity_analysis?: string | null;
-            /** Resplan Expected */
-            resplan_expected?: string | null;
-            /** Results */
-            results?: string | null;
-            /** Other Achievements */
-            other_achievements?: string | null;
-            /** Academic Pursuits */
-            academic_pursuits?: string | null;
-        };
-        /** EnterRelationUpdate */
-        EnterRelationUpdate: {
-            /** Base Work */
-            base_work?: string | null;
-            /** Necessity Analysis */
-            necessity_analysis?: string | null;
-            /** Resplan Expected */
-            resplan_expected?: string | null;
-            /** Results */
-            results?: string | null;
-            /** Other Achievements */
-            other_achievements?: string | null;
-            /** Academic Pursuits */
-            academic_pursuits?: string | null;
         };
         /** EnterWorkstationIn */
         EnterWorkstationIn: {
@@ -2401,7 +2400,7 @@ export interface components {
         /** PreEntryBook */
         PreEntryBook: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -2447,7 +2446,7 @@ export interface components {
         /** PreEntryCompetitionAward */
         PreEntryCompetitionAward: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -2532,11 +2531,8 @@ export interface components {
         };
         /** PreEntryConference */
         PreEntryConference: {
-            /**
-             * Achievement Type
-             * @default 0
-             */
-            time: number | null;
+            /** Time */
+            time?: string | null;
             /**
              * 会议编号
              * @default
@@ -2631,7 +2627,7 @@ export interface components {
         /** PreEntryIndustryStandard */
         PreEntryIndustryStandard: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -2689,7 +2685,7 @@ export interface components {
         /** PreEntryNewVariety */
         PreEntryNewVariety: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -2770,7 +2766,7 @@ export interface components {
         /** PreEntryPaper */
         PreEntryPaper: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -2844,7 +2840,7 @@ export interface components {
         /** PreEntryPatent */
         PreEntryPatent: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -2921,7 +2917,7 @@ export interface components {
         /** PreEntryProject */
         PreEntryProject: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -3019,7 +3015,7 @@ export interface components {
         /** PreEntrySubjectResearch */
         PreEntrySubjectResearch: {
             /**
-             * Achievement Type
+             * Time
              * @default 0
              */
             time: number | null;
@@ -3073,6 +3069,40 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
+        };
+        /** StudentIn */
+        StudentIn: {
+            /** Stu Num */
+            stu_num: string;
+            /** Stu Name */
+            stu_name: string;
+            /** Cotutor */
+            cotutor?: string | null;
+            /** College */
+            college?: string | null;
+            /** Subject */
+            subject?: string | null;
+        };
+        /** StudentOut */
+        StudentOut: {
+            /** Stu Num */
+            stu_num: string;
+            /** Stu Name */
+            stu_name: string;
+            /** Cotutor */
+            cotutor?: string | null;
+            /** College */
+            college?: string | null;
+            /** Subject */
+            subject?: string | null;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
         };
         /** Token */
         Token: {
@@ -5010,45 +5040,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EnterWorkstationOut"];
+                    "application/json": components["schemas"]["EnterWorkstationOut"] | null;
                 };
             };
         };
     };
-    update_enter_workstation_by_user_id_enterWorkstation_apply_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EnterWorkstationIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EnterWorkstationOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_enter_workstation_enterWorkstation_apply_post: {
+    upsert_enter_workstation_enterWorkstation_apply_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -5116,12 +5113,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EnterRelation"];
+                    "application/json": components["schemas"]["EnterRelationInDBBase"];
                 };
             };
         };
     };
-    update_relation_enterRelation__put: {
+    upsert_enter_relation_enterRelation__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -5130,7 +5127,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["EnterRelationUpdate"];
+                "application/json": components["schemas"]["EnterRelationBase"];
             };
         };
         responses: {
@@ -5140,40 +5137,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EnterRelation"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_relation_enterRelation__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EnterRelationCreate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EnterRelation"];
+                    "application/json": components["schemas"]["EnterRelationInDBBase"];
                 };
             };
             /** @description Validation Error */
@@ -5188,6 +5152,79 @@ export interface operations {
         };
     };
     delete_relation_enterRelation__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_student_by_user_id_assessment_student__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentOut"];
+                };
+            };
+        };
+    };
+    upsert_student_assessment_student__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StudentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_student_by_user_id_assessment_student__delete: {
         parameters: {
             query?: never;
             header?: never;

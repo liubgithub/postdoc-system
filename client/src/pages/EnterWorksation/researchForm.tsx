@@ -13,29 +13,24 @@ export default defineComponent({
   },
   setup(props) {
     const form = ref({
-      baseWork: "",
-      necessityAnalysis: "",
-      researchPlan: "",
-      achievements: "",
-      otherAchievements: "",
-      academicIdeals: "",
+      base_work: "",
+      necessity_analysis: "",
+      resplan_expected: "",
+      results: "",
+      other_achievements: "",
+      academic_pursuits: "",
       commitment: "本人基于对学术理想的向往和追求来申请本岗位，承诺对所有提供有关应聘材料的真实性、有效性负责，愿意承担相应的学术道德、法律责任及后果。",
       signature: "",
       date: ""
     });
 
     const handleSubmit = () => {
-      // 判断是新增还是修改
-      // const method = form.value.id ? 'PUT' : 'POST';
-      // const url = '/enterRelation/';
-      // const payload = { ...form.value };
-      // const res = await fetch.raw.[method](url, payload);
-      // if (res && res.success) {
-      //   props.onSubmitSuccess && props.onSubmitSuccess();
-      // }
+      console.log(form.value,'fffff')
+      
     };
     const onInput = (val: any) => {
       console.log(val, 'signature')
+      form.value.signature = val
     }
 
     onMounted(async () => {
@@ -43,6 +38,7 @@ export default defineComponent({
       if (res && res.data) {
         Object.assign(form.value, res.data);
       }
+      console.log(res.data,form.value,'biao')
     });
     return () => (
       <div class={styles.formWrapper}>
@@ -50,7 +46,7 @@ export default defineComponent({
           <h3>2. 相关科研情况填写</h3>
           <ElFormItem label="1. 前期工作基础">
             <ElInput
-              v-model={form.value.baseWork}
+              v-model={form.value.base_work}
               type="textarea"
               rows={4}
               placeholder="入站前的科研训练、相关进展，获得资助的情况等"
@@ -59,7 +55,7 @@ export default defineComponent({
 
           <ElFormItem label="2. 选题的必要性分析">
             <ElInput
-              v-model={form.value.necessityAnalysis}
+              v-model={form.value.necessity_analysis}
               type="textarea"
               rows={4}
               placeholder="500字以内"
@@ -68,7 +64,7 @@ export default defineComponent({
 
           <ElFormItem label="3. 研究规划及预期成果">
             <ElInput
-              v-model={form.value.researchPlan}
+              v-model={form.value.resplan_expected}
               type="textarea"
               rows={4}
               placeholder="500字以内，论文需列出目标期刊名称，或注明为相当或更高水平期刊"
@@ -77,7 +73,7 @@ export default defineComponent({
 
           <ElFormItem label="4. 成果情况">
             <ElInput
-              v-model={form.value.achievements}
+              v-model={form.value.results}
               type="textarea"
               rows={6}
               placeholder="请将近3年代表作列出；论文请注明题目、全部作者、发表年份、刊物、卷、页码、收录及引用情况等，并按论文发表级别排序，共同第一作者用#标明，通讯作者用*标明；著作请注明所有作者姓名，书名，出版地，出版社"
@@ -86,7 +82,7 @@ export default defineComponent({
 
           <ElFormItem label="5. 其他代表性成果">
             <ElInput
-              v-model={form.value.otherAchievements}
+              v-model={form.value.other_achievements}
               type="textarea"
               rows={4}
             />
@@ -94,7 +90,7 @@ export default defineComponent({
 
           <ElFormItem label="6. 学术理想与追求">
             <ElInput
-              v-model={form.value.academicIdeals}
+              v-model={form.value.academic_pursuits}
               type="textarea"
               rows={4}
               placeholder="介绍本人学术理想与追求；对科研人员要将学术道德、学术诚信视为生命线的认识看法；接受相关学术诚信、学术规范培训的经历等"

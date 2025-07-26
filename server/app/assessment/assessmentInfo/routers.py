@@ -9,16 +9,25 @@ from app.models.user import User
 router = APIRouter(prefix="/assessment/student", tags=["学生信息"])
 
 @router.post("/", response_model=StudentOut)
-def create_student(
+def upsert_student(
     data: StudentIn,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    student = Student(user_id=current_user.id, **data.dict())
-    db.add(student)
-    db.commit()
-    db.refresh(student)
-    return student
+   record = db.query(Student).filter_by(user_id = current_user.id).first()
+   if record:
+      update_data =  data.dict(exclude_unset=True)
+      for key, value in update_data.items():
+            setattr(record, key, value)
+      db.commit()
+      db.refresh(record)
+      return record
+   else:
+      record = Student(user_id = current_user.id, **data.dict())
+      db.add()
+      db.commit()
+      db.refresh(record)
+      return record 
 
 @router.get("/", response_model=StudentOut)
 def get_student_by_user_id(
@@ -27,24 +36,9 @@ def get_student_by_user_id(
 ):
     student = db.query(Student).filter_by(user_id=current_user.id).first()
     if not student:
-        raise HTTPException(status_code=404, detail="未找到学生信息")
+        return None
     return student
 
-@router.put("/", response_model=StudentOut)
-def update_student_by_user_id(
-    data: StudentIn,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    student = db.query(Student).filter_by(user_id=current_user.id).first()
-    if not student:
-        raise HTTPException(status_code=404, detail="未找到学生信息")
-    update_data = data.dict(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(student, key, value)
-    db.commit()
-    db.refresh(student)
-    return student
 
 @router.delete("/")
 def delete_student_by_user_id(
