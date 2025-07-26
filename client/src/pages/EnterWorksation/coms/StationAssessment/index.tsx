@@ -25,9 +25,9 @@ export default defineComponent({
             nodeName: '',
             assessmentRes: '',
             processSteps: [
-                { status: '发起', role: '学生申请', time: '2025-03-12 19:59:28' },
-                { status: '通过', role: '导师审核', time: '2025-03-31 20:44:48' },
-                { status: '结束', role: '', time: '' }
+                { status: '发起', role: '学生申请', time: '' },
+                { status: '通过', role: '导师审核', time: '' },
+                { status: '结束', role: '学院审核', time: '' }
             ]
         }])
         const columns = [

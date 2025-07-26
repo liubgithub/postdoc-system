@@ -13,6 +13,7 @@ export const processStatusLeft = style({
   alignItems: 'center',
   marginRight: '24px',
   position: 'relative',
+  padding: '20px 0px'
 });
 
 export const processStep = style({
