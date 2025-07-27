@@ -45,7 +45,7 @@ function db2form(item: any) {
     作者排名: item["作者排名"] ?? "",
     上传文件: item["上传文件"] ?? null,
     备注: item["备注"] ?? "",
-    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD HH:mm:ss') : "",
+    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : "",
   };
 }
 
@@ -207,7 +207,7 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="ISBN"><ElInput v-model={editData.value["isbn"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="作者排名"><ElInput v-model={editData.value["作者排名"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="时间">
-                  <ElDatePicker v-model={editData.value["time"]} type="datetime" value-format="YYYY-MM-DD" placeholder="选择时间" style={{ width: '100%' }} />
+                  <ElDatePicker v-model={editData.value["time"]} type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择成果时间" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
               </ElRow>
               

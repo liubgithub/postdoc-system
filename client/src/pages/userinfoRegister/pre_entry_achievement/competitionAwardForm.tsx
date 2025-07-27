@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
+  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "竞赛名称", prop: "竞赛名称", width: 120 },
   { label: "获奖类别", prop: "获奖类别", width: 100 },
   { label: "获奖等级", prop: "获奖等级", width: 100 },
@@ -32,6 +33,7 @@ function db2form(item: any) {
   return {
     id: item.id,
     user_id: item.user_id,
+    "time": item.time ? dayjs(item.time).format('YYYY-MM-DD') : "",
     "竞赛名称": item["竞赛名称"] ?? "",
     "获奖类别": item["获奖类别"] ?? "",
     "获奖等级": item["获奖等级"] ?? "",
@@ -61,6 +63,7 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
+      "time": "",
       "竞赛名称": "",
       "获奖类别": "",
       "获奖等级": "",
@@ -80,6 +83,7 @@ export default defineComponent({
     const handleAdd = () => {
       editData.value = {
         id: tableData.value.length + 1,
+        "time": "",
         "竞赛名称": "",
         "获奖类别": "",
         "获奖等级": "",
@@ -129,7 +133,7 @@ export default defineComponent({
         formData.append("上传获奖证书文件", editData.value["上传获奖证书文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("time", "0");
+      formData.append("time", editData.value["time"] || "");
 
       let res;
       if (editIndex.value === -1) {
@@ -185,6 +189,17 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>科技竞赛获奖信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
+                <ElCol span={12}>
+                  <ElFormItem label="成果时间">
+                    <ElDatePicker
+                      v-model={editData.value["time"]}
+                      type="date"
+                      format="YYYY-MM-DD"
+                      value-format="YYYY-MM-DD"
+                      placeholder="选择成果时间"
+                    />
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="竞赛名称">
                     <ElInput v-model={editData.value["竞赛名称"]} />

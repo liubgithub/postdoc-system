@@ -12,6 +12,19 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
+  { 
+    label: "时间", 
+    prop: "time", 
+    width: 110,
+    formatter: (row: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch {
+        return row.time;
+      }
+    }
+  },
   { label: "专利名称", prop: "专利名称", width: 150 },
   { label: "专利类型", prop: "专利类型", width: 100 },
   { label: "申请日期", prop: "申请日期", width: 110 },
@@ -40,6 +53,7 @@ function db2form(item: any) {
     专利状态: item["专利成果编码"] ?? "",
     上传文件: item["专利证书文文件"] ?? null,
     备注: item["备注"] ?? "",
+    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : ""
   };
 }
 
@@ -65,6 +79,7 @@ export default defineComponent({
       "专利状态": "",
       "上传文件": null,
       "备注": "",
+      "time": ""
     });
 
     const loadPatents = async () => {
@@ -86,6 +101,7 @@ export default defineComponent({
         "专利状态": "",
         "上传文件": null,
         "备注": "",
+        "time": ""
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -118,7 +134,7 @@ export default defineComponent({
         formData.append("专利证书文文件", editData.value["上传文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("time", "0");
+      formData.append("time", editData.value.time ? dayjs(editData.value.time).format("YYYY-MM-DD") : "");
       
       let res;
       if (editIndex.value === -1) {
@@ -184,6 +200,15 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="发明人"><ElInput v-model={editData.value["发明人"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="专利权人"><ElInput v-model={editData.value["专利权人"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="专利状态"><ElInput v-model={editData.value["专利状态"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="时间">
+                  <ElDatePicker
+                    v-model={editData.value.time}
+                    type="date"
+                    value-format="YYYY-MM-DD"
+                    placeholder="选择时间"
+                    style={{ width: '100%' }}
+                  />
+                </ElFormItem></ElCol>
               </ElRow>
               
               <ElFormItem label="上传文件">

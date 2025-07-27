@@ -12,6 +12,12 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
+  {
+    label: "时间",
+    prop: "time",
+    width: 110,
+    formatter: ({ row }: any) => row.time ? dayjs(row.time).format('YYYY-MM-DD') : ""
+  },
   { label: "项目编号", prop: "项目编号", width: 100 },
   { label: "项目名称", prop: "项目名称", width: 120 },
   { label: "项目类型", prop: "项目类型", width: 100 },
@@ -52,7 +58,7 @@ function db2form(item: any) {
     项目经费说明: item["项目经费说明"] ?? "",
     上传项目成果文件: item["上传项目成果文件"] ?? "",
     备注: item["备注"] ?? "",
-    time: item["time"] ?? 0,
+    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : ""
   };
 }
 
