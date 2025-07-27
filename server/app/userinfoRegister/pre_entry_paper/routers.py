@@ -6,9 +6,10 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from . import models, schemas
+from app.models.user import User
 from datetime import datetime
 from fastapi.responses import FileResponse
-from typing import List
+from typing import List, Optional
 
 router = APIRouter(
     prefix="/pre_entry_paper",
@@ -19,13 +20,10 @@ UPLOAD_ROOT = os.getenv("UPLOAD_ROOT", os.path.abspath(os.path.join(os.path.dirn
 
 @router.post("/", response_model=schemas.PreEntryPaper)
 async def create_paper(
-    # 必填字段（核心信息）
     论文名称: str = Form(...),
     刊物名称: str = Form(...),
-    发表日期: str = Form(...),
-    
-    # 可选字段（详细信息）
     本人署名排序: str = Form(""),
+    发表日期: str = Form(""),
     起始页号: str = Form(""),
     刊物级别: str = Form(""),
     是否共同第一: str = Form(""),
@@ -52,18 +50,20 @@ async def create_paper(
     论文接收函: UploadFile = File(None),
     论文电子版: UploadFile = File(None),
     
+    # 新增字段
+    time: Optional[str] = Form(None),
+    
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    # 解析发表日期
-    try:
-        pub_date = datetime.strptime(发表日期, "%Y-%m-%d") if 发表日期 else None
-    except Exception:
-        raise HTTPException(status_code=400, detail="发表日期格式错误，应为 YYYY-MM-DD")
+    # 解析日期
+    pub_date = datetime.strptime(发表日期, "%Y-%m-%d") if 发表日期 else None
+    time_parsed = datetime.strptime(time, "%Y-%m-%d") if time else None
     
     # 创建论文记录
     db_paper = models.PreEntryPaper(
         user_id=current_user.id,
+        time=time_parsed,
         论文名称=论文名称,
         刊物名称=刊物名称,
         发表日期=pub_date,
@@ -93,20 +93,27 @@ async def create_paper(
     # 处理文件上传
     file_fields = [
         ("论文发表证书", 论文发表证书),
-        ("论文接收函", 论文接收函), 
+        ("论文接收函", 论文接收函),
         ("论文电子版", 论文电子版)
     ]
     
     for field_name, upload_file in file_fields:
         if upload_file:
+            # 删除旧文件
+            old_file_path = getattr(db_paper, field_name)
+            if old_file_path:
+                try:
+                    old_file_relative = old_file_path.replace("/static/", "")
+                    old_file_absolute = os.path.join(UPLOAD_ROOT, old_file_relative)
+                    if os.path.exists(old_file_absolute):
+                        os.remove(old_file_absolute)
+                except Exception:
+                    pass
+                    
             user_dir = os.path.join(UPLOAD_ROOT, str(current_user.id), "pre_entry_paper", field_name)
             os.makedirs(user_dir, exist_ok=True)
-            
-            # 直接使用原始文件名，但确保文件名安全
             original_filename = upload_file.filename
             safe_filename = "".join(c for c in original_filename if c.isalnum() or c in "._-")
-            
-            # 检查文件是否已存在，如果存在则添加数字后缀
             base_name, ext = os.path.splitext(safe_filename)
             counter = 1
             final_filename = safe_filename
@@ -121,7 +128,7 @@ async def create_paper(
                 shutil.copyfileobj(upload_file.file, buffer)
             
             setattr(db_paper, field_name, f"/static/{current_user.id}/pre_entry_paper/{field_name}/{final_filename}")
-    
+
     db.add(db_paper)
     db.commit()
     db.refresh(db_paper)
@@ -162,6 +169,9 @@ async def update_paper(
     论文发表证书: UploadFile = File(None),
     论文接收函: UploadFile = File(None),
     论文电子版: UploadFile = File(None),
+    
+    # 新增字段
+    time: Optional[str] = Form(None),
     
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
@@ -250,23 +260,32 @@ async def update_paper(
             
             setattr(db_paper, field_name, f"/static/{current_user.id}/pre_entry_paper/{field_name}/{final_filename}")
     
+    # 解析 time 字段
+    try:
+        parsed_time = datetime.strptime(time, "%Y-%m-%d") if time else None
+    except Exception:
+        raise HTTPException(status_code=400, detail="time 字段格式错误，应为 YYYY-MM-DD")
+    db_paper.time = parsed_time
+    
     db.commit()
     db.refresh(db_paper)
     return db_paper
 
 @router.get("/me", response_model=List[schemas.PreEntryPaper])
-def get_my_papers(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    return db.query(models.PreEntryPaper).filter(models.PreEntryPaper.user_id == current_user.id).all()
+def get_my_papers(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    papers = db.query(models.PreEntryPaper).filter(models.PreEntryPaper.user_id == current_user.id).all()
+    # 不需要特别处理time字段，让Pydantic的json_encoders来处理
+    return papers
 
 @router.get("/{id}", response_model=schemas.PreEntryPaper)
-def get_paper(id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+def get_paper(id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     paper = db.query(models.PreEntryPaper).filter(models.PreEntryPaper.id == id, models.PreEntryPaper.user_id == current_user.id).first()
     if not paper:
         raise HTTPException(status_code=404, detail="Paper not found")
     return paper
 
 @router.delete("/{id}")
-def delete_paper(id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+def delete_paper(id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     db_paper = db.query(models.PreEntryPaper).filter(models.PreEntryPaper.id == id, models.PreEntryPaper.user_id == current_user.id).first()
     if not db_paper:
         raise HTTPException(status_code=404, detail="Paper not found")

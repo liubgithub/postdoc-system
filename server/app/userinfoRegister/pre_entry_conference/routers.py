@@ -42,7 +42,7 @@ async def create_conference(
     # 解析日期
     start_date = datetime.strptime(会议起始日, "%Y-%m-%d") if 会议起始日 else None
     end_date = datetime.strptime(会议终止日, "%Y-%m-%d") if 会议终止日 else None
-    time_parsed = datetime.strptime(time, "%Y-%m-%d %H:%M:%S") if time else None
+    time_parsed = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_conference = models.PreEntryConference(
         user_id=current_user.id,
@@ -120,7 +120,7 @@ async def update_conference(
 
     start_date = datetime.strptime(会议起始日, "%Y-%m-%d") if 会议起始日 else None
     end_date = datetime.strptime(会议终止日, "%Y-%m-%d") if 会议终止日 else None
-    time_parsed = datetime.strptime(time, "%Y-%m-%d %H:%M:%S") if time else None
+    time_parsed = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_conference.会议编号 = 会议编号
     db_conference.会议名称 = 会议名称

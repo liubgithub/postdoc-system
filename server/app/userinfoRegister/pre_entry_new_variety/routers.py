@@ -30,14 +30,17 @@ async def create_new_variety(
     作者名单: str = Form(""),
     备注: str = Form(""),
     上传新品种证明文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     publish_year = datetime.strptime(公示年份, "%Y-%m-%d") if 公示年份 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_variety = models.PreEntryNewVariety(
         user_id=current_user.id,
+        time=time_date,
         署名排序=署名排序,
         本校是否第一完成单位=本校是否第一完成单位,
         公示年份=publish_year,
@@ -90,6 +93,7 @@ async def update_new_variety(
     作者名单: str = Form(""),
     备注: str = Form(""),
     上传新品种证明文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -101,6 +105,7 @@ async def update_new_variety(
         raise HTTPException(status_code=404, detail="New variety not found")
 
     publish_year = datetime.strptime(公示年份, "%Y-%m-%d") if 公示年份 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_variety.署名排序 = 署名排序
     db_variety.本校是否第一完成单位 = 本校是否第一完成单位
@@ -114,6 +119,7 @@ async def update_new_variety(
     db_variety.审定单位 = 审定单位
     db_variety.作者名单 = 作者名单
     db_variety.备注 = 备注
+    db_variety.time = time_date
 
     # 文件上传
     if 上传新品种证明文件:

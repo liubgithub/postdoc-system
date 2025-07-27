@@ -46,9 +46,9 @@ async def create_book(
     # 解析出版日期和时间
     try:
         pub_date = datetime.strptime(出版日期, "%Y-%m-%d") if 出版日期 else None
-        time_value = datetime.strptime(time, "%Y-%m-%d %H:%M:%S") if time else None
+        time_value = datetime.strptime(time, "%Y-%m-%d") if time else None
     except Exception:
-        raise HTTPException(status_code=400, detail="日期格式错误，应为 YYYY-MM-DD 或 YYYY-MM-DD HH:mm:ss")
+        raise HTTPException(status_code=400, detail="日期格式错误，应为 YYYY-MM-DD")
     
     # 创建著作记录
     db_book = models.PreEntryBook(
@@ -137,9 +137,9 @@ async def update_book(
     # 解析出版日期和时间
     try:
         pub_date = datetime.strptime(出版日期, "%Y-%m-%d") if 出版日期 else None
-        time_value = datetime.strptime(time, "%Y-%m-%d %H:%M:%S") if time else None
+        time_value = datetime.strptime(time, "%Y-%m-%d") if time else None
     except Exception:
-        raise HTTPException(status_code=400, detail="日期格式错误，应为 YYYY-MM-DD 或 YYYY-MM-DD HH:mm:ss")
+        raise HTTPException(status_code=400, detail="日期格式错误，应为 YYYY-MM-DD")
     
     # 更新字段
     db_book.著作中文名 = 著作中文名

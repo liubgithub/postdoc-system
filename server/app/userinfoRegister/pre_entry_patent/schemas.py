@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryPatentBase(BaseModel):
-    time: Optional[int] = 0  # 0: 入站前, 1: 在站
+    time: Optional[datetime] = None
     专利权人: Optional[str] = ""
     专利成果编码: Optional[str] = ""
     专利成果名称: str
@@ -33,3 +33,6 @@ class PreEntryPatent(PreEntryPatentBase):
 
     class Config:
         from_attributes = True
+        json_encoders = {
+            datetime: lambda dt: dt.strftime("%Y-%m-%d") if dt else None
+        }

@@ -26,15 +26,18 @@ async def create_industry_standard(
     适用范围: str = Form(""),
     备注: str = Form(""),
     上传文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     publish_date = datetime.strptime(发布日期, "%Y-%m-%d") if 发布日期 else None
     implement_date = datetime.strptime(实施日期, "%Y-%m-%d") if 实施日期 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_standard = models.PreEntryIndustryStandard(
         user_id=current_user.id,
+        time=time_date,
         标准名称=标准名称,
         标准编号=标准编号,
         发布日期=publish_date,
@@ -79,6 +82,7 @@ async def update_industry_standard(
     适用范围: str = Form(""),
     备注: str = Form(""),
     上传文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -91,6 +95,7 @@ async def update_industry_standard(
 
     publish_date = datetime.strptime(发布日期, "%Y-%m-%d") if 发布日期 else None
     implement_date = datetime.strptime(实施日期, "%Y-%m-%d") if 实施日期 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_standard.标准名称 = 标准名称
     db_standard.标准编号 = 标准编号
@@ -100,6 +105,7 @@ async def update_industry_standard(
     db_standard.起草单位 = 起草单位
     db_standard.适用范围 = 适用范围
     db_standard.备注 = 备注
+    db_standard.time = time_date
 
     # 文件上传
     if 上传文件:

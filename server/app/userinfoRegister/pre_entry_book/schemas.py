@@ -33,3 +33,6 @@ class PreEntryBook(PreEntryBookBase):
 
     class Config:
         from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.strftime("%Y-%m-%d") if v else None
+        }

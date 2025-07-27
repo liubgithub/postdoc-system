@@ -31,17 +31,18 @@ async def create_competition_award(
     奖项名称: str = Form(""),
     作者名单: str = Form(""),
     备注: str = Form(""),
-    time: int = Form(0),
+    time: str = Form(""),
     上传获奖证书文件: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     award_date = datetime.strptime(获奖时间, "%Y-%m-%d") if 获奖时间 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_award = models.PreEntryCompetitionAward(
         user_id=current_user.id,
-        time=time,
+        time=time_date,
         竞赛名称=竞赛名称,
         获奖类别=获奖类别,
         获奖等级=获奖等级,
@@ -95,7 +96,7 @@ async def update_competition_award(
     奖项名称: str = Form(""),
     作者名单: str = Form(""),
     备注: str = Form(""),
-    time: int = Form(0),
+    time: str = Form(""),
     上传获奖证书文件: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
@@ -108,6 +109,7 @@ async def update_competition_award(
         raise HTTPException(status_code=404, detail="Competition award not found")
 
     award_date = datetime.strptime(获奖时间, "%Y-%m-%d") if 获奖时间 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_award.竞赛名称 = 竞赛名称
     db_award.获奖类别 = 获奖类别
@@ -122,7 +124,7 @@ async def update_competition_award(
     db_award.奖项名称 = 奖项名称
     db_award.作者名单 = 作者名单
     db_award.备注 = 备注
-    db_award.time = time
+    db_award.time = time_date
 
     # 文件上传
     if 上传获奖证书文件:
