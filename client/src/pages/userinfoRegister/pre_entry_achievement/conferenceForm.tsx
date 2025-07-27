@@ -33,7 +33,7 @@ const columns = [
     label: "时间",
     prop: "time",
     width: 150,
-    formatter: ({ row }: any) => row.time ? dayjs(row.time).format('YYYY-MM-DD HH:mm:ss') : ""
+    formatter: ({ row }: any) => row.time ? dayjs(row.time).format('YYYY-MM-DD') : ""
   }
 ];
 
@@ -58,7 +58,7 @@ function db2form(item: any) {
     会议报告: item["会议报告"] ?? "",
     会议报告文件: item["会议报告文件"] ?? null,
     备注: item["备注"] ?? "",
-    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD HH:mm:ss') : ""
+    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : ""
   };
 }
 
@@ -154,7 +154,7 @@ export default defineComponent({
         formData.append("会议报告文件", editData.value.会议报告文件);
       }
       formData.append("备注", editData.value.备注 || "");
-      formData.append("time", editData.value.time ? dayjs(editData.value.time).format("YYYY-MM-DD HH:mm:ss") : "");
+      formData.append("time", editData.value.time ? dayjs(editData.value.time).format("YYYY-MM-DD") : "");
 
       let res;
       if (editIndex.value === -1) {
@@ -297,7 +297,7 @@ export default defineComponent({
                     <ElDatePicker
                       v-model={editData.value.time}
                       type="datetime"
-                      value-format="YYYY-MM-DD HH:mm:ss"
+                      value-format="YYYY-MM-DD"
                       placeholder="选择时间"
                       style={{ width: '100%' }}
                     />

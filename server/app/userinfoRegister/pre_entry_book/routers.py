@@ -37,14 +37,18 @@ async def create_book(
     # 可选文件
     file: UploadFile = File(None),
     
+    # 新增时间字段
+    time: str = Form(""),
+    
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    # 解析出版日期
+    # 解析出版日期和时间
     try:
         pub_date = datetime.strptime(出版日期, "%Y-%m-%d") if 出版日期 else None
+        time_value = datetime.strptime(time, "%Y-%m-%d %H:%M:%S") if time else None
     except Exception:
-        raise HTTPException(status_code=400, detail="出版日期格式错误，应为 YYYY-MM-DD")
+        raise HTTPException(status_code=400, detail="日期格式错误，应为 YYYY-MM-DD 或 YYYY-MM-DD HH:mm:ss")
     
     # 创建著作记录
     db_book = models.PreEntryBook(
@@ -60,7 +64,8 @@ async def create_book(
         出版号=出版号,
         isbn=isbn,
         作者排名=作者排名,
-        备注=备注
+        备注=备注,
+        time=time_value
     )
     
     # 处理文件上传
@@ -115,6 +120,9 @@ async def update_book(
     # 可选文件
     file: UploadFile = File(None),
     
+    # 新增时间字段
+    time: str = Form(""),
+    
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -126,11 +134,12 @@ async def update_book(
     if not db_book:
         raise HTTPException(status_code=404, detail="Book not found")
     
-    # 解析出版日期
+    # 解析出版日期和时间
     try:
         pub_date = datetime.strptime(出版日期, "%Y-%m-%d") if 出版日期 else None
+        time_value = datetime.strptime(time, "%Y-%m-%d %H:%M:%S") if time else None
     except Exception:
-        raise HTTPException(status_code=400, detail="出版日期格式错误，应为 YYYY-MM-DD")
+        raise HTTPException(status_code=400, detail="日期格式错误，应为 YYYY-MM-DD 或 YYYY-MM-DD HH:mm:ss")
     
     # 更新字段
     db_book.著作中文名 = 著作中文名
@@ -145,6 +154,7 @@ async def update_book(
     db_book.isbn = isbn
     db_book.作者排名 = 作者排名
     db_book.备注 = 备注
+    db_book.time = time_value
     
     # 处理文件字段：只处理有新文件上传的情况
     if file:

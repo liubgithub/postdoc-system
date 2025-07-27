@@ -6,7 +6,7 @@ class PreEntryIndustryStandard(Base):
     __tablename__ = "bs_pre_entry_industry_standard"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    time = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
+    time = Column(DateTime, nullable=True, index=True)
     标准名称 = Column(String(255))
     标准编号 = Column(String(255))
     发布日期 = Column(DateTime)
