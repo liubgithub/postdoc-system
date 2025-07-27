@@ -22,6 +22,7 @@ class AssessmentApplication(Base):
     __tablename__ = 'assessment_applications'
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True)
+    student_id = Column(Integer, ForeignKey('students.id', ondelete='CASCADE'), nullable=False, index=True)
     apply_time = Column(DateTime)
     process_status = Column(SmallInteger, default=0, index=True)
     node_name = Column(String(50))

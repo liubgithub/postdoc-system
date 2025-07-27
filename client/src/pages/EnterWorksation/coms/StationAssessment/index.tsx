@@ -78,7 +78,7 @@ export default defineComponent({
         }
 
         onMounted(async()=>{
-            const res = await fetch.raw.GET('/assessment/student/') 1稍等还是的风格11·
+            const res = await fetch.raw.GET('/assessment/student/')
         })
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
