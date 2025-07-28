@@ -61,14 +61,12 @@ class AuthService:
 
     @staticmethod
     def create_access_token(username: str, role: str = None) -> str:
-        """创建访问令牌"""
-    def create_access_token(username: str) -> str:
         """
         创建JWT访问令牌
         
         Args:
             username (str): 用户名，将作为令牌的主题(subject)
-            
+            role (str, optional): 用户角色
         Returns:
             str: 编码后的JWT令牌字符串
         """

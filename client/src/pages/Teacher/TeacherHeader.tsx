@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 
 const menuList = [
   { label: "进站管理", path: "/teacher/entryManage" },
-  { label: "出站管理", path: "/outManage" },
+  { label: "出站管理", path: "/teacher/outManage" },
 ];
 
 export default defineComponent({
