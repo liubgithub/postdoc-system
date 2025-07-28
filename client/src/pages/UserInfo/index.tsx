@@ -1,11 +1,12 @@
 import { defineComponent, ref } from "vue";
-import { ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElDatePicker, ElMessage, ElContainer, ElHeader, ElMain, ElMenu, ElMenuItem } from "element-plus";
+import { ElContainer, ElHeader, ElMain, ElMenu, ElMenuItem } from "element-plus";
 import { useRouter, useRoute, RouterView } from "vue-router";
 import * as styles from "./styles.css.ts";
 import useUser from "@/stores/user"
 
 const menuList = [
-  { label: "个人情况", path: "/UserInfo" },
+  { label: "后台首页", path: "/UserInfo/status" },
+  { label: "个人情况", path: "/UserInfo/userInfoRegister" },
   { label: "进站", path: "/UserInfo/entry" },
   { label: "在站管理", path: "/UserInfo/in-station" },
   { label: "出站", path: "/UserInfo/out-station" },

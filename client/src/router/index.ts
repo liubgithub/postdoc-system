@@ -3,6 +3,7 @@ import Login from '@/pages/Login'
 import Signin from '@/pages/Signin'
 import Frame from '@/units/Frame'
 import Home from '@/pages/Home'
+import Behind from '@/pages/Status'
 import UserInfo from '@/pages/UserInfo'
 import UserInfo1 from '@/pages/EnterWorksation'
 import UserInfoRegister from "@/pages/userinfoRegister"
@@ -53,7 +54,12 @@ const router = createRouter({
       component: UserInfo,
       children: [
         {
-          path: '',
+          path: 'status',
+          name: 'behind',
+          component:Behind
+        },
+        {
+          path: 'userInfoRegister',
           name: '/userInfoRegister',
           component: UserInfoRegister
         },
