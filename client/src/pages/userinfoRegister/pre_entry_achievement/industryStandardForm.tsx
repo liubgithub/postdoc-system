@@ -12,6 +12,7 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
+  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "标准名称", prop: "标准名称", width: 140 },
   { label: "标准编号", prop: "标准编号", width: 120 },
   { label: "发布日期", prop: "发布日期", width: 110 },
@@ -27,6 +28,7 @@ function db2form(item: any) {
   return {
     id: item.id,
     user_id: item.user_id,
+    time: item.time ? dayjs(item.time).format('YYYY-MM-DD') : "",
     标准名称: item["标准名称"] ?? "",
     标准编号: item["标准编号"] ?? "",
     发布日期: item["发布日期"] ? dayjs(item["发布日期"]).format('YYYY-MM-DD') : "",
@@ -36,7 +38,6 @@ function db2form(item: any) {
     适用范围: item["适用范围"] ?? "",
     上传文件: item["上传文件"] ?? "",
     备注: item["备注"] ?? "",
-    achievement_type: item["achievement_type"] ?? 0,
   };
 }
 
@@ -51,6 +52,7 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
+      time: "",
       "标准名称": "",
       "标准编号": "",
       "发布日期": "",
@@ -60,7 +62,6 @@ export default defineComponent({
       "适用范围": "",
       "备注": "",
       "上传文件": null,
-      achievement_type: 0,
     });
 
     const loadStandards = async () => {
@@ -71,6 +72,7 @@ export default defineComponent({
     const handleAdd = () => {
       editData.value = {
         id: null,
+        time: "",
         "标准名称": "",
         "标准编号": "",
         "发布日期": "",
@@ -80,7 +82,6 @@ export default defineComponent({
         "适用范围": "",
         "备注": "",
         "上传文件": null,
-        achievement_type: 0,
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -110,7 +111,7 @@ export default defineComponent({
         formData.append("上传文件", editData.value["上传文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", editData.value["achievement_type"] || 0);
+      formData.append("time", editData.value["time"] || "");
       
       let res;
       if (editIndex.value === -1) {
@@ -162,6 +163,16 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>行业标准信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
+                <ElCol span={12}><ElFormItem label="成果时间">
+                  <ElDatePicker 
+                    v-model={editData.value["time"]} 
+                    type="date" 
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD" 
+                    placeholder="选择成果时间" 
+                    style={{ width: '100%' }} 
+                  />
+                </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="标准名称"><ElInput v-model={editData.value["标准名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="标准编号"><ElInput v-model={editData.value["标准编号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="发布日期">

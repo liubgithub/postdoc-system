@@ -6,7 +6,7 @@ class PreEntrySubjectResearch(Base):
     __tablename__ = "bs_pre_entry_subject_research"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    achievement_type = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
+    time = Column(DateTime, nullable=True, index=True)
     课题名称 = Column(String(255))
     课题来源 = Column(String(255))
     开始时间 = Column(DateTime)

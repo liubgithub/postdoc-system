@@ -24,7 +24,8 @@ const columns = [
   { label: "ISBN", prop: "isbn", width: 100 },
   { label: "作者排名", prop: "作者排名", width: 100 },
   { label: "上传文件", prop: "上传文件", width: 120 },
-  { label: "备注", prop: "备注", width: 120 }
+  { label: "备注", prop: "备注", width: 120 },
+  { label: "时间", prop: "time", width: 120 }
 ];
 
 function db2form(item: any) {
@@ -44,6 +45,7 @@ function db2form(item: any) {
     作者排名: item["作者排名"] ?? "",
     上传文件: item["上传文件"] ?? null,
     备注: item["备注"] ?? "",
+    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : "",
   };
 }
 
@@ -71,6 +73,7 @@ export default defineComponent({
       "作者排名": "",
       "上传文件": null,
       "备注": "",
+      "time": "",
     });
 
     const loadBooks = async () => {
@@ -94,6 +97,7 @@ export default defineComponent({
         "作者排名": "",
         "上传文件": null,
         "备注": "",
+        "time": "",
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -132,6 +136,7 @@ export default defineComponent({
       formData.append("出版号", editData.value["出版号"] || "");
       formData.append("isbn", editData.value["isbn"] || "");
       formData.append("作者排名", editData.value["作者排名"] || "");
+      formData.append("time", editData.value["time"] ? dayjs(editData.value["time"]).format('YYYY-MM-DD HH:mm:ss') : "");
       if (editData.value["上传文件"] instanceof File) {
         formData.append("file", editData.value["上传文件"]);
       }
@@ -201,6 +206,9 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value["出版号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="ISBN"><ElInput v-model={editData.value["isbn"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="作者排名"><ElInput v-model={editData.value["作者排名"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="时间">
+                  <ElDatePicker v-model={editData.value["time"]} type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择成果时间" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
               </ElRow>
               
               <ElFormItem label="上传文件">
@@ -264,6 +272,16 @@ export default defineComponent({
                         ) : ""
                     }}
                   />
+                ) : col.prop === 'time' ? (
+                  <ElTableColumn
+                    label={col.label}
+                    prop={col.prop}
+                    width={120}
+                    v-slots={{
+                      default: ({ row }: any) =>
+                        row["time"] ? dayjs(row["time"]).format('YYYY-MM-DD HH:mm:ss') : ""
+                    }}
+                  />
                 ) : (
                   <ElTableColumn
                     label={col.label}
@@ -294,4 +312,4 @@ export default defineComponent({
       </div>
     );
   }
-}); 
+});

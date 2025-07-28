@@ -17,6 +17,7 @@ class Info(Base):
     is_religious_staff = Column(Boolean, default=False)
     research_direction = Column(String(255))
     other = Column(Text)
+    otherachievements = Column(Text)
     education_experience = relationship("EducationExperience", back_populates="user", cascade="all, delete-orphan")
     work_experience = relationship("WorkExperience", back_populates="user", cascade="all, delete-orphan")
     user = relationship("User", backref="profile", uselist=False)

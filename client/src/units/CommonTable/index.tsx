@@ -21,7 +21,7 @@ export default defineComponent({
       default: () => [],
     },
     columns: {
-      type: Array as PropType<{ prop: string, label: string, width?: string }[]>,
+      type: Array as PropType<({ prop: string, label: string, width?: string, render?: (params: { row: TableRow; $index: number }) => any })[]>,
       required: true,
     },
     onView: {
@@ -42,13 +42,15 @@ export default defineComponent({
   setup(props) {
     return () => (
       <ElTable data={props.data} class={props.tableClass}>
-        {props.columns.map(col => (
-          <ElTableColumn prop={col.prop} label={col.label} width={col.width}>
+        {props.columns.map((col, colIdx) => (
+          <ElTableColumn prop={col.prop} label={col.label} width={col.width} key={col.prop} align="center">
             {{
-              default: ({ row }: { row: TableRow }) =>
-                props.editableFields.includes(col.prop)
-                  ? <ElInput v-model={row[col.prop]} />
-                  : <span>{row[col.prop]}</span>
+              default: ({ row, $index }: { row: TableRow; $index: number }) =>
+                col.render
+                  ? col.render({ row, $index })
+                  : props.editableFields.includes(col.prop)
+                    ? <ElInput v-model={row[col.prop]} />
+                    : <span>{row[col.prop]}</span>
             }}
           </ElTableColumn>
         ))}

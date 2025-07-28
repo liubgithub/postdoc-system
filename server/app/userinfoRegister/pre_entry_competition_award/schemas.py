@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryCompetitionAwardBase(BaseModel):
-    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    time: Optional[datetime] = None
     竞赛名称: str
     获奖类别: Optional[str] = ""
     获奖等级: Optional[str] = ""
@@ -33,3 +33,6 @@ class PreEntryCompetitionAward(PreEntryCompetitionAwardBase):
 
     class Config:
         from_attributes = True
+        json_encoders = {
+            datetime: lambda dt: dt.strftime("%Y-%m-%d") if dt else None
+        }

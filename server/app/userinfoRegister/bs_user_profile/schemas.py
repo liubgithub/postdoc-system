@@ -22,6 +22,7 @@ class InfoIn(BaseModel):
     is_religious_staff: Optional[bool] = False
     research_direction: Optional[str] = ""
     other: Optional[str] = ""
+    otherachievements: Optional[str] = ""   
     education_experience: List[EducationExperienceIn]
     work_experience: List[WorkExperienceIn] 
 
@@ -52,7 +53,8 @@ class InfoOut(BaseModel):
     research_direction: Optional[str]
     other: Optional[str]
     education_experience: List[EducationExperienceOut]
-    work_experience: List[WorkExperienceOut] 
+    work_experience: List[WorkExperienceOut]
+    otherachievements: Optional[str]
 
     class Config:
         from_attributes = True 

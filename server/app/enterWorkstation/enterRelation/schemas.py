@@ -11,11 +11,6 @@ class EnterRelationBase(BaseModel):
     other_achievements: Optional[str] = None
     academic_pursuits: Optional[str] = None
 
-class EnterRelationCreate(EnterRelationBase):
-    pass
-
-class EnterRelationUpdate(EnterRelationBase):
-    pass
 
 class EnterRelationInDBBase(EnterRelationBase):
     user_id:int
@@ -25,6 +20,3 @@ class EnterRelationInDBBase(EnterRelationBase):
 
     class Config:
         from_attributes = True
-
-class EnterRelation(EnterRelationInDBBase):
-    pass

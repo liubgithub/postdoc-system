@@ -35,6 +35,20 @@ const columns = [
   { label: "出版社", prop: "出版社", width: 100 },
   { label: "总期号", prop: "总期号", width: 100 },
   { label: "刊物编号", prop: "刊物编号", width: 100 },
+  { 
+    label: "时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
   { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
@@ -42,7 +56,6 @@ const columns = [
 function db2form(item: any) {
   return {
     id: item.id,
-    user_id: item.user_id,
     论文名称: item["论文名称"] ?? "",
     刊物名称: item["刊物名称"] ?? "",
     发表日期: item["发表日期"] ? dayjs(item["发表日期"]).format('YYYY-MM-DD') : "",
@@ -69,8 +82,8 @@ function db2form(item: any) {
     论文发表证书: item["论文发表证书"] ?? "",
     论文接收函: item["论文接收函"] ?? "",
     论文电子版: item["论文电子版"] ?? "",
+    time: item["time"] || "",
     备注: item["备注"] ?? "",
-    achievement_type: item["achievement_type"] ?? 0,
   };
 }
 
@@ -112,11 +125,12 @@ export default defineComponent({
       "论文接收函": null,
       "论文电子版": null,
       "备注": "",
-      achievement_type: 0,
+      time: "",
     });
 
     const loadPapers = async () => {
       const data = await getMyPapers();
+      console.log('API response data:', data);
       tableData.value = (data ?? []).map(db2form);
     };
 
@@ -150,15 +164,18 @@ export default defineComponent({
         "论文接收函": null,
         "论文电子版": null,
         "备注": "",
-        achievement_type: 0,
+        time: "",
       };
       editIndex.value = -1;
       showForm.value = true;
     };
 
     const handleEdit = async (row: any, index: number) => {
+      console.log('Edit row:', row);
       const res = await getPaperById(row.id);
+      console.log('API response:', res);
       editData.value = db2form(res);
+      console.log('Transformed data:', editData.value);
       editIndex.value = index;
       showForm.value = true;
     };
@@ -172,15 +189,18 @@ export default defineComponent({
         ElMessage.error('刊物名称不能为空');
         return;
       }
-      if (!editData.value["发表日期"]?.trim()) {
+      if (!editData.value["发表日期"]) {
         ElMessage.error('发表日期不能为空');
         return;
       }
-      
+
       const formData = new FormData();
+      // 必填字段
       formData.append("论文名称", editData.value["论文名称"]);
       formData.append("刊物名称", editData.value["刊物名称"]);
       formData.append("发表日期", editData.value["发表日期"]);
+
+      // 可选字段
       formData.append("本人署名排序", editData.value["本人署名排序"] || "");
       formData.append("起始页号", editData.value["起始页号"] || "");
       formData.append("刊物级别", editData.value["刊物级别"] || "");
@@ -201,20 +221,16 @@ export default defineComponent({
       formData.append("出版社", editData.value["出版社"] || "");
       formData.append("总期号", editData.value["总期号"] || "");
       formData.append("刊物编号", editData.value["刊物编号"] || "");
-      formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", editData.value["achievement_type"] || 0);
-      
-      // 处理文件上传
-      if (editData.value["论文发表证书"] instanceof File) {
-        formData.append("论文发表证书", editData.value["论文发表证书"]);
-      }
-      if (editData.value["论文接收函"] instanceof File) {
-        formData.append("论文接收函", editData.value["论文接收函"]);
-      }
-      if (editData.value["论文电子版"] instanceof File) {
-        formData.append("论文电子版", editData.value["论文电子版"]);
-      }
-      
+      formData.append("time", editData.value["time"] || "");
+      formData.append("备注", editData.value["备注"]);
+
+      // 处理文件字段
+      ["论文发表证书", "论文接收函", "论文电子版"].forEach(field => {
+        if (editData.value[field] instanceof File) {
+          formData.append(field, editData.value[field]);
+        }
+      });
+
       let res;
       if (editIndex.value === -1) {
         res = await uploadPaper(formData);
@@ -253,7 +269,15 @@ export default defineComponent({
     const handleFileChange = (fieldName: string) => (fileObj: any) => {
       if (fileObj && fileObj.raw) {
         editData.value[fieldName] = fileObj.raw;
+        ElMessage.success(`${fieldName}上传成功`);
       }
+    };
+
+    const getFileName = (field: string, value: any) => {
+      if (!value) return '';
+      if (value instanceof File) return value.name;
+      if (typeof value === 'string') return value.split('/').pop() || '';
+      return '';
     };
 
     onMounted(loadPapers);
@@ -290,6 +314,12 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value["出版社"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="总期号"><ElInput v-model={editData.value["总期号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="刊物编号"><ElInput v-model={editData.value["刊物编号"]} /></ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="时间">
+                  <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
+                <ElCol span={12}><ElFormItem label="备注">
+                  <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
+                </ElFormItem></ElCol>
               </ElRow>
               
               <ElFormItem label="论文发表证书">
@@ -332,10 +362,6 @@ export default defineComponent({
                 {editData.value["论文电子版"] && typeof editData.value["论文电子版"] === 'string' && (
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文电子版"].split('/').pop()}</span>
                 )}
-              </ElFormItem>
-              
-              <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
@@ -422,4 +448,4 @@ export default defineComponent({
       </div>
     );
   }
-}); 
+});

@@ -12,6 +12,19 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
+  { 
+    label: "时间", 
+    prop: "time", 
+    width: 110,
+    formatter: (row: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch {
+        return row.time;
+      }
+    }
+  },
   { label: "品种名称", prop: "品种名称", width: 140 },
   { label: "动植物名称", prop: "动植物名称", width: 120 },
   { label: "选育单位", prop: "选育单位", width: 120 },
@@ -44,7 +57,7 @@ function db2form(item: any) {
     作者名单: item["作者名单"] ?? "",
     上传新品种证明文件: item["上传新品种证明文件"] ?? "",
     备注: item["备注"] ?? "",
-    achievement_type: item["achievement_type"] ?? 0,
+    time: item["time"] || "",
   };
 }
 
@@ -72,7 +85,7 @@ export default defineComponent({
       "作者名单": "",
       "备注": "",
       "上传新品种证明文件": null,
-      achievement_type: 0,
+      time: "",
     });
 
     const loadVarieties = async () => {
@@ -96,7 +109,7 @@ export default defineComponent({
         "作者名单": "",
         "备注": "",
         "上传新品种证明文件": null,
-        achievement_type: 0,
+        time: "",
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -130,7 +143,7 @@ export default defineComponent({
         formData.append("上传新品种证明文件", editData.value["上传新品种证明文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", editData.value["achievement_type"] || 0);
+      formData.append("time", editData.value["time"] || "");
       
       let res;
       if (editIndex.value === -1) {
@@ -182,6 +195,9 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>新品种信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
+                <ElCol span={12}><ElFormItem label="时间">
+                  <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+                </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="品种名称"><ElInput v-model={editData.value["品种名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="动植物名称"><ElInput v-model={editData.value["动植物名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="选育单位"><ElInput v-model={editData.value["选育单位"]} /></ElFormItem></ElCol>

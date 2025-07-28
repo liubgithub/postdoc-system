@@ -5,7 +5,7 @@ from datetime import datetime
 class PreEntryBookBase(BaseModel):
     # user_id: int
     # achievement_id: Optional[int] = None
-    achievement_type: Optional[int] = 0 
+    time: Optional[datetime] = None 
     著作中文名: Optional[str] = None
     出版社: Optional[str] = None
     第几作者: Optional[str] = None
@@ -33,3 +33,6 @@ class PreEntryBook(PreEntryBookBase):
 
     class Config:
         from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.strftime("%Y-%m-%d") if v else None
+        }

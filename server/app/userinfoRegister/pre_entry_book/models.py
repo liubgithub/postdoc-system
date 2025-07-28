@@ -6,7 +6,7 @@ class PreEntryBook(Base):
     __tablename__ = "bs_pre_entry_book"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    achievement_type = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
+    time = Column(DateTime, nullable=True, index=True)
     著作中文名 = Column(String(255))
     出版社 = Column(String(255))
     第几作者 = Column(String(32))

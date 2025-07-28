@@ -34,15 +34,18 @@ async def create_project(
     项目经费说明: str = Form(""),
     备注: str = Form(""),
     上传项目成果文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     start_date = datetime.strptime(立项日期, "%Y-%m-%d") if 立项日期 else None
     accept_date = datetime.strptime(验收或鉴定日期, "%Y-%m-%d") if 验收或鉴定日期 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_project = models.PreEntryProject(
         user_id=current_user.id,
+        time=time_date,
         项目编号=项目编号,
         项目名称=项目名称,
         项目类型=项目类型,
@@ -103,6 +106,7 @@ async def update_project(
     项目经费说明: str = Form(""),
     备注: str = Form(""),
     上传项目成果文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -115,6 +119,7 @@ async def update_project(
 
     start_date = datetime.strptime(立项日期, "%Y-%m-%d") if 立项日期 else None
     accept_date = datetime.strptime(验收或鉴定日期, "%Y-%m-%d") if 验收或鉴定日期 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_project.项目编号 = 项目编号
     db_project.项目名称 = 项目名称
@@ -132,6 +137,7 @@ async def update_project(
     db_project.承担任务 = 承担任务
     db_project.项目经费说明 = 项目经费说明
     db_project.备注 = 备注
+    db_project.time = time_date
 
     # 文件上传
     if 上传项目成果文件:

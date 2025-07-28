@@ -35,17 +35,18 @@ async def create_conference(
     会议报告: str = Form(""),
     会议报告文件: UploadFile = File(None),
     备注: str = Form(""),
-    achievement_type: int = Form(0),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     start_date = datetime.strptime(会议起始日, "%Y-%m-%d") if 会议起始日 else None
     end_date = datetime.strptime(会议终止日, "%Y-%m-%d") if 会议终止日 else None
+    time_parsed = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_conference = models.PreEntryConference(
         user_id=current_user.id,
-        achievement_type=achievement_type,
+        time=time_parsed,
         会议编号=会议编号,
         会议名称=会议名称,
         会议英文名=会议英文名,
@@ -106,7 +107,7 @@ async def update_conference(
     会议报告: str = Form(""),
     会议报告文件: UploadFile = File(None),
     备注: str = Form(""),
-    achievement_type: int = Form(0),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -119,6 +120,7 @@ async def update_conference(
 
     start_date = datetime.strptime(会议起始日, "%Y-%m-%d") if 会议起始日 else None
     end_date = datetime.strptime(会议终止日, "%Y-%m-%d") if 会议终止日 else None
+    time_parsed = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_conference.会议编号 = 会议编号
     db_conference.会议名称 = 会议名称
@@ -136,7 +138,7 @@ async def update_conference(
     db_conference.会议地点 = 会议地点
     db_conference.会议报告 = 会议报告
     db_conference.备注 = 备注
-    db_conference.achievement_type = achievement_type
+    db_conference.time = time_parsed
 
     # 文件上传
     if 会议报告文件:

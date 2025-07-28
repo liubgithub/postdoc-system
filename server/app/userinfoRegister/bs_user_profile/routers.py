@@ -25,9 +25,10 @@ def submit_info(data: InfoIn, db: Session = Depends(get_db), current_user=Depend
         exist.is_religious_staff = data.is_religious_staff
         exist.research_direction = data.research_direction
         exist.other = data.other
+        exist.otherachievements = data.otherachievements
         db.query(EducationExperience).filter(EducationExperience.user_id == exist.id).delete()
         db.query(WorkExperience).filter(WorkExperience.user_id == exist.id).delete()
-        db.flush()
+        db.flush() 
         for edu in data.education_experience:
             db.add(EducationExperience(
                 user_id=exist.id,
@@ -59,6 +60,7 @@ def submit_info(data: InfoIn, db: Session = Depends(get_db), current_user=Depend
             is_religious_staff=data.is_religious_staff,
             research_direction=data.research_direction,
             other=data.other,
+            otherachievements=data.otherachievements
         )
         db.add(user_info)
         db.flush()
@@ -101,6 +103,7 @@ def get_info(db: Session = Depends(get_db), current_user=Depends(get_current_use
         is_religious_staff=info.is_religious_staff,
         research_direction=info.research_direction,
         other=info.other,
+        otherachievements=info.otherachievements,
         education_experience=[EducationExperienceOut.from_orm(e) for e in education],
         work_experience=[WorkExperienceOut.from_orm(w) for w in work]
     )
@@ -122,6 +125,7 @@ def update_info(data: InfoIn, db: Session = Depends(get_db), current_user=Depend
     info.is_religious_staff = data.is_religious_staff
     info.research_direction = data.research_direction
     info.other = data.other
+    info.otherachievements = data.otherachievements
     db.query(EducationExperience).filter(EducationExperience.user_id == info.id).delete()
     db.query(WorkExperience).filter(WorkExperience.user_id == info.id).delete()
     db.flush()

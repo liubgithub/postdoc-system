@@ -8,4 +8,5 @@ export interface TableRow {
   processStatus: string
   nodeName: string
   assessmentRes: string
+  processSteps?: any[];
 } 

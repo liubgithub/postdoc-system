@@ -12,6 +12,7 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
+  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "课题名称", prop: "课题名称", width: 120 },
   { label: "课题来源", prop: "课题来源", width: 120 },
   { label: "开始时间", prop: "开始时间", width: 110 },
@@ -27,6 +28,7 @@ function db2form(item: any) {
   return {
     id: item.id,
     user_id: item.user_id,
+    time: item.time ? dayjs(item.time).format('YYYY-MM-DD') : "",
     课题名称: item["课题名称"] ?? "",
     课题来源: item["课题来源"] ?? "",
     开始时间: item["开始时间"] ? dayjs(item["开始时间"]).format('YYYY-MM-DD') : "",
@@ -36,7 +38,6 @@ function db2form(item: any) {
     课题级别: item["课题级别"] ?? "",
     上传文件: item["上传文件"] ?? "",
     备注: item["备注"] ?? "",
-    achievement_type: item["achievement_type"] ?? 0,
   };
 }
 
@@ -51,6 +52,7 @@ export default defineComponent({
     const editIndex = ref(-1); // -1: 新增, >=0: 编辑
     const editData = ref<any>({
       id: null,
+      time: "",
       "课题名称": "",
       "课题来源": "",
       "开始时间": "",
@@ -60,7 +62,6 @@ export default defineComponent({
       "课题级别": "",
       "备注": "",
       "上传文件": null,
-      achievement_type: 0,
     });
 
     const loadSubjects = async () => {
@@ -71,6 +72,7 @@ export default defineComponent({
     const handleAdd = () => {
       editData.value = {
         id: null,
+        time: "",
         "课题名称": "",
         "课题来源": "",
         "开始时间": "",
@@ -80,7 +82,6 @@ export default defineComponent({
         "课题级别": "",
         "备注": "",
         "上传文件": null,
-        achievement_type: 0,
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -110,7 +111,7 @@ export default defineComponent({
         formData.append("上传文件", editData.value["上传文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("achievement_type", editData.value["achievement_type"] || 0);
+      formData.append("time", editData.value["time"] || "");
       
       let res;
       if (editIndex.value === -1) {
@@ -162,6 +163,16 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>课题研究信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
+                <ElCol span={12}><ElFormItem label="成果时间">
+                  <ElDatePicker 
+                    v-model={editData.value["time"]} 
+                    type="date" 
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD" 
+                    placeholder="选择成果时间" 
+                    style={{ width: '100%' }} 
+                  />
+                </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="课题名称"><ElInput v-model={editData.value["课题名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="课题来源"><ElInput v-model={editData.value["课题来源"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="开始时间">

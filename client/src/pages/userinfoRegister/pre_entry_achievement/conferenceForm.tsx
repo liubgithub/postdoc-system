@@ -28,7 +28,13 @@ const columns = [
   { label: "会议地点", prop: "会议地点", width: 120 },
   { label: "会议报告", prop: "会议报告", width: 120 },
   { label: "会议报告文件", prop: "会议报告文件", width: 120 },
-  { label: "备注", prop: "备注", width: 120 }
+  { label: "备注", prop: "备注", width: 120 },
+  {
+    label: "时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => row.time ? dayjs(row.time).format('YYYY-MM-DD') : ""
+  }
 ];
 
 function db2form(item: any) {
@@ -52,6 +58,7 @@ function db2form(item: any) {
     会议报告: item["会议报告"] ?? "",
     会议报告文件: item["会议报告文件"] ?? null,
     备注: item["备注"] ?? "",
+    time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : ""
   };
 }
 
@@ -85,6 +92,7 @@ export default defineComponent({
       "会议报告": "",
       "会议报告文件": null,
       "备注": "",
+      "time": ""
     });
 
     const handleAdd = () => {
@@ -107,6 +115,7 @@ export default defineComponent({
         "会议报告": "",
         "会议报告文件": null,
         "备注": "",
+        "time": ""
       };
       editIndex.value = -1;
       showForm.value = true;
@@ -145,7 +154,7 @@ export default defineComponent({
         formData.append("会议报告文件", editData.value.会议报告文件);
       }
       formData.append("备注", editData.value.备注 || "");
-      formData.append("achievement_type", "0");
+      formData.append("time", editData.value.time ? dayjs(editData.value.time).format("YYYY-MM-DD") : "");
 
       let res;
       if (editIndex.value === -1) {
@@ -283,6 +292,17 @@ export default defineComponent({
                     <ElInput v-model={editData.value.会议地点} />
                   </ElFormItem>
                 </ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="时间">
+                    <ElDatePicker
+                      v-model={editData.value.time}
+                      type="datetime"
+                      value-format="YYYY-MM-DD"
+                      placeholder="选择时间"
+                      style={{ width: '100%' }}
+                    />
+                  </ElFormItem>
+                </ElCol>
               </ElRow>
               <ElFormItem label="会议报告">
                 <ElInput type="textarea" rows={4} v-model={editData.value.会议报告} />
@@ -300,6 +320,7 @@ export default defineComponent({
               <ElFormItem label="备注">
                 <ElInput type="textarea" rows={4} v-model={editData.value.备注} />
               </ElFormItem>
+              
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
                 <ElButton onClick={handleCancel}>返回</ElButton>
@@ -385,4 +406,4 @@ export default defineComponent({
       </div>
     );
   }
-}); 
+});

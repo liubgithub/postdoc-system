@@ -26,15 +26,18 @@ async def create_subject(
     课题级别: str = Form(""),
     备注: str = Form(""),
     上传文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     start_date = datetime.strptime(开始时间, "%Y-%m-%d") if 开始时间 else None
     end_date = datetime.strptime(结束时间, "%Y-%m-%d") if 结束时间 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_subject = models.PreEntrySubjectResearch(
         user_id=current_user.id,
+        time=time_date,
         课题名称=课题名称,
         课题来源=课题来源,
         开始时间=start_date,
@@ -79,6 +82,7 @@ async def update_subject(
     课题级别: str = Form(""),
     备注: str = Form(""),
     上传文件: UploadFile = File(None),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -91,6 +95,7 @@ async def update_subject(
 
     start_date = datetime.strptime(开始时间, "%Y-%m-%d") if 开始时间 else None
     end_date = datetime.strptime(结束时间, "%Y-%m-%d") if 结束时间 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_subject.课题名称 = 课题名称
     db_subject.课题来源 = 课题来源
@@ -100,6 +105,7 @@ async def update_subject(
     db_subject.本人承担部分 = 本人承担部分
     db_subject.课题级别 = 课题级别
     db_subject.备注 = 备注
+    db_subject.time = time_date
 
     # 文件上传
     if 上传文件:

@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
-from . import models, schemas
+from .models import EnterRelation
+from .schemas import EnterRelationBase, EnterRelationInDBBase
 from app.models.user import User
 
 router = APIRouter(
@@ -11,49 +12,45 @@ router = APIRouter(
     tags=["进站相关科研情况"]
 )
 
-@router.post("/", response_model=schemas.EnterRelation)
-def create_relation(
-    relation: schemas.EnterRelationCreate,
-    db: Session = Depends(get_db),
+@router.post("/", response_model=EnterRelationInDBBase)
+def upsert_enter_relation(
+    data: EnterRelationBase,
+    db:Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_relation = models.EnterRelation(user_id=current_user.id, **relation.dict())
-    db.add(db_relation)
-    db.commit()
-    db.refresh(db_relation)
-    return db_relation
+    record = db.query(EnterRelation).filter_by(user_id=current_user.id).first()
+    if record:
+        update_data = data.dict(exclude_unset=True)
+        for key,value in update_data.items():
+            setattr(record,key,value)
+        db.commit()
+        db.refresh(record)
+        return record
+    else:
+        record = EnterRelation(user_id = current_user.id, **data.dict())
+        db.add(record)
+        db.commit()
+        db.refresh(record)
+        return record
 
-@router.get("/", response_model=schemas.EnterRelation)
+
+@router.get("/", response_model=EnterRelationInDBBase)
 def get_relation(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_relation = db.query(models.EnterRelation).filter_by(user_id=current_user.id).first()
+    db_relation = db.query(EnterRelation).filter_by(user_id=current_user.id).first()
     if not db_relation:
-        raise HTTPException(status_code=404, detail="未找到相关科研情况")
+        return None
     return db_relation
 
-@router.put("/", response_model=schemas.EnterRelation)
-def update_relation(
-    relation: schemas.EnterRelationUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    db_relation = db.query(models.EnterRelation).filter_by(user_id=current_user.id).first()
-    if not db_relation:
-        raise HTTPException(status_code=404, detail="未找到相关科研情况")
-    for key, value in relation.dict(exclude_unset=True).items():
-        setattr(db_relation, key, value)
-    db.commit()
-    db.refresh(db_relation)
-    return db_relation
 
 @router.delete("/")
 def delete_relation(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_relation = db.query(models.EnterRelation).filter_by(user_id=current_user.id).first()
+    db_relation = db.query(EnterRelation).filter_by(user_id=current_user.id).first()
     if not db_relation:
         raise HTTPException(status_code=404, detail="未找到相关科研情况")
     db.delete(db_relation)

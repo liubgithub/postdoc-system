@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class PreEntryIndustryStandardBase(BaseModel):
-    achievement_type: Optional[int] = 0  # 0: 入站前, 1: 在站
+    time: Optional[datetime] = None
     标准名称: str
     标准编号: Optional[str] = ""
     发布日期: Optional[datetime] = None
@@ -27,4 +27,7 @@ class PreEntryIndustryStandard(PreEntryIndustryStandardBase):
     updated_at: datetime
 
     class Config:
-        from_attributes = True 
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.strftime("%Y-%m-%d") if v else None
+        } 

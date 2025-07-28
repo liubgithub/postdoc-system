@@ -29,17 +29,18 @@ async def create_patent(
     专利成果编码: str = Form(""),
     备注: str = Form(""),
     专利证书文文件: UploadFile = File(None),
-    achievement_type: int = Form(0),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     # 解析日期
     apply_date = datetime.strptime(提交时间, "%Y-%m-%d") if 提交时间 else None
     grant_date = datetime.strptime(批准日期, "%Y-%m-%d") if 批准日期 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_patent = models.PreEntryPatent(
         user_id=current_user.id,
-        achievement_type=achievement_type,
+        time=time_date,
         专利成果名称=专利成果名称,
         专利类型=专利类型,
         提交时间=apply_date,
@@ -88,7 +89,7 @@ async def update_patent(
     专利成果编码: str = Form(""),
     备注: str = Form(""),
     专利证书文文件: UploadFile = File(None),
-    achievement_type: int = Form(0),
+    time: str = Form(""),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -101,6 +102,7 @@ async def update_patent(
 
     apply_date = datetime.strptime(提交时间, "%Y-%m-%d") if 提交时间 else None
     grant_date = datetime.strptime(批准日期, "%Y-%m-%d") if 批准日期 else None
+    time_date = datetime.strptime(time, "%Y-%m-%d") if time else None
 
     db_patent.专利成果名称 = 专利成果名称
     db_patent.专利类型 = 专利类型
@@ -112,7 +114,7 @@ async def update_patent(
     db_patent.专利权人 = 专利权人
     db_patent.专利成果编码 = 专利成果编码
     db_patent.备注 = 备注
-    db_patent.achievement_type = achievement_type
+    db_patent.time = time_date
 
     # 文件上传
     if 专利证书文文件:
