@@ -11,6 +11,11 @@ import InWorkstation from '@/pages/InWorkstation'
 import OutWorkstation from '@/pages/OutWorkstation'
 import Teacher from '@/pages/Teacher'
 import EntryManagePage from '@/pages/Teacher/EntryManage';
+import EntryApprovalPage from '@/pages/Teacher/EntryApproval';
+import OutManagePage from '@/pages/Teacher/OutManage';
+import OutManageAssessment from '@/pages/Teacher/OutManage/Assessment';
+import OutManageDelay from '@/pages/Teacher/OutManage/Delay';
+import OutManageOut from '@/pages/Teacher/OutManage/Out';
 import { authGuard } from './guard'
 
 
@@ -47,6 +52,20 @@ const router = createRouter({
     {
       path: '/teacher/entryManage',
       component: EntryManagePage,
+    },
+    {
+      path: '/teacher/entryManage/approval',
+      component: EntryApprovalPage,
+    },
+    {
+      path: '/teacher/outManage',
+      component: OutManagePage,
+      children: [
+        { path: 'assessment', component: OutManageAssessment },
+        { path: 'assessment/:id', component: () => import('@/pages/Teacher/OutManage/AssessmentDetail') },
+        { path: 'delay', component: OutManageDelay },
+        { path: 'out', component: OutManageOut },
+      ]
     },
     {
       path: '/UserInfo',
