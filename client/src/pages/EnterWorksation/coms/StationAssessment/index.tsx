@@ -12,7 +12,7 @@ export default defineComponent({
     setup() {
         const showDetails = ref(false)
         const showProcess = ref(false)
-        const currentSteps = ref([])
+        const currentSteps = ref<any[]>([])
 
         // 示例数据，实际应从后端获取
         const tableData = ref<TableRow[]>([{
@@ -48,7 +48,7 @@ export default defineComponent({
                             size="small"
                             style="margin-left:8px"
                             onClick={() => {
-                                currentSteps.value = row.processSteps
+                                currentSteps.value = row.processSteps || []
                                 showProcess.value = true
                             }}
                         >

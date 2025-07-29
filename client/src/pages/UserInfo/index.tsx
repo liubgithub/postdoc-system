@@ -5,7 +5,7 @@ import * as styles from "./styles.css.ts";
 import useUser from "@/stores/user"
 
 const menuList = [
-  { label: "后台首页", path: "/UserInfo/status" },
+  { label: "后台首页", path: "/UserInfo" },
   { label: "个人情况", path: "/UserInfo/userInfoRegister" },
   { label: "进站", path: "/UserInfo/entry" },
   { label: "在站管理", path: "/UserInfo/in-station" },

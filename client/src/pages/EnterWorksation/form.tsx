@@ -1,7 +1,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker } from "element-plus";
 import * as styles from "@/pages/userinfoRegister/styles.css";
-import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
+import { getUserProfile, submitUserProfile, } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
 
 export default defineComponent({
   name: "UserInfoForm",

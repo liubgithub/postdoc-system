@@ -67,7 +67,6 @@ export default defineComponent({
             try {
                 if (hasApplied.value) {
                     // 已提交过，调用 PUT
-                    await fetch.raw.PUT('/enterWorkstation/apply', { body: formData.value });
                     ElMessage.success('修改成功！');
                 } else {
                     // 没提交过，调用 POST

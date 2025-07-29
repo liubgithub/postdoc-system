@@ -73,7 +73,7 @@ const router = createRouter({
       component: UserInfo,
       children: [
         {
-          path: 'status',
+          path: '',
           name: 'behind',
           component:Behind
         },
