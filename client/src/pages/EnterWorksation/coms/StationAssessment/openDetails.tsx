@@ -1,117 +1,145 @@
-import { ElInput, ElCheckboxGroup, ElCheckbox, ElCard,ElDatePicker } from 'element-plus'
-import * as cls from './styles.css'
-import SignaturePad from '@/units/Signature/index'
+import UserinfoRegister from '@/pages/EnterWorksation/form.tsx'
+import { ref } from 'vue'
+import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElDatePicker } from 'element-plus'
+import * as styles from './styles.css.ts'
+
 export default defineComponent({
-    name: "OpenDetails",
-    props: {
-        onBack: {
-            type: Function,
-            required: true
+    name:'OpenDetails',
+    setup() {
+        // 第二部分表单数据
+        const projectForm = ref({
+            projectName: '',
+            projectSource: '',
+            projectType: '',
+            approvalTime: '',
+            projectFee: '',
+            projectTask: '',
+            projectThought: ''
+        })
+        const form = reactive({
+            guideGroupOpinion: '',
+            guideGroupDate: '',
+            guideGroupLeader: '',
+            staff: [
+                { name: '', org: '', job: '', major: '', sign: '' },
+                { name: '', org: '', job: '', major: '', sign: '' },
+                { name: '', org: '', job: '', major: '', sign: '' },
+            ],
+            recordCheck: '',
+            assessmentOpinion: '',
+            assessmentLeader: '',
+            assessmentDate: '',
+            vote: '',
+            stationOpinion: '',
+            stationLeader: '',
+            stationDate: '',
+        });
+        const addStaff = () => {
+            form.staff.push({ name: '', org: '', job: '', major: '', sign: '' });
+        };
+        const removeStaff = (index: number) => {
+            if (form.staff.length > 1) form.staff.splice(index, 1);
         }
-    },
-    setup(props) {
-        const assessmentResult = ref('')
-        const renderCard = (header: string, content: any) => (
-            <ElCard
-                class={cls.formSection}
-                v-slots={{
-                    header: () => <div class={cls.cardHeader}>{header}</div>,
-                }}
-            >
-                <div class={cls.cardContent}>{content}</div>
-            </ElCard>
-        );
-
-        return () => (
-            <div class={cls.formContainer}>
-                <div class={cls.header}>
-                    <h1>博士后进站考核意见表</h1>
+        return()=> (
+            <div>
+                <UserinfoRegister showOtherDescription={false} />
+                {/* 第二部分 博士后研究项目情况 */}
+                <div class={styles.formWrapper} style={{marginTop:'32px'}}>
+                    <div style={{fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em'}}>二、博士后研究项目情况</div>
+                    <ElForm model={projectForm.value} labelWidth="120px">
+                        <ElFormItem label="研究项目名称">
+                            <ElInput v-model={projectForm.value.projectName} />
+                        </ElFormItem>
+                        <div style={{display:'flex',gap:'16px'}}>
+                            <ElFormItem label="项目来源" style={{flex:1}}>
+                                <ElInput v-model={projectForm.value.projectSource} />
+                            </ElFormItem>
+                            <ElFormItem label="项目性质" style={{flex:1}}>
+                                <ElInput v-model={projectForm.value.projectType} />
+                            </ElFormItem>
+                        </div>
+                        <div style={{display:'flex',gap:'16px'}}>
+                            <ElFormItem label="批准时间" style={{flex:1}}>
+                                <ElInput v-model={projectForm.value.approvalTime} />
+                            </ElFormItem>
+                            <ElFormItem label="项目经费" style={{flex:1}}>
+                                <ElInput v-model={projectForm.value.projectFee} />
+                            </ElFormItem>
+                        </div>
+                        <ElFormItem label="研究项目任务">
+                            <ElInput v-model={projectForm.value.projectTask} type="textarea" rows={4} />
+                        </ElFormItem>
+                        <ElFormItem label="申请者对研究项目思路">
+                            <ElInput v-model={projectForm.value.projectThought} type="textarea" rows={4} />
+                        </ElFormItem>
+                    </ElForm>
                 </div>
+                {/* 第三部分 考核情况 */}
+                <div class={styles.formWrapper} style={{marginTop:'32px'}}>
+                    <div style={{fontWeight:'bold',fontSize:'18px',marginBottom:'16px'}}>三、考核情况</div>
+                    <div style={{ padding: '16px', minHeight: '180px', borderBottom: '1px solid #666', position: 'relative' }}>
+                            <ElFormItem label="指导小组意见" style={{ marginBottom: 0 }}>
+                                <ElInput type="textarea" v-model={form.guideGroupOpinion} autosize={{ minRows: 5 }} />
+                            </ElFormItem>
+                            <div style={{ display: 'flex', gap: '16px', position: 'absolute', right: '20px', bottom: '5px' }}>
+                                <ElFormItem label="指导小组负责人(合作导师)签字" prop="guideGroupLeader" labelWidth={300}>
+                                    <ElInput v-model={form.guideGroupLeader} />
+                                </ElFormItem>
+                                <ElFormItem label="日期" prop="guideGroupDate">
+                                    <ElDatePicker v-model={form.guideGroupDate} type="date" placeholder="选择日期" style={{ width: '100%' }} />
+                                </ElFormItem>
+                            </div>
+                        </div>
 
-                {renderCard('合作导师意见 (如有挂名导师，挂名导师和实际导师均需签字)', <>
-                    <p class={cls.para}>同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。</p>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>实际导师签名：</p>
-                            
-                        </div>
-                        <div class={cls.signature}>
-                            <p>挂名导师签名：</p>
-                            
-                        </div>
-                    </div>
-                </>)}
 
-                {renderCard('博士后工作秘书审核', <>
-                    <p class={cls.para}>同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。</p>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>审核人签名：</p>
-                            
-                        </div>
-                    </div>
-                </>)}
+                        <div style={{ borderTop: '1px solid #333', padding: '16px', display: 'flex' }}>
+                            <ElFormItem label='考核组人员基本情况' style={{ marginBottom: 0 }}>
 
-                {renderCard('思想政治与道德品质、学术性考察意见 (由实际所在学院填写)', <>
-                    <p class={cls.para}>思想政治与道德品质、学术性书面考察报告、海外引进人才风险评估排查表另附。</p>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>党委盖章：</p>
-                            <p>党委（党总支）书记签名：</p>
-                           
+                            </ElFormItem>
+                            <div>
+                                <ElTable data={form.staff} border style={{ width: '100%', marginBottom: '8px' }}>
+                                    <ElTableColumn prop="name" label="姓名" width="120">
+                                        {{
+                                            default: ({ row, $index }: { row: any; $index: number }) => <ElInput v-model={row.name} placeholder="姓名" />
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="org" label="工作单位" width="220">
+                                        {{
+                                            default: ({ row }: { row: any }) => <ElInput v-model={row.org} placeholder="工作单位" />
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="job" label="职务或职称" width="140">
+                                        {{
+                                            default: ({ row }: { row: any }) => <ElInput v-model={row.job} placeholder="职务或职称" />
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="major" label="专业及研究方向" width="240">
+                                        {{
+                                            default: ({ row }: { row: any }) => <ElInput v-model={row.major} placeholder="专业及研究方向" />
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn prop="sign" label="签字" width="150">
+                                        {{
+                                            default: ({ row }: { row: any }) => <ElInput v-model={row.sign} placeholder="签字" />
+                                        }}
+                                    </ElTableColumn>
+                                    <ElTableColumn label="操作" width="100">
+                                        {{
+                                            default: ({ $index }: { $index: number }) => (
+                                                <ElButton type="danger" size="small" onClick={() => removeStaff($index)} disabled={form.staff.length === 1}>删除</ElButton>
+                                            )
+                                        }}
+                                    </ElTableColumn>
+                                </ElTable>
+                                <ElButton type="primary" plain onClick={addStaff} style={{ marginBottom: '16px' }}>添加人员</ElButton>
+                            </div>
                         </div>
+                    <div style={{display:'flex',justifyContent:'center',gap:'32px',marginTop:'24px'}}>
+                        <ElButton>返回</ElButton>
+                        <ElButton type="primary">导出</ElButton>
                     </div>
-                </>)}
-
-                {renderCard('现场答辩考核组意见 (由实际所在学院填写)', <>
-                    <p>考核组成员名单：</p>
-                    <p>考核组意见：须体现实验记录本或工作记录本检查情况</p>
-                    <p>投票结果： 同意票数<ElInput class={cls.voteInput} /> 不同意票数<ElInput class={cls.voteInput} /> 弃权票数<ElInput class={cls.voteInput} /></p>
-                    <p>考核结果 (请在相应栏打"√")：
-                        <ElCheckboxGroup v-model={assessmentResult.value}>
-                            <ElCheckbox label="pass">通过</ElCheckbox>
-                            <ElCheckbox label="fail">不通过</ElCheckbox>
-                        </ElCheckboxGroup>
-                    </p>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>考核组组长签字：</p>
-                            
-                        </div>
-                    </div>
-                </>)}
-
-                {renderCard('学院党政联席会意见 (由实际所在学院填写)', <>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>院长签名：</p>
-                           
-                            <p>党委盖章：</p>
-                            <p>党委（党总支）书记签名：</p>
-                            
-                        </div>
-                    </div>
-                </>)}
-
-                {renderCard('流动站意见', <>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>流动站所在学校盖章：</p>
-                            <p>负责人签名：</p>
-                            <p>年 月 日</p>
-                        </div>
-                    </div>
-                </>)}
-
-                {renderCard('人力资源部意见', <>
-                    <div class={cls.signatureWrapper}>
-                        <div class={cls.signature}>
-                            <p>盖章：</p>
-                            <p>年 月 日</p>
-                        </div>
-                    </div>
-                </>)}
+                </div>
             </div>
         )
-    }
+    },
 })

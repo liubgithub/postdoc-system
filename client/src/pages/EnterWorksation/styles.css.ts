@@ -40,22 +40,57 @@ globalStyle(`${tableWidth} .el-table .el-table__cell`, {
     textAlign: 'center'
 })
 
-// export const opreateBtn = style({
-//     width: "100%",
-//     height: "100%",
-//     padding: "0 10px",
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     gap: "10px"
-// })
+export const formSection = style({
+    marginBottom: '20px',
+});
 
-// globalStyle(`${opreateBtn} .el-button`, {
-//     padding: '8px',
-//     fontSize: '16px'
-// })
+export const cardHeader = style({
+    fontWeight: 'bold',
+    fontSize: '16px',
+});
+
+export const cardContent = style({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    minHeight: '120px',
+    lineHeight: 1.6,
+})
+
+export const para = style({
+    marginBottom: '20px',
+})
+
+export const signatureWrapper = style({
+    alignSelf: 'flex-end',
+    textAlign: 'right'
+})
+
+export const signature = style({
+    marginTop: '10px'
+})
+
+export const voteInput = style({
+    width: '60px',
+    margin: '0 10px',
+}) 
+export const formContainer = style({
+    padding: '10px 20px',
+    border: '1px solid #dcdfe6',
+    fontFamily: '"SimSun", "STSong", "serif"',
+    backgroundColor: '#f5f7fa',
+    boxSizing: 'border-box',
+    minHeight: '100vh',
+    overflowY: 'auto',
+})
+
+export const header = style({
+    textAlign: 'center',
+    marginBottom: '20px',
+})
 
 export const container = {
+    // height:"100%",
     padding: "20px",
     margin: "0 auto",
     // overflowY: "auto", // 添加垂直滚动
@@ -64,7 +99,7 @@ export const container = {
 
 
 export const formWrapper = {
-    marginTop: "20px",
+    marginTop: "10px",
     padding: "20px",
     backgroundColor: "#fff",
     borderRadius: "4px",

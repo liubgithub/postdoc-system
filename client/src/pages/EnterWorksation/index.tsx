@@ -46,7 +46,6 @@ export default defineComponent({
         }])
         const dialogVisible = ref(false)
         const viewRow = ref<TableRow | null>(null)
-        const hasApplied = ref(false);
 
         const handleView = (row: TableRow) => {
             viewRow.value = { ...row }
@@ -65,15 +64,8 @@ export default defineComponent({
 
         const handleSubmit = async () => {
             try {
-                if (hasApplied.value) {
-                    // 已提交过，调用 PUT
-                    ElMessage.success('修改成功！');
-                } else {
-                    // 没提交过，调用 POST
-                    await fetch.raw.POST('/enterWorkstation/apply', { body: formData.value });
-                    ElMessage.success('提交成功！');
-                    hasApplied.value = true; // 提交后状态变为已提交
-                }
+                await fetch.raw.POST('/enterWorkstation/apply', { body: formData.value });
+                ElMessage.success('修改成功！');
                 dialogVisible.value = false;
             } catch (error) {
                 ElMessage.error('提交失败！');
@@ -84,9 +76,8 @@ export default defineComponent({
             try {
                 const res = await fetch.raw.GET('/enterWorkstation/apply');
                 formData.value = res.data as any;
-                hasApplied.value = true; // 已经提交过
             } catch (error) {
-                hasApplied.value = false; // 没有提交过
+
             }
         });
         return () => (

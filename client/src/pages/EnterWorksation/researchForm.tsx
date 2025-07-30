@@ -1,6 +1,7 @@
 import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert } from "element-plus";
 import * as styles from "./styles.css.ts";
 import SignaturePad from '@/units/Signature/index'
+import Audit from './audit.tsx'
 import fetch from '@/api/index.ts'
 
 export default defineComponent({
@@ -25,8 +26,8 @@ export default defineComponent({
     });
 
     const handleSubmit = () => {
-      console.log(form.value,'fffff')
-      
+      console.log(form.value, 'fffff')
+
     };
     const onInput = (val: any) => {
       console.log(val, 'signature')
@@ -38,7 +39,7 @@ export default defineComponent({
       if (res && res.data) {
         Object.assign(form.value, res.data);
       }
-      console.log(res.data,form.value,'biao')
+      console.log(res.data, form.value, 'biao')
     });
     return () => (
       <div class={styles.formWrapper}>
@@ -71,7 +72,9 @@ export default defineComponent({
             />
           </ElFormItem>
 
-          <ElFormItem label="4. 成果情况">
+          <ElFormItem label="4. 成果情况(请将近3年代表作列出；论文请注明题目、全部作者、发表年份、刊物、卷、页码、收录
+
+及引用情况等，并按论文发表级别排序，共同第一作者用#标明，通讯作者用*标明；著作请注明所有作者姓名，书名，出版地，出版社)">
             <ElInput
               v-model={form.value.results}
               type="textarea"
@@ -88,7 +91,7 @@ export default defineComponent({
             />
           </ElFormItem>
 
-          <ElFormItem label="6. 学术理想与追求">
+          <ElFormItem label="6. 介绍本人学术理想与追求；对“科研人员要将学术道德、学术诚信视为生命线”的认识看法；接受相关学术诚信、学术规范培训的经历等">
             <ElInput
               v-model={form.value.academic_pursuits}
               type="textarea"
@@ -98,7 +101,7 @@ export default defineComponent({
           </ElFormItem>
 
           <h3>3. 本人承诺</h3>
-          <ElFormItem label="承诺内容">
+          <ElFormItem>
             <div
               style={{
                 width: '100%',
@@ -125,9 +128,15 @@ export default defineComponent({
               </div>
             </div>
           </ElFormItem>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
-            <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
+          <div style={{ display: 'flex', justifyContent: 'center'}}>          
+            <ElButton type="primary" onClick={handleSubmit}>申请</ElButton>
+            <ElButton>返回</ElButton>
           </div>
+          <Audit onBack={() => { }} />
+            <div style={{ display: 'flex', justifyContent: 'center',marginTop:'5px'}}>
+              <ElButton type="primary">导出</ElButton>
+              <ElButton>返回</ElButton>
+            </div>
         </ElForm>
       </div>
     );

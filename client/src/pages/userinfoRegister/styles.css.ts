@@ -80,6 +80,14 @@ export const formWrapper = style({
   },
 });
 
+export const formWrappers= style({
+  background: '#fff',
+  borderRadius: '0.5em',
+  boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)',
+  padding: '2em 4em',
+  margin: 0,
+})
+
 export const formRow = style({
   display: 'flex',
   gap: '2vw',

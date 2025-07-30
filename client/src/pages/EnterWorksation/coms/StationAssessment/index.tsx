@@ -72,6 +72,9 @@ export default defineComponent({
             console.log('View data:', row)
             showDetails.value = true
         }
+        const handleApply =() =>{
+            showDetails.value = true
+        }
 
         const handleBack = () => {
             showDetails.value = false
@@ -83,9 +86,10 @@ export default defineComponent({
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <OpenDetails onBack={handleBack} />
+                    <OpenDetails />
                 ) : (
                     <>
+                        <ElButton style={{marginBottom:'20px'}} onClick={handleApply}>申请考核</ElButton>
                         <CommonTable 
                             data={tableData.value} 
                             columns={columns} 
