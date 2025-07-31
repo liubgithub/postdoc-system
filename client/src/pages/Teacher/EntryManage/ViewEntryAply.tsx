@@ -1,7 +1,7 @@
 import { defineComponent, ref, watch, computed, h } from "vue";
 import { useRouter } from "vue-router";
-import TeacherHeader from "./TeacherHeader";
-import * as styles from "../UserInfo/styles.css.ts";
+import TeacherHeader from "../TeacherHeader";
+import * as styles from "../../UserInfo/styles.css.ts";
 import {
   ElContainer,
   ElHeader,
