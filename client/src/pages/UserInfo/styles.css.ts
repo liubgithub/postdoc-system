@@ -37,11 +37,7 @@ export const menuBtnActive = style({
   color: '#222',
 });
 
-export const contentArea = style({
-  background: '#fff',
-  // padding: '32px',
-  height: '80vh',
-});
+
 
 export const formWrapper = style({
   width: '700px',

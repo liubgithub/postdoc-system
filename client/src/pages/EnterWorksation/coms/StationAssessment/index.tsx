@@ -12,7 +12,7 @@ export default defineComponent({
     setup() {
         const showDetails = ref(false)
         const showProcess = ref(false)
-        const currentSteps = ref([])
+        const currentSteps = ref<any[]>([])
 
         // 示例数据，实际应从后端获取
         const tableData = ref<TableRow[]>([{
@@ -48,7 +48,7 @@ export default defineComponent({
                             size="small"
                             style="margin-left:8px"
                             onClick={() => {
-                                currentSteps.value = row.processSteps
+                                currentSteps.value = row.processSteps || []
                                 showProcess.value = true
                             }}
                         >
@@ -72,6 +72,9 @@ export default defineComponent({
             console.log('View data:', row)
             showDetails.value = true
         }
+        const handleApply =() =>{
+            showDetails.value = true
+        }
 
         const handleBack = () => {
             showDetails.value = false
@@ -83,9 +86,10 @@ export default defineComponent({
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <OpenDetails onBack={handleBack} />
+                    <OpenDetails />
                 ) : (
                     <>
+                        <ElButton style={{marginBottom:'20px'}} onClick={handleApply}>申请考核</ElButton>
                         <CommonTable 
                             data={tableData.value} 
                             columns={columns} 

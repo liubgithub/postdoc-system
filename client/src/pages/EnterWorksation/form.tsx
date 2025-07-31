@@ -1,11 +1,17 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElForm, ElFormItem, ElInput, ElButton, ElRadioGroup, ElRadio, ElTable, ElTableColumn, ElMessage, ElDatePicker } from "element-plus";
 import * as styles from "@/pages/userinfoRegister/styles.css";
-import { getUserProfile, submitUserProfile, deleteUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
+import { getUserProfile } from '@/api/postdoctor/userinfoRegister/bs_user_profile';
 
 export default defineComponent({
   name: "UserInfoForm",
-  setup() {
+  props: {
+    showOtherDescription: {
+      type: Boolean,
+      default: true
+    }
+  },
+  setup(props) {
     // 表单数据
     const form = ref({
       name: "",
@@ -39,7 +45,6 @@ export default defineComponent({
       try {
         
         const data = await getUserProfile();
-        console.log('111');
         if (data) {
           form.value = {
             ...form.value,
@@ -86,8 +91,8 @@ export default defineComponent({
 
  
     return () => (
-      <div class={styles.formWrapper}>
-        <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>基本信息表</div>
+      <div class={styles.formWrappers}>
+        <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>一、基本信息表</div>
         <ElForm model={form.value} rules={rules} labelWidth="100px">
           {/* 基本信息两列 */}
           <div class={styles.formRow}>
@@ -242,9 +247,11 @@ export default defineComponent({
             </ElTable>
           </ElFormItem>
           {/* 其他说明 */}
-          <ElFormItem label="其他说明">
-            <ElInput v-model={form.value.other} type="textarea" rows={2} placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" disabled/>
-          </ElFormItem>
+          {props.showOtherDescription && (
+            <ElFormItem label="其他说明">
+              <ElInput v-model={form.value.other} type="textarea" rows={2} placeholder="是否有亲属在本工作（姓名和亲属关系），何时何地受过何种处分或者被追究刑事责任" disabled/>
+            </ElFormItem>
+          )}
         </ElForm>
       </div>
     );
