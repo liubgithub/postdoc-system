@@ -25,3 +25,12 @@ class PostdocWorkflow(Base):
     leave_assessment = Column(String(50), nullable=False, default="未提交")
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     updated_at = Column(TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+class SupervisorStudent(Base):
+    __tablename__ = "supervisor_student"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    supervisor_id = Column(Integer, nullable=False)
+    student_id = Column(Integer, nullable=False)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    updated_at = Column(TIMESTAMP, default=datetime.utcnow)

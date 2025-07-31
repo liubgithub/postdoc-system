@@ -6,7 +6,7 @@ class PreEntryCompetitionAward(Base):
     __tablename__ = "bs_pre_entry_competition_award"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True)
-    time = Column(Integer, default=0, index=True)  # 0: 入站前, 1: 在站
+    time = Column(DateTime, nullable=True, index=True)
     竞赛名称 = Column(String(255))
     获奖类别 = Column(String(128))
     获奖等级 = Column(String(128))
