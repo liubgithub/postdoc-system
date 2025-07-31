@@ -28,7 +28,6 @@ class PostdocWorkflow(Base):
     
 class SupervisorStudent(Base):
     __tablename__ = "supervisor_student"
-    
     id = Column(Integer, primary_key=True, index=True)
     supervisor_id = Column(Integer, nullable=False)
     student_id = Column(Integer, nullable=False)

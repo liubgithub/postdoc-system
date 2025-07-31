@@ -1,8 +1,6 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { ElButton, ElTable, ElTableColumn, ElTag, ElMessage,ElDialog } from 'element-plus'
 import ProcessStatus from '@/units/ProcessStatus'
-import fetch from '@/api'
-
 interface BusinessStatus {
     id: number
     type: string
@@ -14,11 +12,34 @@ interface BusinessStatus {
 
 interface ProcessStep {
     process: string
-    statuses: {
-        application: string  // 申请状态
-        supervisor: string   // 导师状态
-        college: string      // 学院状态
-    }
+    status: string  // 只保留一个状态字段
+}
+
+// 后端接口数据结构
+interface WorkflowResponse {
+    id: number
+    student_id: number
+    entry_application: string
+    entry_assessment: string
+    entry_agreement: string
+    midterm_assessment: string
+    annual_assessment: string
+    extension_assessment: string
+    leave_assessment: string
+    created_at: string
+    updated_at: string
+}
+
+interface PendingTask {
+    process_type: string
+    description: string
+    current_status: string
+}
+
+interface PendingTasksResponse {
+    role: string
+    pending_count: number
+    pending_processes: PendingTask[]
 }
 
 const STATUS_PROCESSING = '处理中'
@@ -35,22 +56,42 @@ export default defineComponent({
         const processSteps = ref<ProcessStep[]>([])
         const processLoading = ref(false)
 
-        // 获取业务数据
+        // 获取业务数据 - 从待处理任务接口获取
         const fetchData = async () => {
             loading.value = true
             try {
-                // TODO: 替换为你的实际接口
-                // const res = await fetch.raw.GET('/your/api/path')
-                // data.value = res.data
-                setTimeout(() => {
-                    data.value = [
-                        // 示例数据
-                        // { id: 1, type: '进站申请', initiator: '张三', status: '处理中', submitTime: '2024-06-01 10:00', detailId: '1' },
-                    ]
-                    loading.value = false
-                }, 500)
+                // 直接使用原生fetch调用工作流程接口
+                const response = await window.fetch('/api/workflow/my-pending-tasks', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                    }
+                })
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`)
+                }
+                
+                const res = await response.json()
+                
+                if (res) {
+                    const pendingTasks = res as PendingTasksResponse
+                    // 将后端数据转换为前端格式
+                    data.value = pendingTasks.pending_processes.map((task, index) => ({
+                        id: index + 1,
+                        type: task.description,
+                        initiator: '当前用户', // 学生看到的都是自己发起的
+                        status: task.current_status === '未提交' ? '待提交' : STATUS_PROCESSING,
+                        submitTime: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                        detailId: task.process_type
+                    }))
+                }
             } catch (error) {
+                console.error('获取待处理任务失败:', error)
                 ElMessage.error('获取数据失败')
+                data.value = []
+            } finally {
                 loading.value = false
             }
         }
@@ -59,129 +100,86 @@ export default defineComponent({
         const fetchProcessSteps = async () => {
             processLoading.value = true
             try {
-                // TODO: 从后端获取流程状态数据
-                // const res = await fetch.raw.GET('/assessment/process/status', {})
-                // if (res.data) {
-                //     processSteps.value = res.data as ProcessStep[]
-                // } else {
-                // 使用默认数据
-                processSteps.value = [
-                    { 
-                        process: '进站申请', 
-                        statuses: {
-                            application: '申请已提交',
-                            supervisor: '导师已通过',
-                            college: '学院已通过'
-                        }
-                    },
-                    { 
-                        process: '进站考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
-                    },
-                    { 
-                        process: '进站协议', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
-                    },
-                    { 
-                        process: '中期考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
-                    },
-                    { 
-                        process: '年度考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
-                    },
-                    { 
-                        process: '延期考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
-                    },
-                    { 
-                        process: '出站考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                // 调用后端获取工作流程状态
+                const response = await window.fetch('/api/workflow/status', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
                     }
-                ]
-                // }
+                })
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`)
+                }
+                
+                const workflowData = await response.json() as WorkflowResponse
+                
+                // 将后端数据转换为前端显示格式
+                if (workflowData) {
+                    processSteps.value = [
+                        { 
+                            process: '进站申请', 
+                            status: workflowData.entry_application
+                        },
+                        { 
+                            process: '进站考核', 
+                            status: workflowData.entry_assessment
+                        },
+                        { 
+                            process: '进站协议', 
+                            status: workflowData.entry_agreement
+                        },
+                        { 
+                            process: '中期考核', 
+                            status: workflowData.midterm_assessment
+                        },
+                        { 
+                            process: '年度考核', 
+                            status: workflowData.annual_assessment
+                        },
+                        { 
+                            process: '延期考核', 
+                            status: workflowData.extension_assessment
+                        },
+                        { 
+                            process: '出站考核', 
+                            status: workflowData.leave_assessment
+                        }
+                    ]
+                }
             } catch (error) {
-                // 如果接口不存在，使用默认数据
+                console.error('获取流程状态失败:', error)
+                ElMessage.error('获取流程状态失败')
+                // 使用默认数据作为fallback
                 processSteps.value = [
                     { 
                         process: '进站申请', 
-                        statuses: {
-                            application: '申请已提交',
-                            supervisor: '导师已通过',
-                            college: '学院已通过'
-                        }
+                        status: '未提交'
                     },
                     { 
                         process: '进站考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                        status: '未提交'
                     },
                     { 
                         process: '进站协议', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                        status: '未提交'
                     },
                     { 
                         process: '中期考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                        status: '未提交'
                     },
                     { 
                         process: '年度考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                        status: '未提交'
                     },
                     { 
                         process: '延期考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                        status: '未提交'
                     },
                     { 
                         process: '出站考核', 
-                        statuses: {
-                            application: '申请未提交',
-                            supervisor: '导师未通过',
-                            college: '学院未通过'
-                        }
+                        status: '未提交'
                     }
                 ]
             } finally {
@@ -203,8 +201,10 @@ export default defineComponent({
         )
 
         const handleDetail = (id: string) => {
-            
+            // 跳转到具体的申请详情页面
+            console.log('查看详情:', id)
         }
+        
         const handleView = (id: string) => {
             showProcess.value = true
         }
@@ -313,40 +313,19 @@ export default defineComponent({
                                             borderRadius: '4px',
                                             backgroundColor: '#fafafa',
                                             display: 'flex',
-                                            gap: '8px'
+                                            gap: '8px',
+                                            alignItems: 'center'
                                         }}>
                                             <div style={{ 
                                                 flex: 1,
                                                 padding: '8px', 
                                                 borderRadius: '4px',
-                                                backgroundColor: step.statuses.application.includes('已') ? '#f6ffed' : '#fff2f0',
-                                                color: step.statuses.application.includes('已') ? '#52c41a' : '#ff4d4f',
+                                                backgroundColor: step.status === '结束' ? '#f6ffed' : '#fff2f0',
+                                                color: step.status === '结束' ? '#52c41a' : '#ff4d4f',
                                                 fontSize: '12px',
                                                 textAlign: 'center'
                                             }}>
-                                                {step.statuses.application}
-                                            </div>
-                                            <div style={{ 
-                                                flex: 1,
-                                                padding: '8px', 
-                                                borderRadius: '4px',
-                                                backgroundColor: step.statuses.supervisor.includes('已') ? '#f6ffed' : '#fff2f0',
-                                                color: step.statuses.supervisor.includes('已') ? '#52c41a' : '#ff4d4f',
-                                                fontSize: '12px',
-                                                textAlign: 'center'
-                                            }}>
-                                                {step.statuses.supervisor}
-                                            </div>
-                                            <div style={{ 
-                                                flex: 1,
-                                                padding: '8px',                                             
-                                                borderRadius: '4px',
-                                                backgroundColor: step.statuses.college.includes('已') ? '#f6ffed' : '#fff2f0',
-                                                color: step.statuses.college.includes('已') ? '#52c41a' : '#ff4d4f',
-                                                fontSize: '12px',
-                                                textAlign: 'center'
-                                            }}>
-                                                {step.statuses.college}
+                                                {step.status}
                                             </div>
                                         </div>
                                     ))}
