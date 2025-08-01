@@ -165,7 +165,7 @@ export default defineComponent({
         <NewVarietyForm onBack={handleBack} />
       ) : (
         <div>
-          <div style={{ fontSize: '1.3em', fontWeight: 700, textAlign: 'left', marginBottom: '1em' }}>入站前已有成果登记</div>
+          <div style={{ fontSize: '1.3em', fontWeight: 700, textAlign: 'left', marginBottom: '1em' }}>成果登记</div>
           <ElTable data={data.value} class={styles.table} style={{ width: "90%" }}>
             <ElTableColumn label="学术成果类型（点击跳转填报）" width='300'>
               {{
