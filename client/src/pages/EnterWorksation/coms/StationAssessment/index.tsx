@@ -13,6 +13,7 @@ export default defineComponent({
         const showDetails = ref(false)
         const showProcess = ref(false)
         const currentSteps = ref<any[]>([])
+        const isAssessmentMode = ref(false)
 
         // 示例数据，实际应从后端获取
         const tableData = ref<TableRow[]>([{
@@ -67,26 +68,30 @@ export default defineComponent({
             { prop: 'assessmentRes', label: '考核结果' }
         ]
 
-        const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
+
         const handleView = (row: TableRow) => {
             console.log('View data:', row)
+            isAssessmentMode.value = true
             showDetails.value = true
         }
+
         const handleApply =() =>{
+            isAssessmentMode.value = false
             showDetails.value = true
         }
 
         const handleBack = () => {
             showDetails.value = false
+            isAssessmentMode.value = false
         }
 
         onMounted(async()=>{
             const res = await fetch.raw.GET('/assessment/student/')
         })
         return () => (
-            <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+            <div style={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <OpenDetails />
+                    <OpenDetails onBack={handleBack} showAssessment={isAssessmentMode.value}/>
                 ) : (
                     <>
                         <ElButton style={{marginBottom:'20px'}} onClick={handleApply}>申请考核</ElButton>
@@ -94,7 +99,6 @@ export default defineComponent({
                             data={tableData.value} 
                             columns={columns} 
                             onView={handleView}
-                            editableFields={editableFields}
                             showAction={true}
                             tableClass={cls.tableWidth}
                         />

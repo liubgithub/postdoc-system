@@ -1,6 +1,7 @@
 import { ElButton, ElUpload, ElMessage, ElForm, ElFormItem, ElInput } from 'element-plus'
 import * as cls from '../StationAssessment/styles.css'
 import { mubanContent } from './muban'
+import { muban2Content } from './muban2'
 import { ref, reactive } from 'vue'
 
 export default defineComponent({
@@ -21,6 +22,16 @@ export default defineComponent({
     const handleDownload = () => {
       // TODO: Replace with real Word generation logic
       const blob = new Blob([mubanContent], { type: 'application/msword' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = '进站协议模板.doc'
+      a.click()
+      URL.revokeObjectURL(url)
+    }
+    const handleDownload2 = () => {
+      // TODO: Replace with real Word generation logic
+      const blob = new Blob([muban2Content], { type: 'application/msword' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -82,19 +93,22 @@ export default defineComponent({
           <div style={{ fontSize: '1.5rem', textAlign: 'left' }}>
             上传相关成果要求和入站协议
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '60px' }}>
+          <div style={{ display: 'flex', gap:'10px' }}>
             <ElUpload
               action="#"
               fileList={fileList.value}
               auto-upload={false}
-              on-success={handleUploadSuccess}
+              on-success={handleUploadSuccess} 
               on-error={handleUploadError}
               show-file-list={false}
             >
               <ElButton type="primary" style={{ width: '130px', height: '40px', fontSize: '1.2rem' }}>上传</ElButton>
             </ElUpload>
-            <ElButton type="default" style={{ width: '130px', height: '40px', fontSize: '1.2rem' }} onClick={handleDownload}>
-              下载模板
+            <ElButton type="default" style={{ width: '440px', height: '40px', fontSize: '1.2rem' }} onClick={handleDownload}>
+              下载模板（合作导师为洪山实验室固定研究人员）
+            </ElButton>
+            <ElButton type="default" style={{ width: '440px', height: '40px', fontSize: '1.2rem' }} onClick={handleDownload2}>
+              下载模板（合作导师非洪山实验室固定研究人员）
             </ElButton>
           </div>
         </div>

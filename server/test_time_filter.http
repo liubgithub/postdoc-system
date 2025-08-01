@@ -1,0 +1,28 @@
+### 测试重构后的时间过滤功能
+### 所有表的time字段都是DateTime类型
+
+# 1. 用户登录获取token
+POST http://localhost:8000/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=your_username&password=your_password
+
+###
+
+# 2. 获取当前用户在指定时间后的数据
+GET http://localhost:8000/userinfoRegister/time-filter/get-data-after-time?target_time=2024-01-01T00:00:00
+Authorization: Bearer YOUR_TOKEN_HERE
+
+###
+
+# 3. 管理员获取指定用户的数据
+GET http://localhost:8000/userinfoRegister/time-filter/get-data-by-user/1?target_time=2024-01-01T00:00:00
+Authorization: Bearer ADMIN_TOKEN_HERE
+
+###
+
+# 4. 测试不同的时间格式
+GET http://localhost:8000/userinfoRegister/time-filter/get-data-after-time?target_time=2024-06-01T12:00:00
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 

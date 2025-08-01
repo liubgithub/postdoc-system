@@ -1,16 +1,17 @@
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
-import Midform from "./midform.tsx"
+import ExtensionAssessment from './extension_assess'
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
-import { ElButton, ElDialog } from 'element-plus'
+import { ElButton,ElDialog } from 'element-plus'
 import ProcessStatus from '@/units/ProcessStatus'
 export default defineComponent({
-    name: "MidAssessment",
+    name: "ExtensionAssessment",
     setup() {
         const showDetails = ref(false)
-        const showAssessment = ref(true)
+
         const showProcess = ref(false)
         const currentSteps = ref<any[]>([])
+
         const tableData = ref<TableRow[]>([{
             stuId: '',
             name: '',
@@ -66,7 +67,6 @@ export default defineComponent({
         // const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
         const handleView = (row: TableRow) => {
             console.log('View data:', row)
-            showAssessment.value = true
             showDetails.value = true
         }
 
@@ -75,14 +75,13 @@ export default defineComponent({
         }
 
         const handleApply = () => {
-            showAssessment.value = false
             showDetails.value = true
         }
 
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <Midform onBack={handleBack} showAssessment={showAssessment.value} />
+                    <ExtensionAssessment onBack={handleBack} />
                 ) : (
                     <>
                         <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>
@@ -103,6 +102,7 @@ export default defineComponent({
                             <ProcessStatus steps={currentSteps.value} />
                         </ElDialog>
                     </>
+
                 )}
             </div>
         )

@@ -28,6 +28,10 @@ from app.userinfoRegister.pre_entry_subject_research.models import PreEntrySubje
 from app.userinfoRegister.pre_entry_industry_standard.models import PreEntryIndustryStandard
 from app.userinfoRegister.bs_user_profile.models import Info, EducationExperience, WorkExperience
 
+# 导入enterWorkstation相关的所有模型
+from app.enterWorkstation.enterapply.models import EnterWorkstation
+from app.enterWorkstation.enterAssessment.models import EnterAssessment
+
 # 如果有其他模型，在这里导入
 # from app.models.post import Post
 

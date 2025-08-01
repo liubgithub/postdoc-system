@@ -1,15 +1,14 @@
-import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElButton } from 'element-plus'
+import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElButton, ElDialog } from 'element-plus'
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
 import CommonPart from './commonPart'
 import OutAssessment from './coms/OutAssessment/index.tsx'
 import ExtensionRequest from './coms/ExtensionRequest/index.tsx'
+import ProcessStatus from '@/units/ProcessStatus'
 
 const menuList = [
     { label: "出站申请", key: "outrequest" },
-    { label: "出站考核", key: "outassessment" },
-    { label: "延期申请", key: "extensionrequest" },
 ]
 
 export default defineComponent({
@@ -23,6 +22,8 @@ export default defineComponent({
         const showDetails = ref(false)
         const showAssessment = ref(true)
 
+        const showProcess = ref(false)
+        const currentSteps = ref<any[]>([])
         const tableData = ref<TableRow[]>([{
             stuId: '',
             name: '',
@@ -30,9 +31,14 @@ export default defineComponent({
             college: '',
             subject: '',
             applyTime: '',
-            processStatus: '',
+            processStatus: '已通过',
             nodeName: '',
-            assessmentRes: ''
+            assessmentRes: '',
+            processSteps: [
+                { status: '发起', role: '学生申请', time: '' },
+                { status: '通过', role: '导师审核', time: '' },
+                { status: '结束', role: '学院审核', time: '' }
+            ]
         }])
         const columns = [
             { prop: 'stuId', label: '学号' },
@@ -41,15 +47,40 @@ export default defineComponent({
             { prop: 'college', label: '学院' },
             { prop: 'subject', label: '研究方向' },
             { prop: 'applyTime', label: '申请时间' },
-            { prop: 'processStatus', label: '处理状态' },
-            { prop: 'nodeName', label: '节点名称' },
+            {
+                prop: 'processStatus',
+                label: '处理状态',
+                render: ({ row }: { row: TableRow }) => (
+                    <div>
+                        <ElButton
+                            type="primary"
+                            size="small"
+                            style="margin-left:8px"
+                            onClick={() => {
+                                currentSteps.value = row.processSteps || []
+                                showProcess.value = true
+                            }}
+                        >
+                            查看流程
+                        </ElButton>
+                    </div>
+                )
+            },
+            {
+                prop: 'nodeName',
+                label: '节点名称',
+                render: ({ row }: { row: TableRow }) => (
+                    <span>{row.nodeName}</span>
+                )
+            },
             { prop: 'assessmentRes', label: '考核结果' }
         ]
 
-        const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
+        // const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
         const handleView = (row: TableRow) => {
             console.log('View data:', row)
             showDetails.value = true
+            showAssessment.value = true
         }
         const handleEidt = () => {
             showAssessment.value = false
@@ -58,6 +89,7 @@ export default defineComponent({
 
         const handleApply = () => {
             showDetails.value = true
+            showAssessment.value = false
         }
 
         const handleBack = () => {
@@ -78,7 +110,7 @@ export default defineComponent({
                         ))}
                     </ElMenu>
                 </ElAside>
-                <ElMain>
+                <ElMain style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                     {activeMenu.value === 'outrequest' && (
                         showDetails.value ? (
                             <CommonPart onBack={handleBack} showAssessment={showAssessment.value} />
@@ -90,15 +122,23 @@ export default defineComponent({
                                     columns={columns}
                                     onView={handleView}
                                     onEdit={handleEidt}
-                                    editableFields={editableFields}
+                                    // editableFields={editableFields}
                                     showAction={true}
                                     tableClass={cls.tableWidth}
                                 />
+                                <ElDialog
+                                    v-model={showProcess.value}
+                                    title="流程状态"
+                                    width="600px"
+                                    destroyOnClose
+                                >
+                                    <ProcessStatus steps={currentSteps.value} />
+                                </ElDialog>
                             </>
                         )
                     )}
                     {activeMenu.value === 'outassessment' && <OutAssessment />}
-                    {activeMenu.value === 'extensionrequest' && <ExtensionRequest /> }
+                    {activeMenu.value === 'extensionrequest' && <ExtensionRequest />}
                 </ElMain>
             </ElContainer>
         )
