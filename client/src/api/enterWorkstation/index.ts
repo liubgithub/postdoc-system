@@ -1,7 +1,153 @@
-import {init_fetch} from '@/api/fetch'
+// 获取导师的申请列表
+export const getTeacherApplications = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    console.log('当前token:', token); // 调试信息
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch('/api/entryMange/teacher/students', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    
+    console.log('API响应状态:', response.status); // 调试信息
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error('API调用错误:', error); // 调试信息
+    return { data: null, error };
+  }
+};
 
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+// 导师获取特定学生详细信息
+export const getStudentDetail = async (userId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch(`/api/entryMange/teacher/student/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
 
-export default function Token_fetch(base: string) {
-    return init_fetch(base)
-}
+// 导师审核申请
+export const approveApplication = async (userId: number, approved: boolean, comment?: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch(`/api/entryMange/teacher/student/${userId}/approve`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        approved,
+        comment: comment || ''
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+// 获取用户自己的进站申请
+export const getMyEnterWorkstation = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch('/api/enterWorkstation/apply', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+// 提交或更新进站申请
+export const submitEnterWorkstation = async (data: any) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch('/api/enterWorkstation/apply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    return { data: result, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};

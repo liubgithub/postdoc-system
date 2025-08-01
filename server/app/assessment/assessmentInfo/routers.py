@@ -24,7 +24,7 @@ def upsert_student(
       return record
    else:
       record = Student(user_id = current_user.id, **data.dict())
-      db.add()
+      db.add(record)
       db.commit()
       db.refresh(record)
       return record 

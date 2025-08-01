@@ -54,4 +54,10 @@ export const formWrapper = style({
       display: 'none',
     },
   },
+});
+
+export const contentArea = style({
+  padding: '20px',
+  backgroundColor: '#ffffff',
+  minHeight: 'calc(100vh - 200px)'
 }); 

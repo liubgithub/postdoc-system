@@ -1,7 +1,9 @@
-import { defineComponent, ref, watch, computed } from "vue";
+import { defineComponent, ref, watch, computed, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 import TeacherHeader from "../TeacherHeader.tsx";
 import * as styles from "../../UserInfo/styles.css.ts";
+import { getTeacherApplications } from "@/api/enterWorkstation";
+import { ElMessage } from "element-plus";
 import {
   ElContainer,
   ElHeader,
@@ -20,66 +22,66 @@ import {
 } from "element-plus";
 import ProcessStatus from "@/units/ProcessStatus";
 
+// 定义数据类型
+interface StudentData {
+  id: number;
+  studentId: string;
+  name: string;
+  college: string;
+  major: string;
+  applyTime: string;
+  status: string;
+  node: string;
+  currentApproval: string;
+  steps: any[];
+  user_id: number;
+  subject: string;
+  cotutor: string;
+  temp_info: {
+    stu_num: string;
+    stu_name: string;
+    college: string;
+    subject: string;
+    cotutor: string;
+  };
+}
+
 export default defineComponent({
   name: "EntryApplyPage",
   setup() {
     const searchValue = ref("");
     const router = useRouter();
-    // 示例数据
-    const allTableData = [
-      {
-        id: 1,
-        studentId: "20230001",
-        name: "张三",
-        college: "园艺林学学院",
-        major: "园艺学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "合作导师",
-        currentApproval: "合作导师审核（通过）",
-        steps: [
-          { status: '发起' as '发起', role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '审核中' as '审核中', role: '合作导师', time: '2025-09-02 12:00' },
-          { status: '审核中' as '审核中', role: '分管领导' },
-          { status: '审核中' as '审核中', role: '学院管理员' }
-        ]
-      },
-      {
-        id: 2,
-        studentId: "20230002",
-        name: "李四",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "分管领导",
-        currentApproval: "分管领导审核（不通过）",
-        steps: [
-          { status: '发起' as '发起', role: '学生申请', time: '2025-09-01 09:00' },
-          { status: '通过' as '通过', role: '合作导师', time: '2025-09-01 10:00' },
-          { status: '拒绝' as '拒绝', role: '分管领导', time: '2025-09-02 11:00' },
-          { status: '审核中' as '审核中', role: '学院管理员' }
-        ]
-      },
-      {
-        id: 3,
-        studentId: "20230003",
-        name: "王五",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "学院管理员",
-        currentApproval: "学院管理员审核（通过）",
-        steps: [
-          { status: '发起' as '发起', role: '学生申请', time: '2025-09-01 08:00' },
-          { status: '通过' as '通过', role: '合作导师', time: '2025-09-01 09:00' },
-          { status: '通过' as '通过', role: '分管领导', time: '2025-09-01 10:00' },
-          { status: '通过' as '通过', role: '学院管理员', time: '2025-09-01 11:00' }
-        ]
-      },
-    ];
-    const tableData = ref([...allTableData]);
+    const loading = ref(false);
+    
+    // 从API获取的数据
+    const allTableData = ref<StudentData[]>([]);
+    const tableData = ref<StudentData[]>([]);
+
+    // 获取学生列表
+    const fetchStudents = async () => {
+      loading.value = true;
+      try {
+        const response = await getTeacherApplications();
+        console.log('API响应:', response);
+        if (response.data) {
+          allTableData.value = response.data as StudentData[];
+          tableData.value = [...allTableData.value];
+        } else if (response.error) {
+          ElMessage.error('获取学生列表失败');
+        }
+      } catch (error) {
+        console.error('获取学生列表失败:', error);
+        ElMessage.error('获取学生列表失败');
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // 页面加载时获取数据
+    onMounted(() => {
+      fetchStudents();
+    });
+
     // 分页相关
     const pageSize = 10;
     const currentPage = ref(1);
@@ -92,10 +94,10 @@ export default defineComponent({
     const handleSearch = () => {
       const keyword = searchValue.value.trim().toLowerCase();
       if (!keyword) {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
         return;
       }
-      tableData.value = allTableData.filter(
+      tableData.value = allTableData.value.filter(
         (row) =>
           row.studentId.toLowerCase().includes(keyword) ||
           row.name.toLowerCase().includes(keyword)
@@ -104,7 +106,7 @@ export default defineComponent({
 
     watch(searchValue, (val) => {
       if (val === "") {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
       }
     });
 
@@ -114,6 +116,19 @@ export default defineComponent({
     const handleShowProcess = (row: any) => {
       currentSteps.value = row.steps;
       showProcessDialog.value = true;
+    };
+
+    // 处理详情按钮点击
+    const handleDetail = (row: StudentData) => {
+      console.log('查看详情:', row);
+      router.push({
+        path: '/teacher/entryManage/approval',
+        query: {
+          studentId: row.id.toString(),
+          userId: row.user_id.toString(),
+          type: 'detail'
+        }
+      });
     };
 
     const menuList = [
@@ -169,7 +184,7 @@ export default defineComponent({
                   <ElCol span={7}>
                     <ElInput
                       v-model={searchValue.value}
-                      placeholder="请输入账号/姓名"
+                      placeholder="请输入学号/姓名"
                       clearable
                       style={{ width: 220, height: 44, fontSize: 18 }}
                       onKeydown={(evt: Event | KeyboardEvent) => {
@@ -181,69 +196,79 @@ export default defineComponent({
                 </ElRow>
 
                 <div style={{ marginTop: 24, width: "100%" }}>
-                  <ElTable
-                    data={pagedData.value}
-                    border
-                    style={{ width: "100%", background: "#fff", borderRadius: 8 }}
-                    headerCellStyle={{
-                      textAlign: "center",
-                      background: "#f7f8fa",
-                      fontWeight: 600,
-                      color: "#666",
-                      fontSize: 16,
-                    }}
-                    cellStyle={{ textAlign: "center", fontSize: 15, color: "#222" }}
-                  >
-                    <ElTableColumn
-                      prop="id"
-                      label="序号"
-                      width={80}
-                      align="center"
-                    />
-                    <ElTableColumn prop="studentId" label="学号" align="center" />
-                    <ElTableColumn prop="name" label="姓名" align="center" />
-                    <ElTableColumn prop="college" label="所在学院" align="center" />
-                    <ElTableColumn prop="major" label="学科专业" align="center" />
-                    <ElTableColumn
-                      prop="applyTime"
-                      label="申请时间"
-                      align="center"
-                    />
-                    <ElTableColumn
-                      prop="status"
-                      label="流程状态"
-                      align="center"
-                      v-slots={{
-                        default: (scope: { row: any }) => (
-                          <ElButton type="primary" size="small" onClick={() => handleShowProcess(scope.row)}>
-                            查看流程
-                          </ElButton>
-                        )
+                  {loading.value ? (
+                    <div style={{ textAlign: 'center', padding: '40px' }}>
+                      加载中...
+                    </div>
+                  ) : (
+                    <ElTable
+                      data={pagedData.value}
+                      border
+                      style={{ width: "100%", background: "#fff", borderRadius: 8 }}
+                      headerCellStyle={{
+                        textAlign: "center",
+                        background: "#f7f8fa",
+                        fontWeight: 600,
+                        color: "#666",
+                        fontSize: 16,
                       }}
-                    />
-                    <ElTableColumn
-                      prop="node"
-                      label="节点名称"
-                      align="center"
-                    />
-                    <ElTableColumn
-                      prop="currentApproval"
-                      label="当前审批结果"
-                      align="center"
-                    />
-                    <ElTableColumn
-                      label="操作"
-                      width={150}
-                      align="center"
-                      v-slots={{
-                        default: () => (
-                          <ElButton type="primary" size="small" onClick={() => router.push('/teacher/entryManage/approval')}>
-                            查看
-                          </ElButton>
-                        ),
-                      }}
-                    />
-                  </ElTable>
+                      cellStyle={{ textAlign: "center", fontSize: 15, color: "#222" }}
+                    >
+                      <ElTableColumn
+                        prop="id"
+                        label="序号"
+                        width={80}
+                        align="center"
+                      />
+                      <ElTableColumn prop="studentId" label="学号" align="center" />
+                      <ElTableColumn prop="name" label="姓名" align="center" />
+                      <ElTableColumn prop="college" label="所在学院" align="center" />
+                      <ElTableColumn prop="major" label="学科专业" align="center" />
+                      <ElTableColumn
+                        prop="applyTime"
+                        label="申请时间"
+                        align="center"
+                      />
+                      <ElTableColumn
+                        prop="status"
+                        label="流程状态"
+                        align="center"
+                        v-slots={{
+                          default: (scope: { row: any }) => (
+                            <ElButton type="primary" size="small" onClick={() => handleShowProcess(scope.row)}>
+                              查看流程
+                            </ElButton>
+                          )
+                        }}
+                      />
+                      <ElTableColumn
+                        prop="node"
+                        label="节点名称"
+                        align="center"
+                      />
+                      <ElTableColumn
+                        prop="currentApproval"
+                        label="当前审批结果"
+                        align="center"
+                      />
+                      <ElTableColumn
+                        label="操作"
+                        width={150}
+                        align="center"
+                        v-slots={{
+                          default: (scope: { row: StudentData }) => (
+                            <ElButton 
+                              type="primary" 
+                              size="small" 
+                              onClick={() => handleDetail(scope.row)}
+                            >
+                              查看
+                            </ElButton>
+                          ),
+                        }}
+                      />
+                    </ElTable>
+                  )}
                 </div>
 
                 {/* 分页器 */}
