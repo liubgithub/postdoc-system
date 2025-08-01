@@ -212,9 +212,6 @@ export default defineComponent({
                   />
                 </ElFormItem></ElCol>
               </ElRow>
-
-
-
               <ElFormItem label="备注">
                 <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>

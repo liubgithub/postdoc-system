@@ -195,9 +195,6 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>新品种信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="时间">
-                  <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
-                </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="品种名称"><ElInput v-model={editData.value["品种名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="动植物名称"><ElInput v-model={editData.value["动植物名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="选育单位"><ElInput v-model={editData.value["选育单位"]} /></ElFormItem></ElCol>
@@ -212,6 +209,12 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="署名排序"><ElInput v-model={editData.value["署名排序"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="作者名单"><ElInput v-model={editData.value["作者名单"]} /></ElFormItem></ElCol>
               </ElRow>
+              <ElCol span={12}><ElFormItem label="成果提交时间">
+                <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+              </ElFormItem></ElCol>
+              <ElFormItem label="备注">
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
+              </ElFormItem>
               <ElFormItem label="上传新品种证明文件">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
                   <ElButton>选择文件</ElButton>
@@ -224,9 +227,6 @@ export default defineComponent({
                 {editData.value["上传新品种证明文件"] && typeof editData.value["上传新品种证明文件"] === 'string' && (
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["上传新品种证明文件"].split('/').pop()}</span>
                 )}
-              </ElFormItem>
-              <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>

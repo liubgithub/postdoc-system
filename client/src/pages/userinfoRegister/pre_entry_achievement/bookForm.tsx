@@ -220,7 +220,7 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value["出版号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="ISBN"><ElInput v-model={editData.value["isbn"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="作者排名"><ElInput v-model={editData.value["作者排名"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="时间">
+                <ElCol span={12}><ElFormItem label="成果提交时间">
                   <ElDatePicker v-model={editData.value["time"]} type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择成果时间" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
               </ElRow>

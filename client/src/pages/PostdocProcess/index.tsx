@@ -278,7 +278,7 @@ export default defineComponent({
                 'entry_agreement': '/UserInfo/entry',
                 'midterm_assessment': '/UserInfo/in-station',
                 'annual_assessment': '/UserInfo/in-station',
-                'extension_assessment': '/UserInfo/out-station',
+                'extension_assessment': '/UserInfo/in-station',
                 'leave_assessment': '/UserInfo/out-station'
             }
             

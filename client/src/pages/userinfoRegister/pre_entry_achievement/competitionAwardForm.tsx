@@ -204,17 +204,6 @@ export default defineComponent({
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
                 <ElCol span={12}>
-                  <ElFormItem label="成果时间">
-                    <ElDatePicker
-                      v-model={editData.value["time"]}
-                      type="date"
-                      format="YYYY-MM-DD"
-                      value-format="YYYY-MM-DD"
-                      placeholder="选择成果时间"
-                    />
-                  </ElFormItem>
-                </ElCol>
-                <ElCol span={12}>
                   <ElFormItem label="竞赛名称">
                     <ElInput v-model={editData.value["竞赛名称"]} />
                   </ElFormItem>
@@ -281,6 +270,20 @@ export default defineComponent({
                   </ElFormItem>
                 </ElCol>
               </ElRow>
+              <ElCol span={12}>
+                <ElFormItem label="成果提交时间">
+                  <ElDatePicker
+                    v-model={editData.value["time"]}
+                    type="date"
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD"
+                    placeholder="选择成果时间"
+                  />
+                </ElFormItem>
+              </ElCol>
+              <ElFormItem label="备注">
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
+              </ElFormItem>
               <ElFormItem label="上传获奖证书文件">
                 <ElUpload
                   show-file-list={false}
@@ -290,9 +293,6 @@ export default defineComponent({
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
                 {editData.value["上传获奖证书文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传获奖证书文件"].name}</span>}
-              </ElFormItem>
-              <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
