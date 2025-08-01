@@ -36,7 +36,7 @@ const columns = [
   { label: "总期号", prop: "总期号", width: 100 },
   { label: "刊物编号", prop: "刊物编号", width: 100 },
   { 
-    label: "时间",
+    label: "成果提交时间",
     prop: "time",
     width: 150,
     formatter: ({ row }: any) => {
@@ -50,7 +50,6 @@ const columns = [
     }
   },
   { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
 
 function db2form(item: any) {
@@ -314,7 +313,7 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value["出版社"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="总期号"><ElInput v-model={editData.value["总期号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="刊物编号"><ElInput v-model={editData.value["刊物编号"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="时间">
+                <ElCol span={12}><ElFormItem label="成果提交时间">
                   <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="备注">

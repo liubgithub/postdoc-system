@@ -938,7 +938,7 @@ export default defineComponent({
           </ElFormItem>
           <AchievementForm />
           {/* 其他成果 */}
-          <ElFormItem label="其他成果" prop="otherachievements">
+          <ElFormItem label="其他成果" prop="otherachievements" style={{ marginTop: '2em' }}>
             <ElInput v-model={form.value.otherachievements} type="textarea" rows={2} maxlength="100" show-word-limit placeholder="其他成果" />
           </ElFormItem>
           {/* 累计成果个数 */}

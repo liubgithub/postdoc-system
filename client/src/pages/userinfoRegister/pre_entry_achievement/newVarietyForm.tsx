@@ -12,19 +12,6 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { 
-    label: "时间", 
-    prop: "time", 
-    width: 110,
-    formatter: (row: any) => {
-      if (!row.time) return "";
-      try {
-        return dayjs(row.time).format('YYYY-MM-DD');
-      } catch {
-        return row.time;
-      }
-    }
-  },
   { label: "品种名称", prop: "品种名称", width: 140 },
   { label: "动植物名称", prop: "动植物名称", width: 120 },
   { label: "选育单位", prop: "选育单位", width: 120 },
@@ -36,8 +23,21 @@ const columns = [
   { label: "本校是否第一完成单位", prop: "本校是否第一完成单位", width: 140 },
   { label: "署名排序", prop: "署名排序", width: 100 },
   { label: "作者名单", prop: "作者名单", width: 120 },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
 
 function db2form(item: any) {
@@ -144,7 +144,7 @@ export default defineComponent({
       }
       formData.append("备注", editData.value["备注"] || "");
       formData.append("time", editData.value["time"] || "");
-      
+
       let res;
       if (editIndex.value === -1) {
         res = await uploadNewVariety(formData);
@@ -195,9 +195,6 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>新品种信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="时间">
-                  <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
-                </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="品种名称"><ElInput v-model={editData.value["品种名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="动植物名称"><ElInput v-model={editData.value["动植物名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="选育单位"><ElInput v-model={editData.value["选育单位"]} /></ElFormItem></ElCol>
@@ -212,6 +209,12 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="署名排序"><ElInput v-model={editData.value["署名排序"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="作者名单"><ElInput v-model={editData.value["作者名单"]} /></ElFormItem></ElCol>
               </ElRow>
+              <ElCol span={12}><ElFormItem label="成果提交时间">
+                <ElDatePicker v-model={editData.value["time"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
+              </ElFormItem></ElCol>
+              <ElFormItem label="备注">
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
+              </ElFormItem>
               <ElFormItem label="上传新品种证明文件">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
                   <ElButton>选择文件</ElButton>
@@ -224,9 +227,6 @@ export default defineComponent({
                 {editData.value["上传新品种证明文件"] && typeof editData.value["上传新品种证明文件"] === 'string' && (
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["上传新品种证明文件"].split('/').pop()}</span>
                 )}
-              </ElFormItem>
-              <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>

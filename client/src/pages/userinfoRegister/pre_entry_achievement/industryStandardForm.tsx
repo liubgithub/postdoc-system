@@ -12,7 +12,6 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "标准名称", prop: "标准名称", width: 140 },
   { label: "标准编号", prop: "标准编号", width: 120 },
   { label: "发布日期", prop: "发布日期", width: 110 },
@@ -20,8 +19,21 @@ const columns = [
   { label: "归口单位", prop: "归口单位", width: 120 },
   { label: "起草单位", prop: "起草单位", width: 120 },
   { label: "适用范围", prop: "适用范围", width: 120 },
-  { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
+  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {
@@ -112,7 +124,7 @@ export default defineComponent({
       }
       formData.append("备注", editData.value["备注"] || "");
       formData.append("time", editData.value["time"] || "");
-      
+
       let res;
       if (editIndex.value === -1) {
         res = await uploadIndustryStandard(formData);
@@ -163,16 +175,6 @@ export default defineComponent({
             <h2 style={{ textAlign: 'center', marginBottom: '2em' }}>行业标准信息登记</h2>
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
-                <ElCol span={12}><ElFormItem label="成果时间">
-                  <ElDatePicker 
-                    v-model={editData.value["time"]} 
-                    type="date" 
-                    format="YYYY-MM-DD"
-                    value-format="YYYY-MM-DD" 
-                    placeholder="选择成果时间" 
-                    style={{ width: '100%' }} 
-                  />
-                </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="标准名称"><ElInput v-model={editData.value["标准名称"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="标准编号"><ElInput v-model={editData.value["标准编号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="发布日期">
@@ -187,10 +189,24 @@ export default defineComponent({
               <ElFormItem label="适用范围">
                 <ElInput type="textarea" rows={4} v-model={editData.value["适用范围"]} />
               </ElFormItem>
+              <ElCol span={12}><ElFormItem label="成果提交时间">
+                <ElDatePicker
+                  v-model={editData.value["time"]}
+                  type="date"
+                  format="YYYY-MM-DD"
+                  value-format="YYYY-MM-DD"
+                  placeholder="选择成果时间"
+                  style={{ width: '100%' }}
+                />
+              </ElFormItem>
+              </ElCol>
+              <ElFormItem label="备注">
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
+              </ElFormItem>
               <ElFormItem label="上传文件">
-                  <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
-                    <ElButton>选择文件</ElButton>
-                  </ElUpload>
+                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange}>
+                  <ElButton>选择文件</ElButton>
+                </ElUpload>
                 {/* 新文件名 */}
                 {editData.value["上传文件"] && editData.value["上传文件"] instanceof File && (
                   <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["上传文件"].name}</span>
@@ -199,9 +215,6 @@ export default defineComponent({
                 {editData.value["上传文件"] && typeof editData.value["上传文件"] === 'string' && (
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["上传文件"].split('/').pop()}</span>
                 )}
-              </ElFormItem>
-              <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>

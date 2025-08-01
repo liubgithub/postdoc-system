@@ -3,7 +3,7 @@ import Login from '@/pages/Login'
 import Signin from '@/pages/Signin'
 import Frame from '@/units/Frame'
 import Home from '@/pages/Home'
-import Behind from '@/pages/Status'
+import Behind from '@/pages/PostdocProcess'
 import UserInfo from '@/pages/UserInfo'
 import UserInfo1 from '@/pages/EnterWorksation'
 import UserInfoRegister from "@/pages/userinfoRegister"

@@ -10,6 +10,7 @@ from app.userinfoRegister import routers as info_routers
 from app.enterWorkstation import routers as enter_workstation
 from app.assessment import routers as assment_info
 from app.Teacher.EntryMange import teacher_routers
+from app.postdocProcess import routers as postdocProcess
 
 
 # 创建数据库表
@@ -44,6 +45,9 @@ app.include_router(users.router)
 
 # 个人信息登记路由
 app.include_router(info_routers.router)
+
+# 博士后流程状态
+app.include_router(postdocProcess.router)
 
 # 进站申请
 app.include_router(enter_workstation.router)
