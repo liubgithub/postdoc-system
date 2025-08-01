@@ -116,14 +116,24 @@ export default defineComponent({
                     return '合作导师审核中'
                 case '管理员审核中':
                     return '管理员审核中'
+                case '学院审核中':
+                    return '学院审核中'
                 case '学院未审核':
+                case '等待学院审核':
                     return '等待学院审核'
                 case '导师未审核':
+                case '等待导师审核':
                     return '等待导师审核'
+                case '等待管理员审核':
+                    return '等待管理员审核'
                 case '导师审核通过':
                     return '合作导师审核通过'
                 case '导师审核不通过':
                     return '合作导师审核不通过'
+                case '学院审核通过':
+                    return '学院审核通过'
+                case '学院审核不通过':
+                    return '学院审核不通过'
                 case '管理员审核通过':
                     return '管理员审核通过'
                 case '管理员审核不通过':
@@ -302,7 +312,7 @@ export default defineComponent({
                 const baseSteps = [
                     { name: '博士后提交申请', status: 'finished', time: '2025-03-12 19:59:28' },
                     { name: '合作导师审核', status: 'wait', time: '' },
-                    { name: '管理员审核', status: 'wait', time: '' },
+                    { name: '学院/管理员审核', status: 'wait', time: '' },
                     { name: '审核结束', status: 'wait', time: '' }
                 ]
                 
@@ -313,12 +323,16 @@ export default defineComponent({
                         baseSteps[0].time = ''
                         break
                     case '导师未审核':
+                    case '等待导师审核':
                     case '合作导师审核中':
                         baseSteps[1].status = 'process'
                         baseSteps[1].time = '2025-03-31 20:44:48'
                         break
                     case '学院未审核':
+                    case '等待学院审核':
+                    case '学院审核中':
                     case '管理员审核中':
+                    case '等待管理员审核':
                         baseSteps[1].status = 'finished'
                         baseSteps[1].time = '2025-03-31 20:44:48'
                         baseSteps[2].status = 'process'
@@ -328,6 +342,7 @@ export default defineComponent({
                         baseSteps[1].status = 'finished'
                         baseSteps[1].time = '2025-03-31 20:44:48'
                         break
+                    case '学院审核通过':
                     case '管理员审核通过':
                     case '审核结束':
                         baseSteps[1].status = 'finished'
@@ -341,6 +356,7 @@ export default defineComponent({
                         baseSteps[1].status = 'error'
                         baseSteps[1].time = '2025-03-31 20:44:48'
                         break
+                    case '学院审核不通过':
                     case '管理员审核不通过':
                         baseSteps[1].status = 'finished'
                         baseSteps[1].time = '2025-03-31 20:44:48'
