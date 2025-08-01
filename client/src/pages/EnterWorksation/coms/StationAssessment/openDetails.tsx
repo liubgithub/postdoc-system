@@ -4,17 +4,27 @@ import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElDatePi
 import * as styles from './styles.css.ts'
 
 export default defineComponent({
-    name:'OpenDetails',
-    setup() {
+    name: 'OpenDetails',
+    props: {
+        onBack: {
+            type: Function,
+            required: true,
+        },
+        showAssessment: {
+            type: Boolean,
+            default: true,
+        }
+    },
+    setup(props) {
         // 第二部分表单数据
         const projectForm = ref({
-            projectName: '',
-            projectSource: '',
-            projectType: '',
-            approvalTime: '',
-            projectFee: '',
-            projectTask: '',
-            projectThought: ''
+            projectName: '',//研究项目名称
+            projectSource: '',//项目来源
+            projectType: '',//项目性质
+            approvalTime: '',//批准时间
+            projectFee: '',//项目经费
+            projectTask: '',//研究项目任务
+            projectThought: ''//申请者对研究项目思路
         })
         const form = reactive({
             guideGroupOpinion: '',
@@ -40,29 +50,36 @@ export default defineComponent({
         const removeStaff = (index: number) => {
             if (form.staff.length > 1) form.staff.splice(index, 1);
         }
-        return()=> (
+        const handleBack = () => {
+            props.onBack && props.onBack()
+        }
+
+        const handleSubmit = () => {
+
+        }
+        return () => (
             <div>
                 <UserinfoRegister showOtherDescription={false} />
                 {/* 第二部分 博士后研究项目情况 */}
-                <div class={styles.formWrapper} style={{marginTop:'32px'}}>
-                    <div style={{fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em'}}>二、博士后研究项目情况</div>
+                <div class={styles.formWrapper} style={{ marginTop: '32px' }}>
+                    <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>二、博士后研究项目情况</div>
                     <ElForm model={projectForm.value} labelWidth="120px">
                         <ElFormItem label="研究项目名称">
                             <ElInput v-model={projectForm.value.projectName} />
                         </ElFormItem>
-                        <div style={{display:'flex',gap:'16px'}}>
-                            <ElFormItem label="项目来源" style={{flex:1}}>
+                        <div style={{ display: 'flex', gap: '16px' }}>
+                            <ElFormItem label="项目来源" style={{ flex: 1 }}>
                                 <ElInput v-model={projectForm.value.projectSource} />
                             </ElFormItem>
-                            <ElFormItem label="项目性质" style={{flex:1}}>
+                            <ElFormItem label="项目性质" style={{ flex: 1 }}>
                                 <ElInput v-model={projectForm.value.projectType} />
                             </ElFormItem>
                         </div>
-                        <div style={{display:'flex',gap:'16px'}}>
-                            <ElFormItem label="批准时间" style={{flex:1}}>
+                        <div style={{ display: 'flex', gap: '16px' }}>
+                            <ElFormItem label="批准时间" style={{ flex: 1 }}>
                                 <ElInput v-model={projectForm.value.approvalTime} />
                             </ElFormItem>
-                            <ElFormItem label="项目经费" style={{flex:1}}>
+                            <ElFormItem label="项目经费" style={{ flex: 1 }}>
                                 <ElInput v-model={projectForm.value.projectFee} />
                             </ElFormItem>
                         </div>
@@ -75,22 +92,9 @@ export default defineComponent({
                     </ElForm>
                 </div>
                 {/* 第三部分 考核情况 */}
-                <div class={styles.formWrapper} style={{marginTop:'32px'}}>
-                    <div style={{fontWeight:'bold',fontSize:'18px',marginBottom:'16px'}}>三、考核情况</div>
-                    <div style={{ padding: '16px', minHeight: '180px', borderBottom: '1px solid #666', position: 'relative' }}>
-                            <ElFormItem label="指导小组意见" style={{ marginBottom: 0 }}>
-                                <ElInput type="textarea" v-model={form.guideGroupOpinion} autosize={{ minRows: 5 }} />
-                            </ElFormItem>
-                            <div style={{ display: 'flex', gap: '16px', position: 'absolute', right: '20px', bottom: '5px' }}>
-                                <ElFormItem label="指导小组负责人(合作导师)签字" prop="guideGroupLeader" labelWidth={300}>
-                                    <ElInput v-model={form.guideGroupLeader} />
-                                </ElFormItem>
-                                <ElFormItem label="日期" prop="guideGroupDate">
-                                    <ElDatePicker v-model={form.guideGroupDate} type="date" placeholder="选择日期" style={{ width: '100%' }} />
-                                </ElFormItem>
-                            </div>
-                        </div>
-
+                {props.showAssessment && (
+                    <div class={styles.formWrapper} style={{ marginTop: '32px' }}>
+                        <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>三、考核情况</div>
 
                         <div style={{ borderTop: '1px solid #333', padding: '16px', display: 'flex' }}>
                             <ElFormItem label='考核组人员基本情况' style={{ marginBottom: 0 }}>
@@ -134,10 +138,29 @@ export default defineComponent({
                                 <ElButton type="primary" plain onClick={addStaff} style={{ marginBottom: '16px' }}>添加人员</ElButton>
                             </div>
                         </div>
-                    <div style={{display:'flex',justifyContent:'center',gap:'32px',marginTop:'24px'}}>
-                        <ElButton>返回</ElButton>
-                        <ElButton type="primary">导出</ElButton>
+                        <div style={{ padding: '16px', minHeight: '180px', borderTop: '1px solid #333', borderBottom: '1px solid #333', position: 'relative' }}>
+                            <ElFormItem label="指导小组意见" style={{ marginBottom: 0 }}>
+                                <ElInput type="textarea" v-model={form.guideGroupOpinion} autosize={{ minRows: 5 }} />
+                            </ElFormItem>
+                            <div style={{ display: 'flex', gap: '16px', position: 'absolute', right: '20px', bottom: '5px' }}>
+                                <ElFormItem label="指导小组负责人(合作导师)签字" prop="guideGroupLeader" labelWidth={300}>
+                                    <ElInput v-model={form.guideGroupLeader} />
+                                </ElFormItem>
+                                <ElFormItem label="日期" prop="guideGroupDate">
+                                    <ElDatePicker v-model={form.guideGroupDate} type="date" placeholder="选择日期" style={{ width: '100%' }} />
+                                </ElFormItem>
+                            </div>
+                        </div>
+
+
+
+
                     </div>
+                )}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginTop: '6px' }}>
+                    <ElButton onClick={handleSubmit} type="primary">提交</ElButton>
+                    <ElButton onClick={handleBack}>返回</ElButton>
+                    <ElButton type="success">导出</ElButton>
                 </div>
             </div>
         )

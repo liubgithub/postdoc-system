@@ -1,153 +1,140 @@
-import { ElForm, ElFormItem, ElInput } from 'element-plus'
-import * as styles from './style.css'
+import * as cls from './style.css'
+import { 
+  ElTable, 
+  ElTableColumn, 
+  ElCard, 
+  ElTag, 
+  ElEmpty,
+  ElDatePicker,
+  ElButton
+} from 'element-plus'
+import fetch from '@/api/index'
 
 export default defineComponent({
-    name: 'Achievement',
-    props: {
-        model: {
-            type: Object,
-            required: true
+  name: 'Achievement',
+  setup() {
+    const time = ref('1000-06-10')
+    const tables = ref<any>({})
+    const totalCount = ref(0)
+    const loading = ref(true)
+    const hasData = ref(false)
+
+    // 获取数据函数
+    const fetchData = async () => {
+      try {
+        loading.value = true
+        const res = await fetch.raw.GET(`/time-filter/get-data-after-time`, {
+          params: { query: { target_time: time.value } }
+        })
+        
+        if (res.data) {
+          tables.value = res.data.tables
+          totalCount.value = res.data.total_count as any
+          hasData.value = totalCount.value > 0
         }
-    },
-    emits: ['update:model'],
-    setup(props, { emit }) {
-        const onInput = (key: string, value: any) => {
-            emit('update:model', { ...props.model, [key]: value })
-        }
-        return () => (
-            <div>
-                <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>博士后在站期间取得的科研成果</div>
-                <ElForm labelWidth="100px" labelPosition="top">
-                    <div class={styles.achievementRow}>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="发表论文名称">
-                                <ElInput modelValue={props.model.paper_title} onInput={val => onInput('paper_title', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="刊物名称">
-                                <ElInput modelValue={props.model.journal_name} onInput={val => onInput('journal_name', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="刊物类别">
-                                <ElInput modelValue={props.model.journal_type} onInput={val => onInput('journal_type', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="第一署名单位">
-                                <ElInput modelValue={props.model.first_author_unit} onInput={val => onInput('first_author_unit', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="发表时间">
-                                <ElInput modelValue={props.model.publish_time} onInput={val => onInput('publish_time', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="排名">
-                                <ElInput modelValue={props.model.paper_rank} onInput={val => onInput('paper_rank', val)} />
-                            </ElFormItem>
-                        </div>
-                    </div>
-                    <div class={styles.achievementRow}>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="获得基金项目名称">
-                                <ElInput modelValue={props.model.project_title} onInput={val => onInput('project_title', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="基金名称">
-                                <ElInput modelValue={props.model.fund_name} onInput={val => onInput('fund_name', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="经费">
-                                <ElInput modelValue={props.model.fund_amount} onInput={val => onInput('fund_amount', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="项目依托单位">
-                                <ElInput modelValue={props.model.project_unit} onInput={val => onInput('project_unit', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="批准时间">
-                                <ElInput modelValue={props.model.approval_time} onInput={val => onInput('approval_time', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="排名">
-                                <ElInput modelValue={props.model.project_rank} onInput={val => onInput('project_rank', val)} />
-                            </ElFormItem>
-                        </div>
-                    </div>
-                    <div class={styles.achievementRow}>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="专利成果名称">
-                                <ElInput modelValue={props.model.patent_title} onInput={val => onInput('patent_title', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="专利类型及编号">
-                                <ElInput modelValue={props.model.patent_type_number} onInput={val => onInput('patent_type_number', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="产权单位">
-                                <ElInput modelValue={props.model.patent_unit} onInput={val => onInput('patent_unit', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem>
-                                <ElInput modelValue={props.model.patent_other} onInput={val => onInput('patent_other', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label='申报时间'>
-                                <ElInput modelValue={props.model.patent_apply_time} onInput={val => onInput('patent_apply_time', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label='排名'>
-                                <ElInput modelValue={props.model.patent_rank} onInput={val => onInput('patent_rank', val)} />
-                            </ElFormItem>
-                        </div>
-                    </div>
-                    <div class={styles.achievementRow}>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="获奖成果名称">
-                                <ElInput modelValue={props.model.award_title} onInput={val => onInput('award_title', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label="奖励部门及等级">
-                                <ElInput modelValue={props.model.award_dept_level} onInput={val => onInput('award_dept_level', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem>
-                                <ElInput modelValue={props.model.award_other} onInput={val => onInput('award_other', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem>
-                                <ElInput modelValue={props.model.award_other2} onInput={val => onInput('award_other2', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label='获奖时间'>
-                                <ElInput modelValue={props.model.award_time} onInput={val => onInput('award_time', val)} />
-                            </ElFormItem>
-                        </div>
-                        <div class={styles.achievementCell}>
-                            <ElFormItem label='排名'>
-                                <ElInput modelValue={props.model.award_rank} onInput={val => onInput('award_rank', val)} />
-                            </ElFormItem>
-                        </div>
-                    </div>
-                </ElForm>
-            </div>
-        )
+      } catch (error) {
+        console.error('获取数据失败:', error)
+      } finally {
+        loading.value = false
+      }
     }
+
+    onMounted(fetchData)
+
+    // 处理日期格式
+    const formatDate = (dateString: string) => {
+      if (!dateString) return ''
+      return new Date(dateString).toLocaleDateString()
+    }
+
+    // 应该隐藏的字段
+    const hiddenFields = ['id', 'user_id', 'created_at', 'updated_at']
+
+    // 渲染动态表格列
+    const renderDynamicColumns = (data: any[]) => {
+      if (!data || data.length === 0) return null
+      
+      // 获取所有字段（排除需要隐藏的字段）
+      const fields = Object.keys(data[0]).filter(
+        key => !hiddenFields.includes(key)
+      )
+      
+      return fields.map(field => {
+        // 特殊处理 time 字段，显示为"时间"
+        const label = field === 'time' ? '时间' : field
+        
+        // 日期类型字段格式化
+        if (field === 'time' || field.includes('日期') || field.includes('时间')) {
+          return (
+            <ElTableColumn
+              prop={field}
+              label={label}
+              width="150"
+              formatter={(row: any) => formatDate(row[field])}
+            />
+          )
+        }
+        
+        return <ElTableColumn 
+                  prop={field} 
+                  label={label} 
+                  show-overflow-tooltip 
+                  min-width="120"
+                />
+      })
+    }
+
+    return () => (
+      <div class={cls.achievementcontainer}>
+        <div class={cls.filtersection}>
+          <h2>科研成果统计</h2>
+          <div class={cls.filtercontrols}>
+            <ElDatePicker
+              v-model={time.value}
+              type="date"
+              placeholder="选择日期"
+              value-format="YYYY-MM-DD"
+            />
+            <ElButton type="primary" onClick={fetchData} loading={loading.value}>
+              查询
+            </ElButton>
+            <div class={cls.totalcount}>
+              总记录数: <ElTag type="success">{totalCount.value}</ElTag>
+            </div>
+          </div>
+        </div>
+
+        {loading.value ? (
+          <div class={cls.loading}>加载中...</div>
+        ) : hasData.value ? (
+          Object.keys(tables.value)
+            .filter(tableKey => tables.value[tableKey].count > 0)
+            .map(tableKey => {
+              const tableData = tables.value[tableKey]
+              
+              return (
+                <ElCard class={cls.tablecard} shadow="hover">
+                  <div class={cls.tableheader}>
+                    <h3>{tableData.display_name}</h3>
+                    <ElTag type="info">{tableData.count} 条记录</ElTag>
+                  </div>
+                  
+                  <ElTable
+                    data={tableData.data}
+                    border
+                    stripe
+                    style={{ width: '100%', marginTop: '15px' }}
+                    empty-text="该类别暂无数据"
+                  >
+                    {renderDynamicColumns(tableData.data)}
+                  </ElTable>
+                </ElCard>
+              )
+            })
+        ) : (
+          <ElEmpty description="没有找到相关数据" />
+        )}
+      </div>
+    )
+  }
 })

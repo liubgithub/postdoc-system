@@ -30,6 +30,9 @@ export default defineComponent({
     onEdit: {
       type: Function as PropType<(row: TableRow) => void>,
     },
+    // onSubmit:{
+    //   type:Function as PropType<(row:TableRow) => void>,
+    // },
     tableClass: {
       type: String,
       default: '',
@@ -64,6 +67,11 @@ export default defineComponent({
                       查看
                     </ElButton>
                   )}
+                  {/* {props.onSubmit && (
+                     <ElButton type="primary" size="small" onClick={() => props.onSubmit!(row)}>
+                     提交基本信息
+                   </ElButton>
+                  )} */}
                   {props.onEdit && (
                     <ElButton type="success" size="small" onClick={() => props.onEdit!(row)} style="margin-left: 8px;">
                       编辑
