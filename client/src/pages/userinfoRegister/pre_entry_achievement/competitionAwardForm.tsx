@@ -12,7 +12,6 @@ import dayjs from 'dayjs';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "竞赛名称", prop: "竞赛名称", width: 120 },
   { label: "获奖类别", prop: "获奖类别", width: 100 },
   { label: "获奖等级", prop: "获奖等级", width: 100 },
@@ -25,7 +24,22 @@ const columns = [
   { label: "是否和学位论文相关", prop: "是否和学位论文相关", width: 140 },
   { label: "奖项名称", prop: "奖项名称", width: 120 },
   { label: "作者名单", prop: "作者名单", width: 120 },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
+
   { label: "上传获奖证书文件", prop: "上传获奖证书文件", width: 160 }
 ];
 

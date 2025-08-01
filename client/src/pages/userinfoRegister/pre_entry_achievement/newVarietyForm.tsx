@@ -12,19 +12,6 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { 
-    label: "时间", 
-    prop: "time", 
-    width: 110,
-    formatter: (row: any) => {
-      if (!row.time) return "";
-      try {
-        return dayjs(row.time).format('YYYY-MM-DD');
-      } catch {
-        return row.time;
-      }
-    }
-  },
   { label: "品种名称", prop: "品种名称", width: 140 },
   { label: "动植物名称", prop: "动植物名称", width: 120 },
   { label: "选育单位", prop: "选育单位", width: 120 },
@@ -36,8 +23,21 @@ const columns = [
   { label: "本校是否第一完成单位", prop: "本校是否第一完成单位", width: 140 },
   { label: "署名排序", prop: "署名排序", width: 100 },
   { label: "作者名单", prop: "作者名单", width: 120 },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
 
 function db2form(item: any) {
@@ -144,7 +144,7 @@ export default defineComponent({
       }
       formData.append("备注", editData.value["备注"] || "");
       formData.append("time", editData.value["time"] || "");
-      
+
       let res;
       if (editIndex.value === -1) {
         res = await uploadNewVariety(formData);

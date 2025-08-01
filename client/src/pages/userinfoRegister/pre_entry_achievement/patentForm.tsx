@@ -12,19 +12,7 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { 
-    label: "时间", 
-    prop: "time", 
-    width: 110,
-    formatter: (row: any) => {
-      if (!row.time) return "";
-      try {
-        return dayjs(row.time).format('YYYY-MM-DD');
-      } catch {
-        return row.time;
-      }
-    }
-  },
+
   { label: "专利名称", prop: "专利名称", width: 150 },
   { label: "专利类型", prop: "专利类型", width: 100 },
   { label: "申请日期", prop: "申请日期", width: 110 },
@@ -34,8 +22,22 @@ const columns = [
   { label: "发明人", prop: "发明人", width: 100 },
   { label: "专利权人", prop: "专利权人", width: 120 },
   { label: "专利状态", prop: "专利状态", width: 100 },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
+  { label: "备注", prop: "备注", width: 120 },
   { label: "上传文件", prop: "上传文件", width: 120 },
-  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {
@@ -119,7 +121,7 @@ export default defineComponent({
         ElMessage.error('专利名称不能为空');
         return;
       }
-      
+
       const formData = new FormData();
       formData.append("专利成果名称", editData.value["专利名称"]);
       formData.append("专利类型", editData.value["专利类型"] || "");
@@ -135,7 +137,7 @@ export default defineComponent({
       }
       formData.append("备注", editData.value["备注"] || "");
       formData.append("time", editData.value.time ? dayjs(editData.value.time).format("YYYY-MM-DD") : "");
-      
+
       let res;
       if (editIndex.value === -1) {
         // 新增
@@ -210,7 +212,12 @@ export default defineComponent({
                   />
                 </ElFormItem></ElCol>
               </ElRow>
-              
+
+
+
+              <ElFormItem label="备注">
+                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
+              </ElFormItem>
               <ElFormItem label="上传文件">
                 <ElUpload
                   show-file-list={false}
@@ -221,11 +228,7 @@ export default defineComponent({
                 </ElUpload>
                 {editData.value["上传文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传文件"].name}</span>}
               </ElFormItem>
-              
-              <ElFormItem label="备注">
-                <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
-              </ElFormItem>
-              
+
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
                 <ElButton onClick={handleCancel}>返回</ElButton>

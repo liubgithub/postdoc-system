@@ -28,13 +28,21 @@ const columns = [
   { label: "会议地点", prop: "会议地点", width: 120 },
   { label: "会议报告", prop: "会议报告", width: 120 },
   { label: "会议报告文件", prop: "会议报告文件", width: 120 },
+  { 
+      label: "成果提交时间",
+      prop: "time",
+      width: 150,
+      formatter: ({ row }: any) => {
+        if (!row.time) return "";
+        try {
+          return dayjs(row.time).format('YYYY-MM-DD');
+        } catch (e) {
+          console.error('时间格式化错误:', e);
+          return row.time;
+        }
+      }
+    },
   { label: "备注", prop: "备注", width: 120 },
-  {
-    label: "时间",
-    prop: "time",
-    width: 150,
-    formatter: ({ row }: any) => row.time ? dayjs(row.time).format('YYYY-MM-DD') : ""
-  }
 ];
 
 function db2form(item: any) {

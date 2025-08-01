@@ -12,7 +12,6 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "课题名称", prop: "课题名称", width: 120 },
   { label: "课题来源", prop: "课题来源", width: 120 },
   { label: "开始时间", prop: "开始时间", width: 110 },
@@ -20,8 +19,21 @@ const columns = [
   { label: "课题负责人", prop: "课题负责人", width: 120 },
   { label: "本人承担部分", prop: "本人承担部分", width: 120 },
   { label: "课题级别", prop: "课题级别", width: 100 },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
 ];
 
 function db2form(item: any) {
@@ -112,7 +124,7 @@ export default defineComponent({
       }
       formData.append("备注", editData.value["备注"] || "");
       formData.append("time", editData.value["time"] || "");
-      
+
       let res;
       if (editIndex.value === -1) {
         res = await uploadSubjectResearch(formData);
@@ -164,13 +176,13 @@ export default defineComponent({
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
                 <ElCol span={12}><ElFormItem label="成果时间">
-                  <ElDatePicker 
-                    v-model={editData.value["time"]} 
-                    type="date" 
+                  <ElDatePicker
+                    v-model={editData.value["time"]}
+                    type="date"
                     format="YYYY-MM-DD"
-                    value-format="YYYY-MM-DD" 
-                    placeholder="选择成果时间" 
-                    style={{ width: '100%' }} 
+                    value-format="YYYY-MM-DD"
+                    placeholder="选择成果时间"
+                    style={{ width: '100%' }}
                   />
                 </ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="课题名称"><ElInput v-model={editData.value["课题名称"]} /></ElFormItem></ElCol>

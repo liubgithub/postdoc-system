@@ -12,7 +12,6 @@ import {
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-  { label: "成果时间", prop: "time", width: 110, formatter: (row: any, column: any, cellValue: any) => cellValue || '' },
   { label: "标准名称", prop: "标准名称", width: 140 },
   { label: "标准编号", prop: "标准编号", width: 120 },
   { label: "发布日期", prop: "发布日期", width: 110 },
@@ -20,8 +19,21 @@ const columns = [
   { label: "归口单位", prop: "归口单位", width: 120 },
   { label: "起草单位", prop: "起草单位", width: 120 },
   { label: "适用范围", prop: "适用范围", width: 120 },
-  { label: "备注", prop: "备注", width: 120 },
-  { label: "操作", prop: "action", width: 120, fixed: "right" },
+  { 
+      label: "成果提交时间",
+      prop: "time",
+      width: 150,
+      formatter: ({ row }: any) => {
+        if (!row.time) return "";
+        try {
+          return dayjs(row.time).format('YYYY-MM-DD');
+        } catch (e) {
+          console.error('时间格式化错误:', e);
+          return row.time;
+        }
+      }
+    },
+  { label: "备注", prop: "备注", width: 120 }
 ];
 
 function db2form(item: any) {

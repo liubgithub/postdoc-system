@@ -24,8 +24,22 @@ const columns = [
   { label: "ISBN", prop: "isbn", width: 100 },
   { label: "作者排名", prop: "作者排名", width: 100 },
   { label: "上传文件", prop: "上传文件", width: 120 },
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
+      }
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
-  { label: "时间", prop: "time", width: 120 }
+
 ];
 
 function db2form(item: any) {
@@ -123,7 +137,7 @@ export default defineComponent({
         ElMessage.error('出版日期不能为空');
         return;
       }
-      
+
       const formData = new FormData();
       formData.append("著作中文名", editData.value["著作中文名"]);
       formData.append("出版社", editData.value["出版社"]);
@@ -141,7 +155,7 @@ export default defineComponent({
         formData.append("file", editData.value["上传文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      
+
       let res;
       if (editIndex.value === -1) {
         // 新增
@@ -210,7 +224,7 @@ export default defineComponent({
                   <ElDatePicker v-model={editData.value["time"]} type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="选择成果时间" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
               </ElRow>
-              
+
               <ElFormItem label="上传文件">
                 <ElUpload
                   show-file-list={false}
@@ -221,11 +235,11 @@ export default defineComponent({
                 </ElUpload>
                 {editData.value["上传文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传文件"].name}</span>}
               </ElFormItem>
-              
+
               <ElFormItem label="备注">
                 <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
-              
+
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
                 <ElButton onClick={handleCancel}>返回</ElButton>
