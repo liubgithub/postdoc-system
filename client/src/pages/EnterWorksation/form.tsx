@@ -9,6 +9,16 @@ export default defineComponent({
     showOtherDescription: {
       type: Boolean,
       default: true
+    },
+    // 新增：外部传入的用户信息
+    externalUserInfo: {
+      type: Object,
+      default: null
+    },
+    // 新增：当前用户角色
+    userRole: {
+      type: String,
+      default: 'student'
     }
   },
   setup(props) {
@@ -43,8 +53,16 @@ export default defineComponent({
     // 加载用户信息
     const fetchProfile = async () => {
       try {
+        let data;
         
-        const data = await getUserProfile();
+        // 如果有外部传入的用户信息，使用外部信息
+        if (props.externalUserInfo) {
+          data = props.externalUserInfo;
+        } else {
+          // 否则获取当前用户信息
+          data = await getUserProfile();
+        }
+        
         if (data) {
           form.value = {
             ...form.value,
@@ -84,6 +102,13 @@ export default defineComponent({
         }
       } catch (e: any) {
         // 未查到信息时不报错
+      }
+    };
+
+    // 监听外部用户信息变化
+    const watchExternalUserInfo = () => {
+      if (props.externalUserInfo) {
+        fetchProfile();
       }
     };
 

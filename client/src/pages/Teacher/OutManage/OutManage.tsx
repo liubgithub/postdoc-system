@@ -105,7 +105,7 @@ export default defineComponent({
 
     return () => (
       <ElContainer style={{ minHeight: "100vh", display: 'flex', flexDirection: 'column' }}>
-        <ElHeader height="15vh" style={{ padding: 0, background: "none" }}>
+        <ElHeader height="20vh" style={{ padding: 0, background: "none" }}>
           <TeacherHeader />
         </ElHeader>
         <ElContainer style={{ position: 'relative', flex: 1, height: '0' ,top:'8px'}}>

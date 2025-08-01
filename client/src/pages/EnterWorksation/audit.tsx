@@ -1,23 +1,69 @@
-import { ElInput, ElCheckboxGroup, ElCheckbox, ElCard } from 'element-plus'
+import { ElInput, ElCheckboxGroup, ElCheckbox, ElCard, ElDatePicker } from 'element-plus'
 import * as cls from './styles.css'
+import SignaturePad from '@/units/Signature/index'
 export default defineComponent({
     name: "Audit",
     props: {
         onBack: {
             type: Function,
             required: true
+        },
+        // 新增：当前用户角色
+        userRole: {
+            type: String,
+            default: 'student' // student, teacher, secretary, dean, etc.
         }
     },
     setup(props) {
         const assessmentResult = ref('')
-        const renderCard = (header: string, content: any) => (
+        const teacherOpinion = ref('同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。')
+        
+        // 签名相关数据
+        const actualTeacherSignature = ref('')
+        const actualTeacherDate = ref('')
+        const nominalTeacherSignature = ref('')
+        const nominalTeacherDate = ref('')
+        
+        // 检查用户是否有编辑权限
+        const canEdit = (section: string) => {
+            switch (section) {
+                case 'teacher':
+                    return props.userRole === 'teacher';
+                case 'secretary':
+                    return props.userRole === 'secretary';
+                case 'dean':
+                    return props.userRole === 'dean';
+                case 'station':
+                    return props.userRole === 'station';
+                case 'hr':
+                    return props.userRole === 'hr';
+                default:
+                    return false; // 学生不能编辑任何考核意见部分
+            }
+        };
+
+        const renderCard = (header: string, content: any, section: string = '') => (
             <ElCard
                 class={cls.formSection}
                 v-slots={{
                     header: () => <div class={cls.cardHeader}>{header}</div>,
                 }}
             >
-                <div class={cls.cardContent}>{content}</div>
+                <div class={cls.cardContent}>
+                    {section === 'teacher' && canEdit('teacher') ? (
+                        <>
+                            <ElInput
+                                v-model={teacherOpinion.value}
+                                type="textarea"
+                                rows={4}
+                                placeholder="请输入合作导师意见"
+                            />
+                            {content}
+                        </>
+                    ) : (
+                        content
+                    )}
+                </div>
             </ElCard>
         );
 
@@ -28,18 +74,38 @@ export default defineComponent({
                 </div>
 
                 {renderCard('合作导师意见 (如有挂名导师，挂名导师和实际导师均需签字)', <>
-                    <p class={cls.para}>同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。</p>
+                    {!canEdit('teacher') && <p class={cls.para}>{teacherOpinion.value}</p>}
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>实际导师签名：</p>
-                            
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
+                                <div>
+                                    <SignaturePad onChange={val => actualTeacherSignature.value = val} />
+                                    <ElDatePicker
+                                        v-model={actualTeacherDate.value}
+                                        type="date"
+                                        placeholder="选择日期"
+                                        style={{ width: '300px' }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div class={cls.signature}>
                             <p>挂名导师签名：</p>
-                            
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
+                                <div>
+                                    <SignaturePad onChange={val => nominalTeacherSignature.value = val} />
+                                    <ElDatePicker
+                                        v-model={nominalTeacherDate.value}
+                                        type="date"
+                                        placeholder="选择日期"
+                                        style={{ width: '300px' }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </>)}
+                </>, 'teacher')}
 
                 {renderCard('博士后工作秘书审核', <>
                     <p class={cls.para}>同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。</p>

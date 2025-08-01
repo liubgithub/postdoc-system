@@ -12,12 +12,39 @@ import {
   ElMenuItem,
   ElPagination,
   ElDialog,
+  ElMessage,
 } from "element-plus";
 import * as styles from "../UserInfo/styles.css.ts";
 import useUser from "@/stores/user";
 import { useRouter, useRoute, RouterView } from "vue-router";
 import TeacherHeader from "./TeacherHeader";
 import ProcessStatus from "@/units/ProcessStatus";
+import type { ProcessStep } from "@/units/ProcessStatus";
+import { getTeacherApplications, approveApplication } from "@/api/enterWorkstation";
+
+// 定义申请数据的类型 - 适配后端返回的数据结构
+interface ApplicationData {
+  id: number;
+  studentId: string;  // 学号
+  name: string;       // 姓名（对应发起人）
+  college: string;    // 学院
+  major: string;      // 专业
+  applyTime: string;  // 申请时间（对应提交时间）
+  status: string;     // 状态
+  node: string;       // 当前节点
+  currentApproval: string; // 当前审核
+  steps: ProcessStep[];
+  user_id: number;
+  subject: string;
+  cotutor: string;
+  temp_info: {
+    stu_num: string;
+    stu_name: string;
+    college: string;
+    subject: string;
+    cotutor: string;
+  };
+}
 
 const menuList = [
   { label: "进站管理", path: "/teacher/entryManage" },
@@ -29,17 +56,24 @@ const menuList = [
 export default defineComponent({
   name: "TeacherPage",
   setup() {
+    const router = useRouter();
     const showProcessDialog = ref(false);
-    const currentSteps = ref([
-      { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-      { status: '审核中' as const, role: '导师审核', time: '2025-09-02 12:00' },
-      { status: '结束' as const, role: '学院审核' }
+    const currentSteps = ref<ProcessStep[]>([
+      { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
+      { status: '审核中', role: '导师审核', time: '2025-09-02 12:00' },
+      { status: '结束', role: '学院审核' }
     ]);
+    
     // 处理状态过滤
-    const filterStatus = ref("待处理");
+    const filterStatus = ref("审核中");
     // 分页相关
     const pageSize = 10;
     const currentPage = ref(1);
+    
+    // 真实数据
+    const tableData = ref<ApplicationData[]>([]);
+    const loading = ref(false);
+    
     const filteredData = computed(() =>
       tableData.value.filter((row) => row.status === filterStatus.value)
     );
@@ -47,70 +81,55 @@ export default defineComponent({
       const start = (currentPage.value - 1) * pageSize;
       return filteredData.value.slice(start, start + pageSize);
     });
-    const summary = ref({ postdocCount: 125, latestAchievement: 78, outCount: 32, delayCount: 7 }); // 新增出站人数和延期人数
+    const summary = ref({ postdocCount: 125, latestAchievement: 78, outCount: 32, delayCount: 7 });
 
-    // onMounted(async () => {
-    //   // 这里用fetch，实际可用axios等
-    //   const res = await fetch('/api/teacher/summary');
-    //   const data = await res.json();
-    //   summary.value = data;
-    // });
-
-    // 在setup中添加按钮事件处理函数
-    const handleDetail = (row: any) => {
-      // 这里写详情逻辑
-      console.log("详情", row);
+    // 获取申请列表
+    const fetchApplications = async () => {
+      loading.value = true;
+      try {
+        const response = await getTeacherApplications();
+        console.log('API响应:', response);
+        if (response.data) {
+          tableData.value = response.data as ApplicationData[];
+        } else if (response.error) {
+          ElMessage.error('获取申请列表失败');
+        }
+      } catch (error) {
+        console.error('获取申请列表失败:', error);
+        ElMessage.error('获取申请列表失败');
+      } finally {
+        loading.value = false;
+      }
     };
-    const handleView = (row: any) => {
-      // 这里可以根据row.steps设置currentSteps.value，示例写死
+
+    // 处理详情按钮点击
+    const handleDetail = (row: ApplicationData) => {
+      console.log('查看详情:', row);
+      
+      // 跳转到进站申请查看页面
+      router.push({
+        path: '/teacher/entryManage/approval',
+        query: {
+          userId: row.user_id.toString(),
+          type: 'detail'
+        }
+      });
+    };
+
+    const handleView = (row: ApplicationData) => {
+      // 设置流程状态，确保类型匹配
       currentSteps.value = row.steps || [
-        { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-        { status: '审核中' as const, role: '导师审核', time: '2025-09-02 12:00' },
-        { status: '结束' as const, role: '学院审核' }
+        { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
+        { status: '审核中', role: '导师审核', time: '2025-09-02 12:00' },
+        { status: '结束', role: '学院审核' }
       ];
       showProcessDialog.value = true;
     };
 
-    // 修改表格数据，添加steps字段（示例）
-    const tableData = ref([
-      {
-        id: "1",
-        businessType: "进站申请",
-        initiator: "张三",
-        submitTime: "2025-09-01",
-        status: "待处理",
-        action: "操作",
-        steps: [
-          { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '审核中', role: '导师审核', time: '2025-09-02 12:00' },
-          { status: '结束', role: '学院审核' }
-        ]
-      },
-      {
-        id: "2",
-        businessType: "进站考核",
-        initiator: "张三",
-        submitTime: "2025-09-01",
-        status: "已处理",
-        steps: [
-          { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '通过', role: '导师审核', time: '2025-09-02 12:00' },
-          { status: '结束', role: '学院审核', time: '2025-09-03 09:00' }
-        ]
-      },
-      {
-        id: "3",
-        businessType: "中期考核",
-        initiator: "张三",
-        submitTime: "2025-09-01",
-        status: "待处理",
-        steps: [
-          { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '审核中', role: '导师审核' },
-          { status: '结束', role: '学院审核' }
-        ]
-      },
-    ]);
+    // 页面加载时获取数据
+    onMounted(() => {
+      fetchApplications();
+    });
 
     return () => (
       <ElContainer style={{ minHeight: "100vh" }}>
@@ -124,15 +143,15 @@ export default defineComponent({
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
               <ElButton
                 type="primary"
-                plain={filterStatus.value !== "待处理"}
+                plain={filterStatus.value !== "审核中"}
                 style={{
                   background:
-                    filterStatus.value === "待处理" ? "#0033cc" : "#fff",
-                  color: filterStatus.value === "待处理" ? "#fff" : "#0033cc",
+                    filterStatus.value === "审核中" ? "#0033cc" : "#fff",
+                  color: filterStatus.value === "审核中" ? "#fff" : "#0033cc",
                   borderColor: "#0033cc",
                 }}
                 onClick={() => {
-                  filterStatus.value = "待处理";
+                  filterStatus.value = "审核中";
                   currentPage.value = 1;
                 }}
               >
@@ -155,6 +174,11 @@ export default defineComponent({
                 已处理
               </ElButton>
             </div>
+            {loading.value && (
+              <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                加载中...
+              </div>
+            )}
             <ElTable
               data={pagedData.value}
               border
@@ -171,13 +195,19 @@ export default defineComponent({
                 }}
               />
               <ElTableColumn
-                prop="businessType"
                 label="业务类型"
                 align="center"
+                v-slots={{
+                  default: () => "进站申请"
+                }}
               />
-              <ElTableColumn prop="initiator" label="发起人" align="center" />
+              <ElTableColumn 
+                prop="name" 
+                label="发起人" 
+                align="center" 
+              />
               <ElTableColumn
-                prop="submitTime"
+                prop="applyTime"
                 label="提交时间"
                 align="center"
               />
@@ -186,7 +216,7 @@ export default defineComponent({
                 label="操作"
                 align="center"
                 v-slots={{
-                  default: (scope: { row: any }) => (
+                  default: (scope: { row: ApplicationData }) => (
                     <>
                       <ElButton
                         size="small"

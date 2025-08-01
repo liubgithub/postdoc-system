@@ -156,4 +156,37 @@ def delete_info(db: Session = Depends(get_db), current_user=Depends(get_current_
     db.query(WorkExperience).filter(WorkExperience.user_id == info.id).delete()
     db.delete(info)
     db.commit()
-    return {"msg": "deleted"} 
+    return {"msg": "deleted"}
+
+# 根据用户ID获取用户信息（导师查看学生信息用）
+@router.get("/user/{user_id}", response_model=InfoOut)
+def get_user_info_by_id(user_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    # 验证当前用户是否为导师
+    if current_user.role != "teacher":
+        raise HTTPException(status_code=403, detail="只有导师可以访问此接口")
+    
+    info = db.query(Info).filter(Info.user_id == user_id).first()
+    if not info:
+        raise HTTPException(status_code=404, detail="No info found for user")
+    
+    education = db.query(EducationExperience).filter(EducationExperience.user_id == info.id).all()
+    work = db.query(WorkExperience).filter(WorkExperience.user_id == info.id).all()
+    
+    return InfoOut(
+        id=info.id,
+        user_id=info.user_id,
+        name=info.name,
+        gender=info.gender,
+        birth_year=info.birth_year,
+        nationality=info.nationality,
+        political_status=info.political_status,
+        phone=info.phone,
+        religion=info.religion,
+        id_number=info.id_number,
+        is_religious_staff=info.is_religious_staff,
+        research_direction=info.research_direction,
+        other=info.other,
+        otherachievements=info.otherachievements,
+        education_experience=[EducationExperienceOut.from_orm(e) for e in education],
+        work_experience=[WorkExperienceOut.from_orm(w) for w in work]
+    ) 

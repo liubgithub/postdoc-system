@@ -2,7 +2,10 @@ import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert } from "el
 import * as styles from "./styles.css.ts";
 import SignaturePad from '@/units/Signature/index'
 import Audit from './audit.tsx'
-import fetch from '@/api/index.ts'
+import apiFetch from '@/api/index.ts'
+
+// 引入用户store获取token
+import useUser from '@/stores/user';
 
 export default defineComponent({
   name: "ResearchForm",
@@ -10,6 +13,20 @@ export default defineComponent({
     onSubmitSuccess: {
       type: Function,
       required: false
+    },
+    showButtons: {
+      type: Boolean,
+      default: true
+    },
+    // 新增：外部传入的用户ID
+    externalUserId: {
+      type: Number,
+      default: null
+    },
+    // 新增：当前用户角色
+    userRole: {
+      type: String,
+      default: 'student' // student, teacher, etc.
     }
   },
   setup(props) {
@@ -35,11 +52,34 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      const res = await fetch.raw.GET('/enterRelation/');
-      if (res && res.data) {
-        Object.assign(form.value, res.data);
+      let res;
+      const userStore = useUser();
+      
+      try {
+        // 如果有外部传入的用户ID，使用对应的接口
+        if (props.externalUserId) {
+          const response = await fetch(`/api/enterRelation/user/${props.externalUserId}`, {
+            headers: {
+              'Authorization': `Bearer ${userStore.info?.token || ''}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          if (response.ok) {
+            res = await response.json();
+          }
+        } else {
+          // 否则获取当前用户的数据
+          const response = await apiFetch.raw.GET('/enterRelation/', {});
+          res = response.data;
+        }
+        
+        if (res) {
+          Object.assign(form.value, res);
+        }
+        console.log(res, form.value, 'biao')
+      } catch (error) {
+        console.error('获取数据失败:', error);
       }
-      console.log(res.data, form.value, 'biao')
     });
     return () => (
       <div class={styles.formWrapper}>
@@ -51,6 +91,7 @@ export default defineComponent({
               type="textarea"
               rows={4}
               placeholder="入站前的科研训练、相关进展，获得资助的情况等"
+              disabled={props.userRole !== 'student'}
             />
           </ElFormItem>
 
@@ -60,6 +101,7 @@ export default defineComponent({
               type="textarea"
               rows={4}
               placeholder="500字以内"
+              disabled={props.userRole !== 'student'}
             />
           </ElFormItem>
 
@@ -69,6 +111,7 @@ export default defineComponent({
               type="textarea"
               rows={4}
               placeholder="500字以内，论文需列出目标期刊名称，或注明为相当或更高水平期刊"
+              disabled={props.userRole !== 'student'}
             />
           </ElFormItem>
 
@@ -80,6 +123,7 @@ export default defineComponent({
               type="textarea"
               rows={6}
               placeholder="请将近3年代表作列出；论文请注明题目、全部作者、发表年份、刊物、卷、页码、收录及引用情况等，并按论文发表级别排序，共同第一作者用#标明，通讯作者用*标明；著作请注明所有作者姓名，书名，出版地，出版社"
+              disabled={props.userRole !== 'student'}
             />
           </ElFormItem>
 
@@ -88,6 +132,7 @@ export default defineComponent({
               v-model={form.value.other_achievements}
               type="textarea"
               rows={4}
+              disabled={props.userRole !== 'student'}
             />
           </ElFormItem>
 
@@ -97,6 +142,7 @@ export default defineComponent({
               type="textarea"
               rows={4}
               placeholder="介绍本人学术理想与追求；对科研人员要将学术道德、学术诚信视为生命线的认识看法；接受相关学术诚信、学术规范培训的经历等"
+              disabled={props.userRole !== 'student'}
             />
           </ElFormItem>
 
@@ -128,15 +174,19 @@ export default defineComponent({
               </div>
             </div>
           </ElFormItem>
-          <div style={{ display: 'flex', justifyContent: 'center'}}>          
-            <ElButton type="primary" onClick={handleSubmit}>申请</ElButton>
-            <ElButton>返回</ElButton>
-          </div>
-          <Audit onBack={() => { }} />
-            <div style={{ display: 'flex', justifyContent: 'center',marginTop:'5px'}}>
-              <ElButton type="primary">导出</ElButton>
-              <ElButton>返回</ElButton>
-            </div>
+                     {props.showButtons && (
+             <>
+               <div style={{ display: 'flex', justifyContent: 'center'}}>          
+                 <ElButton type="primary" onClick={handleSubmit}>申请</ElButton>
+                 <ElButton>返回</ElButton>
+               </div>
+               <div style={{ display: 'flex', justifyContent: 'center',marginTop:'5px'}}>
+                 <ElButton type="primary">导出</ElButton>
+                 <ElButton>返回</ElButton>
+               </div>
+             </>
+           )}
+                       <Audit onBack={() => { }} userRole={props.userRole} />
         </ElForm>
       </div>
     );

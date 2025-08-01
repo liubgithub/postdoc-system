@@ -25,3 +25,9 @@ export const submitUserProfile = async (data: any) => {
 //     const res = await raw.DELETE('/info/me');
 //     return res.data;
 // };
+
+// 根据用户ID获取用户信息（导师查看学生信息用）
+export const getUserProfileById = async (userId: number) => {
+    const res = await raw.GET(`/info/user/${userId}`);
+    return res.data;
+};

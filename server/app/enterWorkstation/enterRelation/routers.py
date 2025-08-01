@@ -56,3 +56,19 @@ def delete_relation(
     db.delete(db_relation)
     db.commit()
     return {"msg": "deleted"}
+
+# 根据用户ID获取进站申请数据（导师查看学生信息用）
+@router.get("/user/{user_id}", response_model=EnterRelationInDBBase)
+def get_relation_by_user_id(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 验证当前用户是否为导师
+    if current_user.role != "teacher":
+        raise HTTPException(status_code=403, detail="只有导师可以访问此接口")
+    
+    db_relation = db.query(EnterRelation).filter_by(user_id=user_id).first()
+    if not db_relation:
+        return None
+    return db_relation
