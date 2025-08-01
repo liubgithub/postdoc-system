@@ -1,5 +1,6 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { ElButton, ElTable, ElTableColumn, ElTag, ElMessage,ElDialog } from 'element-plus'
+import { useRouter } from 'vue-router'
 import ProcessStatus from '@/units/ProcessStatus'
 interface BusinessStatus {
     id: number
@@ -48,6 +49,7 @@ const STATUS_DONE = '已处理'
 export default defineComponent({
     name: 'StatusPage',
     setup() {
+        const router = useRouter()
         const activeTab = ref<'processing' | 'done'>('processing')
         const data = ref<BusinessStatus[]>([])
         const loading = ref(false)
@@ -56,12 +58,12 @@ export default defineComponent({
         const processSteps = ref<ProcessStep[]>([])
         const processLoading = ref(false)
 
-        // 获取业务数据 - 从待处理任务接口获取
+        // 获取所有流程状态数据
         const fetchData = async () => {
             loading.value = true
             try {
-                // 直接使用原生fetch调用工作流程接口
-                const response = await window.fetch('/api/workflow/my-pending-tasks', {
+                // 调用工作流程状态接口
+                const response = await window.fetch('/api/workflow/status', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -73,27 +75,85 @@ export default defineComponent({
                     throw new Error(`HTTP error! status: ${response.status}`)
                 }
                 
-                const res = await response.json()
+                const workflowData = await response.json() as WorkflowResponse
                 
-                if (res) {
-                    const pendingTasks = res as PendingTasksResponse
-                    // 将后端数据转换为前端格式
-                    data.value = pendingTasks.pending_processes.map((task, index) => ({
+                if (workflowData) {
+                    // 将工作流程状态转换为业务数据格式
+                    const processes = [
+                        { type: '进站申请', status: workflowData.entry_application, detailId: 'entry_application' },
+                        { type: '进站考核', status: workflowData.entry_assessment, detailId: 'entry_assessment' },
+                        { type: '进站协议', status: workflowData.entry_agreement, detailId: 'entry_agreement' },
+                        { type: '中期考核', status: workflowData.midterm_assessment, detailId: 'midterm_assessment' },
+                        { type: '年度考核', status: workflowData.annual_assessment, detailId: 'annual_assessment' },
+                        { type: '延期考核', status: workflowData.extension_assessment, detailId: 'extension_assessment' },
+                        { type: '出站考核', status: workflowData.leave_assessment, detailId: 'leave_assessment' }
+                    ]
+                    
+                    data.value = processes.map((process, index) => ({
                         id: index + 1,
-                        type: task.description,
-                        initiator: '当前用户', // 学生看到的都是自己发起的
-                        status: task.current_status === '未提交' ? '待提交' : STATUS_PROCESSING,
-                        submitTime: new Date().toISOString().slice(0, 16).replace('T', ' '),
-                        detailId: task.process_type
+                        type: process.type,
+                        initiator: '博士后', // 博士后发起的业务
+                        status: getProcessStatus(process.status),
+                        submitTime: workflowData.updated_at ? new Date(workflowData.updated_at).toLocaleString('zh-CN') : '未提交',
+                        detailId: process.detailId
                     }))
                 }
             } catch (error) {
-                console.error('获取待处理任务失败:', error)
+                console.error('获取流程状态失败:', error)
                 ElMessage.error('获取数据失败')
                 data.value = []
             } finally {
                 loading.value = false
             }
+        }
+
+        // 根据后端状态转换为流程状态显示
+        const getProcessStatus = (status: string) => {
+            switch (status) {
+                case '未提交':
+                    return '未提交'
+                case '导师审核中':
+                    return '合作导师审核中'
+                case '管理员审核中':
+                    return '管理员审核中'
+                case '学院未审核':
+                    return '等待学院审核'
+                case '导师未审核':
+                    return '等待导师审核'
+                case '导师审核通过':
+                    return '合作导师审核通过'
+                case '导师审核不通过':
+                    return '合作导师审核不通过'
+                case '管理员审核通过':
+                    return '管理员审核通过'
+                case '管理员审核不通过':
+                    return '管理员审核不通过'
+                case '审核结束':
+                case '结束':
+                    return '审核结束'
+                default:
+                    return status
+            }
+        }
+
+        // 获取状态背景色
+        const getStatusBgColor = (status: string) => {
+            const processedStatus = getProcessStatus(status)
+            if (processedStatus === '未提交') return '#f0f0f0'
+            if (processedStatus.includes('审核中') || processedStatus.includes('等待')) return '#fff7e6'
+            if (processedStatus.includes('通过') || processedStatus === '审核结束') return '#f6ffed'
+            if (processedStatus.includes('不通过')) return '#fff2f0'
+            return '#f0f0f0'
+        }
+
+        // 获取状态文字颜色
+        const getStatusTextColor = (status: string) => {
+            const processedStatus = getProcessStatus(status)
+            if (processedStatus === '未提交') return '#666'
+            if (processedStatus.includes('审核中') || processedStatus.includes('等待')) return '#fa8c16'
+            if (processedStatus.includes('通过') || processedStatus === '审核结束') return '#52c41a'
+            if (processedStatus.includes('不通过')) return '#ff4d4f'
+            return '#666'
         }
 
         // 获取流程状态数据
@@ -192,43 +252,136 @@ export default defineComponent({
             fetchProcessSteps()
         })
 
-        const filteredData = computed(() =>
-            data.value.filter(item =>
-                activeTab.value === 'processing'
-                    ? item.status === STATUS_PROCESSING
-                    : item.status === STATUS_DONE
-            )
-        )
+        const filteredData = computed(() => {
+            if (activeTab.value === 'processing') {
+                // 处理中：包含审核中状态和等待状态
+                return data.value.filter(item => 
+                    item.status.includes('审核中') || 
+                    item.status.includes('等待') ||
+                    item.status === '未提交'
+                )
+            } else {
+                // 已处理：包含审核通过、审核不通过、审核结束状态
+                return data.value.filter(item => 
+                    item.status.includes('通过') || 
+                    item.status.includes('不通过') ||
+                    item.status === '审核结束'
+                )
+            }
+        })
 
-        const handleDetail = (id: string) => {
-            // 跳转到具体的申请详情页面
-            console.log('查看详情:', id)
+        const handleDetail = (detailId: string) => {
+            // 根据业务类型跳转到对应的详情页面
+            const routeMap: Record<string, string> = {
+                'entry_application': '/UserInfo/entry',
+                'entry_assessment': '/UserInfo/entry', 
+                'entry_agreement': '/UserInfo/entry',
+                'midterm_assessment': '/UserInfo/in-station',
+                'annual_assessment': '/UserInfo/in-station',
+                'extension_assessment': '/UserInfo/out-station',
+                'leave_assessment': '/UserInfo/out-station'
+            }
+            
+            const route = routeMap[detailId]
+            if (route) {
+                // 使用vue-router进行跳转
+                router.push(route)
+                console.log('跳转到详情页面:', route)
+            } else {
+                ElMessage.warning('页面开发中')
+            }
         }
         
-        const handleView = (id: string) => {
+        const handleView = (detailId: string) => {
+            // 根据detailId获取对应流程的当前状态
+            const currentProcess = data.value.find(item => item.detailId === detailId)
+            if (!currentProcess) return
+            
+            // 根据实际状态生成时间轴数据
+            const generateTimelineSteps = (processType: string, currentStatus: string) => {
+                const baseSteps = [
+                    { name: '博士后提交申请', status: 'finished', time: '2025-03-12 19:59:28' },
+                    { name: '合作导师审核', status: 'wait', time: '' },
+                    { name: '管理员审核', status: 'wait', time: '' },
+                    { name: '审核结束', status: 'wait', time: '' }
+                ]
+                
+                // 根据当前状态更新步骤状态
+                switch (currentStatus) {
+                    case '未提交':
+                        baseSteps[0].status = 'wait'
+                        baseSteps[0].time = ''
+                        break
+                    case '导师未审核':
+                    case '合作导师审核中':
+                        baseSteps[1].status = 'process'
+                        baseSteps[1].time = '2025-03-31 20:44:48'
+                        break
+                    case '学院未审核':
+                    case '管理员审核中':
+                        baseSteps[1].status = 'finished'
+                        baseSteps[1].time = '2025-03-31 20:44:48'
+                        baseSteps[2].status = 'process'
+                        baseSteps[2].time = '2025-07-31 23:01:29'
+                        break
+                    case '合作导师审核通过':
+                        baseSteps[1].status = 'finished'
+                        baseSteps[1].time = '2025-03-31 20:44:48'
+                        break
+                    case '管理员审核通过':
+                    case '审核结束':
+                        baseSteps[1].status = 'finished'
+                        baseSteps[1].time = '2025-03-31 20:44:48'
+                        baseSteps[2].status = 'finished'
+                        baseSteps[2].time = '2025-04-01 09:04:07'
+                        baseSteps[3].status = 'finished'
+                        baseSteps[3].time = '2025-04-01 10:15:30'
+                        break
+                    case '合作导师审核不通过':
+                        baseSteps[1].status = 'error'
+                        baseSteps[1].time = '2025-03-31 20:44:48'
+                        break
+                    case '管理员审核不通过':
+                        baseSteps[1].status = 'finished'
+                        baseSteps[1].time = '2025-03-31 20:44:48'
+                        baseSteps[2].status = 'error'
+                        baseSteps[2].time = '2025-04-01 09:04:07'
+                        break
+                }
+                
+                return baseSteps
+            }
+            
+            currentSteps.value = generateTimelineSteps(detailId, currentProcess.status)
             showProcess.value = true
         }
 
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto' }}>
                 <div style={{ background: '#f5f5f5', padding: '24px' }}>
-                    <div style={{ display: 'flex', gap: '24px', marginBottom: '24px' }}>
-                        <ElButton
-                            type={activeTab.value === 'processing' ? 'primary' : 'default'}
-                            style={{ fontSize: '20px', padding: '10px 40px' }}
-                            onClick={() => (activeTab.value = 'processing')}
-                        >
-                            处理中
-                        </ElButton>
-                        <ElButton
-                            type={activeTab.value === 'done' ? 'primary' : 'default'}
-                            style={{ fontSize: '20px', padding: '10px 40px' }}
-                            onClick={() => (activeTab.value = 'done')}
-                        >
-                            已处理
-                        </ElButton>
-                    </div>
                     <div style={{ background: '#fff', padding: '16px' }}>
+                        <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px', color: '#333' }}>
+                            博士后业务流程管理
+                        </div>
+                        
+                        {/* 标签页切换 */}
+                        <div style={{ marginBottom: '16px', display: 'flex', gap: '0' }}>
+                            <ElButton
+                                type={activeTab.value === 'processing' ? 'primary' : 'default'}
+                                onClick={() => activeTab.value = 'processing'}
+                                style={{ borderRadius: '4px 0 0 4px' }}
+                            >
+                                处理中
+                            </ElButton>
+                            <ElButton
+                                type={activeTab.value === 'done' ? 'primary' : 'default'}
+                                onClick={() => activeTab.value = 'done'}
+                                style={{ borderRadius: '0 4px 4px 0', marginLeft: '-1px' }}
+                            >
+                                已处理
+                            </ElButton>
+                        </div>
+                        
                         <ElTable
                             data={filteredData.value}
                             border
@@ -238,13 +391,23 @@ export default defineComponent({
                             <ElTableColumn type="index" label="序号" width={60} align='center'/>
                             <ElTableColumn prop="type" label="业务类型" minWidth={120} align='center'/>
                             <ElTableColumn prop="initiator" label="发起人" minWidth={100} align='center'/>
-                            <ElTableColumn prop="status" label="流程状态" minWidth={100} align='center'>
+                            <ElTableColumn prop="status" label="流程状态" minWidth={120} align='center'>
                                 {{
-                                    default: ({ row }: { row: BusinessStatus }) => (
-                                        <ElTag type={row.status === STATUS_PROCESSING ? 'info' : 'success'}>
-                                            {row.status}
-                                        </ElTag>
-                                    )
+                                    default: ({ row }: { row: BusinessStatus }) => {
+                                        const getTagType = (status: string) => {
+                                            if (status === '未提交') return 'info'
+                                            if (status.includes('审核中') || status.includes('等待')) return 'warning'
+                                            if (status.includes('通过') || status === '审核结束') return 'success'
+                                            if (status.includes('不通过')) return 'danger'
+                                            return 'info'
+                                        }
+                                        
+                                        return (
+                                            <ElTag type={getTagType(row.status)}>
+                                                {row.status}
+                                            </ElTag>
+                                        )
+                                    }
                                 }}
                             </ElTableColumn>
                             <ElTableColumn prop="submitTime" label="提交时间" minWidth={160} align='center'/>
@@ -270,23 +433,167 @@ export default defineComponent({
                         )}
                            <ElDialog
                             v-model={showProcess.value}
-                            title="流程状态"
-                            width="600px"
+                            title="业务流程状态"
+                            width="800px"
                             destroyOnClose
                         >
-                            <ProcessStatus steps={currentSteps.value} />
+                            <div style={{ padding: '20px' }}>
+                                {/* 自定义时间轴样式 */}
+                                <div style={{ position: 'relative' }}>
+                                    {currentSteps.value.map((step, index) => (
+                                        <div key={index} style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'flex-start',
+                                            marginBottom: index === currentSteps.value.length - 1 ? '0' : '30px',
+                                            position: 'relative'
+                                        }}>
+                                            {/* 时间轴线和圆点 */}
+                                            <div style={{ 
+                                                display: 'flex', 
+                                                flexDirection: 'column', 
+                                                alignItems: 'center',
+                                                marginRight: '20px',
+                                                position: 'relative'
+                                            }}>
+                                                {/* 圆点 */}
+                                                <div style={{
+                                                    width: '12px',
+                                                    height: '12px',
+                                                    borderRadius: '50%',
+                                                    backgroundColor: 
+                                                        step.status === 'finished' ? '#52c41a' :
+                                                        step.status === 'process' ? '#1890ff' :
+                                                        step.status === 'error' ? '#ff4d4f' : '#d9d9d9',
+                                                    zIndex: 2,
+                                                    position: 'relative'
+                                                }} />
+                                                {/* 连接线 */}
+                                                {index < currentSteps.value.length - 1 && (
+                                                    <div style={{
+                                                        width: '2px',
+                                                        height: '40px',
+                                                        backgroundColor: '#e8e8e8',
+                                                        marginTop: '4px'
+                                                    }} />
+                                                )}
+                                            </div>
+                                            
+                                            {/* 内容区域 */}
+                                            <div style={{ 
+                                                flex: 1,
+                                                backgroundColor: '#f8f9fa',
+                                                padding: '16px',
+                                                borderRadius: '8px',
+                                                border: '1px solid #e8e8e8'
+                                            }}>
+                                                <div style={{ 
+                                                    display: 'flex', 
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    marginBottom: '8px'
+                                                }}>
+                                                    <div style={{ 
+                                                        fontSize: '16px', 
+                                                        fontWeight: '500',
+                                                        color: '#333'
+                                                    }}>
+                                                        {step.name}
+                                                    </div>
+                                                    <div style={{
+                                                        padding: '4px 12px',
+                                                        borderRadius: '12px',
+                                                        fontSize: '12px',
+                                                        fontWeight: '500',
+                                                        backgroundColor: 
+                                                            step.status === 'finished' ? '#f6ffed' :
+                                                            step.status === 'process' ? '#e6f7ff' :
+                                                            step.status === 'error' ? '#fff2f0' : '#f5f5f5',
+                                                        color: 
+                                                            step.status === 'finished' ? '#52c41a' :
+                                                            step.status === 'process' ? '#1890ff' :
+                                                            step.status === 'error' ? '#ff4d4f' : '#999'
+                                                    }}>
+                                                        {step.status === 'finished' ? '已完成' :
+                                                         step.status === 'process' ? '进行中' :
+                                                         step.status === 'error' ? '已拒绝' : '等待中'}
+                                                    </div>
+                                                </div>
+                                                {step.time && (
+                                                    <div style={{ 
+                                                        fontSize: '12px', 
+                                                        color: '#666',
+                                                        display: 'flex',
+                                                        alignItems: 'center'
+                                                    }}>
+                                                        <span style={{ marginRight: '8px' }}>⏰</span>
+                                                        {step.time}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                                <div style={{ marginTop: '30px', padding: '16px', backgroundColor: '#f0f0f0', borderRadius: '8px' }}>
+                                    <div style={{ fontSize: '14px', color: '#666', marginBottom: '12px', fontWeight: '500' }}>
+                                        状态说明：
+                                    </div>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ 
+                                                width: '8px', 
+                                                height: '8px', 
+                                                borderRadius: '50%', 
+                                                backgroundColor: '#52c41a',
+                                                marginRight: '6px'
+                                            }} />
+                                            <span style={{ fontSize: '12px', color: '#666' }}>已完成</span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ 
+                                                width: '8px', 
+                                                height: '8px', 
+                                                borderRadius: '50%', 
+                                                backgroundColor: '#1890ff',
+                                                marginRight: '6px'
+                                            }} />
+                                            <span style={{ fontSize: '12px', color: '#666' }}>进行中</span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ 
+                                                width: '8px', 
+                                                height: '8px', 
+                                                borderRadius: '50%', 
+                                                backgroundColor: '#ff4d4f',
+                                                marginRight: '6px'
+                                            }} />
+                                            <span style={{ fontSize: '12px', color: '#666' }}>已拒绝</span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span style={{ 
+                                                width: '8px', 
+                                                height: '8px', 
+                                                borderRadius: '50%', 
+                                                backgroundColor: '#d9d9d9',
+                                                marginRight: '6px'
+                                            }} />
+                                            <span style={{ fontSize: '12px', color: '#666' }}>等待中</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </ElDialog>
                     </div>
                 </div>
                 <div style={{ background: '#f5f5f5', marginTop: '2rem', padding: '24px' }}>
                     <div style={{ background: '#fff', padding: '24px', borderRadius: '8px' }}>
                         <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px' }}>
-                            轨迹
+                            全流程轨迹总览
                         </div>
                         <div style={{ display: 'flex', gap: '40px' }}>
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '16px' }}>
-                                    流程
+                                    业务类型
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     {processSteps.value.map((step, index) => (
@@ -294,7 +601,8 @@ export default defineComponent({
                                             padding: '17px', 
                                             border: '1px solid #e8e8e8', 
                                             borderRadius: '4px',
-                                            backgroundColor: '#fafafa'
+                                            backgroundColor: '#fafafa',
+                                            fontWeight: '500'
                                         }}>
                                             {step.process}
                                         </div>
@@ -303,7 +611,7 @@ export default defineComponent({
                             </div>
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '16px' }}>
-                                    状态
+                                    当前状态
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     {processSteps.value.map((step, index) => (
@@ -320,12 +628,13 @@ export default defineComponent({
                                                 flex: 1,
                                                 padding: '8px', 
                                                 borderRadius: '4px',
-                                                backgroundColor: step.status === '结束' ? '#f6ffed' : '#fff2f0',
-                                                color: step.status === '结束' ? '#52c41a' : '#ff4d4f',
+                                                backgroundColor: getStatusBgColor(step.status),
+                                                color: getStatusTextColor(step.status),
                                                 fontSize: '12px',
-                                                textAlign: 'center'
+                                                textAlign: 'center',
+                                                fontWeight: '500'
                                             }}>
-                                                {step.status}
+                                                {getProcessStatus(step.status)}
                                             </div>
                                         </div>
                                     ))}
