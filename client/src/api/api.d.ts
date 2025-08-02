@@ -680,6 +680,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/info/user/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get User Info By Id */
+        get: operations["get_user_info_by_id_info_user__user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/pre_entry_achievement/statistics": {
         parameters: {
             query?: never;
@@ -824,6 +841,80 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/workflow/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Workflow Status
+         * @description 获取工作流程状态
+         */
+        get: operations["get_workflow_status_workflow_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflow/update/{process_type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Workflow Status
+         * @description 更新工作流程状态
+         *
+         *     process_type可选值:
+         *     - entry_application: 进站申请
+         *     - entry_assessment: 进站考核
+         *     - entry_agreement: 进站协议
+         *     - midterm_assessment: 中期考核
+         *     - annual_assessment: 年度考核
+         *     - extension_assessment: 延期考核
+         *     - leave_assessment: 出站考核
+         *
+         *     权限说明:
+         *     - 学生(user): 只能提交自己的申请，将状态从"未提交"改为"导师未审核"
+         *     - 导师(teacher): 只能审核学生申请，将"导师未审核"改为"导师驳回"或"学院未审核"
+         *     - 管理员(admin): 只能最终审核，将"学院未审核"改为"学院驳回"或"结束"
+         */
+        put: operations["update_workflow_status_workflow_update__process_type__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflow/my-pending-tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Pending Tasks
+         * @description 获取当前用户待处理的任务和处理中的状态
+         */
+        get: operations["get_pending_tasks_workflow_my_pending_tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enterWorkstation/apply": {
         parameters: {
             query?: never;
@@ -871,6 +962,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enterRelation/user/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Relation By User Id */
+        get: operations["get_relation_by_user_id_enterRelation_user__user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enterAssessment/assessment": {
         parameters: {
             query?: never;
@@ -913,6 +1021,66 @@ export interface paths {
         post: operations["upsert_student_assessment_student__post"];
         /** Delete Student By User Id */
         delete: operations["delete_student_by_user_id_assessment_student__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/entryMange/teacher/students": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Teacher Students
+         * @description 导师获取学生信息列表
+         */
+        get: operations["get_teacher_students_entryMange_teacher_students_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/entryMange/teacher/student/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Student Detail
+         * @description 导师获取特定学生的详细信息
+         */
+        get: operations["get_student_detail_entryMange_teacher_student__user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/entryMange/teacher/student/{user_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Approve Student
+         * @description 导师审核学生申请
+         */
+        put: operations["approve_student_entryMange_teacher_student__user_id__approve_put"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2581,6 +2749,33 @@ export interface components {
              */
             role: string;
         };
+        /** MultipleWorkflowResponse */
+        MultipleWorkflowResponse: {
+            /** Workflows */
+            workflows: components["schemas"]["WorkflowWithStudentInfo"][];
+        };
+        /** PendingTaskItem */
+        PendingTaskItem: {
+            /** Process Type */
+            process_type: string;
+            /** Description */
+            description: string;
+            /** Current Status */
+            current_status: string;
+        };
+        /** PendingTaskWithStudent */
+        PendingTaskWithStudent: {
+            /** Process Type */
+            process_type: string;
+            /** Description */
+            description: string;
+            /** Current Status */
+            current_status: string;
+            /** Student Id */
+            student_id: number;
+            /** Student Name */
+            student_name: string;
+        };
         /** PreEntryBook */
         PreEntryBook: {
             /** Time */
@@ -3304,6 +3499,40 @@ export interface components {
              */
             updated_at: string;
         };
+        /**
+         * ProcessStatus
+         * @enum {string}
+         */
+        ProcessStatus: "未提交" | "导师未审核" | "导师驳回" | "学院未审核" | "学院驳回" | "已审核";
+        /** StaffPendingTasksResponse */
+        StaffPendingTasksResponse: {
+            /** Role */
+            role: string;
+            /** Pending Count */
+            pending_count: number;
+            /** Pending Workflows */
+            pending_workflows: components["schemas"]["PendingTaskWithStudent"][];
+        };
+        /** StatusUpdateResponse */
+        StatusUpdateResponse: {
+            /** Message */
+            message: string;
+            /** Process Type */
+            process_type: string;
+            /** Previous Status */
+            previous_status: string;
+            /** New Status */
+            new_status: string;
+            /** Target Student Id */
+            target_student_id: number;
+            /** Updated By */
+            updated_by: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
         /** StudentIn */
         StudentIn: {
             /** Stu Num */
@@ -3337,6 +3566,18 @@ export interface components {
             created_at?: string | null;
             /** Updated At */
             updated_at?: string | null;
+        };
+        /** StudentPendingTasksResponse */
+        StudentPendingTasksResponse: {
+            /**
+             * Role
+             * @default student
+             */
+            role: string;
+            /** Pending Count */
+            pending_count: number;
+            /** Pending Processes */
+            pending_processes: components["schemas"]["PendingTaskItem"][];
         };
         /** Token */
         Token: {
@@ -3376,6 +3617,70 @@ export interface components {
             company_position: string;
             /** Id */
             id: number;
+        };
+        /** WorkflowResponse */
+        WorkflowResponse: {
+            /** Student Id */
+            student_id: number;
+            /** Entry Application */
+            entry_application: string;
+            /** Entry Assessment */
+            entry_assessment: string;
+            /** Entry Agreement */
+            entry_agreement: string;
+            /** Midterm Assessment */
+            midterm_assessment: string;
+            /** Annual Assessment */
+            annual_assessment: string;
+            /** Extension Assessment */
+            extension_assessment: string;
+            /** Leave Assessment */
+            leave_assessment: string;
+            /** Id */
+            id: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** WorkflowWithStudentInfo */
+        WorkflowWithStudentInfo: {
+            /** Id */
+            id: number;
+            /** Student Id */
+            student_id: number;
+            /** Student Name */
+            student_name: string;
+            /** Entry Application */
+            entry_application: string;
+            /** Entry Assessment */
+            entry_assessment: string;
+            /** Entry Agreement */
+            entry_agreement: string;
+            /** Midterm Assessment */
+            midterm_assessment: string;
+            /** Annual Assessment */
+            annual_assessment: string;
+            /** Extension Assessment */
+            extension_assessment: string;
+            /** Leave Assessment */
+            leave_assessment: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
         };
     };
     responses: never;
@@ -5058,6 +5363,37 @@ export interface operations {
             };
         };
     };
+    get_user_info_by_id_info_user__user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InfoOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_achievement_statistics_pre_entry_achievement_statistics_get: {
         parameters: {
             query?: never;
@@ -5327,6 +5663,93 @@ export interface operations {
             };
         };
     };
+    get_workflow_status_workflow_status_get: {
+        parameters: {
+            query?: {
+                /** @description 学生ID(仅管理员使用) */
+                student_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"] | components["schemas"]["MultipleWorkflowResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_workflow_status_workflow_update__process_type__put: {
+        parameters: {
+            query: {
+                new_status: components["schemas"]["ProcessStatus"];
+                /** @description 学生ID(仅老师和管理员使用) */
+                student_id?: number | null;
+            };
+            header?: never;
+            path: {
+                process_type: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatusUpdateResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_pending_tasks_workflow_my_pending_tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentPendingTasksResponse"] | components["schemas"]["StaffPendingTasksResponse"];
+                };
+            };
+        };
+    };
     get_enter_workstation_by_user_id_enterWorkstation_apply_get: {
         parameters: {
             query?: never;
@@ -5473,6 +5896,37 @@ export interface operations {
             };
         };
     };
+    get_relation_by_user_id_enterRelation_user__user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterRelationInDBBase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_enter_assessment_by_user_id_enterAssessment_assessment_get: {
         parameters: {
             query?: never;
@@ -5615,6 +6069,95 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_teacher_students_entryMange_teacher_students_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    }[];
+                };
+            };
+        };
+    };
+    get_student_detail_entryMange_teacher_student__user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_student_entryMange_teacher_student__user_id__approve_put: {
+        parameters: {
+            query: {
+                approved: boolean;
+                comment?: string;
+            };
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

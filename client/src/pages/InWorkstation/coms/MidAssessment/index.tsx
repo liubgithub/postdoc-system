@@ -10,7 +10,7 @@ export default defineComponent({
         const showDetails = ref(false)
         const showAssessment = ref(true)
         const showProcess = ref(false)
-        const currentSteps = ref<any[]>([])
+
         const tableData = ref<TableRow[]>([{
             stuId: '',
             name: '',
@@ -44,7 +44,6 @@ export default defineComponent({
                             size="small"
                             style="margin-left:8px"
                             onClick={() => {
-                                currentSteps.value = row.processSteps || []
                                 showProcess.value = true
                             }}
                         >
@@ -94,14 +93,13 @@ export default defineComponent({
                             showAction={true}
                             tableClass={cls.tableWidth}
                         />
-                        <ElDialog
-                            v-model={showProcess.value}
-                            title="流程状态"
-                            width="600px"
-                            destroyOnClose
-                        >
-                            <ProcessStatus steps={currentSteps.value} />
-                        </ElDialog>
+
+                        <ProcessStatus
+                            modelValue={showProcess.value}
+                            onUpdate:modelValue={(val) => showProcess.value = val}
+                            processType='中期考核'
+                        />
+
                     </>
                 )}
             </div>

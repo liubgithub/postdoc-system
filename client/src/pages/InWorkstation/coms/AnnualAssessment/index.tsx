@@ -2,7 +2,7 @@ import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.
 import AnnualAssessment from './annual_assess'
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
-import { ElButton,ElDialog } from 'element-plus'
+import { ElButton, ElDialog } from 'element-plus'
 import ProcessStatus from '@/units/ProcessStatus'
 export default defineComponent({
     name: "AnnualAssessment",
@@ -10,7 +10,6 @@ export default defineComponent({
         const showDetails = ref(false)
 
         const showProcess = ref(false)
-        const currentSteps = ref<any[]>([])
 
         const tableData = ref<TableRow[]>([{
             stuId: '',
@@ -45,7 +44,6 @@ export default defineComponent({
                             size="small"
                             style="margin-left:8px"
                             onClick={() => {
-                                currentSteps.value = row.processSteps || []
                                 showProcess.value = true
                             }}
                         >
@@ -93,14 +91,12 @@ export default defineComponent({
                             showAction={true}
                             tableClass={cls.tableWidth}
                         />
-                        <ElDialog
-                            v-model={showProcess.value}
-                            title="流程状态"
-                            width="600px"
-                            destroyOnClose
-                        >
-                            <ProcessStatus steps={currentSteps.value} />
-                        </ElDialog>
+
+                        <ProcessStatus
+                            modelValue={showProcess.value}
+                            onUpdate:modelValue={(val) => showProcess.value = val}
+                            processType='年终考核'
+                        />
                     </>
 
                 )}

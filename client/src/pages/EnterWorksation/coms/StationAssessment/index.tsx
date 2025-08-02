@@ -12,7 +12,12 @@ export default defineComponent({
     setup() {
         const showDetails = ref(false)
         const showProcess = ref(false)
-        const currentSteps = ref<any[]>([])
+        const currentSteps = ref<any[]>([
+            { name: '博士后提交申请', status: 'finished', time: '2025-03-12 19:59:28' },
+            { name: '合作导师审核', status: 'process', time: '2025-03-31 20:44:48' },
+            { name: '学院/管理员审核', status: 'wait', time: '' },
+            { name: '审核结束', status: 'wait', time: '' }
+        ])
         const isAssessmentMode = ref(false)
 
         // 示例数据，实际应从后端获取
@@ -49,7 +54,6 @@ export default defineComponent({
                             size="small"
                             style="margin-left:8px"
                             onClick={() => {
-                                currentSteps.value = row.processSteps || []
                                 showProcess.value = true
                             }}
                         >
@@ -75,7 +79,7 @@ export default defineComponent({
             showDetails.value = true
         }
 
-        const handleApply =() =>{
+        const handleApply = () => {
             isAssessmentMode.value = false
             showDetails.value = true
         }
@@ -85,31 +89,29 @@ export default defineComponent({
             isAssessmentMode.value = false
         }
 
-        onMounted(async()=>{
+        onMounted(async () => {
             const res = await fetch.raw.GET('/assessment/student/')
         })
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <OpenDetails onBack={handleBack} showAssessment={isAssessmentMode.value}/>
+                    <OpenDetails onBack={handleBack} showAssessment={isAssessmentMode.value} />
                 ) : (
                     <>
-                        <ElButton style={{marginBottom:'20px'}} onClick={handleApply}>申请考核</ElButton>
-                        <CommonTable 
-                            data={tableData.value} 
-                            columns={columns} 
+                        <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>
+                        <CommonTable
+                            data={tableData.value}
+                            columns={columns}
                             onView={handleView}
                             showAction={true}
                             tableClass={cls.tableWidth}
                         />
-                        <ElDialog
-                            v-model={showProcess.value}
-                            title="流程状态"
-                            width="600px"
-                            destroyOnClose
-                        >
-                            <ProcessStatus steps={currentSteps.value} />
-                        </ElDialog>
+                        <ProcessStatus
+                            modelValue={showProcess.value}
+                            onUpdate:modelValue={(val) => showProcess.value = val}
+                            steps={currentSteps.value}
+                            processType='进站考核' 
+                            />
                     </>
                 )}
             </div>
