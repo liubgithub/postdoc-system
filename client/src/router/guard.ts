@@ -5,7 +5,7 @@ import useUser from '@/stores/user'
 const whiteList = ['/auth/login', '/register', '/']
 
 // 角色权限配置
-const rolePermissions = {
+const rolePermissions: { [key: string]: string[] } = {
   teacher: ['/teacher', '/teacher/*'], // teacher可以访问的路径
   user: ['/', '/UserInfo', '/UserInfo/*'] // 普通用户可以访问的路径
 }
@@ -32,7 +32,7 @@ export const authGuard = (
     const allowedPaths = rolePermissions[userRole] || []
     
     // 检查用户是否有权限访问当前路径
-    const hasPermission = allowedPaths.some(path => {
+    const hasPermission = allowedPaths.some((path: string) => {
       if (path.endsWith('/*')) {
         return to.path.startsWith(path.slice(0, -2))
       }

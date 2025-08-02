@@ -21,7 +21,7 @@ import OutManageOut from '@/pages/Teacher/OutManage/Out';
 import MiddleCheckPage from '@/pages/Teacher/InManage/MiddleCheck';
 import YearCheckPage from '@/pages/Teacher/InManage/YearCheck';
 import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
-import AccountCheckPage from '@/pages/Teacher/AccountApproval/Accountcheck';
+import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
 import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
 import { authGuard } from './guard'
 

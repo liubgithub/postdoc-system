@@ -122,7 +122,7 @@ const useUser = defineStore("user", () => {
     const register = async (username: string, password: string) => {
         try {
                 const res = await raw.POST('/users/register', {
-                body: { username, password },
+                body: { username, password, role: 'user' },
                 headers: { 'Content-Type': 'application/json' }
             })
             if (res.response.status === 200) {

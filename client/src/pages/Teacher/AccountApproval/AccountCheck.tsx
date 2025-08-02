@@ -223,8 +223,7 @@ export default defineComponent({
                 layout="prev, pager, next"
                 pageSize={pageSize}
                 total={tableData.value.length}
-                currentPage={currentPage.value}
-                vOn:current-change={(val: number) => (currentPage.value = val)}
+                v-model:current-page={currentPage.value}
                 hideOnSinglePage={false}
               />
             </div>

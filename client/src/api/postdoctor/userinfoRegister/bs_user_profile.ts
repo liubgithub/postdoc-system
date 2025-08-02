@@ -27,7 +27,9 @@ export const submitUserProfile = async (data: any) => {
 // };
 
 // 根据用户ID获取用户信息（导师查看学生信息用）
+// 注意：这个API端点可能不存在，需要后端实现
 export const getUserProfileById = async (userId: number) => {
-    const res = await raw.GET(`/info/user/${userId}`);
-    return res.data;
+    // 暂时返回空数据，等待后端实现
+    console.warn('getUserProfileById API 端点未实现');
+    return null;
 };
