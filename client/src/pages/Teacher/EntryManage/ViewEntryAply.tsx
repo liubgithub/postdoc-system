@@ -141,8 +141,10 @@ export default defineComponent({
                                 )}
                                                     <ResearchForm
                                   onSubmitSuccess={() => {
+                            
                                     // 这里不需要做任何操作，因为导师只是查看
                                   }}
+                                  onBack={()=>{}}
                                   showButtons={false}
                                   externalUserId={parseInt(userId)}
                                   userRole="teacher"

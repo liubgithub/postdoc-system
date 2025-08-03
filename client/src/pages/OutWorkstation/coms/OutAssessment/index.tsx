@@ -1,7 +1,7 @@
 
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
-import { ElButton, ElDialog } from "element-plus"
+import { ElButton } from "element-plus"
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import CommonPart from "@/pages/OutWorkstation/commonPart"
 import ProcessStatus from '@/units/ProcessStatus'
@@ -82,7 +82,7 @@ export default defineComponent({
         return () => (
             <div>
                 {showDetails.value ? (
-                    <CommonPart onBack={handleBack} showAssessment={showAssessment.value}/>
+                    <CommonPart onBack={handleBack} showAssessment={showAssessment.value} />
                 ) : (
                     <>
                         <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>
@@ -94,14 +94,11 @@ export default defineComponent({
                             showAction={true}
                             tableClass={cls.tableWidth}
                         />
-                                                <ElDialog
-                            v-model={showProcess.value}
-                            title="流程状态"
-                            width="600px"
-                            destroyOnClose
-                        >
-                            <ProcessStatus steps={currentSteps.value} />
-                        </ElDialog>
+                        <ProcessStatus
+                            modelValue={showProcess.value}
+                            onUpdate:modelValue={(val) => showProcess.value = val}
+                            processType='出站考核'
+                        />
                     </>
                 )}
             </div>

@@ -19,7 +19,6 @@ import useUser from "@/stores/user";
 import { useRouter, useRoute, RouterView } from "vue-router";
 import TeacherHeader from "./TeacherHeader";
 import ProcessStatus from "@/units/ProcessStatus";
-import type { ProcessStep } from "@/units/ProcessStatus";
 import { getTeacherApplications, approveApplication } from "@/api/enterWorkstation";
 
 // 定义申请数据的类型 - 适配后端返回的数据结构
@@ -33,7 +32,7 @@ interface ApplicationData {
   status: string;     // 状态
   node: string;       // 当前节点
   currentApproval: string; // 当前审核
-  steps: ProcessStep[];
+  
   user_id: number;
   subject: string;
   cotutor: string;
@@ -58,12 +57,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const showProcessDialog = ref(false);
-    const currentSteps = ref<ProcessStep[]>([
-      { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
-      { status: '审核中', role: '导师审核', time: '2025-09-02 12:00' },
-      { status: '结束', role: '学院审核' }
-    ]);
-    
+
     // 处理状态过滤
     const filterStatus = ref("审核中");
     // 分页相关
@@ -118,11 +112,6 @@ export default defineComponent({
 
     const handleView = (row: ApplicationData) => {
       // 设置流程状态，确保类型匹配
-      currentSteps.value = row.steps || [
-        { status: '发起', role: '学生申请', time: '2025-09-01 10:00' },
-        { status: '审核中', role: '导师审核', time: '2025-09-02 12:00' },
-        { status: '结束', role: '学院审核' }
-      ];
       showProcessDialog.value = true;
     };
 
@@ -309,14 +298,11 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <ElDialog
-          v-model={showProcessDialog.value}
-          title="流程状态"
-          width="600px"
-          destroyOnClose
-        >
-          <ProcessStatus steps={currentSteps.value} />
-        </ElDialog>
+            <ProcessStatus
+                  modelValue={showProcessDialog.value}
+                  onUpdate:modelValue={(val) => showProcessDialog.value = val}
+                  processType='中期考核'
+            />
       </ElContainer>
     );
   },
