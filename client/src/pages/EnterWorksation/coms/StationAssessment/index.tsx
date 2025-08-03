@@ -109,7 +109,6 @@ export default defineComponent({
                         <ProcessStatus
                             modelValue={showProcess.value}
                             onUpdate:modelValue={(val) => showProcess.value = val}
-                            steps={currentSteps.value}
                             processType='进站考核' 
                             />
                     </>

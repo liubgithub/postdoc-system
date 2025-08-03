@@ -1,4 +1,4 @@
-import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert,ElMessage } from "element-plus";
 import * as styles from "./styles.css.ts";
 import SignaturePad from '@/units/Signature/index'
 import Audit from './audit.tsx'
@@ -13,6 +13,10 @@ export default defineComponent({
     onSubmitSuccess: {
       type: Function,
       required: false
+    },
+    onBack:{
+      type:Function,
+      required:true
     },
     showButtons: {
       type: Boolean,
@@ -44,8 +48,13 @@ export default defineComponent({
 
     const handleSubmit = () => {
       console.log(form.value, 'fffff')
-
+      ElMessage.success('提交成功')
+      props.onSubmitSuccess && props.onSubmitSuccess()
     };
+
+    const handleBack = () => {
+      props.onBack && props.onBack()
+    }
     const onInput = (val: any) => {
       console.log(val, 'signature')
       form.value.signature = val
@@ -178,15 +187,12 @@ export default defineComponent({
              <>
                <div style={{ display: 'flex', justifyContent: 'center'}}>          
                  <ElButton type="primary" onClick={handleSubmit}>申请</ElButton>
-                 <ElButton>返回</ElButton>
-               </div>
-               <div style={{ display: 'flex', justifyContent: 'center',marginTop:'5px'}}>
+                 <ElButton onClick={handleBack}>返回</ElButton>
                  <ElButton type="primary">导出</ElButton>
-                 <ElButton>返回</ElButton>
                </div>
              </>
            )}
-                       <Audit onBack={() => { }} userRole={props.userRole} />
+            <Audit onBack={() => { }} userRole={props.userRole} />
         </ElForm>
       </div>
     );

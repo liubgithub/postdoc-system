@@ -105,12 +105,7 @@ export default defineComponent({
       }
     };
 
-    // 监听外部用户信息变化
-    const watchExternalUserInfo = () => {
-      if (props.externalUserInfo) {
-        fetchProfile();
-      }
-    };
+
 
     onMounted(fetchProfile);
 

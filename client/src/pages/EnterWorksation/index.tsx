@@ -233,7 +233,7 @@ export default defineComponent({
                                 </ElDialog>
                             </>
                         ) : (
-                            <Application onSubmitSuccess={() => { showApplication.value = true }} />
+                            <Application onBack={() => { showApplication.value = true }} onSubmitSuccess={() => { showApplication.value = true }} />
                         )
                     )}
                     {activeMenu.value === 'assessment' && <StationAssessment />}

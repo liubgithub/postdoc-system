@@ -126,14 +126,12 @@ export default defineComponent({
                                     showAction={true}
                                     tableClass={cls.tableWidth}
                                 />
-                                <ElDialog
-                                    v-model={showProcess.value}
-                                    title="流程状态"
-                                    width="600px"
-                                    destroyOnClose
-                                >
-                                    <ProcessStatus steps={currentSteps.value} />
-                                </ElDialog>
+
+                                <ProcessStatus
+                                    modelValue={showProcess.value}
+                                    onUpdate:modelValue={(val) => showProcess.value = val}
+                                    processType='出站考核'
+                                />
                             </>
                         )
                     )}

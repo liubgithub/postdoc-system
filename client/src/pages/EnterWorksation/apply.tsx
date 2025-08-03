@@ -9,6 +9,10 @@ export default defineComponent({
         onSubmitSuccess: {
             type: Function,
             required: false
+        },
+        onBack:{
+            type:Function,
+            required:true
         }
     },
     setup(props) {
@@ -18,7 +22,7 @@ export default defineComponent({
                 <div style={{maxHeight: 'calc(100vh - 300px)' }}>
                     <h3>1. 基本信息</h3>
                     <UserinfoRegister />
-                    <ResearchForm onSubmitSuccess={props.onSubmitSuccess}/>
+                    <ResearchForm onBack={props.onBack} onSubmitSuccess={props.onSubmitSuccess}/>
                 </div>
             </div>
         )
