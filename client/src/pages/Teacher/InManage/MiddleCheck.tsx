@@ -288,7 +288,11 @@ export default defineComponent({
           width="600px"
           destroyOnClose
         >
-          <ProcessStatus steps={currentSteps.value} />
+               <ProcessStatus
+                            modelValue={showProcessDialog.value}
+                            onUpdate:modelValue={(val) => showProcessDialog.value = val}
+                            processType='中期考核'
+                        />
         </ElDialog>
       </ElContainer>
     );

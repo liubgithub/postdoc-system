@@ -247,14 +247,11 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <ElDialog
-          v-model={showProcessDialog.value}
-          title="流程状态"
-          width="600px"
-          destroyOnClose
-        >
-          <ProcessStatus steps={currentSteps.value} />
-        </ElDialog>
+        <ProcessStatus
+                            modelValue={showProcessDialog.value}
+                            onUpdate:modelValue={(val) => showProcessDialog.value = val}
+                            processType='出站考核'
+                        />
       </ElContainer>
     );
   },
