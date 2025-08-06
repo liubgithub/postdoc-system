@@ -4,6 +4,8 @@ import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
 import StationProtocol from './coms/StationProtocol'
 import fetch from '@/api/index'
+import { getMyProcessTypes } from '@/api/enterWorkstation'
+
 interface TableRow {
     subject: string;
     postname: string;
@@ -14,18 +16,22 @@ interface TableRow {
     remark: string;
 }
 
-const menuList = [
-    { label: "进站申请", key: "application" },
-    { label: "进站考核", key: "assessment" },
-    { label: "进站协议和成果考核", key: "agreement" },
+// 默认菜单列表（作为fallback）
+const defaultMenuList = [
+    { label: "进站申请", key: "entry_application" },
+    { label: "进站考核", key: "entry_assessment" },
+    { label: "进站协议", key: "entry_agreement" },
 ]
 
 export default defineComponent({
     name: "EnterWS",
     setup() {
 
-        const activeMenu = ref('application')
+        const activeMenu = ref('entry_application')
         const showApplication = ref(true)
+        const menuList = ref(defaultMenuList)
+        const loading = ref(false)
+        
         const formData = ref({
             subject: '',
             postname: '',
@@ -47,6 +53,32 @@ export default defineComponent({
         const dialogVisible = ref(false)
         const viewRow = ref<TableRow | null>(null)
 
+        // 获取用户的process_types
+        const fetchProcessTypes = async () => {
+            loading.value = true
+            try {
+                const response = await getMyProcessTypes()
+                if (response.data && response.data.process_types) {
+                    // 将process_types转换为菜单格式
+                    const dynamicMenuList = Object.entries(response.data.process_types).map(([key, label]) => ({
+                        label: label as string,
+                        key: key
+                    }))
+                    menuList.value = dynamicMenuList
+                    
+                    // 如果当前选中的菜单不在新的菜单列表中，选择第一个
+                    if (!dynamicMenuList.find(item => item.key === activeMenu.value)) {
+                        activeMenu.value = dynamicMenuList[0]?.key || 'entry_application'
+                    }
+                }
+            } catch (error) {
+                console.error('获取process_types失败:', error)
+                ElMessage.warning('获取菜单失败，使用默认菜单')
+            } finally {
+                loading.value = false
+            }
+        }
+
         const handleView = (row: TableRow) => {
             viewRow.value = { ...row }
             dialogVisible.value = true
@@ -59,7 +91,7 @@ export default defineComponent({
 
         const handleMenuClick = (key: string) => {
             activeMenu.value = key
-            console.log(activeMenu.value, 'sssss')
+            console.log('选中的菜单:', key)
         }
 
         const handleSubmit = async () => {
@@ -73,13 +105,18 @@ export default defineComponent({
         };
 
         onMounted(async () => {
+            // 获取process_types
+            await fetchProcessTypes()
+            
+            // 获取进站申请数据
             try {
                 const res = await fetch.raw.GET('/enterWorkstation/apply');
                 formData.value = res.data as any;
             } catch (error) {
-
+                console.error('获取进站申请数据失败:', error)
             }
         });
+        
         return () => (
             <ElContainer>
                 <ElAside width="15vw">
@@ -87,8 +124,9 @@ export default defineComponent({
                         defaultActive={activeMenu.value}
                         class="el-menu-vertical"
                         onSelect={handleMenuClick}
+                        loading={loading.value}
                     >
-                        {menuList.map(item => (
+                        {menuList.value.map(item => (
                             <ElMenuItem index={item.key}>
                                 {item.label}
                             </ElMenuItem>
@@ -96,7 +134,7 @@ export default defineComponent({
                     </ElMenu>
                 </ElAside>
                 <ElMain>
-                    {activeMenu.value === 'application' && (
+                    {activeMenu.value === 'entry_application' && (
                         showApplication.value ? (
                             <>
                                 <ElTable data={tableData.value} class={cls.tableWidth}>
@@ -236,8 +274,8 @@ export default defineComponent({
                             <Application onBack={() => { showApplication.value = true }} onSubmitSuccess={() => { showApplication.value = true }} />
                         )
                     )}
-                    {activeMenu.value === 'assessment' && <StationAssessment />}
-                    {activeMenu.value === 'agreement' && <StationProtocol />}
+                    {activeMenu.value === 'entry_assessment' && <StationAssessment />}
+                    {activeMenu.value === 'entry_agreement' && <StationProtocol />}
                 </ElMain>
 
             </ElContainer>

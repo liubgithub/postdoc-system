@@ -112,6 +112,16 @@ export default defineComponent({
             switch (status) {
                 case '未提交':
                     return '未提交'
+                case '导师未审核':
+                    return '等待导师审核'
+                case '导师驳回':
+                    return '导师审核不通过'
+                case '学院未审核':
+                    return '等待学院审核'
+                case '学院驳回':
+                    return '学院审核不通过'
+                case '已审核':
+                    return '审核结束'
                 case '导师审核中':
                     return '合作导师审核中'
                 case '管理员审核中':

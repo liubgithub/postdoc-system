@@ -57,6 +57,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const showProcessDialog = ref(false);
+    const currentSelectedRow = ref<ApplicationData | null>(null);
 
     // 处理状态过滤
     const filterStatus = ref("审核中");
@@ -68,9 +69,20 @@ export default defineComponent({
     const tableData = ref<ApplicationData[]>([]);
     const loading = ref(false);
     
-    const filteredData = computed(() =>
-      tableData.value.filter((row) => row.status === filterStatus.value)
-    );
+    const filteredData = computed(() => {
+      if (filterStatus.value === "审核中") {
+        // 显示待处理的项目：状态为"审核中"或"未提交"
+        return tableData.value.filter((row) => 
+          row.status === "审核中" || row.status === "未提交"
+        );
+      } else if (filterStatus.value === "已处理") {
+        // 显示已处理的项目：状态为"审核通过"
+        return tableData.value.filter((row) => 
+          row.status === "审核通过"
+        );
+      }
+      return tableData.value;
+    });
     const pagedData = computed(() => {
       const start = (currentPage.value - 1) * pageSize;
       return filteredData.value.slice(start, start + pageSize);
@@ -111,6 +123,8 @@ export default defineComponent({
     };
 
     const handleView = (row: ApplicationData) => {
+      // 保存当前选中的行数据
+      currentSelectedRow.value = row;
       // 设置流程状态，确保类型匹配
       showProcessDialog.value = true;
     };
@@ -301,7 +315,8 @@ export default defineComponent({
             <ProcessStatus
                   modelValue={showProcessDialog.value}
                   onUpdate:modelValue={(val) => showProcessDialog.value = val}
-                  processType='中期考核'
+                  processType='进站申请'
+                  studentId={currentSelectedRow.value?.user_id}
             />
       </ElContainer>
     );

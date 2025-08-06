@@ -151,3 +151,61 @@ export const submitEnterWorkstation = async (data: any) => {
     return { data: null, error };
   }
 };
+
+// 获取当前用户的process_types
+export const getMyProcessTypes = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch('/api/enterWorkstation/my-process-types', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+// 根据用户ID获取process_types（仅管理员可用）
+export const getProcessTypesByUserId = async (userId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch(`/api/enterWorkstation/process-types/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};

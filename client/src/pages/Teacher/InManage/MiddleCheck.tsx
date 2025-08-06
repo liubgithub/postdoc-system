@@ -1,4 +1,4 @@
-import { defineComponent, ref, watch, computed } from "vue";
+import { defineComponent, ref, watch, computed, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 import TeacherHeader from "../TeacherHeader";
 import * as styles from "../../UserInfo/styles.css.ts";
@@ -17,69 +17,48 @@ import {
   ElMenuItem,
   ElMain,
   ElDialog,
+  ElMessage,
 } from "element-plus";
 import ProcessStatus from "@/units/ProcessStatus";
+import { getTeacherApplications } from "@/api/enterWorkstation";
 
 export default defineComponent({
   name: "MiddleCheckPage",
   setup() {
     const searchValue = ref("");
     const router = useRouter();
-    // 示例数据
-    const allTableData = [
-      {
-        id: 1,
-        studentId: "20230001",
-        name: "张三",
-        college: "园艺林学学院",
-        major: "园艺学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "合作导师",
-        currentApproval: "考核小组负责人（通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '审核中' as const, role: '合作导师', time: '2025-09-02 12:00' },
-          { status: '审核中' as const, role: '分管领导' },
-          { status: '审核中' as const, role: '学院管理员' }
-        ]
-      },
-      {
-        id: 2,
-        studentId: "20230002",
-        name: "李四",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "分管领导",
-        currentApproval: "设站单位负责人（不通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 09:00' },
-          { status: '通过' as const, role: '合作导师', time: '2025-09-01 10:00' },
-          { status: '拒绝' as const, role: '分管领导', time: '2025-09-02 11:00' },
-          { status: '审核中' as const, role: '学院管理员' }
-        ]
-      },
-      {
-        id: 3,
-        studentId: "20230003",
-        name: "王五",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "学院管理员",
-        currentApproval: "学院管理员审核（通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 08:00' },
-          { status: '通过' as const, role: '合作导师', time: '2025-09-01 09:00' },
-          { status: '通过' as const, role: '分管领导', time: '2025-09-01 10:00' },
-          { status: '通过' as const, role: '学院管理员', time: '2025-09-01 11:00' }
-        ]
-      },
-    ];
-    const tableData = ref([...allTableData]);
+    const loading = ref(false);
+    
+    // 从API获取的数据
+    const allTableData = ref([]);
+    const tableData = ref([]);
+
+    // 获取学生列表
+    const fetchStudents = async () => {
+      loading.value = true;
+      try {
+        const response = await getTeacherApplications();
+        console.log('API响应:', response);
+        if (response.data) {
+          console.log('API返回的数据:', response.data);
+          console.log('第一条数据:', response.data[0]);
+          allTableData.value = response.data;
+          tableData.value = [...allTableData.value];
+        } else if (response.error) {
+          ElMessage.error('获取学生列表失败');
+        }
+      } catch (error) {
+        console.error('获取学生列表失败:', error);
+        ElMessage.error('获取学生列表失败');
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // 页面加载时获取数据
+    onMounted(() => {
+      fetchStudents();
+    });
     // 分页相关
     const pageSize = 10;
     const currentPage = ref(1);
@@ -92,10 +71,10 @@ export default defineComponent({
     const handleSearch = () => {
       const keyword = searchValue.value.trim().toLowerCase();
       if (!keyword) {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
         return;
       }
-      tableData.value = allTableData.filter(
+      tableData.value = allTableData.value.filter(
         (row) =>
           row.studentId.toLowerCase().includes(keyword) ||
           row.name.toLowerCase().includes(keyword)
@@ -104,15 +83,18 @@ export default defineComponent({
 
     watch(searchValue, (val) => {
       if (val === "") {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
       }
     });
 
     // 流程状态弹窗逻辑
     const showProcessDialog = ref(false);
     const currentSteps = ref([]);
+    const currentRow = ref<any>(null);
     const handleShowProcess = (row: any) => {
+      console.log('点击查看流程，行数据:', row);
       currentSteps.value = row.steps;
+      currentRow.value = row;
       showProcessDialog.value = true;
     };
 
@@ -288,11 +270,18 @@ export default defineComponent({
           width="600px"
           destroyOnClose
         >
-               <ProcessStatus
-                            modelValue={showProcessDialog.value}
-                            onUpdate:modelValue={(val) => showProcessDialog.value = val}
-                            processType='中期考核'
-                        />
+                               {(() => {
+                  console.log('当前行数据:', currentRow.value);
+                  console.log('学生ID:', currentRow.value?.user_id);
+                  return (
+                                       <ProcessStatus
+                      modelValue={showProcessDialog.value}
+                      onUpdate:modelValue={(val) => showProcessDialog.value = val}
+                      processType='进站申请'
+                      studentId={currentRow.value?.user_id}
+                    />
+                 );
+               })()}
         </ElDialog>
       </ElContainer>
     );

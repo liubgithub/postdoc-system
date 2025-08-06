@@ -107,7 +107,9 @@ export default defineComponent({
     // 流程状态弹窗逻辑
     const showProcessDialog = ref(false);
     const currentSteps = ref([]);
+    const currentSelectedRow = ref<any>(null);
     const handleShowProcess = (row: any) => {
+      currentSelectedRow.value = row;
       currentSteps.value = row.steps;
       showProcessDialog.value = true;
     };
@@ -251,6 +253,7 @@ export default defineComponent({
                             modelValue={showProcessDialog.value}
                             onUpdate:modelValue={(val) => showProcessDialog.value = val}
                             processType='出站考核'
+                            studentId={currentSelectedRow.value?.user_id}
                         />
       </ElContainer>
     );

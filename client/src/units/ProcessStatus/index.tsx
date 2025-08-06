@@ -12,6 +12,10 @@ export default defineComponent({
     processType: {
       type: String,
       required: true
+    },
+    studentId: {
+      type: Number,
+      default: undefined
     }
   },
   emits: ['update:modelValue'],
@@ -23,12 +27,15 @@ export default defineComponent({
     const loadProcessStatus = async () => {
       loading.value = true
       try {
-        const { status, updatedAt } = await fetchProcessStatus(props.processType)
+        console.log('获取流程状态 - 流程类型:', props.processType, '学生ID:', props.studentId)
+        const { status, updatedAt } = await fetchProcessStatus(props.processType, props.studentId)
+        console.log('获取到的状态:', status, '更新时间:', updatedAt)
         steps.value = generateTimelineSteps(
           props.processType,
           status,
           updatedAt ? new Date(updatedAt).toLocaleString('zh-CN') : '未提交'
         )
+        console.log('生成的步骤:', steps.value)
       } catch (error) {
         console.error('加载流程状态失败:', error)
         steps.value = [

@@ -1,38 +1,123 @@
-import { useProvideStore } from "./store"
-
-import Sub from "./coms/sub"
+import { ElButton, ElCard, ElMessage } from 'element-plus'
+import { getMyProcessTypes, getProcessTypesByUserId } from '@/api/enterWorkstation'
 
 export default defineComponent({
-  name: "Example", //非强制，用于在DevTools里显示名称
-  setup() {
-    //页面级store
-    //统一简写为ps，永远使用ps.xxx访问，不要解构
-    //在页面根组件上使用useProvideStore()
-    const ps = useProvideStore()
+    name: 'ProcessTypesTest',
+    setup() {
+        const myProcessTypes = ref<any>(null)
+        const userProcessTypes = ref<any>(null)
+        const loading = ref(false)
+        const userId = ref(1) // 测试用的用户ID
 
-    //组件级state
-    //统一简写为s，永远使用s.xxx访问，不要解构
-    //储存JSX节点等复杂对象时要用shallowReactive
-    const s = shallowReactive({
-      extra: <button onClick={() => {
-        console.log("+1")
-        ps.count += 1
-      }}>+1</button>,
-    })
+        const fetchMyProcessTypes = async () => {
+            loading.value = true
+            try {
+                const response = await getMyProcessTypes()
+                if (response.data) {
+                    myProcessTypes.value = response.data
+                    ElMessage.success('获取当前用户process_types成功')
+                } else {
+                    ElMessage.error('获取失败: ' + response.error?.message)
+                }
+            } catch (error) {
+                console.error('获取process_types失败:', error)
+                ElMessage.error('获取失败')
+            } finally {
+                loading.value = false
+            }
+        }
 
-    setTimeout(() => {
-      console.log("禁止修改")
-      s.extra = <>禁止修改</>
-    }, 5000)
+        const fetchUserProcessTypes = async () => {
+            loading.value = true
+            try {
+                const response = await getProcessTypesByUserId(userId.value)
+                if (response.data) {
+                    userProcessTypes.value = response.data
+                    ElMessage.success(`获取用户${userId.value}的process_types成功`)
+                } else {
+                    ElMessage.error('获取失败: ' + response.error?.message)
+                }
+            } catch (error) {
+                console.error('获取用户process_types失败:', error)
+                ElMessage.error('获取失败')
+            } finally {
+                loading.value = false
+            }
+        }
 
-    //返回一个渲染函数，函数返回JSX节点
-    //一般简写为return () => (<></>)，比如下面这样
-    //渲染函数会在其中调用的响应式变量变化时重新执行
-    return () => (
-      <>
-        {console.log("主组件渲染函数执行！")}
-        <Sub extra={s.extra} />
-      </>
-    )
-  }
+        const testPermissionScenarios = () => {
+            const scenarios = [
+                { userId: 1, description: '查看自己的process_types' },
+                { userId: 2, description: '查看其他学生的process_types（学生角色会失败）' },
+                { userId: 999, description: '查看不存在的用户process_types' }
+            ]
+            
+            scenarios.forEach(scenario => {
+                console.log(`测试场景: ${scenario.description}`)
+                console.log(`用户ID: ${scenario.userId}`)
+                // 这里可以添加实际的测试逻辑
+            })
+        }
+
+        return () => (
+            <div style="padding: 20px;">
+                <h2>Process Types API 测试</h2>
+                
+                <ElCard style="margin-bottom: 20px;">
+                    <h3>获取当前用户的process_types</h3>
+                    <ElButton 
+                        type="primary" 
+                        onClick={fetchMyProcessTypes}
+                        loading={loading.value}
+                        style="margin-bottom: 10px;"
+                    >
+                        获取我的process_types
+                    </ElButton>
+                    
+                    {myProcessTypes.value && (
+                        <div>
+                            <h4>结果:</h4>
+                            <pre>{JSON.stringify(myProcessTypes.value, null, 2)}</pre>
+                        </div>
+                    )}
+                </ElCard>
+
+                <ElCard>
+                    <h3>根据用户ID获取process_types</h3>
+                    <div style="margin-bottom: 10px;">
+                        <label>用户ID: </label>
+                        <input 
+                            type="number" 
+                            value={userId.value}
+                            onChange={(e) => userId.value = parseInt(e.target.value)}
+                            style="margin-left: 10px; padding: 5px;"
+                        />
+                    </div>
+                    <ElButton 
+                        type="success" 
+                        onClick={fetchUserProcessTypes}
+                        loading={loading.value}
+                        style="margin-bottom: 10px;"
+                    >
+                        获取用户process_types
+                    </ElButton>
+                    
+                    <ElButton 
+                        type="warning" 
+                        onClick={testPermissionScenarios}
+                        style="margin-left: 10px; margin-bottom: 10px;"
+                    >
+                        测试权限场景
+                    </ElButton>
+                    
+                    {userProcessTypes.value && (
+                        <div>
+                            <h4>结果:</h4>
+                            <pre>{JSON.stringify(userProcessTypes.value, null, 2)}</pre>
+                        </div>
+                    )}
+                </ElCard>
+            </div>
+        )
+    }
 })

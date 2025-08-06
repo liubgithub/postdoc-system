@@ -20,6 +20,7 @@ import Audit from "../../../pages/EnterWorksation/audit.tsx";
 
 // 引入API
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
+import { approveApplication } from "@/api/enterWorkstation";
 
 const menuList = [
   { label: "进站申请", key: "application" },
@@ -32,8 +33,8 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
-                    // 获取路由参数
-                const userId = route.query.userId as string;
+    // 获取路由参数
+    const userId = route.query.userId as string;
 
     // 菜单状态
     const activeMenu = ref("application");
@@ -75,14 +76,40 @@ export default defineComponent({
       router.push("/teacher");
     };
 
-    const handleApprove = () => {
-      ElMessage.success("审核通过");
-      router.push("/teacher");
+    const handleApprove = async () => {
+      try {
+        const response = await approveApplication(parseInt(userId), true, "审核通过");
+        if (response.data) {
+          ElMessage.success("审核通过成功");
+          // 延迟跳转，让用户看到成功消息
+          setTimeout(() => {
+            router.push("/teacher");
+          }, 1500);
+        } else {
+          ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
+        }
+      } catch (error) {
+        console.error("审核失败:", error);
+        ElMessage.error("审核失败");
+      }
     };
 
-    const handleReject = () => {
-      ElMessage.warning("审核不通过");
-      router.push("/teacher");
+    const handleReject = async () => {
+      try {
+        const response = await approveApplication(parseInt(userId), false, "审核不通过");
+        if (response.data) {
+          ElMessage.warning("审核驳回成功");
+          // 延迟跳转，让用户看到成功消息
+          setTimeout(() => {
+            router.push("/teacher");
+          }, 1500);
+        } else {
+          ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
+        }
+      } catch (error) {
+        console.error("审核失败:", error);
+        ElMessage.error("审核失败");
+      }
     };
 
     return () => (
@@ -120,35 +147,44 @@ export default defineComponent({
                 {/* 进站申请 */}
                 {activeMenu.value === "application" && (
                   <div style={{ flex: 1, overflowY: "auto" }}>
-                    <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "20px", textAlign: "center" }}>
+                    <h2
+                      style={{
+                        fontSize: "24px",
+                        fontWeight: "600",
+                        marginBottom: "20px",
+                        textAlign: "center",
+                      }}
+                    >
                       博士后进站申请
                     </h2>
-                                                    <h3
-                                  style={{
-                                    fontSize: "18px",
-                                    fontWeight: "600",
-                                    marginBottom: "16px",
-                                  }}
-                                >
-                                  1. 基本信息
-                                </h3>
-                                {loading.value ? (
-                                  <div style={{ textAlign: "center", padding: "20px" }}>
-                                    加载中...
-                                  </div>
-                                ) : (
-                                  <UserinfoRegister externalUserInfo={studentInfo.value} userRole="teacher" />
-                                )}
-                                                    <ResearchForm
-                                  onSubmitSuccess={() => {
-                            
-                                    // 这里不需要做任何操作，因为导师只是查看
-                                  }}
-                                  onBack={()=>{}}
-                                  showButtons={false}
-                                  externalUserId={parseInt(userId)}
-                                  userRole="teacher"
-                                />
+                    <h3
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      1. 基本信息
+                    </h3>
+                    {loading.value ? (
+                      <div style={{ textAlign: "center", padding: "20px" }}>
+                        加载中...
+                      </div>
+                    ) : (
+                      <UserinfoRegister
+                        externalUserInfo={studentInfo.value}
+                        userRole="teacher"
+                      />
+                    )}
+                    <ResearchForm
+                      onSubmitSuccess={() => {
+                        // 这里不需要做任何操作，因为导师只是查看
+                      }}
+                      onBack={() => {}}
+                      showButtons={false}
+                      externalUserId={parseInt(userId)}
+                      userRole="teacher"
+                    />
                   </div>
                 )}
 

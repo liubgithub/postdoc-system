@@ -48,20 +48,27 @@ export const getProcessStatus = (status: string) => {
     case '等待管理员审核': return '等待管理员审核'
     case '导师审核通过': return '合作导师审核通过'
     case '导师审核不通过': return '合作导师审核不通过'
+    case '导师驳回': return '合作导师审核不通过'
     case '学院审核通过': return '学院审核通过'
     case '学院审核不通过': return '学院审核不通过'
+    case '学院驳回': return '学院审核不通过'
     case '管理员审核通过': return '管理员审核通过'
     case '管理员审核不通过': return '管理员审核不通过'
     case '审核结束':
-    case '结束': return '审核结束'
+    case '结束':
+    case '已审核': return '审核结束'
     default: return status
   }
 }
 
 // 获取特定流程状态
-export const fetchProcessStatus = async (processType: string) => {
+export const fetchProcessStatus = async (processType: string, studentId?: number) => {
   try {
-    const response = await window.fetch('/api/workflow/status', {
+    const url = studentId 
+      ? `/api/workflow/status?student_id=${studentId}`
+      : '/api/workflow/status';
+    
+    const response = await window.fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -73,7 +80,34 @@ export const fetchProcessStatus = async (processType: string) => {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     
-    const workflowData = await response.json() as WorkflowResponse
+    const responseData = await response.json()
+    
+    // 处理导师角色的情况：返回的是workflows数组
+    let workflowData: WorkflowResponse
+    if (responseData.workflows && Array.isArray(responseData.workflows)) {
+      // 导师角色：从workflows数组中找到指定学生的数据
+      if (!studentId) {
+        // 如果没有提供学生ID，返回默认状态而不是抛出错误
+        console.warn('导师角色未提供学生ID，返回默认状态')
+        return {
+          status: '未提交',
+          updatedAt: new Date().toISOString()
+        }
+      }
+      const targetWorkflow = responseData.workflows.find((w: any) => w.student_id === studentId)
+      if (!targetWorkflow) {
+        console.warn(`未找到学生ID ${studentId} 的workflow数据，返回默认状态`)
+        return {
+          status: '未提交',
+          updatedAt: new Date().toISOString()
+        }
+      }
+      workflowData = targetWorkflow
+    } else {
+      // 学生或管理员角色：直接返回单个workflow
+      workflowData = responseData as WorkflowResponse
+    }
+    
     const field = PROCESS_MAP[processType]
     
     if (!field) {
@@ -109,6 +143,10 @@ export const generateTimelineSteps = (processType: string, status: string, submi
   // 根据状态更新步骤状态
   const processedStatus = getProcessStatus(status)
   
+  // 调试信息
+  console.log('原始状态:', status)
+  console.log('处理后状态:', processedStatus)
+  
   if (processedStatus === '未提交') {
     baseSteps[0].status = 'wait'
     return baseSteps
@@ -119,6 +157,7 @@ export const generateTimelineSteps = (processType: string, status: string, submi
   switch (processedStatus) {
     case '等待导师审核':
     case '合作导师审核中':
+    case '导师未审核':
       baseSteps[1].status = 'process'
       baseSteps[1].time = new Date().toLocaleString('zh-CN')
       break
@@ -126,18 +165,21 @@ export const generateTimelineSteps = (processType: string, status: string, submi
     case '学院审核中':
     case '管理员审核中':
     case '等待管理员审核':
+    case '学院未审核':
       baseSteps[1].status = 'finished'
-      baseSteps[1].time = new Date().toLocaleString('zh-CN')
+      baseSteps[1].time = submitTime || new Date().toLocaleString('zh-CN')
       baseSteps[2].status = 'process'
       baseSteps[2].time = new Date().toLocaleString('zh-CN')
       break
     case '合作导师审核通过':
+    case '导师驳回':
       baseSteps[1].status = 'finished'
       baseSteps[1].time = new Date().toLocaleString('zh-CN')
       break
     case '学院审核通过':
     case '管理员审核通过':
     case '审核结束':
+    case '已审核':
       baseSteps[1].status = 'finished'
       baseSteps[1].time = new Date().toLocaleString('zh-CN')
       baseSteps[2].status = 'finished'
@@ -151,6 +193,7 @@ export const generateTimelineSteps = (processType: string, status: string, submi
       break
     case '学院审核不通过':
     case '管理员审核不通过':
+    case '学院驳回':
       baseSteps[1].status = 'finished'
       baseSteps[1].time = new Date().toLocaleString('zh-CN')
       baseSteps[2].status = 'error'
