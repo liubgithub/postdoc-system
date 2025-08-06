@@ -252,8 +252,8 @@ export default defineComponent({
             <div class={styles.formCol}>
               <ElFormItem label="宗教教职人员">
                 <ElRadioGroup v-model={form.value.is_religious_staff}>
-                  <ElRadio label="是">是</ElRadio>
-                  <ElRadio label="否">否</ElRadio>
+                  <ElRadio value="是">是</ElRadio>
+                  <ElRadio value="否">否</ElRadio>
                 </ElRadioGroup>
               </ElFormItem>
             </div>

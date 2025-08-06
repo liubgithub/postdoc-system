@@ -95,8 +95,8 @@ export default defineComponent({
                         <div class={formRow}>
                             <ElFormItem label="性别">
                                 <ElRadioGroup v-model={basicInfo.value.gender}>
-                                    <ElRadio label="男">男</ElRadio>
-                                    <ElRadio label="女">女</ElRadio>
+                                    <ElRadio value="男">男</ElRadio>
+                                    <ElRadio value="女">女</ElRadio>
                                 </ElRadioGroup>
                             </ElFormItem>
                             <ElFormItem label="出生年月">
@@ -140,10 +140,10 @@ export default defineComponent({
                         <div class={formRow}>
                             <ElFormItem label="之前是否获批延期资助">
                                 <ElRadioGroup v-model={basicInfo.value.hasExtensionBefore}>
-                                    <ElRadio label={true}>
+                                    <ElRadio value={true}>
                                         是 (已延期 {basicInfo.value.extensionTimes} 次)
                                     </ElRadio>
-                                    <ElRadio label={false}>否</ElRadio>
+                                    <ElRadio value={false}>否</ElRadio>
                                 </ElRadioGroup>
                             </ElFormItem>
                             <ElFormItem label="延期资助时间">
@@ -158,7 +158,7 @@ export default defineComponent({
                             <ElFormItem label="延期时间">
                                 <ElCheckboxGroup v-model={basicInfo.value.extensionDuration}>
                                     {extensionOptions.map(option => (
-                                        <ElCheckbox label={option.value} key={option.value}>
+                                        <ElCheckbox value={option.value} key={option.value}>
                                             {option.label}
                                         </ElCheckbox>
                                     ))}

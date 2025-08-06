@@ -15,7 +15,7 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const assessmentResult = ref('')
+        const assessmentResult = ref([])
         const teacherOpinion = ref('同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。')
         
         // 签名相关数据
@@ -134,8 +134,8 @@ export default defineComponent({
                     <p>投票结果： 同意票数<ElInput class={cls.voteInput} /> 不同意票数<ElInput class={cls.voteInput} /> 弃权票数<ElInput class={cls.voteInput} /></p>
                     <p>考核结果 (请在相应栏打"√")：
                         <ElCheckboxGroup v-model={assessmentResult.value}>
-                            <ElCheckbox label="pass">通过</ElCheckbox>
-                            <ElCheckbox label="fail">不通过</ElCheckbox>
+                            <ElCheckbox value="pass">通过</ElCheckbox>
+                            <ElCheckbox value="fail">不通过</ElCheckbox>
                         </ElCheckboxGroup>
                     </p>
                     <div class={cls.signatureWrapper}>

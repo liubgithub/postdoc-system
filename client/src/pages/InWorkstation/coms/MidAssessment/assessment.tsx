@@ -139,10 +139,10 @@ export default defineComponent({
                             </div>
                             <ElFormItem label="投票情况" prop="vote">
                                 <ElRadioGroup v-model={form.vote}>
-                                    <ElRadio label="优秀">优秀</ElRadio>
-                                    <ElRadio label="良好">良好</ElRadio>
-                                    <ElRadio label="合格">合格</ElRadio>
-                                    <ElRadio label="不合格">不合格</ElRadio>
+                                                    <ElRadio value="优秀">优秀</ElRadio>
+                <ElRadio value="良好">良好</ElRadio>
+                <ElRadio value="合格">合格</ElRadio>
+                <ElRadio value="不合格">不合格</ElRadio>
                                 </ElRadioGroup>
                             </ElFormItem>
                         </div>

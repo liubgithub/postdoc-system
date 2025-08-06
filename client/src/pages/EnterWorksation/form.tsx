@@ -59,8 +59,10 @@ export default defineComponent({
         if (props.externalUserInfo) {
           data = props.externalUserInfo;
         } else {
-          // 否则获取当前用户信息
-          data = await getUserProfile();
+          // 只有在不是老师角色查看模式下才获取当前用户信息
+          if (props.userRole !== 'teacher') {
+            data = await getUserProfile();
+          }
         }
         
         if (data) {
@@ -124,8 +126,8 @@ export default defineComponent({
             <div class={styles.formCol}>
               <ElFormItem label="性别" prop="gender">
                 <ElRadioGroup v-model={form.value.gender} disabled>
-                  <ElRadio label="男">男</ElRadio>
-                  <ElRadio label="女">女</ElRadio>
+                  <ElRadio value="男">男</ElRadio>
+                  <ElRadio value="女">女</ElRadio>
                 </ElRadioGroup>
               </ElFormItem>
             </div>
@@ -166,8 +168,8 @@ export default defineComponent({
             <div class={styles.formCol}>
               <ElFormItem label="宗教教职人员">
                 <ElRadioGroup v-model={form.value.is_religious_staff} disabled>
-                  <ElRadio label="是">是</ElRadio>
-                  <ElRadio label="否">否</ElRadio>
+                  <ElRadio value="是">是</ElRadio>
+                  <ElRadio value="否">否</ElRadio>
                 </ElRadioGroup>
               </ElFormItem>
             </div>
