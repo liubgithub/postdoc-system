@@ -1,5 +1,22 @@
 # 博士后管理系统
 
+## 环境及依赖管理
+统一使用miniconda和environment.yml进行管理
+注意创建环境后在IDE中切换到对应环境
+### 创建环境
+如果有同名环境，先删除
+``` bash
+conda remove --name PostdocServer --all
+```
+``` bash
+conda env create -f environment.yml
+```
+### 修改依赖
+在environment.yml中的dependencies和dependencies/pip选项中声明依赖，然后更新，不要直接使用pip安装，通过文件定义保持各自的环境统一，修改后通过以下命令更新
+``` bash
+conda env update -f environment.yml --prune
+```
+
 ## 📁 项目目录结构
 
 ```
