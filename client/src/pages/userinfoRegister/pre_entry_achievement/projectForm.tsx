@@ -166,7 +166,8 @@ export default defineComponent({
         formData.append("上传项目成果文件", editData.value["上传项目成果文件"]);
       }
       formData.append("备注", editData.value["备注"] || "");
-      formData.append("time", editData.value["time"] || 0);
+      // 修复：确保时间格式正确，当为空时发送空字符串
+      formData.append("time", editData.value["time"] ? dayjs(editData.value["time"]).format("YYYY-MM-DD") : "");
       let res;
       if (editIndex.value === -1) {
         res = await uploadProject(formData);
