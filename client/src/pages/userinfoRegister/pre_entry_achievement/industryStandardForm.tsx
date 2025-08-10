@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete ,Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
   getMyIndustryStandards,
@@ -9,6 +9,9 @@ import {
   updateIndustryStandard,
   deleteIndustryStandard
 } from '@/api/postdoctor/userinfoRegister/industry_standard';
+
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -242,14 +245,22 @@ export default defineComponent({
                   <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
                 )
               ))}
-              <ElTableColumn label="上传文件" width="150">
+              <ElTableColumn label="上传文件" width="200">
                 {{
                   default: ({ row }: any) => (
                     <div>
                       {row["上传文件"] && (
-                        <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                          {row["上传文件"].split('/').pop()}
-                        </a>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                          <span>{row["上传文件"].split('/').pop()}</span>
+                          <ElButton
+                            type="primary"
+                            size="small"
+                            icon={<Download />}
+                            onClick={() => downloadFile("pre_entry_industry_standard", row.id, row["上传文件"].split('/').pop())}
+                          >
+                            下载
+                          </ElButton>
+                        </div>
                       )}
                     </div>
                   )

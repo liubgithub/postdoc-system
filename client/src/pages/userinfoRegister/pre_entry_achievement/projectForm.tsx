@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
   getMyProjects,
@@ -10,9 +10,11 @@ import {
   deleteProject
 } from '@/api/postdoctor/userinfoRegister/project';
 
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
+
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-
   { label: "项目编号", prop: "项目编号", width: 100 },
   { label: "项目名称", prop: "项目名称", width: 120 },
   { label: "项目类型", prop: "项目类型", width: 100 },
@@ -28,20 +30,20 @@ const columns = [
   { label: "参与者名单", prop: "参与者名单", width: 120 },
   { label: "承担任务", prop: "承担任务", width: 120 },
   { label: "项目经费说明", prop: "项目经费说明", width: 120 },
-  { 
-      label: "成果提交时间",
-      prop: "time",
-      width: 150,
-      formatter: ({ row }: any) => {
-        if (!row.time) return "";
-        try {
-          return dayjs(row.time).format('YYYY-MM-DD');
-        } catch (e) {
-          console.error('时间格式化错误:', e);
-          return row.time;
-        }
+  {
+    label: "成果提交时间",
+    prop: "time",
+    width: 150,
+    formatter: ({ row }: any) => {
+      if (!row.time) return "";
+      try {
+        return dayjs(row.time).format('YYYY-MM-DD');
+      } catch (e) {
+        console.error('时间格式化错误:', e);
+        return row.time;
       }
-    },
+    }
+  },
   { label: "备注", prop: "备注", width: 120 },
 ];
 
@@ -242,7 +244,7 @@ export default defineComponent({
               <ElCol span={12}>
                 <ElFormItem label="成果提交时间">
                   <ElDatePicker
-                   v-model={editData.value["time"]}
+                    v-model={editData.value["time"]}
                     type="date"
                     value-format="YYYY-MM-DD"
                     placeholder="选择日期"
@@ -292,14 +294,22 @@ export default defineComponent({
                   <ElTableColumn key={col.prop} label={col.label} prop={col.prop} width={col.width} />
                 )
               ))}
-              <ElTableColumn label="上传项目成果文件" width="180">
+              <ElTableColumn label="上传项目成果文件" width="200">
                 {{
                   default: ({ row }: any) => (
                     <div>
                       {row["上传项目成果文件"] && (
-                        <a href={row["上传项目成果文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                          {row["上传项目成果文件"].split('/').pop()}
-                        </a>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                          <span>{row["上传项目成果文件"].split('/').pop()}</span>
+                          <ElButton
+                            type="primary"
+                            size="small"
+                            icon={<Download />}
+                            onClick={() => downloadFile("pre_entry_project", row.id, row["上传项目成果文件"].split('/').pop())}
+                          >
+                            下载
+                          </ElButton>
+                        </div>
                       )}
                     </div>
                   )

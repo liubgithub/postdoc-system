@@ -30,14 +30,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 文件代理
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_ROOT = os.path.join(BASE_DIR, '..', 'uploaded_files')
-app.mount(
-    "/static",
-    StaticFiles(directory=os.path.abspath(UPLOAD_ROOT)),
-    name="static"
-)
+# # 文件代理
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# UPLOAD_ROOT = os.path.join(BASE_DIR, '..', 'uploaded_files')
+# app.mount(
+#     "/static",
+#     StaticFiles(directory=os.path.abspath(UPLOAD_ROOT)),
+#     name="static"
+# )
 
 # 注册路由
 app.include_router(auth.router)

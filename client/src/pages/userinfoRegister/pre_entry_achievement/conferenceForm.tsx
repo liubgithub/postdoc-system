@@ -30,7 +30,6 @@ const columns = [
   { label: "联系人电话", prop: "联系人电话", width: 120 },
   { label: "会议地点", prop: "会议地点", width: 120 },
   { label: "会议报告", prop: "会议报告", width: 120 },
-  { label: "会议报告文件", prop: "会议报告文件", width: 200 },
   {
     label: "成果提交时间",
     prop: "time",
@@ -46,6 +45,7 @@ const columns = [
     }
   },
   { label: "备注", prop: "备注", width: 120 },
+  { label: "会议报告文件", prop: "会议报告文件", width: 200 },
 ];
 
 function db2form(item: any) {

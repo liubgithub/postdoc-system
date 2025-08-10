@@ -7,8 +7,11 @@ import {
   deleteCompetitionAward,
   getMyCompetitionAwards
 } from "@/api/postdoctor/userinfoRegister/competition_award";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
+
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -40,7 +43,7 @@ const columns = [
   },
   { label: "备注", prop: "备注", width: 120 },
 
-  { label: "上传获奖证书文件", prop: "上传获奖证书文件", width: 160 }
+  { label: "上传获奖证书文件", prop: "上传获奖证书文件", width: 200 }
 ];
 
 function db2form(item: any) {
@@ -334,9 +337,17 @@ export default defineComponent({
                     v-slots={{
                       default: ({ row }: any) =>
                         row["上传获奖证书文件"] ? (
-                          <a href={row["上传获奖证书文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                            {row["上传获奖证书文件"].split('/').pop()}
-                          </a>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <span>{row["上传获奖证书文件"].split('/').pop()}</span>
+                            <ElButton
+                              type="primary"
+                              size="small"
+                              icon={<Download />}
+                              onClick={() => downloadFile("pre_entry_competition_award", row.id, row["上传获奖证书文件"].split('/').pop())}
+                            >
+                              下载
+                            </ElButton>
+                          </div>
                         ) : ""
                     }}
                   />

@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
   getMyPapers,
@@ -9,6 +9,9 @@ import {
   updatePaper,
   deletePaper
 } from '@/api/postdoctor/userinfoRegister/paper';
+
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -35,7 +38,7 @@ const columns = [
   { label: "出版社", prop: "出版社", width: 100 },
   { label: "总期号", prop: "总期号", width: 100 },
   { label: "刊物编号", prop: "刊物编号", width: 100 },
-  { 
+  {
     label: "成果提交时间",
     prop: "time",
     width: 150,
@@ -320,7 +323,7 @@ export default defineComponent({
                   <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
                 </ElFormItem></ElCol>
               </ElRow>
-              
+
               <ElFormItem label="论文发表证书">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文发表证书")}>
                   <ElButton>选择文件</ElButton>
@@ -334,7 +337,7 @@ export default defineComponent({
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文发表证书"].split('/').pop()}</span>
                 )}
               </ElFormItem>
-              
+
               <ElFormItem label="论文接收函">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文接收函")}>
                   <ElButton>选择文件</ElButton>
@@ -348,7 +351,7 @@ export default defineComponent({
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文接收函"].split('/').pop()}</span>
                 )}
               </ElFormItem>
-              
+
               <ElFormItem label="论文电子版">
                 <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文电子版")}>
                   <ElButton>选择文件</ElButton>
@@ -362,7 +365,7 @@ export default defineComponent({
                   <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文电子版"].split('/').pop()}</span>
                 )}
               </ElFormItem>
-              
+
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
                 <ElButton onClick={handleCancel}>返回</ElButton>
@@ -394,9 +397,17 @@ export default defineComponent({
                   default: ({ row }: any) => (
                     <div>
                       {row["论文发表证书"] && (
-                        <a href={row["论文发表证书"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                          {row["论文发表证书"].split('/').pop()}
-                        </a>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                          <span>{row["论文发表证书"].split('/').pop()}</span>
+                          <ElButton
+                            type="primary"
+                            size="small"
+                            icon={<Download />}
+                            onClick={() => downloadFile("pre_entry_paper", row.id, row["论文发表证书"].split('/').pop())}
+                          >
+                            下载
+                          </ElButton>
+                        </div>
                       )}
                     </div>
                   )
@@ -407,9 +418,17 @@ export default defineComponent({
                   default: ({ row }: any) => (
                     <div>
                       {row["论文接收函"] && (
-                        <a href={row["论文接收函"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                          {row["论文接收函"].split('/').pop()}
-                        </a>
+                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                          <span>{row["论文接收函"].split('/').pop()}</span>
+                          <ElButton
+                            type="primary"
+                            size="small"
+                            icon={<Download />}
+                            onClick={() => downloadFile("pre_entry_paper", row.id, row["论文接收函"].split('/').pop())}
+                          >
+                            下载
+                          </ElButton>
+                        </div>
                       )}
                     </div>
                   )
@@ -420,9 +439,17 @@ export default defineComponent({
                   default: ({ row }: any) => (
                     <div>
                       {row["论文电子版"] && (
-                        <a href={row["论文电子版"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                          {row["论文电子版"].split('/').pop()}
-                        </a>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                          <span>{row["论文电子版"].split('/').pop()}</span>
+                          <ElButton
+                            type="primary"
+                            size="small"
+                            icon={<Download />}
+                            onClick={() => downloadFile("pre_entry_paper", row.id, row["论文电子版"].split('/').pop())}
+                          >
+                            下载
+                          </ElButton>
+                        </div>
                       )}
                     </div>
                   )
