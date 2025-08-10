@@ -11,7 +11,7 @@ import {
 } from '@/api/postdoctor/userinfoRegister/paper';
 
 // 导入文件下载函数
-import { downloadFile } from '@/utils/DownloadFiles';
+import { downloadPaper } from '@/utils/DownloadFiles';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -403,7 +403,7 @@ export default defineComponent({
                             type="primary"
                             size="small"
                             icon={<Download />}
-                            onClick={() => downloadFile("pre_entry_paper", row.id, row["论文发表证书"].split('/').pop())}
+                            onClick={() => downloadPaper(row.id, "论文发表证书", row["论文发表证书"].split('/').pop())}
                           >
                             下载
                           </ElButton>
@@ -424,7 +424,7 @@ export default defineComponent({
                             type="primary"
                             size="small"
                             icon={<Download />}
-                            onClick={() => downloadFile("pre_entry_paper", row.id, row["论文接收函"].split('/').pop())}
+                            onClick={() => downloadPaper( row.id, "论文接收函", row["论文接收函"].split('/').pop())}
                           >
                             下载
                           </ElButton>
@@ -445,7 +445,7 @@ export default defineComponent({
                             type="primary"
                             size="small"
                             icon={<Download />}
-                            onClick={() => downloadFile("pre_entry_paper", row.id, row["论文电子版"].split('/').pop())}
+                            onClick={() => downloadPaper(row.id, "论文电子版", row["论文电子版"].split('/').pop())}
                           >
                             下载
                           </ElButton>
