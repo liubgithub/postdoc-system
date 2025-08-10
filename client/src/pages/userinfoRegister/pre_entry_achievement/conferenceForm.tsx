@@ -10,6 +10,9 @@ import {
 import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
+
 const columns = [
   { label: "序号", prop: "id", width: 60 },
   { label: "会议编号", prop: "会议编号", width: 100 },
@@ -69,38 +72,6 @@ function db2form(item: any) {
     time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : ""
   };
 }
-
-// 文件下载函数
-const downloadFile = async (id: number, filename: string) => {
-  try {
-    // raw.GET 是 openapi-fetch 的客户端，它会自动尝试将响应内容解析为JSON。但是PDF文件是二进制数据，不是JSON格式，所以会抛出 "Unexpected token '%', "%PDF-1.4..." is not valid JSON" 错误。
-    // 使用标准的 fetch API 而不是 raw.GET，避免JSON解析问题
-    const response = await fetch(`/api/pre_entry_conference/download/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      ElMessage.success('下载成功');
-    } else {
-      ElMessage.error('下载失败');
-    }
-  } catch (error) {
-    console.error('下载错误:', error);
-    ElMessage.error('下载失败');
-  }
-};
 
 export default defineComponent({
   name: "ConferenceForm",
@@ -414,7 +385,7 @@ export default defineComponent({
                               type="primary"
                               size="small"
                               icon={<Download />}
-                              onClick={() => downloadFile(row.id, row["会议报告文件"].split('/').pop())}
+                              onClick={() => downloadFile("pre_entry_conference", row.id, row["会议报告文件"].split('/').pop())}
                             >
                               下载
                             </ElButton>
