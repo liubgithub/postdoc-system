@@ -2,7 +2,7 @@ import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.
 import AnnualAssessment from './annual_assess'
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
-import { ElButton, ElDialog } from 'element-plus'
+import { ElButton } from 'element-plus'
 import ProcessStatus from '@/units/ProcessStatus'
 export default defineComponent({
     name: "AnnualAssessment",
