@@ -1,0 +1,25 @@
+{
+    "editor.wordSegmenterLocales": null,
+    "locale": "zh-cn",
+    "gitlens.codeLens.enabled": true,
+    "gitlens.codeLens.scopes": [
+        "document",
+        "containers"
+    ],
+    "gitlens.blame.format": "${author}, ${agoOrDate}",
+    "gitlens.blame.compact": false,
+    "gitlens.blame.avatars": true,
+    "gitlens.blame.heatmap.enabled": true,
+    "gitlens.blame.heatmap.location": "right",
+    "gitlens.currentLine.enabled": true,
+    "gitlens.hovers.enabled": true,
+    "gitlens.statusBar.enabled": true,
+    "gitlens.views.repositories.files.layout": "tree",
+    "gitlens.views.fileHistory.files.layout": "tree",
+    "gitlens.views.lineHistory.files.layout": "tree",
+    "git.enabled": true,
+    "git.autorefresh": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.showPushSuccessNotification": true
+}
