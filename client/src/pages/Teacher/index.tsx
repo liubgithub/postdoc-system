@@ -19,20 +19,23 @@ import useUser from "@/stores/user";
 import { useRouter, useRoute, RouterView } from "vue-router";
 import TeacherHeader from "./TeacherHeader";
 import ProcessStatus from "@/units/ProcessStatus";
-import { getTeacherApplications, approveApplication } from "@/api/enterWorkstation";
+import {
+  getTeacherApplications,
+  approveApplication,
+} from "@/api/enterWorkstation";
 
 // 定义申请数据的类型 - 适配后端返回的数据结构
 interface ApplicationData {
   id: number;
-  studentId: string;  // 学号
-  name: string;       // 姓名（对应发起人）
-  college: string;    // 学院
-  major: string;      // 专业
-  applyTime: string;  // 申请时间（对应提交时间）
-  status: string;     // 状态
-  node: string;       // 当前节点
+  studentId: string; // 学号
+  name: string; // 姓名（对应发起人）
+  college: string; // 学院
+  major: string; // 专业
+  applyTime: string; // 申请时间（对应提交时间）
+  status: string; // 状态
+  node: string; // 当前节点
   currentApproval: string; // 当前审核
-  
+
   user_id: number;
   subject: string;
   cotutor: string;
@@ -64,22 +67,20 @@ export default defineComponent({
     // 分页相关
     const pageSize = 10;
     const currentPage = ref(1);
-    
+
     // 真实数据
     const tableData = ref<ApplicationData[]>([]);
     const loading = ref(false);
-    
+
     const filteredData = computed(() => {
       if (filterStatus.value === "审核中") {
         // 显示待处理的项目：状态为"审核中"或"未提交"
-        return tableData.value.filter((row) => 
-          row.status === "审核中" || row.status === "未提交"
+        return tableData.value.filter(
+          (row) => row.status === "审核中" || row.status === "未提交"
         );
       } else if (filterStatus.value === "已处理") {
         // 显示已处理的项目：状态为"审核通过"
-        return tableData.value.filter((row) => 
-          row.status === "审核通过"
-        );
+        return tableData.value.filter((row) => row.status === "审核通过");
       }
       return tableData.value;
     });
@@ -87,22 +88,27 @@ export default defineComponent({
       const start = (currentPage.value - 1) * pageSize;
       return filteredData.value.slice(start, start + pageSize);
     });
-    const summary = ref({ postdocCount: 125, latestAchievement: 78, outCount: 32, delayCount: 7 });
+    const summary = ref({
+      postdocCount: 125,
+      latestAchievement: 78,
+      outCount: 32,
+      delayCount: 7,
+    });
 
     // 获取申请列表
     const fetchApplications = async () => {
       loading.value = true;
       try {
         const response = await getTeacherApplications();
-        console.log('API响应:', response);
+        console.log("API响应:", response);
         if (response.data) {
           tableData.value = response.data as ApplicationData[];
         } else if (response.error) {
-          ElMessage.error('获取申请列表失败');
+          ElMessage.error("获取申请列表失败");
         }
       } catch (error) {
-        console.error('获取申请列表失败:', error);
-        ElMessage.error('获取申请列表失败');
+        console.error("获取申请列表失败:", error);
+        ElMessage.error("获取申请列表失败");
       } finally {
         loading.value = false;
       }
@@ -110,15 +116,15 @@ export default defineComponent({
 
     // 处理详情按钮点击
     const handleDetail = (row: ApplicationData) => {
-      console.log('查看详情:', row);
-      
+      console.log("查看详情:", row);
+
       // 跳转到进站申请查看页面
       router.push({
-        path: '/teacher/entryManage/approval',
+        path: "/teacher/entryManage/approval",
         query: {
           userId: row.user_id.toString(),
-          type: 'detail'
-        }
+          type: "detail",
+        },
       });
     };
 
@@ -141,7 +147,12 @@ export default defineComponent({
         </ElHeader>
         <div class={styles.contentArea}>
           <div
-            style={{ background: "#fff", borderRadius: "8px", padding: "24px" }}
+            style={{
+              background: "#fff",
+              padding: "24px",
+              height: "calc(100vh - 20vh - 40px)", // 减去头部高度和contentArea的padding
+              overflow: "hidden", // 防止外层容器出现滚动条
+            }}
           >
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
               <ElButton
@@ -178,146 +189,172 @@ export default defineComponent({
               </ElButton>
             </div>
             {loading.value && (
-              <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+              <div
+                style={{ textAlign: "center", padding: "20px", color: "#666" }}
+              >
                 加载中...
               </div>
             )}
-            <ElTable
-              data={pagedData.value}
-              border
-              stripe
-              style={{ width: "100%" }}
-            >
-              <ElTableColumn
-                label="序号"
-                width="80"
-                align="center"
-                v-slots={{
-                  default: (scope: { $index: number }) =>
-                    (currentPage.value - 1) * pageSize + scope.$index + 1,
-                }}
-              />
-              <ElTableColumn
-                label="业务类型"
-                align="center"
-                v-slots={{
-                  default: () => "进站申请"
-                }}
-              />
-              <ElTableColumn 
-                prop="name" 
-                label="发起人" 
-                align="center" 
-              />
-              <ElTableColumn
-                prop="applyTime"
-                label="提交时间"
-                align="center"
-              />
-              <ElTableColumn prop="status" label="流程状态" align="center" />
-              <ElTableColumn
-                label="操作"
-                align="center"
-                v-slots={{
-                  default: (scope: { row: ApplicationData }) => (
-                    <>
-                      <ElButton
-                        size="small"
-                        onClick={() => handleDetail(scope.row)}
-                      >
-                        详情
-                      </ElButton>
-                      <ElButton
-                        size="small"
-                        type="primary"
-                        onClick={() => handleView(scope.row)}
-                      >
-                        查看
-                      </ElButton>
-                    </>
-                  ),
-                }}
-              />
-            </ElTable>
-            {/* 分页器 */}
             <div
               style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "24px",
+                height: "calc(100% - 60px)", // 减去按钮区域的高度
+                overflowY: "auto",
+                paddingRight: "8px",
               }}
             >
-              <ElPagination
-                background
-                layout="prev, pager, next"
-                pageSize={pageSize}
-                total={filteredData.value.length}
-                v-model:current-page={currentPage.value}
-                hideOnSinglePage={false}
-              />
-            </div>
-            {/* 新增统计卡片 */}
-            <div style={{ marginTop: "40px", marginBottom: "16px", textAlign: "center" }}>
-              <span style={{ fontSize: "2rem", fontWeight: 600, letterSpacing: 2 }}>数据统计</span>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "40px",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "0px",
-                maxWidth: "600px",
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
-            >
-              {[
-                { label: "在站人数", value: summary.value.postdocCount },
-                { label: "科研成果", value: summary.value.latestAchievement },
-                { label: "出站人数", value: summary.value.outCount },
-                { label: "延期人数", value: summary.value.delayCount },
-              ].map((item) => (
-                <div
+              <ElTable
+                data={pagedData.value}
+                border
+                stripe
+                style={{ width: "100%" }}
+              >
+                <ElTableColumn
+                  label="序号"
+                  width="80"
+                  align="center"
+                  v-slots={{
+                    default: (scope: { $index: number }) =>
+                      (currentPage.value - 1) * pageSize + scope.$index + 1,
+                  }}
+                />
+                <ElTableColumn
+                  label="业务类型"
+                  align="center"
+                  v-slots={{
+                    default: () => "进站申请",
+                  }}
+                />
+                <ElTableColumn prop="name" label="发起人" align="center" />
+                <ElTableColumn
+                  prop="applyTime"
+                  label="提交时间"
+                  align="center"
+                />
+                <ElTableColumn prop="status" label="流程状态" align="center" />
+                <ElTableColumn
+                  label="操作"
+                  align="center"
+                  v-slots={{
+                    default: (scope: { row: ApplicationData }) => (
+                      <>
+                        <ElButton
+                          size="small"
+                          onClick={() => handleDetail(scope.row)}
+                        >
+                          详情
+                        </ElButton>
+                        <ElButton
+                          size="small"
+                          type="primary"
+                          onClick={() => handleView(scope.row)}
+                        >
+                          查看
+                        </ElButton>
+                      </>
+                    ),
+                  }}
+                />
+              </ElTable>
+              {/* 分页器 */}
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "24px",
+                }}
+              >
+                <ElPagination
+                  background
+                  layout="prev, pager, next"
+                  pageSize={pageSize}
+                  total={filteredData.value.length}
+                  v-model:current-page={currentPage.value}
+                  hideOnSinglePage={false}
+                />
+              </div>
+              {/* 新增统计卡片 */}
+              <div
+                style={{
+                  marginTop: "40px",
+                  marginBottom: "16px",
+                  textAlign: "center",
+                }}
+              >
+                <span
                   style={{
-                    border: "1px solid #aaa",
-                    borderRadius: "16px",
-                    width: "260px",
-                    height: "170px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#fff",
-                    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                    fontSize: "2rem",
+                    fontWeight: 600,
+                    letterSpacing: 2,
                   }}
                 >
-                  <div style={{ fontSize: "1.5rem", fontWeight: 600, letterSpacing: 2 }}>
-                    {item.label}
-                  </div>
+                  数据统计
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "40px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "0px",
+                  maxWidth: "600px",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+              >
+                {[
+                  { label: "在站人数", value: summary.value.postdocCount },
+                  { label: "科研成果", value: summary.value.latestAchievement },
+                  { label: "出站人数", value: summary.value.outCount },
+                  { label: "延期人数", value: summary.value.delayCount },
+                ].map((item) => (
                   <div
                     style={{
-                      fontSize: "3.5rem",
-                      fontWeight: 900,
-                      marginTop: "24px",
-                      color: "#0033cc"
+                      border: "1px solid #aaa",
+                      borderRadius: "16px",
+                      width: "260px",
+                      height: "150px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "#fff",
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                     }}
                   >
-                    {item.value}
+                    <div
+                      style={{
+                        fontSize: "1.5rem",
+                        fontWeight: 600,
+                        letterSpacing: 2,
+                      }}
+                    >
+                      {item.label}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "3.5rem",
+                        fontWeight: 900,
+                        marginTop: "24px",
+                        color: "#0033cc",
+                      }}
+                    >
+                      {item.value}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
-            <ProcessStatus
-                  modelValue={showProcessDialog.value}
-                  onUpdate:modelValue={(val) => showProcessDialog.value = val}
-                  processType='进站申请'
-                  studentId={currentSelectedRow.value?.user_id}
-            />
+        <ProcessStatus
+          modelValue={showProcessDialog.value}
+          onUpdate:modelValue={(val) => (showProcessDialog.value = val)}
+          processType="进站申请"
+          studentId={currentSelectedRow.value?.user_id}
+        />
       </ElContainer>
     );
   },

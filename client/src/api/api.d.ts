@@ -661,6 +661,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/info/user/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 根据用户ID获取用户个人信息
+         * @description 获取指定用户的个人信息，包括基本信息、教育经历和工作经历。
+         */
+        get: operations["get_user_info_by_id_info_user__user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/info/me": {
         parameters: {
             query?: never;
@@ -675,23 +695,6 @@ export interface paths {
         post?: never;
         /** Delete Info */
         delete: operations["delete_info_info_me_delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/info/user/{user_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get User Info By Id */
-        get: operations["get_user_info_by_id_info_user__user_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -915,6 +918,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enterWorkstation/process-types/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Process Types By User Id
+         * @description 根据用户ID获取对应的process_types
+         */
+        get: operations["get_process_types_by_user_id_enterWorkstation_process_types__user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterWorkstation/my-process-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get My Process Types
+         * @description 获取当前用户的process_types
+         */
+        get: operations["get_my_process_types_enterWorkstation_my_process_types_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/enterWorkstation/apply": {
         parameters: {
             query?: never;
@@ -969,7 +1012,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Relation By User Id */
+        /** 根据用户ID获取进站申请的相关科研数据 */
         get: operations["get_relation_by_user_id_enterRelation_user__user_id__get"];
         put?: never;
         post?: never;
@@ -1107,6 +1150,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ApproveRequest */
+        ApproveRequest: {
+            /** Approved */
+            approved: boolean;
+            /**
+             * Comment
+             * @default
+             */
+            comment: string;
+        };
         /** Body_create_book_pre_entry_book__post */
         Body_create_book_pre_entry_book__post: {
             /** 著作中文名 */
@@ -5290,6 +5343,37 @@ export interface operations {
             };
         };
     };
+    get_user_info_by_id_info_user__user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InfoOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_info_info_me_get: {
         parameters: {
             query?: never;
@@ -5359,37 +5443,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
-                };
-            };
-        };
-    };
-    get_user_info_by_id_info_user__user_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                user_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InfoOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -5746,6 +5799,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudentPendingTasksResponse"] | components["schemas"]["StaffPendingTasksResponse"];
+                };
+            };
+        };
+    };
+    get_process_types_by_user_id_enterWorkstation_process_types__user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_process_types_enterWorkstation_my_process_types_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };
@@ -6130,17 +6234,18 @@ export interface operations {
     };
     approve_student_entryMange_teacher_student__user_id__approve_put: {
         parameters: {
-            query: {
-                approved: boolean;
-                comment?: string;
-            };
+            query?: never;
             header?: never;
             path: {
                 user_id: number;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

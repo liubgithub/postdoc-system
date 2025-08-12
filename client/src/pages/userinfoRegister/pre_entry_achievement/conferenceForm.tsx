@@ -7,8 +7,11 @@ import {
   deleteConference,
   getMyConferences
 } from "@/api/postdoctor/userinfoRegister/conference";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
+
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -27,7 +30,6 @@ const columns = [
   { label: "联系人电话", prop: "联系人电话", width: 120 },
   { label: "会议地点", prop: "会议地点", width: 120 },
   { label: "会议报告", prop: "会议报告", width: 120 },
-  { label: "会议报告文件", prop: "会议报告文件", width: 120 },
   {
     label: "成果提交时间",
     prop: "time",
@@ -43,6 +45,7 @@ const columns = [
     }
   },
   { label: "备注", prop: "备注", width: 120 },
+  { label: "会议报告文件", prop: "会议报告文件", width: 200 },
 ];
 
 function db2form(item: any) {
@@ -69,8 +72,6 @@ function db2form(item: any) {
     time: item["time"] ? dayjs(item["time"]).format('YYYY-MM-DD') : ""
   };
 }
-
-
 
 export default defineComponent({
   name: "ConferenceForm",
@@ -378,9 +379,17 @@ export default defineComponent({
                     v-slots={{
                       default: ({ row }: any) =>
                         row["会议报告文件"] ? (
-                          <a href={row["会议报告文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                            {row["会议报告文件"].split('/').pop()}
-                          </a>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <span>{row["会议报告文件"].split('/').pop()}</span>
+                            <ElButton
+                              type="primary"
+                              size="small"
+                              icon={<Download />}
+                              onClick={() => downloadFile("pre_entry_conference", row.id, row["会议报告文件"].split('/').pop())}
+                            >
+                              下载
+                            </ElButton>
+                          </div>
                         ) : ""
                     }}
                   />

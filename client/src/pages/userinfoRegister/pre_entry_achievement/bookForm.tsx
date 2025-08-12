@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
   getMyBooks,
@@ -9,6 +9,9 @@ import {
   updateBook,
   deleteBook
 } from '@/api/postdoctor/userinfoRegister/book';
+
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
 
 const columns = [
   { label: "序号", prop: "id", width: 60 },
@@ -23,7 +26,7 @@ const columns = [
   { label: "出版号", prop: "出版号", width: 100 },
   { label: "ISBN", prop: "isbn", width: 100 },
   { label: "作者排名", prop: "作者排名", width: 100 },
-  { label: "上传文件", prop: "上传文件", width: 120 },
+
   {
     label: "成果提交时间",
     prop: "time",
@@ -39,7 +42,7 @@ const columns = [
     }
   },
   { label: "备注", prop: "备注", width: 120 },
-
+  { label: "上传文件", prop: "上传文件", width: 200 },
 ];
 
 function db2form(item: any) {
@@ -150,7 +153,8 @@ export default defineComponent({
       formData.append("出版号", editData.value["出版号"] || "");
       formData.append("isbn", editData.value["isbn"] || "");
       formData.append("作者排名", editData.value["作者排名"] || "");
-      formData.append("time", editData.value["time"] ? dayjs(editData.value["time"]).format('YYYY-MM-DD HH:mm:ss') : "");
+      // 修复：将时间格式改为 YYYY-MM-DD，与后端期望格式一致
+      formData.append("time", editData.value["time"] ? dayjs(editData.value["time"]).format("YYYY-MM-DD") : "");
       if (editData.value["上传文件"] instanceof File) {
         formData.append("file", editData.value["上传文件"]);
       }
@@ -280,9 +284,17 @@ export default defineComponent({
                     v-slots={{
                       default: ({ row }: any) =>
                         row["上传文件"] ? (
-                          <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                            {row["上传文件"].split('/').pop()}
-                          </a>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <span>{row["上传文件"].split('/').pop()}</span>
+                            <ElButton
+                              type="primary"
+                              size="small"
+                              icon={<Download />}
+                              onClick={() => downloadFile("pre_entry_book", row.id, row["上传文件"].split('/').pop())}
+                            >
+                              下载
+                            </ElButton>
+                          </div>
                         ) : ""
                     }}
                   />

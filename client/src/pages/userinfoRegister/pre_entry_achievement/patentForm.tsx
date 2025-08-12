@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
-import { Edit, Delete } from '@element-plus/icons-vue';
+import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
   getMyPatents,
@@ -10,9 +10,11 @@ import {
   deletePatent
 } from '@/api/postdoctor/userinfoRegister/patent';
 
+// 导入文件下载函数
+import { downloadFile } from '@/utils/DownloadFiles';
+
 const columns = [
   { label: "序号", prop: "id", width: 60 },
-
   { label: "专利名称", prop: "专利名称", width: 150 },
   { label: "专利类型", prop: "专利类型", width: 100 },
   { label: "申请日期", prop: "申请日期", width: 110 },
@@ -37,7 +39,7 @@ const columns = [
     }
   },
   { label: "备注", prop: "备注", width: 120 },
-  { label: "上传文件", prop: "上传文件", width: 120 },
+  { label: "上传文件", prop: "上传文件", width: 200 },
 ];
 
 function db2form(item: any) {
@@ -266,9 +268,17 @@ export default defineComponent({
                     v-slots={{
                       default: ({ row }: any) =>
                         row["上传文件"] ? (
-                          <a href={row["上传文件"]} target="_blank" style={{ color: '#409EFF', textDecoration: 'none' }}>
-                            {row["上传文件"].split('/').pop()}
-                          </a>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <span>{row["上传文件"].split('/').pop()}</span>
+                            <ElButton
+                              type="primary"
+                              size="small"
+                              icon={<Download />}
+                              onClick={() => downloadFile("pre_entry_new_variety", row.id, row["上传文件"].split('/').pop())}
+                            >
+                              下载
+                            </ElButton>
+                          </div>
                         ) : ""
                     }}
                   />
