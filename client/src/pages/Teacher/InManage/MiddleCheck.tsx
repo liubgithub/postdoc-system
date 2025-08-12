@@ -22,6 +22,13 @@ import {
 import ProcessStatus from "@/units/ProcessStatus";
 import { getTeacherApplications } from "@/api/enterWorkstation";
 
+// 添加表格行数据类型定义
+interface TableRow {
+  studentId: string;
+  name: string;
+  [key: string]: any;
+}
+
 export default defineComponent({
   name: "MiddleCheckPage",
   setup() {
@@ -30,8 +37,8 @@ export default defineComponent({
     const loading = ref(false);
     
     // 从API获取的数据
-    const allTableData = ref([]);
-    const tableData = ref([]);
+    const allTableData = ref<TableRow[]>([]);
+    const tableData = ref<TableRow[]>([]);
 
     // 获取学生列表
     const fetchStudents = async () => {
@@ -75,7 +82,7 @@ export default defineComponent({
         return;
       }
       tableData.value = allTableData.value.filter(
-        (row) =>
+        (row: TableRow) =>
           row.studentId.toLowerCase().includes(keyword) ||
           row.name.toLowerCase().includes(keyword)
       );

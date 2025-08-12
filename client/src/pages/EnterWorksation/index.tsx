@@ -124,7 +124,6 @@ export default defineComponent({
                         defaultActive={activeMenu.value}
                         class="el-menu-vertical"
                         onSelect={handleMenuClick}
-                        loading={loading.value}
                     >
                         {menuList.value.map(item => (
                             <ElMenuItem index={item.key}>
@@ -133,7 +132,7 @@ export default defineComponent({
                         ))}
                     </ElMenu>
                 </ElAside>
-                <ElMain>
+                <ElMain v-loading={loading.value}>
                     {activeMenu.value === 'entry_application' && (
                         showApplication.value ? (
                             <>
