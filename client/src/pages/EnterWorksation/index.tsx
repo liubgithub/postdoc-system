@@ -29,7 +29,7 @@ export default defineComponent({
         const activeMenu = ref('entry_application')
         const showApplication = ref(true)
         const menuList = ref(defaultMenuList)
-    
+
         const defaultFormData = {
             subject: '',
             postname: '',
@@ -80,7 +80,18 @@ export default defineComponent({
         const handleSubmit = async () => {
             try {
                 await fetch.raw.POST('/enterWorkstation/apply', { body: formData.value });
-                ElMessage.success('修改成功！');
+                const response = await fetch.raw.PUT('/workflow/update/{process_type}', {
+                    params: {
+                        path: {
+                            process_type: 'entry_application' // 动态注入路径参数
+                        },
+                        query: {
+                            new_status: '导师未审核'
+                        }
+                    }
+                });
+                console.log(response.data, 'ressss')
+                ElMessage.success('提交成功！')
                 dialogVisible.value = false;
             } catch (error) {
                 ElMessage.error('提交失败！');
