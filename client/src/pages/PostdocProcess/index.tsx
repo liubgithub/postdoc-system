@@ -2,6 +2,7 @@ import { defineComponent, ref, computed, onMounted } from 'vue'
 import { ElButton, ElTable, ElTableColumn, ElTag, ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import ProcessStatus from '@/units/ProcessStatus'
+import fetch_postdoctor from '@/api/postdoctor'
 interface BusinessStatus {
     id: number
     type: string
@@ -62,20 +63,15 @@ export default defineComponent({
         const fetchData = async () => {
             loading.value = true
             try {
-                // 调用工作流程状态接口
-                const response = await window.fetch('/api/workflow/status', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-                    }
-                })
+                const { raw } = fetch_postdoctor('/api');
+                const res = await raw.GET('/workflow/status');
+                console.log('获取工作流程状态:', res)
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`)
+                if (!res.response.ok) {
+                    throw new Error(`HTTP error! status: ${res.response.status}`)
                 }
 
-                const workflowData = await response.json() as WorkflowResponse
+                const workflowData = res.data as WorkflowResponse
 
                 if (workflowData) {
                     // 将工作流程状态转换为业务数据格式
@@ -180,20 +176,15 @@ export default defineComponent({
         const fetchProcessSteps = async () => {
             processLoading.value = true
             try {
-                // 调用后端获取工作流程状态
-                const response = await window.fetch('/api/workflow/status', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-                    }
-                })
+                const { raw } = fetch_postdoctor('/api');
+                const res = await raw.GET('/workflow/status');
+                console.log('获取工作流程状态:', res)
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`)
+                if (!res.response.ok) {
+                    throw new Error(`HTTP error! status: ${res.response.status}`)
                 }
 
-                const workflowData = await response.json() as WorkflowResponse
+                const workflowData = res.data as WorkflowResponse
 
                 // 将后端数据转换为前端显示格式
                 if (workflowData) {
@@ -318,8 +309,9 @@ export default defineComponent({
             if (!currentProcess) return
             currentProcessType.value = currentProcess.type
             // 根据实际状态生成时间轴数据
-
             showProcess.value = true
+
+            
         }
 
         return () => (
@@ -398,6 +390,7 @@ export default defineComponent({
                             </div>
                         )}
                         <ProcessStatus
+
                             modelValue={showProcess.value}
                             onUpdate:modelValue={(val) => showProcess.value = val}
                             processType={currentProcessType.value}

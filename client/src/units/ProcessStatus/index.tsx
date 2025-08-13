@@ -1,5 +1,5 @@
 // @/components/ProcessStatusDialog.tsx
-import type { PropType} from 'vue'
+import type { PropType } from 'vue'
 import { ElDialog, ElButton } from 'element-plus'
 import { fetchProcessStatus, generateTimelineSteps } from './processUtils'
 import { type TimelineStep, type TimelineStepStatus } from './processUtils'
@@ -22,7 +22,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const steps = ref<TimelineStep[]>([])
     const loading = ref(false)
-    
     // 获取流程状态并生成步骤
     const loadProcessStatus = async () => {
       loading.value = true
@@ -48,44 +47,44 @@ export default defineComponent({
         loading.value = false
       }
     }
-    
-    // 当弹窗打开时加载数据
-    onMounted(() => {
-      if (props.modelValue) {
-        loadProcessStatus()
-      }
-    })
-    
+
     // 状态转换函数
     const stepStatusColor = (status: TimelineStepStatus) => {
       return status === 'finished' ? '#52c41a' :
-             status === 'process' ? '#1890ff' :
-             status === 'error' ? '#ff4d4f' : '#d9d9d9'
+        status === 'process' ? '#1890ff' :
+          status === 'error' ? '#ff4d4f' : '#d9d9d9'
     }
-    
+
     const statusText = (status: TimelineStepStatus) => {
       return status === 'finished' ? '已完成' :
-             status === 'process' ? '进行中' :
-             status === 'error' ? '已拒绝' : '等待中'
+        status === 'process' ? '进行中' :
+          status === 'error' ? '已拒绝' : '等待中'
     }
-    
+
     const statusBgColor = (status: TimelineStepStatus) => {
       return status === 'finished' ? '#f6ffed' :
-             status === 'process' ? '#e6f7ff' :
-             status === 'error' ? '#fff2f0' : '#f5f5f5'
+        status === 'process' ? '#e6f7ff' :
+          status === 'error' ? '#fff2f0' : '#f5f5f5'
     }
-    
+
     const statusTextColor = (status: TimelineStepStatus) => {
       return status === 'finished' ? '#52c41a' :
-             status === 'process' ? '#1890ff' :
-             status === 'error' ? '#ff4d4f' : '#999'
+        status === 'process' ? '#1890ff' :
+          status === 'error' ? '#ff4d4f' : '#999'
     }
-    
+
     // 刷新状态
     const refreshStatus = async () => {
       await loadProcessStatus()
     }
-    
+
+    // 监听 props.modelValue的变化当为 true 时刷新
+    watch(() => props.modelValue, (newVal) => {
+      if (newVal) {
+        refreshStatus()
+      }
+    })
+
     return () => (
       <ElDialog
         modelValue={props.modelValue}
@@ -103,15 +102,15 @@ export default defineComponent({
             <>
               <div style={{ position: 'relative' }}>
                 {steps.value.map((step, index) => (
-                  <div key={index} style={{ 
-                    display: 'flex', 
+                  <div key={index} style={{
+                    display: 'flex',
                     alignItems: 'flex-start',
                     marginBottom: index === steps.value.length - 1 ? 0 : '30px',
                     position: 'relative'
                   }}>
-                    <div style={{ 
-                      display: 'flex', 
-                      flexDirection: 'column', 
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
                       alignItems: 'center',
                       marginRight: '20px',
                       position: 'relative'
@@ -133,22 +132,22 @@ export default defineComponent({
                         }} />
                       )}
                     </div>
-                    
-                    <div style={{ 
+
+                    <div style={{
                       flex: 1,
                       backgroundColor: '#f8f9fa',
                       padding: '16px',
                       borderRadius: '8px',
                       border: '1px solid #e8e8e8'
                     }}>
-                      <div style={{ 
-                        display: 'flex', 
+                      <div style={{
+                        display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         marginBottom: '8px'
                       }}>
-                        <div style={{ 
-                          fontSize: '16px', 
+                        <div style={{
+                          fontSize: '16px',
                           fontWeight: '500',
                           color: '#333'
                         }}>
@@ -166,8 +165,8 @@ export default defineComponent({
                         </div>
                       </div>
                       {step.time && (
-                        <div style={{ 
-                          fontSize: '12px', 
+                        <div style={{
+                          fontSize: '12px',
                           color: '#666',
                           display: 'flex',
                           alignItems: 'center'
@@ -180,61 +179,61 @@ export default defineComponent({
                   </div>
                 ))}
               </div>
-              
-              <div style={{ 
-                marginTop: '30px', 
-                padding: '16px', 
-                backgroundColor: '#f0f0f0', 
+
+              <div style={{
+                marginTop: '30px',
+                padding: '16px',
+                backgroundColor: '#f0f0f0',
                 borderRadius: '8px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
                 <div>
-                  <div style={{ 
-                    fontSize: '14px', 
-                    color: '#666', 
-                    marginBottom: '12px', 
+                  <div style={{
+                    fontSize: '14px',
+                    color: '#666',
+                    marginBottom: '12px',
                     fontWeight: '500'
                   }}>
                     状态说明：
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span style={{ 
-                        width: '8px', 
-                        height: '8px', 
-                        borderRadius: '50%', 
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
                         backgroundColor: '#52c41a',
                         marginRight: '6px'
                       }} />
                       <span style={{ fontSize: '12px', color: '#666' }}>已完成</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span style={{ 
-                        width: '8px', 
-                        height: '8px', 
-                        borderRadius: '50%', 
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
                         backgroundColor: '#1890ff',
                         marginRight: '6px'
                       }} />
                       <span style={{ fontSize: '12px', color: '#666' }}>进行中</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span style={{ 
-                        width: '8px', 
-                        height: '8px', 
-                        borderRadius: '50%', 
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
                         backgroundColor: '#ff4d4f',
                         marginRight: '6px'
                       }} />
                       <span style={{ fontSize: '12px', color: '#666' }}>已拒绝</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span style={{ 
-                        width: '8px', 
-                        height: '8px', 
-                        borderRadius: '50%', 
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
                         backgroundColor: '#d9d9d9',
                         marginRight: '6px'
                       }} />
