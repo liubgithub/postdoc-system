@@ -39,6 +39,7 @@ interface ApplicationData {
   user_id: number;
   subject: string;
   cotutor: string;
+  allitutor: string; // 联合导师
   workflow_status: string;
 }
 

@@ -37,6 +37,7 @@ interface StudentData {
   user_id: number;
   subject: string;
   cotutor: string;
+  allitutor: string;  // 添加allitutor字段
   workflow_status: string;
 }
 
