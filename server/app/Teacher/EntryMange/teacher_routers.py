@@ -4,7 +4,7 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
 from app.userinfoRegister.bs_user_profile.models import Info
-from app.assessment.assessmentInfo.models import Student
+from app.enterWorkstation.enterapply.models import EnterWorkstation
 from app.postdocProcess.models import PostdocWorkflow, ProcessStatus, SupervisorStudent
 from typing import List, Dict, Any
 from datetime import datetime
@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 router = APIRouter(prefix="/entryMange/teacher", tags=["合作导师管理"])
 
-def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dict[str, Any]:
+def get_workflow_status_info(workflow: PostdocWorkflow, postdoc: EnterWorkstation) -> Dict[str, Any]:
     """根据工作流状态获取状态信息"""
     if workflow:
         workflow_status = workflow.entry_application
@@ -33,7 +33,7 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
                 "node": "合作导师",
                 "currentApproval": "合作导师审核（待处理）",
                 "steps": [
-                    {"status": "已完成", "role": "学生申请", "time": student.created_at.strftime("%Y-%m-%d %H:%M") if student.created_at else ""},
+                    {"status": "已完成", "role": "学生申请", "time": postdoc.created_at.strftime("%Y-%m-%d %H:%M") if postdoc.created_at else ""},
                     {"status": "进行中", "role": "导师审核", "time": ""},
                     {"status": "等待中", "role": "学院审核", "time": ""}
                 ]
@@ -44,7 +44,7 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
                 "node": "合作导师",
                 "currentApproval": "合作导师审核（已驳回）",
                 "steps": [
-                    {"status": "已完成", "role": "学生申请", "time": student.created_at.strftime("%Y-%m-%d %H:%M") if student.created_at else ""},
+                    {"status": "已完成", "role": "学生申请", "time": postdoc.created_at.strftime("%Y-%m-%d %H:%M") if postdoc.created_at else ""},
                     {"status": "已拒绝", "role": "导师审核", "time": workflow.updated_at.strftime("%Y-%m-%d %H:%M") if workflow.updated_at else ""},
                     {"status": "等待中", "role": "学院审核", "time": ""}
                 ]
@@ -55,7 +55,7 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
                 "node": "学院管理员",
                 "currentApproval": "学院管理员审核（待处理）",
                 "steps": [
-                    {"status": "已完成", "role": "学生申请", "time": student.created_at.strftime("%Y-%m-%d %H:%M") if student.created_at else ""},
+                    {"status": "已完成", "role": "学生申请", "time": postdoc.created_at.strftime("%Y-%m-%d %H:%M") if postdoc.created_at else ""},
                     {"status": "已完成", "role": "导师审核", "time": workflow.updated_at.strftime("%Y-%m-%d %H:%M") if workflow.updated_at else ""},
                     {"status": "进行中", "role": "学院审核", "time": ""}
                 ]
@@ -66,7 +66,7 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
                 "node": "学院管理员",
                 "currentApproval": "学院管理员审核（已驳回）",
                 "steps": [
-                    {"status": "已完成", "role": "学生申请", "time": student.created_at.strftime("%Y-%m-%d %H:%M") if student.created_at else ""},
+                    {"status": "已完成", "role": "学生申请", "time": postdoc.created_at.strftime("%Y-%m-%d %H:%M") if postdoc.created_at else ""},
                     {"status": "已完成", "role": "导师审核", "time": ""},
                     {"status": "已拒绝", "role": "学院审核", "time": workflow.updated_at.strftime("%Y-%m-%d %H:%M") if workflow.updated_at else ""}
                 ]
@@ -77,7 +77,7 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
                 "node": "学院管理员",
                 "currentApproval": "审核结束（已通过）",
                 "steps": [
-                    {"status": "已完成", "role": "学生申请", "time": student.created_at.strftime("%Y-%m-%d %H:%M") if student.created_at else ""},
+                    {"status": "已完成", "role": "学生申请", "time": postdoc.created_at.strftime("%Y-%m-%d %H:%M") if postdoc.created_at else ""},
                     {"status": "已完成", "role": "导师审核", "time": ""},
                     {"status": "已完成", "role": "学院审核", "time": workflow.updated_at.strftime("%Y-%m-%d %H:%M") if workflow.updated_at else ""}
                 ]
@@ -88,7 +88,7 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
                 "node": "合作导师",
                 "currentApproval": "合作导师审核（待处理）",
                 "steps": [
-                    {"status": "已完成", "role": "学生申请", "time": student.created_at.strftime("%Y-%m-%d %H:%M") if student.created_at else ""},
+                    {"status": "已完成", "role": "学生申请", "time": postdoc.created_at.strftime("%Y-%m-%d %H:%M") if postdoc.created_at else ""},
                     {"status": "进行中", "role": "导师审核", "time": ""},
                     {"status": "等待中", "role": "学院审核", "time": ""}
                 ]
@@ -106,20 +106,18 @@ def get_workflow_status_info(workflow: PostdocWorkflow, student: Student) -> Dic
             ]
         }
 
-def build_student_response(student: Student, user_profile: Info, workflow: PostdocWorkflow) -> Dict[str, Any]:
+def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workflow: PostdocWorkflow) -> Dict[str, Any]:
     """构建学生响应数据"""
-    status_info = get_workflow_status_info(workflow, student)
+    status_info = get_workflow_status_info(workflow, postdoc)
     
     return {
-        "id": student.id,
-        "studentId": student.stu_num,
-        "name": user_profile.name if user_profile else student.stu_name,
-        "college": student.college,
-        "major": student.subject,
-        "applyTime": student.created_at.strftime("%Y-%m-%d") if student.created_at else "",
-        "user_id": student.user_id,
-        "subject": student.subject,
-        "cotutor": student.cotutor,
+        "id": postdoc.id,
+        "studentId": postdoc.user_id,  # 从bs_enter_workstation表获取user_id
+        "name": user_profile.name if user_profile else "",  # 从bs_user_profile表获取name
+        "applyTime": postdoc.created_at.strftime("%Y-%m-%d") if postdoc.created_at else "",  # 从bs_enter_workstation表获取created_at
+        "user_id": postdoc.user_id,  # 从bs_enter_workstation表获取user_id
+        "cotutor": postdoc.cotutor,  # 从bs_enter_workstation表获取cotutor
+        "allitutor": postdoc.allitutor,  # 从bs_enter_workstation表获取allitutor
         "workflow_status": workflow.entry_application if workflow else "未提交",
         **status_info  # 展开状态信息
     }
@@ -139,23 +137,23 @@ def get_teacher_students(
     # 获取导师的姓名（从users表的username字段获取）
     teacher_name = current_user.username
     
-    # 获取申请该导师的学生信息，关联用户信息
-    # 匹配逻辑：学生填写的cotutor字段与导师的username字段匹配
-    students = db.query(Student).join(Info, Student.user_id == Info.user_id).filter(
-        Student.cotutor == teacher_name
+    # 获取申请该导师的博士后信息，关联用户信息
+    # 匹配逻辑：博士后填写的cotutor字段与导师的username字段匹配
+    postdocs = db.query(EnterWorkstation).join(Info, EnterWorkstation.user_id == Info.user_id).filter(
+        EnterWorkstation.cotutor == teacher_name
     ).all()
-    print(f"找到 {len(students)} 个申请该导师的学生记录")  # 调试信息
+    print(f"找到 {len(postdocs)} 个申请该导师的博士后记录")  # 调试信息
     
     result = []
-    for student in students:
+    for postdoc in postdocs:
         # 获取用户详细信息
-        user_profile = db.query(Info).filter(Info.user_id == student.user_id).first()
+        user_profile = db.query(Info).filter(Info.user_id == postdoc.user_id).first()
         
         # 获取workflow状态
-        workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == student.user_id).first()
+        workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == postdoc.user_id).first()
         
         # 根据workflow状态确定显示状态
-        result.append(build_student_response(student, user_profile, workflow))
+        result.append(build_student_response(postdoc, user_profile, workflow))
     
     return result
 
@@ -170,16 +168,16 @@ def get_student_detail(
     if current_user.role != "teacher":
         raise HTTPException(status_code=403, detail="只有导师可以访问此接口")
     
-    # 根据user_id获取学生信息
-    student = db.query(Student).filter(Student.user_id == user_id).first()
-    if not student:
-        raise HTTPException(status_code=404, detail="学生不存在")
+    # 根据user_id获取博士后信息
+    postdoc = db.query(EnterWorkstation).filter(EnterWorkstation.user_id == user_id).first()
+    if not postdoc:
+        raise HTTPException(status_code=404, detail="博士后不存在")
     
-    # 验证学生是否申请了该导师
+    # 验证博士后是否申请了该导师
     teacher_name = current_user.username
     
-    if student.cotutor != teacher_name:
-        raise HTTPException(status_code=403, detail="该学生没有申请您作为导师")
+    if postdoc.cotutor != teacher_name:
+        raise HTTPException(status_code=403, detail="该博士后没有申请您作为导师")
     
     # 获取用户详细信息
     user_profile = db.query(Info).filter(Info.user_id == user_id).first()
@@ -188,7 +186,7 @@ def get_student_detail(
     workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == user_id).first()
     
     # 根据workflow状态确定显示状态
-    return build_student_response(student, user_profile, workflow)
+    return build_student_response(postdoc, user_profile, workflow)
 
 class ApproveRequest(BaseModel):
     approved: bool
@@ -208,16 +206,19 @@ def approve_student(
     if current_user.role != "teacher":
         raise HTTPException(status_code=403, detail="只有导师可以访问此接口")
     
-    # 根据user_id获取学生信息
-    student = db.query(Student).filter(Student.user_id == user_id).first()
-    if not student:
-        raise HTTPException(status_code=404, detail="学生不存在")
+    # 根据user_id获取博士后信息
+    postdoc = db.query(EnterWorkstation).filter(EnterWorkstation.user_id == user_id).first()
+    if not postdoc:
+        raise HTTPException(status_code=404, detail="博士后不存在")
     
-    # 验证学生是否申请了该导师
+    # 验证博士后是否申请了该导师
     teacher_name = current_user.username
     
-    if student.cotutor != teacher_name:
-        raise HTTPException(status_code=403, detail="该学生没有申请您作为导师")
+    if postdoc.cotutor != teacher_name:
+        raise HTTPException(status_code=403, detail="该博士后没有申请您作为导师")
+    
+    # 获取用户详细信息
+    user_profile = db.query(Info).filter(Info.user_id == user_id).first()
     
     # 获取或创建工作流程记录
     workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == user_id).first()
@@ -269,7 +270,7 @@ def approve_student(
         "message": status_message,
         "approved": request.approved,
         "user_id": user_id,
-        "student_name": student.stu_name,
+        "student_name": user_profile.name if user_profile else "",
         "workflow_status": workflow.entry_application,
         "updated_at": workflow.updated_at
     } 

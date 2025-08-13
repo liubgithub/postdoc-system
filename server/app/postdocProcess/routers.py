@@ -17,6 +17,7 @@ from .schemas import (
 )
 from app.models.user import User
 from app.assessment.assessmentInfo.models import Student
+from app.enterWorkstation.enterapply.models import EnterWorkstation
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 
 
@@ -60,13 +61,13 @@ async def get_workflow_status(
         # 导师：查看指定学生的工作流程
         if student_id is not None:
             # 如果指定了学生ID，检查该学生是否申请过该导师
-            # 通过Student表的cotutor字段来检查，而不是SupervisorStudent表
-            student = db.query(Student).filter(
-                Student.user_id == student_id,
-                Student.cotutor == current_user.username
+            # 通过EnterWorkstation表的cotutor字段来检查
+            postdoc = db.query(EnterWorkstation).filter(
+                EnterWorkstation.user_id == student_id,
+                EnterWorkstation.cotutor == current_user.username
             ).first()
             
-            if not student:
+            if not postdoc:
                 raise HTTPException(status_code=403, detail="只能查看申请过自己的学生")
             
             # 查询指定学生的工作流程
@@ -84,11 +85,11 @@ async def get_workflow_status(
             return workflow
         else:
             # 如果没有指定学生ID，返回所有申请过该导师的学生的工作流程
-            # 通过Student表的cotutor字段来查找，而不是SupervisorStudent表
-            students = db.query(Student).filter(
-                Student.cotutor == current_user.username
+            # 通过EnterWorkstation表的cotutor字段来查找
+            postdocs = db.query(EnterWorkstation).filter(
+                EnterWorkstation.cotutor == current_user.username
             ).all()
-            student_ids = [student.user_id for student in students]
+            student_ids = [postdoc.user_id for postdoc in postdocs]
             
             if not student_ids:
                 return {"workflows": []}
