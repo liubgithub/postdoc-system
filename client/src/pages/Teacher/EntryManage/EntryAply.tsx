@@ -37,13 +37,7 @@ interface StudentData {
   user_id: number;
   subject: string;
   cotutor: string;
-  temp_info: {
-    stu_num: string;
-    stu_name: string;
-    college: string;
-    subject: string;
-    cotutor: string;
-  };
+  workflow_status: string;
 }
 
 export default defineComponent({
@@ -54,7 +48,6 @@ export default defineComponent({
     const loading = ref(false);
     
     // 从API获取的数据
-    const allTableData = ref<StudentData[]>([]);
     const tableData = ref<StudentData[]>([]);
 
     // 获取学生列表
@@ -64,8 +57,7 @@ export default defineComponent({
         const response = await getTeacherApplications();
         console.log('API响应:', response);
         if (response.data) {
-          allTableData.value = response.data as StudentData[];
-          tableData.value = [...allTableData.value];
+          tableData.value = response.data as StudentData[];
         } else if (response.error) {
           ElMessage.error('获取学生列表失败');
         }
@@ -94,19 +86,16 @@ export default defineComponent({
     const handleSearch = () => {
       const keyword = searchValue.value.trim().toLowerCase();
       if (!keyword) {
-        tableData.value = [...allTableData.value];
+        fetchStudents(); // 重新获取所有数据
         return;
       }
-      tableData.value = allTableData.value.filter(
-        (row) =>
-          row.studentId.toLowerCase().includes(keyword) ||
-          row.name.toLowerCase().includes(keyword)
-      );
+      // 这里可以添加搜索逻辑，或者直接重新获取数据
+      fetchStudents();
     };
 
     watch(searchValue, (val) => {
       if (val === "") {
-        tableData.value = [...allTableData.value];
+        fetchStudents(); // 重新获取所有数据
       }
     });
 
@@ -183,18 +172,13 @@ export default defineComponent({
                       搜索
                     </ElButton>
                   </ElCol>
-                  <ElCol span={7}>
+                  <ElCol span={6}>
                     <ElInput
                       v-model={searchValue.value}
-                      placeholder="请输入学号/姓名"
-                      clearable
-                      style={{ width: 220, height: 44, fontSize: 18 }}
-                      onKeydown={(evt: Event | KeyboardEvent) => {
-                        if ('key' in evt && (evt.key === 'Enter' || evt.keyCode === 13)) handleSearch();
-                      }}
+                      placeholder="请输入学号或姓名"
+                      style={{ height: 44 }}
                     />
                   </ElCol>
-                  <ElCol span={12}></ElCol>
                 </ElRow>
 
                 <div style={{ marginTop: 24, width: "100%" }}>

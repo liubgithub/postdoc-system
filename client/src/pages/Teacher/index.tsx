@@ -35,17 +35,11 @@ interface ApplicationData {
   status: string; // 状态
   node: string; // 当前节点
   currentApproval: string; // 当前审核
-
+  steps: any[]; // 流程步骤
   user_id: number;
   subject: string;
   cotutor: string;
-  temp_info: {
-    stu_num: string;
-    stu_name: string;
-    college: string;
-    subject: string;
-    cotutor: string;
-  };
+  workflow_status: string;
 }
 
 const menuList = [
@@ -79,8 +73,8 @@ export default defineComponent({
           (row) => row.status === "审核中" || row.status === "未提交"
         );
       } else if (filterStatus.value === "已处理") {
-        // 显示已处理的项目：状态为"审核通过"
-        return tableData.value.filter((row) => row.status === "审核通过");
+        // 显示已处理的项目：状态为"审核通过"或"审核不通过"
+        return tableData.value.filter((row) => row.status === "审核通过" || row.status === "审核不通过");
       }
       return tableData.value;
     });

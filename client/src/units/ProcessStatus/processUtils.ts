@@ -82,10 +82,10 @@ export const fetchProcessStatus = async (processType: string, studentId?: number
     
     const responseData = await response.json()
     
-    // 处理导师角色的情况：返回的是workflows数组
+    // 处理导师角色的情况：返回的是workflows数组或单个workflow对象
     let workflowData: WorkflowResponse
     if (responseData.workflows && Array.isArray(responseData.workflows)) {
-      // 导师角色：从workflows数组中找到指定学生的数据
+      // 导师角色：从workflows数组中找到指定学生的数据（没有传递student_id参数的情况）
       if (!studentId) {
         // 如果没有提供学生ID，返回默认状态而不是抛出错误
         console.warn('导师角色未提供学生ID，返回默认状态')
@@ -94,7 +94,7 @@ export const fetchProcessStatus = async (processType: string, studentId?: number
           updatedAt: new Date().toISOString()
         }
       }
-      const targetWorkflow = responseData.workflows.find((w: any) => w.student_id === studentId)
+      const targetWorkflow = responseData.workflows.find((w: any) => w.student_id === Number(studentId))
       if (!targetWorkflow) {
         console.warn(`未找到学生ID ${studentId} 的workflow数据，返回默认状态`)
         return {
@@ -104,7 +104,7 @@ export const fetchProcessStatus = async (processType: string, studentId?: number
       }
       workflowData = targetWorkflow
     } else {
-      // 学生或管理员角色：直接返回单个workflow
+      // 学生、管理员角色或导师角色传递了student_id参数：直接返回单个workflow
       workflowData = responseData as WorkflowResponse
     }
     

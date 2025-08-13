@@ -16,6 +16,7 @@ from .schemas import (
     StaffPendingTasksResponse
 )
 from app.models.user import User
+from app.assessment.assessmentInfo.models import Student
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 
 
@@ -56,71 +57,97 @@ async def get_workflow_status(
         return workflow
         
     elif current_user.role == "teacher":
-        # 导师：查看所有属于自己的学生的工作流程
-        # 先获取该导师的所有学生
-        supervisor_students = db.query(SupervisorStudent).filter(
-            SupervisorStudent.supervisor_id == current_user.id
-        ).all()
-        student_ids = [relation.student_id for relation in supervisor_students]
-        
-        if not student_ids:
-            return {"workflows": []}
-        
-        # 查询所有学生的工作流程，包含学生信息
-        workflows_with_students = (
-            db.query(PostdocWorkflow, User)
-            .outerjoin(User, PostdocWorkflow.student_id == User.id)
-            .filter(PostdocWorkflow.student_id.in_(student_ids))
-            .all()
-        )
-        
-        result_workflows = []
-        existing_student_ids = []
-        
-        for workflow, student in workflows_with_students:
-            existing_student_ids.append(workflow.student_id)
-            workflow_dict = {
-                "id": workflow.id,
-                "student_id": workflow.student_id,
-                "student_name": student.username if student else "未知",
-                "entry_application": workflow.entry_application,
-                "entry_assessment": workflow.entry_assessment,
-                "entry_agreement": workflow.entry_agreement,
-                "midterm_assessment": workflow.midterm_assessment,
-                "annual_assessment": workflow.annual_assessment,
-                "extension_assessment": workflow.extension_assessment,
-                "leave_assessment": workflow.leave_assessment,
-                "created_at": workflow.created_at,
-                "updated_at": workflow.updated_at
-            }
-            result_workflows.append(workflow_dict)
-        
-        # 为没有工作流程的学生创建记录
-        missing_student_ids = [sid for sid in student_ids if sid not in existing_student_ids]
-        for student_id in missing_student_ids:
-            student = db.query(User).filter(User.id == student_id).first()
-            new_workflow = PostdocWorkflow(student_id=student_id)
-            db.add(new_workflow)
-            db.commit()
-            db.refresh(new_workflow)
+        # 导师：查看指定学生的工作流程
+        if student_id is not None:
+            # 如果指定了学生ID，检查该学生是否申请过该导师
+            # 通过Student表的cotutor字段来检查，而不是SupervisorStudent表
+            student = db.query(Student).filter(
+                Student.user_id == student_id,
+                Student.cotutor == current_user.username
+            ).first()
             
-            workflow_dict = {
-                "id": new_workflow.id,
-                "student_id": new_workflow.student_id,
-                "student_name": student.username if student else "未知",
-                "entry_application": new_workflow.entry_application,
-                "entry_assessment": new_workflow.entry_assessment,
-                "entry_agreement": new_workflow.entry_agreement,
-                "midterm_assessment": new_workflow.midterm_assessment,
-                "annual_assessment": new_workflow.annual_assessment,
-                "extension_assessment": new_workflow.extension_assessment,
-                "leave_assessment": new_workflow.leave_assessment,
-                "created_at": new_workflow.created_at,
-                "updated_at": new_workflow.updated_at
-            }
-            result_workflows.append(workflow_dict)
-        
-        return {"workflows": result_workflows}
+            if not student:
+                raise HTTPException(status_code=403, detail="只能查看申请过自己的学生")
+            
+            # 查询指定学生的工作流程
+            workflow = db.query(PostdocWorkflow).filter(
+                PostdocWorkflow.student_id == student_id
+            ).first()
+            
+            if not workflow:
+                # 如果不存在，创建新的工作流程记录
+                workflow = PostdocWorkflow(student_id=student_id)
+                db.add(workflow)
+                db.commit()
+                db.refresh(workflow)
+            
+            return workflow
+        else:
+            # 如果没有指定学生ID，返回所有申请过该导师的学生的工作流程
+            # 通过Student表的cotutor字段来查找，而不是SupervisorStudent表
+            students = db.query(Student).filter(
+                Student.cotutor == current_user.username
+            ).all()
+            student_ids = [student.user_id for student in students]
+            
+            if not student_ids:
+                return {"workflows": []}
+            
+            # 查询所有学生的工作流程，包含学生信息
+            workflows_with_students = (
+                db.query(PostdocWorkflow, User)
+                .outerjoin(User, PostdocWorkflow.student_id == User.id)
+                .filter(PostdocWorkflow.student_id.in_(student_ids))
+                .all()
+            )
+            
+            result_workflows = []
+            existing_student_ids = []
+            
+            for workflow, student in workflows_with_students:
+                existing_student_ids.append(workflow.student_id)
+                workflow_dict = {
+                    "id": workflow.id,
+                    "student_id": workflow.student_id,
+                    "student_name": student.username if student else "未知",
+                    "entry_application": workflow.entry_application,
+                    "entry_assessment": workflow.entry_assessment,
+                    "entry_agreement": workflow.entry_agreement,
+                    "midterm_assessment": workflow.midterm_assessment,
+                    "annual_assessment": workflow.annual_assessment,
+                    "extension_assessment": workflow.extension_assessment,
+                    "leave_assessment": workflow.leave_assessment,
+                    "created_at": workflow.created_at,
+                    "updated_at": workflow.updated_at
+                }
+                result_workflows.append(workflow_dict)
+            
+            # 为没有工作流程的学生创建记录
+            missing_student_ids = [sid for sid in student_ids if sid not in existing_student_ids]
+            for student_id in missing_student_ids:
+                student = db.query(User).filter(User.id == student_id).first()
+                new_workflow = PostdocWorkflow(student_id=student_id)
+                db.add(new_workflow)
+                db.commit()
+                db.refresh(new_workflow)
+                
+                workflow_dict = {
+                    "id": new_workflow.id,
+                    "student_id": new_workflow.student_id,
+                    "student_name": student.username if student else "未知",
+                    "entry_application": new_workflow.entry_application,
+                    "entry_assessment": new_workflow.entry_assessment,
+                    "entry_agreement": new_workflow.entry_agreement,
+                    "midterm_assessment": new_workflow.midterm_assessment,
+                    "annual_assessment": new_workflow.annual_assessment,
+                    "extension_assessment": new_workflow.extension_assessment,
+                    "leave_assessment": new_workflow.leave_assessment,
+                    "created_at": new_workflow.created_at,
+                    "updated_at": new_workflow.updated_at
+                }
+                result_workflows.append(workflow_dict)
+            
+            return {"workflows": result_workflows}
         
     elif current_user.role == "admin":
         # 管理员：必须提供student_id，可以查看指定学生
