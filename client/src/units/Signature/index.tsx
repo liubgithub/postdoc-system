@@ -2,6 +2,12 @@ import SignaturePad from 'signature_pad'
 
 export default defineComponent({
   name: 'SignaturePad',
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   emits: ['change'],
   setup(props, { emit }) {
     const canvasRef = ref<HTMLCanvasElement | null>(null)
@@ -10,6 +16,16 @@ export default defineComponent({
     onMounted(() => {
       if (canvasRef.value) {
         signaturePad = new SignaturePad(canvasRef.value)
+        if (props.disabled) {
+          signaturePad.off() // 禁用签名
+        }
+      }
+    })
+
+    // 监听 disabled 变化
+    watch(() => props.disabled, (disabled) => {
+      if (signaturePad) {
+        disabled ? signaturePad.off() : signaturePad.on()
       }
     })
 
@@ -67,14 +83,31 @@ export default defineComponent({
 
     return () => (
       <div>
-        <canvas ref={canvasRef} width={300} height={100} style="border:1px solid #ccc;" />
+        <canvas ref={canvasRef} width={300} height={100}
+          style={{
+            border: '1px solid #ccc',
+            cursor: props.disabled ? 'not-allowed' : 'crosshair'
+          }} />
         <div>
-          <button type="button" onClick={clear}>清除</button>
-          <button type="button" onClick={confirm} style="margin-left:8px;">确认签名</button>
+          <button type="button" onClick={clear} disabled={props.disabled}>清除</button>
+          <button type="button" onClick={confirm} style="margin-left:8px;" disabled={props.disabled}>确认签名</button>
           {/* 新增上传签字按钮 */}
           <label style="margin-left:8px;">
-            <input type="file" accept="image/*" style="display:none" onChange={handleUpload} />
-            <span style="border:1px solid #ccc;padding:2px 8px;cursor:pointer;">上传签字</span>
+            <input
+              type="file"
+              accept="image/*"
+              style="display:none"
+              onChange={handleUpload}
+              disabled={props.disabled}
+            />
+            <span style={{
+              border: '1px solid #ccc',
+              padding: '2px 8px',
+              cursor: props.disabled ? 'not-allowed' : 'pointer',
+              opacity: props.disabled ? 0.6 : 1
+            }}>
+              上传签字
+            </span>
           </label>
         </div>
       </div>

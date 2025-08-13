@@ -12,12 +12,6 @@ export default defineComponent({
     setup() {
         const showDetails = ref(false)
         const showProcess = ref(false)
-        const currentSteps = ref<any[]>([
-            { name: '博士后提交申请', status: 'finished', time: '2025-03-12 19:59:28' },
-            { name: '合作导师审核', status: 'process', time: '2025-03-31 20:44:48' },
-            { name: '学院/管理员审核', status: 'wait', time: '' },
-            { name: '审核结束', status: 'wait', time: '' }
-        ])
         const isAssessmentMode = ref(false)
 
         // 示例数据，实际应从后端获取

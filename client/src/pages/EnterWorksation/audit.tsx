@@ -17,13 +17,18 @@ export default defineComponent({
     setup(props) {
         const assessmentResult = ref([])
         const teacherOpinion = ref('同意招收，承诺已对申请人的思想政治、道德品质和学术性进行了考察，在资助期内提供不低于4万/年的工作津贴。')
-        
+
         // 签名相关数据
         const actualTeacherSignature = ref('')
         const actualTeacherDate = ref('')
         const nominalTeacherSignature = ref('')
         const nominalTeacherDate = ref('')
-        
+        const secretaryDate = ref('')
+        const deanDate = ref('')
+        const stationDate = ref('')
+        const hrDate = ref('')
+
+
         // 检查用户是否有编辑权限
         const canEdit = (section: string) => {
             switch (section) {
@@ -80,11 +85,12 @@ export default defineComponent({
                             <p>实际导师签名：</p>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
                                 <div>
-                                    <SignaturePad onChange={val => actualTeacherSignature.value = val} />
+                                    <SignaturePad onChange={val => actualTeacherSignature.value = val} disabled={!canEdit('teacher')} />
                                     <ElDatePicker
                                         v-model={actualTeacherDate.value}
                                         type="date"
                                         placeholder="选择日期"
+                                        disabled={!canEdit('teacher')}
                                         style={{ width: '300px' }}
                                     />
                                 </div>
@@ -94,9 +100,10 @@ export default defineComponent({
                             <p>挂名导师签名：</p>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
                                 <div>
-                                    <SignaturePad onChange={val => nominalTeacherSignature.value = val} />
+                                    <SignaturePad onChange={val => nominalTeacherSignature.value = val} disabled={!canEdit('teacher')} />
                                     <ElDatePicker
                                         v-model={nominalTeacherDate.value}
+
                                         type="date"
                                         placeholder="选择日期"
                                         style={{ width: '300px' }}
@@ -112,7 +119,14 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>审核人签名：</p>
-                            
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('secretary')} />
+                            <ElDatePicker
+                                v-model={secretaryDate.value}
+                                type="date"
+                                placeholder="选择日期"
+                                disabled={!canEdit('secretary')}
+                                style={{ width: '300px' }}
+                            />
                         </div>
                     </div>
                 </>)}
@@ -123,7 +137,14 @@ export default defineComponent({
                         <div class={cls.signature}>
                             <p>党委盖章：</p>
                             <p>党委（党总支）书记签名：</p>
-                           
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('dean')} />
+                            <ElDatePicker
+                                v-model={deanDate.value}
+                                type="date"
+                                placeholder="选择日期"
+                                disabled={!canEdit('dean')}
+                                style={{ width: '300px' }}
+                            />
                         </div>
                     </div>
                 </>)}
@@ -141,7 +162,14 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>考核组组长签字：</p>
-                            
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('station')} />
+                            <ElDatePicker
+                                v-model={deanDate.value}
+                                type="date"
+                                placeholder="选择日期"
+                                disabled={!canEdit('dean')}
+                                style={{ width: '300px' }}
+                            />
                         </div>
                     </div>
                 </>)}
@@ -150,10 +178,10 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>院长签名：</p>
-                           
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('dean')} />
                             <p>党委盖章：</p>
                             <p>党委（党总支）书记签名：</p>
-                            
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('dean')} />
                         </div>
                     </div>
                 </>)}
@@ -163,7 +191,14 @@ export default defineComponent({
                         <div class={cls.signature}>
                             <p>流动站所在学校盖章：</p>
                             <p>负责人签名：</p>
-                            <p>年 月 日</p>
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('station')} />
+                            <ElDatePicker
+                                v-model={stationDate.value}
+                                type="date"
+                                placeholder="选择日期"
+                                disabled={!canEdit('station')}
+                                style={{ width: '300px' }}
+                            />
                         </div>
                     </div>
                 </>)}
@@ -172,7 +207,14 @@ export default defineComponent({
                     <div class={cls.signatureWrapper}>
                         <div class={cls.signature}>
                             <p>盖章：</p>
-                            <p>年 月 日</p>
+                            <SignaturePad onChange={val => console.log(val)} disabled={!canEdit('hr')} />
+                            <ElDatePicker
+                                v-model={hrDate.value}
+                                type="date"
+                                placeholder="选择日期"
+                                disabled={!canEdit('hr')}
+                                style={{ width: '300px' }}
+                            />
                         </div>
                     </div>
                 </>)}

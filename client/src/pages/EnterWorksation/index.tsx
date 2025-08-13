@@ -29,7 +29,16 @@ export default defineComponent({
         const activeMenu = ref('entry_application')
         const showApplication = ref(true)
         const menuList = ref(defaultMenuList)
-        
+    
+        const defaultFormData = {
+            subject: '',
+            postname: '',
+            posttask: '',
+            postqualification: '',
+            cotutor: '',
+            allitutor: '',
+            remark: ''
+        };
         const formData = ref({
             subject: '',
             postname: '',
@@ -51,7 +60,9 @@ export default defineComponent({
         const dialogVisible = ref(false)
         const viewRow = ref<TableRow | null>(null)
 
+
         const handleView = (row: TableRow) => {
+            console.log(row, 'row')
             viewRow.value = { ...row }
             dialogVisible.value = true
         }
@@ -77,15 +88,26 @@ export default defineComponent({
         };
 
         onMounted(async () => {
+
             // 获取进站申请数据
             try {
                 const res = await fetch.raw.GET('/enterWorkstation/apply');
-                formData.value = res.data as any;
+                // 如果res.data为null或不是对象，则用默认对象
+                formData.value = res.data && typeof res.data === 'object'
+                    ? {
+                        ...defaultFormData,
+                        ...res.data,
+                        postqualification: res.data.postqualification ?? '',
+                        remark: res.data.remark ?? ''
+                    }
+                    : { ...defaultFormData };
+                console.log(formData.value, 'null')
             } catch (error) {
                 console.error('获取进站申请数据失败:', error)
+                formData.value = { ...defaultFormData };
             }
         });
-        
+
         return () => (
             <ElContainer>
                 <ElAside width="15vw">
