@@ -1,4 +1,4 @@
-import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert,ElMessage } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElDatePicker, ElAlert, ElMessage } from "element-plus";
 import * as styles from "./styles.css.ts";
 import SignaturePad from '@/units/Signature/index'
 import Audit from './audit.tsx'
@@ -14,9 +14,9 @@ export default defineComponent({
       type: Function,
       required: false
     },
-    onBack:{
-      type:Function,
-      required:true
+    onBack: {
+      type: Function,
+      required: true
     },
     showButtons: {
       type: Boolean,
@@ -55,15 +55,31 @@ export default defineComponent({
     const handleBack = () => {
       props.onBack && props.onBack()
     }
-    const onInput = (val: any) => {
+    const onInput = async (val: any) => {
       console.log(val, 'signature')
-      form.value.signature = val
+      // 假设 externalUserId 作为 student_id，val 作为 image_base64
+      const res = await apiFetch.raw.POST('/uploadSign/upload_image',
+        {
+          body: {
+            sign_type: '进站申请',
+            image_base64: val
+          }
+        }
+      )
+      console.log(res, 'sssss')
+    
     }
+
+    const fetchSignature = async () => {
+      const res = await apiFetch.raw.GET('/uploadSign/get_image_base64', { params: { query: { sign_type: '进站申请' } } });
+      const imgBase64 = (res.data as { image_base64: string }).image_base64;
+      form.value.signature = imgBase64
+    };
 
     onMounted(async () => {
       let res;
       const userStore = useUser();
-      
+      fetchSignature()
       try {
         // 如果有外部传入的用户ID，使用对应的接口
         if (props.externalUserId) {
@@ -81,7 +97,7 @@ export default defineComponent({
           const response = await apiFetch.raw.GET('/enterRelation/', {});
           res = response.data;
         }
-        
+
         if (res) {
           Object.assign(form.value, res);
         }
@@ -172,7 +188,7 @@ export default defineComponent({
               </ElAlert>
               <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
                 <div>
-                  <SignaturePad onChange={val => onInput(val)} />
+                  <SignaturePad onChange={val => onInput(val)} image={form.value.signature}/>
                   <ElDatePicker
                     v-model={form.value.date}
                     type="date"
@@ -183,16 +199,16 @@ export default defineComponent({
               </div>
             </div>
           </ElFormItem>
-                     {props.showButtons && (
-             <>
-               <div style={{ display: 'flex', justifyContent: 'center'}}>          
-                 <ElButton type="primary" onClick={handleSubmit}>申请</ElButton>
-                 <ElButton onClick={handleBack}>返回</ElButton>
-                 <ElButton type="primary">导出</ElButton>
-               </div>
-             </>
-           )}
-            <Audit onBack={() => { }} userRole={props.userRole} />
+          {props.showButtons && (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <ElButton type="primary" onClick={handleSubmit}>申请</ElButton>
+                <ElButton onClick={handleBack}>返回</ElButton>
+                <ElButton type="primary">导出</ElButton>
+              </div>
+            </>
+          )}
+          <Audit onBack={() => { }} userRole={props.userRole} />
         </ElForm>
       </div>
     );

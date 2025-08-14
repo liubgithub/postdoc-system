@@ -1,12 +1,9 @@
 import os
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Form
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import Dict, Optional, Union, List
-from datetime import datetime
-import shutil
 import base64
-from pathlib import Path
 from .models import uploadSign
 from .schemas import AttachmentIn, AttachmentOut
 from app.database import get_db
@@ -17,7 +14,7 @@ from app.models.user import User
 router = APIRouter(prefix="/uploadSign", tags=["上传签名"])
 
 # 定义服务器上传目录
-SERVER_UPLOAD_DIR = "/home/dyy/upload_sign"
+UPLOAD_ROOT = os.getenv("UPLOAD_ROOT", os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../upload_sign')))
 
 def check_supervisor_student_relationship(supervisor_id: int, student_id: int, db: Session) -> bool:
     """检查导师和学生的关系"""
@@ -30,7 +27,6 @@ def check_supervisor_student_relationship(supervisor_id: int, student_id: int, d
 @router.post('/upload_image', response_model=AttachmentOut)
 def upload_image(
     sign_type: str = Form(...),
-    student_id: int = Form(...),
     image_base64: str = Form(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -42,19 +38,16 @@ def upload_image(
     if not relation:
         raise HTTPException(status_code=403, detail="未找到该学生的导师关系")
     supervisor_id = relation.supervisor_id
-
-    # 校验关系（可选，已查出老师）
-    if student_id != current_user.id:
-        raise HTTPException(status_code=403, detail="无权限上传该学生签名")
+    student_id = current_user.id
 
     # 创建完整的服务器路径
-    base_dir = Path(SERVER_UPLOAD_DIR) / str(supervisor_id) / sign_type / str(student_id)
+    base_dir = os.path.join(UPLOAD_ROOT,str(supervisor_id) , sign_type , str(student_id))
     try:
-        base_dir.mkdir(parents=True, exist_ok=True)
+        os.makedirs(base_dir, exist_ok=True)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"创建目录失败: {str(e)}")
 
-    file_path = base_dir / "sign.png"
+    file_path = os.path.join(base_dir, "sign.png")
 
     # 保存图片
     if image_base64.startswith('data:image'):
@@ -62,16 +55,16 @@ def upload_image(
     else:
         base64_data = image_base64
 
-    # 2. 补全Base64长度（如果需要）
+    # 补全Base64长度（如果需要）
     padding = len(base64_data) % 4
     if padding:
         base64_data += '=' * (4 - padding)
 
-    # 3. 直接写入文件（已经是Base64编码的二进制数据）
     try:
         with open(file_path, "wb") as f:
             f.write(base64.b64decode(base64_data))
     except Exception as e:
+        print(f"文件写入失败: {file_path}, 错误: {e}")
         raise HTTPException(status_code=400, detail=f"文件写入失败: {str(e)}")
 
     # 数据库记录
@@ -96,25 +89,30 @@ def upload_image(
         attachments=[]
     )
 
-@router.get('/get_image')
-def get_image(
+@router.get('/get_image_base64')
+def get_image_base64(
     sign_type: str = Query(...),
-    student_id: int = Query(...),
+    student_id: Optional[int] = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # 查找该学生对应的老师
+    query_student_id = student_id if student_id is not None else current_user.id
+
     relation = db.query(SupervisorStudent).filter(
-        SupervisorStudent.student_id == student_id
+        SupervisorStudent.student_id == query_student_id
     ).first()
     if not relation:
         raise HTTPException(status_code=404, detail="未找到该学生的导师关系")
     supervisor_id = relation.supervisor_id
 
-    # 构建完整路径
-    file_path = Path(SERVER_UPLOAD_DIR) / str(supervisor_id) / sign_type / str(student_id) / "sign.png"
-    
-    if not file_path.exists():
+    # 这里用 query_student_id
+    file_path = os.path.join(UPLOAD_ROOT, str(supervisor_id), sign_type, str(query_student_id), "sign.png")
+    print(file_path)
+    if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="图片不存在")
-    
-    return FileResponse(str(file_path), media_type="image/png")
+
+    with open(file_path, "rb") as f:
+        img_bytes = f.read()
+        base64_str = base64.b64encode(img_bytes).decode('utf-8')
+        data_url = f"data:image/png;base64,{base64_str}"
+        return JSONResponse(content={"image_base64": data_url})

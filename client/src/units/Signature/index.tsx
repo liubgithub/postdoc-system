@@ -6,6 +6,10 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+    image: {
+      type: String,
+      default: ''
     }
   },
   emits: ['change'],
@@ -13,19 +17,37 @@ export default defineComponent({
     const canvasRef = ref<HTMLCanvasElement | null>(null)
     let signaturePad: SignaturePad | null = null
 
+    const loadImageToCanvas = (imgSrc: string) => {
+      if (canvasRef.value && imgSrc) {
+        const img = new window.Image()
+        img.onload = () => {
+          const ctx = canvasRef.value!.getContext('2d')
+          ctx?.clearRect(0, 0, canvasRef.value!.width, canvasRef.value!.height)
+          ctx?.drawImage(img, 0, 0, canvasRef.value!.width, canvasRef.value!.height)
+        }
+        img.src = imgSrc
+      }
+    }
+
     onMounted(() => {
       if (canvasRef.value) {
         signaturePad = new SignaturePad(canvasRef.value)
         if (props.disabled) {
           signaturePad.off() // 禁用签名
         }
+        if (props.image) {
+          loadImageToCanvas(props.image)
+        }
       }
     })
 
     // 监听 disabled 变化
-    watch(() => props.disabled, (disabled) => {
+    watch([() => props.disabled,()=>props.image], ([disabled,newimage]) => {
       if (signaturePad) {
         disabled ? signaturePad.off() : signaturePad.on()
+      }
+      if(newimage){
+        loadImageToCanvas(newimage)
       }
     })
 

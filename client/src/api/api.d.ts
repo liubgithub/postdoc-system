@@ -1129,6 +1129,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/uploadSign/upload_image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload Image */
+        post: operations["upload_image_uploadSign_upload_image_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/uploadSign/get_image_base64": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Image Base64 */
+        get: operations["get_image_base64_uploadSign_get_image_base64_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -1159,6 +1193,44 @@ export interface components {
              * @default
              */
             comment: string;
+        };
+        /** AttachmentIn */
+        AttachmentIn: {
+            /** Id */
+            id: number;
+            /** Filename */
+            filename: string;
+            /** Filepath */
+            filepath: string;
+            /** Filetype */
+            filetype: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** AttachmentOut */
+        AttachmentOut: {
+            /** Id */
+            id: number;
+            /** Filename */
+            filename: string;
+            /** Filepath */
+            filepath: string;
+            /** Filetype */
+            filetype: string;
+            /** Created At */
+            created_at?: string | null;
+            /** User Id */
+            user_id: number;
+            /** Updated At */
+            updated_at?: string | null;
+            /**
+             * Attachments
+             * @default []
+             */
+            attachments: components["schemas"]["AttachmentIn"][];
         };
         /** Body_create_book_pre_entry_book__post */
         Body_create_book_pre_entry_book__post: {
@@ -2540,6 +2612,13 @@ export interface components {
              * @default
              */
             time: string;
+        };
+        /** Body_upload_image_uploadSign_upload_image_post */
+        Body_upload_image_uploadSign_upload_image_post: {
+            /** Sign Type */
+            sign_type: string;
+            /** Image Base64 */
+            image_base64: string;
         };
         /** EducationExperienceIn */
         EducationExperienceIn: {
@@ -5942,7 +6021,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EnterRelationInDBBase"];
+                    "application/json": unknown;
                 };
             };
         };
@@ -6017,7 +6096,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EnterRelationInDBBase"];
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
@@ -6246,6 +6325,71 @@ export interface operations {
                 "application/json": components["schemas"]["ApproveRequest"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_image_uploadSign_upload_image_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_upload_image_uploadSign_upload_image_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttachmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_image_base64_uploadSign_get_image_base64_get: {
+        parameters: {
+            query: {
+                sign_type: string;
+                student_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
