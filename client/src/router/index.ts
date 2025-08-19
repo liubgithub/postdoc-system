@@ -3,6 +3,7 @@ import Login from '@/pages/Login'
 import Signin from '@/pages/Signin'
 import Frame from '@/units/Frame'
 import Home from '@/pages/Home'
+import AdminPage from '@/pages/Admin'
 import Behind from '@/pages/PostdocProcess'
 import UserInfo from '@/pages/UserInfo'
 import UserInfo1 from '@/pages/EnterWorksation'
@@ -50,6 +51,11 @@ const router = createRouter({
           component: Home
         },
       ],
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminPage,
     },
     {
       path: '/teacher',
