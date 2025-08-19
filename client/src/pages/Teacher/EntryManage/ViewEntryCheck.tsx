@@ -1,398 +1,437 @@
-import { defineComponent, ref, watch, computed, h } from "vue";
-import { useRouter } from "vue-router";
+import UserinfoRegister from "@/pages/EnterWorksation/form.tsx";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import TeacherHeader from "../TeacherHeader";
-import * as styles from "../../UserInfo/styles.css.ts";
 import {
   ElContainer,
   ElHeader,
-  ElRow,
-  ElCol,
+  ElAside,
+  ElMain,
+  ElMenu,
+  ElMenuItem,
+  ElForm,
+  ElFormItem,
   ElInput,
   ElButton,
   ElTable,
   ElTableColumn,
-  ElPagination,
-  ElForm,
-  ElFormItem,
-  ElDialog,
-  ElCard,
-  ElUpload,
+  ElDatePicker,
+  ElMessage,
 } from "element-plus";
+import * as styles from "./styles.css";
+import ResearchForm from "@/pages/EnterWorksation/researchForm";
+import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
+
+const menuList = [
+  { label: "进站申请", key: "apply" },
+  { label: "进站考核", key: "assessment" },
+];
 
 export default defineComponent({
-  name: "ViewEntryCheckPage",
+  name: "ViewEntryCheck",
   setup() {
-    // 电子签名弹窗
-    const signDialogVisible = ref(false);
-    const signatureUrl = ref<string | null>(null);
-    const canvasRef = ref<HTMLCanvasElement | null>(null);
-    let drawing = false;
-    let lastX = 0;
-    let lastY = 0;
-    const openSignDialog = () => {
-      signDialogVisible.value = true;
-      setTimeout(() => {
-        const canvas = canvasRef.value;
-        if (canvas) {
-          const ctx = canvas.getContext("2d");
-          ctx && ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const router = useRouter();
+    const route = useRoute();
+
+    // 获取路由参数
+    const userId = route.query.userId as string;
+
+
+
+    const loading = ref(false);
+    const studentInfo = ref<any>(null);
+
+    // 加载学生信息
+    const loadStudentInfo = async () => {
+      if (!userId) {
+        // 如果没有userId，直接显示考核表单
+        return;
+      }
+
+      try {
+        loading.value = true;
+        const data = await getUserProfileById(parseInt(userId));
+        studentInfo.value = data;
+        console.log("加载的学生信息:", data);
+      } catch (error) {
+        console.error("加载学生信息失败:", error);
+        // 如果获取学生信息失败，显示提示但不影响页面展示
+        ElMessage.warning("未找到对应的学生信息，请检查用户ID是否正确");
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // 页面加载时获取学生信息
+    onMounted(() => {
+      loadStudentInfo();
+    });
+
+    const handleMenuClick = (key: string) => {
+      // 根据当前路由和菜单项跳转到对应的详情页面
+      if (key === 'apply') {
+        // 跳转到进站申请详情页面，传递当前的userId参数
+        const query: any = {
+          fromNavigation: 'true' // 标识这是从导航点击进来的
+        };
+        if (userId) {
+          query.userId = userId;
         }
-      }, 100);
-    };
-    const handleMouseDown = (e: MouseEvent) => {
-      drawing = true;
-      const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
-      lastX = e.clientX - rect.left;
-      lastY = e.clientY - rect.top;
-    };
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!drawing) return;
-      const canvas = canvasRef.value;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#333";
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      lastX = x;
-      lastY = y;
-    };
-    const handleMouseUp = () => {
-      drawing = false;
-    };
-    const saveSignature = () => {
-      const canvas = canvasRef.value;
-      if (canvas) {
-        signatureUrl.value = canvas.toDataURL();
-        signDialogVisible.value = false;
+        router.push({
+          path: '/teacher/entryManage/approval',
+          query: query
+        });
+      } else if (key === 'assessment') {
+        // 跳转到进站考核详情页面
+        router.push('/teacher/entryManage/check-detail');
       }
     };
-    const clearSignature = () => {
-      const canvas = canvasRef.value;
-      if (canvas) {
-        const ctx = canvas.getContext("2d");
-        ctx && ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 根据当前路由路径确定菜单高亮
+    const getActiveMenu = () => {
+      const currentPath = route.path;
+      if (currentPath.includes('/approval')) {
+        return 'apply';
+      } else if (currentPath.includes('/check-detail')) {
+        return 'assessment';
       }
-      signatureUrl.value = null;
+      return 'assessment'; // 默认
     };
-    // 上传签名图片
-    const uploadUrl = ref<string | null>(null);
-    const handleUpload = (file: File) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        uploadUrl.value = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
-      return false; // 阻止自动上传
+
+    const handleBack = () => {
+      router.push("/teacher");
     };
+
+    // 第二部分表单数据
+    const projectForm = ref({
+      projectName: "", //研究项目名称
+      projectSource: "", //项目来源
+      projectType: "", //项目性质
+      approvalTime: "", //批准时间
+      projectFee: "", //项目经费
+      projectTask: "", //研究项目任务
+      projectThought: "", //申请者对研究项目思路
+    });
+    const form = reactive({
+      guideGroupOpinion: "",
+      guideGroupDate: "",
+      guideGroupLeader: "",
+      staff: [
+        { name: "", org: "", job: "", major: "", sign: "" },
+        { name: "", org: "", job: "", major: "", sign: "" },
+        { name: "", org: "", job: "", major: "", sign: "" },
+      ],
+      recordCheck: "",
+      assessmentOpinion: "",
+      assessmentLeader: "",
+      assessmentDate: "",
+      vote: "",
+      stationOpinion: "",
+      stationLeader: "",
+      stationDate: "",
+    });
+    const addStaff = () => {
+      form.staff.push({ name: "", org: "", job: "", major: "", sign: "" });
+    };
+    const removeStaff = (index: number) => {
+      if (form.staff.length > 1) form.staff.splice(index, 1);
+    };
+
+    const handleSubmit = () => {};
+
     return () => (
       <ElContainer style={{ minHeight: "100vh" }}>
         <ElHeader height="20vh" style={{ padding: 0, background: "none" }}>
           <TeacherHeader />
         </ElHeader>
-        <div class={styles.contentArea}>
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: "8px",
-              padding: "50px 150px 0px 150px",
-            }}
-          >
-            {/* 申请人信息 */}
+        <ElContainer>
+          <ElAside width="15vw">
+            <ElMenu
+              defaultActive={getActiveMenu()}
+              class="el-menu-vertical"
+              onSelect={handleMenuClick}
+            >
+              {menuList.map((item) => (
+                <ElMenuItem index={item.key}>{item.label}</ElMenuItem>
+              ))}
+            </ElMenu>
+          </ElAside>
+          <ElMain style={{ padding: " 0px 24px 24px 24px" }}>
             <div
               style={{
-                fontSize: "22px",
-                fontWeight: 700,
-                marginBottom: "24px",
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "24px",
+                height: "calc(100vh - 200px)",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              申请人信息
-            </div>
-            <ElForm
-              labelPosition="left"
-              labelWidth="90px"
-              size="large"
-              style={{ maxWidth: 800, marginBottom: 24 }}
-            >
-              <ElRow gutter={24}>
-                <ElCol span={12}>
-                  <ElFormItem label="登录账号">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-                <ElCol span={12}>
-                  <ElFormItem label="登录密码">
-                    <ElInput type="password" readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-              </ElRow>
-              <ElRow gutter={24}>
-                <ElCol span={12}>
-                  <ElFormItem label="姓名">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-                <ElCol span={12}>
-                  <ElFormItem label="国别（地区）">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-              </ElRow>
-              <ElRow gutter={24}>
-                <ElCol span={12}>
-                  <ElFormItem label="证件号码">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-                <ElCol span={12}>
-                  <ElFormItem label="证件类型">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-              </ElRow>
-              <ElRow gutter={24}>
-                <ElCol span={12}>
-                  <ElFormItem label="出生日期">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-                <ElCol span={12}>
-                  <ElFormItem label="电子邮件">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-              </ElRow>
-              <ElRow gutter={24}>
-                <ElCol span={12}>
-                  <ElFormItem label="手机号码">
-                    <ElInput readonly disabled />
-                  </ElFormItem>
-                </ElCol>
-              </ElRow>
-            </ElForm>
-
-            {/* 导师签字 */}
-            <div
-              style={{
-                fontSize: "22px",
-                fontWeight: 700,
-                margin: "40px 0 24px 0",
-              }}
-            >
-              导师签字
-            </div>
-            <ElRow gutter={12}>
-              <ElCol span={5}>
-                <div
+              {/* 进站考核内容 */}
+              <div style={{ flex: 1, overflowY: "auto" }}>
+                <h2
                   style={{
-                    position: "relative",
-                    width: "260px",
-                    height: "120px",
-                    marginBottom: 8,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
+                    fontSize: "24px",
+                    fontWeight: "600",
+                    marginBottom: "20px",
+                    textAlign: "center",
                   }}
                 >
-                  <div
-                    style={{ width: "100%", height: "100%" }}
-                    onClick={openSignDialog}
-                  >
-                    <ElCard
-                      style={{ width: "100%", height: "100%" }}
-                      bodyStyle={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: 0,
-                      }}
-                      shadow="never"
-                    >
-                      {signatureUrl.value ? (
-                        <img
-                          src={signatureUrl.value}
-                          alt="签名"
-                          style={{ maxWidth: "100%", maxHeight: "100%" }}
-                        />
-                      ) : (
-                        <span style={{ color: "#888", fontSize: 16 }}>
-                          点击此处电子签名
-                        </span>
-                      )}
-                    </ElCard>
+                  进站考核
+                </h2>
+                {loading.value ? (
+                  <div style={{ textAlign: "center", padding: "20px" }}>
+                    加载中...
                   </div>
-                  {signatureUrl.value && (
-                    <ElButton
-                      size="small"
-                      style={{
-                        position: "absolute",
-                        right: "-50px",
-                        bottom: "-30px",
-                        zIndex: 2,
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        clearSignature();
-                      }}
-                    >
-                      清空
-                    </ElButton>
-                  )}
-                </div>
-              </ElCol>
-              <ElCol span={5}>
-                <div
-                  style={{
-                    position: "relative",
-                    width: "260px",
-                    height: "120px",
-                    marginBottom: 8,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <ElUpload
-                    show-file-list={false}
-                    accept="image/*"
-                    beforeUpload={handleUpload}
-                    style={{ width: "260px", height: "120px" }}
+                ) : (
+                  <UserinfoRegister 
+                    showOtherDescription={false}
+                    externalUserInfo={studentInfo.value}
+                    userRole="teacher"
+                  />
+                )}
+
+                {/* 第二部分 博士后研究项目情况 */}
+                <div class={styles.formWrapper} style={{ marginTop: "32px" }}>
+                  <div
+                    style={{
+                      fontSize: "1.5em",
+                      fontWeight: 700,
+                      textAlign: "left",
+                      marginBottom: "1em",
+                      letterSpacing: "0.05em",
+                    }}
                   >
+                    二、博士后研究项目情况
+                  </div>
+                  <ElForm model={projectForm.value} labelWidth="120px">
+                    <ElFormItem label="研究项目名称">
+                      <ElInput v-model={projectForm.value.projectName} />
+                    </ElFormItem>
+                    <div style={{ display: "flex", gap: "16px" }}>
+                      <ElFormItem label="项目来源" style={{ flex: 1 }}>
+                        <ElInput v-model={projectForm.value.projectSource} />
+                      </ElFormItem>
+                      <ElFormItem label="项目性质" style={{ flex: 1 }}>
+                        <ElInput v-model={projectForm.value.projectType} />
+                      </ElFormItem>
+                    </div>
+                    <div style={{ display: "flex", gap: "16px" }}>
+                      <ElFormItem label="批准时间" style={{ flex: 1 }}>
+                        <ElInput v-model={projectForm.value.approvalTime} />
+                      </ElFormItem>
+                      <ElFormItem label="项目经费" style={{ flex: 1 }}>
+                        <ElInput v-model={projectForm.value.projectFee} />
+                      </ElFormItem>
+                    </div>
+                    <ElFormItem label="研究项目任务">
+                      <ElInput
+                        v-model={projectForm.value.projectTask}
+                        type="textarea"
+                        rows={4}
+                      />
+                    </ElFormItem>
+                    <ElFormItem label="申请者对研究项目思路">
+                      <ElInput
+                        v-model={projectForm.value.projectThought}
+                        type="textarea"
+                        rows={4}
+                      />
+                    </ElFormItem>
+                  </ElForm>
+                </div>
+                {/* 第三部分 考核情况 */}
+                <div class={styles.formWrapper} style={{ marginTop: "32px" }}>
+                  <div
+                    style={{
+                      fontSize: "1.5em",
+                      fontWeight: 700,
+                      textAlign: "left",
+                      marginBottom: "1em",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    三、考核情况
+                  </div>
+
+                  <div
+                    style={{
+                      borderTop: "1px solid #333",
+                      padding: "16px",
+                      display: "flex",
+                    }}
+                  >
+                    <ElFormItem
+                      label="考核组人员基本情况"
+                      style={{ marginBottom: 0 }}
+                    ></ElFormItem>
+                    <div>
+                      <ElTable
+                        data={form.staff}
+                        border
+                        style={{ width: "100%", marginBottom: "8px" }}
+                      >
+                        <ElTableColumn prop="name" label="姓名" width="120">
+                          {{
+                            default: ({
+                              row,
+                              $index,
+                            }: {
+                              row: any;
+                              $index: number;
+                            }) => (
+                              <ElInput
+                                v-model={row.name}
+                                placeholder="姓名"
+                              />
+                            ),
+                          }}
+                        </ElTableColumn>
+                        <ElTableColumn
+                          prop="org"
+                          label="工作单位"
+                          width="220"
+                        >
+                          {{
+                            default: ({ row }: { row: any }) => (
+                              <ElInput
+                                v-model={row.org}
+                                placeholder="工作单位"
+                              />
+                            ),
+                          }}
+                        </ElTableColumn>
+                        <ElTableColumn
+                          prop="job"
+                          label="职务或职称"
+                          width="140"
+                        >
+                          {{
+                            default: ({ row }: { row: any }) => (
+                              <ElInput
+                                v-model={row.job}
+                                placeholder="职务或职称"
+                              />
+                            ),
+                          }}
+                        </ElTableColumn>
+                        <ElTableColumn
+                          prop="major"
+                          label="专业及研究方向"
+                          width="240"
+                        >
+                          {{
+                            default: ({ row }: { row: any }) => (
+                              <ElInput
+                                v-model={row.major}
+                                placeholder="专业及研究方向"
+                              />
+                            ),
+                          }}
+                        </ElTableColumn>
+                        <ElTableColumn prop="sign" label="签字" width="150">
+                          {{
+                            default: ({ row }: { row: any }) => (
+                              <ElInput
+                                v-model={row.sign}
+                                placeholder="签字"
+                              />
+                            ),
+                          }}
+                        </ElTableColumn>
+                        <ElTableColumn label="操作" width="100">
+                          {{
+                            default: ({ $index }: { $index: number }) => (
+                              <ElButton
+                                type="danger"
+                                size="small"
+                                onClick={() => removeStaff($index)}
+                                disabled={form.staff.length === 1}
+                              >
+                                删除
+                              </ElButton>
+                            ),
+                          }}
+                        </ElTableColumn>
+                      </ElTable>
+                      <ElButton
+                        type="primary"
+                        plain
+                        onClick={addStaff}
+                        style={{ marginBottom: "16px" }}
+                      >
+                        添加人员
+                      </ElButton>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      padding: "16px",
+                      minHeight: "180px",
+                      borderTop: "1px solid #333",
+                      borderBottom: "1px solid #333",
+                      position: "relative",
+                    }}
+                  >
+                    <ElFormItem
+                      label="指导小组意见"
+                      style={{ marginBottom: 0 }}
+                    >
+                      <ElInput
+                        type="textarea"
+                        v-model={form.guideGroupOpinion}
+                        autosize={{ minRows: 5 }}
+                      />
+                    </ElFormItem>
                     <div
                       style={{
-                        width: "260px",
-                        height: "120px",
                         display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <ElCard
-                        style={{ width: "100%", height: "100%" }}
-                        bodyStyle={{
-                          width: "100%",
-                          height: "100%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: 0,
-                        }}
-                        shadow="never"
-                      >
-                        {uploadUrl.value ? (
-                          <img
-                            src={uploadUrl.value}
-                            alt="签名图片"
-                            style={{ maxWidth: "100%", maxHeight: "100%" }}
-                          />
-                        ) : (
-                          <span
-                            style={{
-                              color: "#bbb",
-                              fontSize: 48,
-                              fontWeight: 700,
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            +
-                          </span>
-                        )}
-                      </ElCard>
-                    </div>
-                  </ElUpload>
-                  {uploadUrl.value && (
-                    <ElButton
-                      size="small"
-                      style={{
+                        gap: "16px",
                         position: "absolute",
-                        right: "-50px",
-                        bottom: "-30px",
-                        zIndex: 2,
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        uploadUrl.value = null;
+                        right: "20px",
+                        bottom: "5px",
                       }}
                     >
-                      清空
-                    </ElButton>
-                  )}
+                      <ElFormItem
+                        label="指导小组负责人(合作导师)签字"
+                        prop="guideGroupLeader"
+                        labelWidth={300}
+                      >
+                        <ElInput v-model={form.guideGroupLeader} />
+                      </ElFormItem>
+                      <ElFormItem label="日期" prop="guideGroupDate">
+                        <ElDatePicker
+                          v-model={form.guideGroupDate}
+                          type="date"
+                          placeholder="选择日期"
+                          style={{ width: "100%" }}
+                        />
+                      </ElFormItem>
+                    </div>
+                  </div>
                 </div>
-              </ElCol>
-            </ElRow>
+              </div>
 
-            {/* 按钮区 */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 40,
-                margin: "60px 0 0 0",
-              }}
-            >
-              <ElButton style={{ width: "160px" }}>取消</ElButton>
-              <ElButton type="primary" style={{ width: "160px" }}>
-                通过
-              </ElButton>
-              <ElButton type="danger" style={{ width: "160px" }}>
-                不通过
-              </ElButton>
+              {/* 操作按钮 */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "20px",
+                  padding: "20px 0",
+                  borderTop: "1px solid #e4e7ed",
+                  marginTop: "auto",
+                }}
+              >
+                <ElButton onClick={handleBack}>返回</ElButton>
+                <ElButton onClick={handleSubmit} type="primary">
+                  提交
+                </ElButton>
+                <ElButton type="success">导出</ElButton>
+              </div>
             </div>
-          </div>
-        </div>
-        {/* 电子签名弹窗 */}
-        <ElDialog
-          v-model={signDialogVisible.value}
-          title="电子签名"
-          width="400px"
-          closeOnClickModal={false}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <canvas
-              ref={canvasRef}
-              width={320}
-              height={150}
-              style={{
-                border: "1px solid #888",
-                borderRadius: 6,
-                background: "#fff",
-                cursor: "crosshair",
-                marginBottom: 16,
-              }}
-              onMousedown={handleMouseDown}
-              onMousemove={handleMouseMove}
-              onMouseup={handleMouseUp}
-              onMouseleave={handleMouseUp}
-            />
-            <div style={{ marginTop: 8, display: "flex", gap: 16 }}>
-              <ElButton onClick={clearSignature}>清空</ElButton>
-              <ElButton type="primary" onClick={saveSignature}>
-                保存
-              </ElButton>
-            </div>
-          </div>
-        </ElDialog>
+          </ElMain>
+        </ElContainer>
       </ElContainer>
     );
   },

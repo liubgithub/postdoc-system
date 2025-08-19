@@ -65,7 +65,7 @@ export default defineComponent({
         }
         return () => (
             <div>
-                <UserinfoRegister showOtherDescription={false} />
+                <UserinfoRegister showOtherDescription={false} showResult={false} />
                 {/* 第二部分 博士后研究项目情况 */}
                 <div class={styles.formWrapper} style={{ marginTop: '32px' }}>
                     <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>二、博士后研究项目情况</div>

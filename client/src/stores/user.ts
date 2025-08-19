@@ -33,19 +33,18 @@ const useUser = defineStore("user", () => {
         })
 
         try {
-            const formData = {
-                grant_type: '',
-                username: name,
-                password: pass,
-                scope: '',
-                client_id: '',
-                client_secret: '',
-            }
+            const params = new URLSearchParams()
+            params.append('grant_type', '')
+            params.append('username', name)
+            params.append('password', pass)
+            params.append('scope', '')
+            params.append('client_id', '')
+            params.append('client_secret', '')
 
             const res = await raw.POST('/auth/login', {
-                body: formData,
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            })
+                body: params as any,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            } as any)
 
             if (res.response.status === 200) {
                 const token = res.data?.access_token
