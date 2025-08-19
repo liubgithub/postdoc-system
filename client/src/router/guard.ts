@@ -6,6 +6,7 @@ const whiteList = ['/auth/login', '/register', '/']
 
 // 角色权限配置
 const rolePermissions: { [key: string]: string[] } = {
+  admin: ['/admin', '/admin/*'], // admin可以访问的路径
   teacher: ['/teacher', '/teacher/*'], // teacher可以访问的路径
   user: ['/', '/UserInfo', '/UserInfo/*'] // 普通用户可以访问的路径
 }
@@ -43,7 +44,9 @@ export const authGuard = (
       next()
     } else {
       // 没有权限，重定向到对应角色的首页
-      if (userRole === 'teacher') {
+      if(userRole === 'admin'){
+        next('/admin')
+      } else if (userRole === 'teacher'){
         next('/teacher')
       } else {
         next('/')

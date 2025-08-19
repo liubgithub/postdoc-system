@@ -1,7 +1,8 @@
 import UserinfoRegister from '@/pages/EnterWorksation/form.tsx'
 import { ref } from 'vue'
-import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElDatePicker } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElDatePicker, ElMessage } from 'element-plus'
 import * as styles from './styles.css.ts'
+import fetch from '@/api/index.ts'
 
 export default defineComponent({
     name: 'OpenDetails',
@@ -18,13 +19,13 @@ export default defineComponent({
     setup(props) {
         // 第二部分表单数据
         const projectForm = ref({
-            projectName: '',//研究项目名称
-            projectSource: '',//项目来源
-            projectType: '',//项目性质
-            approvalTime: '',//批准时间
-            projectFee: '',//项目经费
-            projectTask: '',//研究项目任务
-            projectThought: ''//申请者对研究项目思路
+            project_name: '',//研究项目名称
+            project_source: '',//项目来源
+            project_type: '',//项目性质
+            approval_time: '',//批准时间
+            project_fee: '',//项目经费
+            project_task: '',//研究项目任务
+            project_thought: ''//申请者对研究项目思路
         })
         const form = reactive({
             guideGroupOpinion: '',
@@ -54,8 +55,13 @@ export default defineComponent({
             props.onBack && props.onBack()
         }
 
-        const handleSubmit = () => {
-
+        const handleSubmit = async() => {
+            console.log(projectForm.value,'sssss1')
+            try {
+                await fetch.raw.POST('/enterAssessment/assessment',{body:projectForm.value})
+            }catch(error){
+                ElMessage.error('提交失败，请稍后重试')
+            }
         }
         return () => (
             <div>
@@ -65,29 +71,29 @@ export default defineComponent({
                     <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>二、博士后研究项目情况</div>
                     <ElForm model={projectForm.value} labelWidth="120px">
                         <ElFormItem label="研究项目名称">
-                            <ElInput v-model={projectForm.value.projectName} />
+                            <ElInput v-model={projectForm.value.project_name} />
                         </ElFormItem>
                         <div style={{ display: 'flex', gap: '16px' }}>
                             <ElFormItem label="项目来源" style={{ flex: 1 }}>
-                                <ElInput v-model={projectForm.value.projectSource} />
+                                <ElInput v-model={projectForm.value.project_source} />
                             </ElFormItem>
                             <ElFormItem label="项目性质" style={{ flex: 1 }}>
-                                <ElInput v-model={projectForm.value.projectType} />
+                                <ElInput v-model={projectForm.value.project_type} />
                             </ElFormItem>
                         </div>
                         <div style={{ display: 'flex', gap: '16px' }}>
                             <ElFormItem label="批准时间" style={{ flex: 1 }}>
-                                <ElInput v-model={projectForm.value.approvalTime} />
+                                <ElInput v-model={projectForm.value.approval_time} />
                             </ElFormItem>
                             <ElFormItem label="项目经费" style={{ flex: 1 }}>
-                                <ElInput v-model={projectForm.value.projectFee} />
+                                <ElInput v-model={projectForm.value.project_fee} />
                             </ElFormItem>
                         </div>
                         <ElFormItem label="研究项目任务">
-                            <ElInput v-model={projectForm.value.projectTask} type="textarea" rows={4} />
+                            <ElInput v-model={projectForm.value.project_task} type="textarea" rows={4} />
                         </ElFormItem>
                         <ElFormItem label="申请者对研究项目思路">
-                            <ElInput v-model={projectForm.value.projectThought} type="textarea" rows={4} />
+                            <ElInput v-model={projectForm.value.project_thought} type="textarea" rows={4} />
                         </ElFormItem>
                     </ElForm>
                 </div>

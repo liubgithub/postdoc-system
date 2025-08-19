@@ -59,6 +59,7 @@ const useUser = defineStore("user", () => {
                         headers: { Authorization: `Bearer ${token}` }
                     })
                     const role = meRes.data?.role || 'user'
+                    console.log(role,'?/?')
                     localStorage.setItem('userRole', role)
                     info.value = { name, token, role }
 
@@ -71,8 +72,10 @@ const useUser = defineStore("user", () => {
                     // 根据角色跳转到不同页面
                     if (role === 'teacher') {
                         router.push('/teacher')
-                    } else {
+                    } else if(role === 'user') {
                         router.push('/UserInfo')
+                    } else if(role === 'admin'){
+                        router.push('/admin')
                     }
 
                     return true

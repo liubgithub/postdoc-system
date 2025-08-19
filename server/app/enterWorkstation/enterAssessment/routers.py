@@ -6,7 +6,7 @@ from .models import EnterAssessment
 from .schemas import EnterAssessmentIn, EnterAssessmentOut
 from app.models.user import User
 
-router = APIRouter(prefix="/enterAssessment", tags=["进站评估"])
+router = APIRouter(prefix="/enterAssessment", tags=["进站考核"])
 
 @router.post("/assessment", response_model=EnterAssessmentOut)
 def upsert_enter_assessment(

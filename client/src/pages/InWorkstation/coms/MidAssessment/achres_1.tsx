@@ -21,7 +21,7 @@ export default defineComponent({
                     <div style={{  borderRadius: '4px', background: '#fff', padding: 0, position: 'relative', minHeight: '500px' }}>
                         {/* 第一部分 */}
                         <div style={{ padding: '16px', minHeight: '180px',  position: 'relative' }}>
-                            <ElFormItem label='博士后项目研究情况' style={{ marginBottom: 0 }}>
+                            <ElFormItem label='主持研究的项目名称及研究计划' style={{ marginBottom: 0 }}>
                                 <ElInput
                                     type="textarea"
                                     autosize={{ minRows: 6 }}

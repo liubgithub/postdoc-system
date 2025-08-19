@@ -43,12 +43,6 @@ interface ApplicationData {
   workflow_status: string;
 }
 
-const menuList = [
-  { label: "进站管理", path: "/teacher/entryManage" },
-  { label: "在站管理", path: "/teacher/inManage" },
-  { label: "出站管理", path: "/teacher/outManage" },
-  { label: "账号审批", path: "/teacher/accountApproval" },
-];
 
 export default defineComponent({
   name: "TeacherPage",
