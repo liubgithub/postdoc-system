@@ -26,7 +26,9 @@ class UserService:
         user = User(
             username=user_data.username,
             hashed_password=hashed_password,
-            role=user_data.role or "user"  # 支持 teacher 角色
+            role=user_data.role or "user",  # 支持 teacher 角色
+            name=user_data.name,
+            email=user_data.email,
         )
 
         try:

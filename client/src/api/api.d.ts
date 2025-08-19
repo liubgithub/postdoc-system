@@ -24,6 +24,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/login_json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 用户登录（JSON）
+         * @description 使用 JSON 提交用户名和密码登录
+         */
+        post: operations["login_json_auth_login_json_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -44,6 +64,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/send_email_code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 发送邮箱验证码 */
+        post: operations["send_email_code_auth_send_email_code_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify_email_code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 验证邮箱验证码 */
+        post: operations["verify_email_code_auth_verify_email_code_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/register": {
         parameters: {
             query?: never;
@@ -55,7 +109,7 @@ export interface paths {
         put?: never;
         /**
          * 注册用户
-         * @description 注册新用户（默认角色为普通用户）
+         * @description 注册新用户（默认角色为普通用户），需要已通过邮箱验证码验证
          */
         post: operations["register_users_register_post"];
         delete?: never;
@@ -1157,6 +1211,24 @@ export interface paths {
         get: operations["get_image_base64_uploadSign_get_image_base64_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/researchStatus/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Research Statuses */
+        get: operations["get_research_statuses_researchStatus__get"];
+        put?: never;
+        /** Upset Research Status */
+        post: operations["upset_research_status_researchStatus__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2880,6 +2952,15 @@ export interface components {
              * @default user
              */
             role: string;
+            /** Email */
+            email?: string | null;
+        };
+        /** LoginRequest */
+        LoginRequest: {
+            /** Username */
+            username: string;
+            /** Password */
+            password: string;
         };
         /** MultipleWorkflowResponse */
         MultipleWorkflowResponse: {
@@ -3636,6 +3717,42 @@ export interface components {
          * @enum {string}
          */
         ProcessStatus: "未提交" | "导师未审核" | "导师驳回" | "学院未审核" | "学院驳回" | "已审核";
+        /** ResStatusIn */
+        ResStatusIn: {
+            /** Subnameplan */
+            subNamePlan: string;
+            /** Subdescription */
+            subDescription: string;
+            /** Subtype */
+            subType: string;
+        };
+        /** ResStatusOut */
+        ResStatusOut: {
+            /** Subnameplan */
+            subNamePlan: string;
+            /** Subdescription */
+            subDescription: string;
+            /** Subtype */
+            subType: string;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** SendEmailCodeInput */
+        SendEmailCodeInput: {
+            /** Email */
+            email: string;
+            /**
+             * Scene
+             * @default register
+             */
+            scene: string;
+        };
         /** StaffPendingTasksResponse */
         StaffPendingTasksResponse: {
             /** Role */
@@ -3733,6 +3850,18 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VerifyEmailCodeInput */
+        VerifyEmailCodeInput: {
+            /** Email */
+            email: string;
+            /** Code */
+            code: string;
+            /**
+             * Scene
+             * @default register
+             */
+            scene: string;
         };
         /** WorkExperienceIn */
         WorkExperienceIn: {
@@ -3856,6 +3985,39 @@ export interface operations {
             };
         };
     };
+    login_json_auth_login_json_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Token"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_me_auth_me_get: {
         parameters: {
             query?: never;
@@ -3872,6 +4034,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+        };
+    };
+    send_email_code_auth_send_email_code_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendEmailCodeInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_email_code_auth_verify_email_code_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyEmailCodeInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -6398,6 +6626,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_research_statuses_researchStatus__get: {
+        parameters: {
+            query?: {
+                subType?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResStatusOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upset_research_status_researchStatus__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResStatusOut"];
                 };
             };
             /** @description Validation Error */

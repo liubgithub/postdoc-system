@@ -5,6 +5,7 @@ class LoginInput(BaseModel):
     username: str
     password: str
     role: str = "user"  # 新增字段，默认 user
+    email: str | None = None
 
 
 class Token(BaseModel):
@@ -19,3 +20,19 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class SendEmailCodeInput(BaseModel):
+    email: str
+    scene: str = "register"  # 可扩展：register, reset_password 等
+
+
+class VerifyEmailCodeInput(BaseModel):
+    email: str
+    code: str
+    scene: str = "register"
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str

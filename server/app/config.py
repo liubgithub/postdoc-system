@@ -23,6 +23,16 @@ class Settings(BaseSettings):
     # 环境配置
     ENVIRONMENT: str = "development"  # development, production
 
+    # 邮件配置（用于发送QQ邮箱验证码）
+    EMAIL_HOST: str = "smtp.qq.com"
+    EMAIL_PORT: int = 465
+    EMAIL_USE_SSL: bool = True
+    EMAIL_USERNAME: str = "1142983070@qq.com"
+    EMAIL_PASSWORD: str = "camfxrmdmgxrihic"  # QQ邮箱授权码
+    EMAIL_FROM: str = "1142983070@qq.com"       # 默认使用 EMAIL_USERNAME
+
+    # （可选）Redis 配置：如将来需要切换到 Redis，可在此添加相关配置
+
     @property
     def DATABASE_URL(self) -> str:
         password = urllib.parse.quote_plus(self.DB_PASSWORD)
