@@ -25,6 +25,7 @@ import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
 import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
 import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
 import { authGuard } from './guard'
+import adminHeader from '@/pages/Admin/adminHeader'
 
 
 const router = createRouter({
@@ -56,6 +57,23 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminPage,
+      children: [
+        {
+          path: 'adminHome', // 默认子路由
+          name: 'adminHome',
+          component: () => import('@/pages/Admin/PostdocProcess/index.tsx'),
+        },
+        {
+          path: 'entryManage',
+          name: 'entryManage',
+          component: () => import('@/pages/Admin/EntryManage'),
+        },
+        {
+          path: 'accountApproval',
+          name: 'adminAccountApproval',
+          component: () => import('@/pages/Admin/AccountApproval/AccountCheck.tsx'),
+        },
+      ]
     },
     {
       path: '/teacher',
@@ -125,7 +143,7 @@ const router = createRouter({
         {
           path: '',
           name: 'behind',
-          component:Behind
+          component: Behind
         },
         {
           path: 'userInfoRegister',
