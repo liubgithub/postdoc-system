@@ -21,7 +21,7 @@ export default defineComponent({
                 <h2>博士后进站申请</h2>
                 <div style={{maxHeight: 'calc(100vh - 300px)' }}>
                     <h3>1. 基本信息</h3>
-                    <UserinfoRegister />
+                    <UserinfoRegister showResult={false}/>
                     <ResearchForm onBack={props.onBack} onSubmitSuccess={props.onSubmitSuccess}/>
                 </div>
             </div>

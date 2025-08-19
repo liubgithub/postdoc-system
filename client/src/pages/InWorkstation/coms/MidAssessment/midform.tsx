@@ -50,7 +50,7 @@ export default defineComponent({
         }
         return () => (
             <div>
-                <UserinfoRegister />
+                <UserinfoRegister showResult={false}/>
                 {/* 科研成果表单 */}
                 <Achievement />
                 <Achievement_1 model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />
