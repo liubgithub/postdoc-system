@@ -118,6 +118,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 获取所有用户
+         * @description 管理员可以获取所有用户信息
+         */
+        get: operations["get_all_users_users__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{username}": {
         parameters: {
             query?: never;
@@ -125,8 +145,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
+        /**
+         * 获取指定用户信息
+         * @description 管理员可以获取指定用户的详细信息
+         */
+        get: operations["get_user_users__username__get"];
+        /**
+         * 更新用户信息
+         * @description 管理员可以更新用户的角色、姓名、邮箱等信息
+         */
+        put: operations["update_user_users__username__put"];
         post?: never;
         /**
          * 删除用户
@@ -2954,6 +2982,8 @@ export interface components {
             role: string;
             /** Email */
             email?: string | null;
+            /** Name */
+            name?: string | null;
         };
         /** LoginRequest */
         LoginRequest: {
@@ -3835,12 +3865,36 @@ export interface components {
             /** Token Type */
             token_type: string;
         };
+        /** UserDetailResponse */
+        UserDetailResponse: {
+            /** Id */
+            id: number;
+            /** Username */
+            username: string;
+            /** Name */
+            name?: string | null;
+            /** Role */
+            role: string;
+            /** Email */
+            email?: string | null;
+            /** Created At */
+            created_at?: string | null;
+        };
         /** UserResponse */
         UserResponse: {
             /** Username */
             username: string;
             /** Role */
             role: string;
+        };
+        /** UserUpdateRequest */
+        UserUpdateRequest: {
+            /** Name */
+            name?: string | null;
+            /** Role */
+            role?: string | null;
+            /** Email */
+            email?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -4124,6 +4178,92 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_all_users_users__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDetailResponse"][];
+                };
+            };
+        };
+    };
+    get_user_users__username__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_user_users__username__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDetailResponse"];
                 };
             };
             /** @description Validation Error */
