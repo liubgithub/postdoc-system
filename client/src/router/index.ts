@@ -66,7 +66,19 @@ const router = createRouter({
         {
           path: 'entryManage',
           name: 'entryManage',
-          component: () => import('@/pages/Admin/EntryManage'),
+          component: () => import('@/pages/Admin/EntryManage/index.tsx'),
+          children: [
+            {
+              path: 'approval',
+              name: 'adminEntryApproval',
+              component: () => import('@/pages/Admin/EntryManage/approval.tsx'),
+            },
+            {
+              path: 'check-detail',
+              name: 'adminEntryCheckDetail',
+              component: () => import('@/pages/Admin/EntryManage/check-detail.tsx'),
+            },
+          ]
         },
         {
           path: 'accountApproval',
