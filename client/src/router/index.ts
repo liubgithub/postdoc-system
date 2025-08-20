@@ -25,7 +25,7 @@ import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
 import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
 import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
 import { authGuard } from './guard'
-import adminHeader from '@/pages/Admin/adminHeader'
+
 
 
 const router = createRouter({

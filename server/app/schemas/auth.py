@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import List, Optional
+from datetime import datetime
 
 
 class LoginInput(BaseModel):
@@ -6,6 +8,7 @@ class LoginInput(BaseModel):
     password: str
     role: str = "user"  # 新增字段，默认 user
     email: str | None = None
+    name: str | None = None
 
 
 class Token(BaseModel):
@@ -36,3 +39,22 @@ class VerifyEmailCodeInput(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+
+# 用户管理相关schema
+class UserDetailResponse(BaseModel):
+    id: int
+    username: str
+    name: Optional[str] = None
+    role: str
+    email: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class UserUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    role: Optional[str] = None
+    email: Optional[str] = None

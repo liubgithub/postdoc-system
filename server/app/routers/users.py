@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from ..dependencies import get_db, get_admin_user
-from ..schemas.auth import LoginInput, VerifyEmailCodeInput
+from ..schemas.auth import LoginInput, VerifyEmailCodeInput, UserDetailResponse, UserUpdateRequest
 from ..services.user_service import UserService
 from ..models.user import User
 from ..services.verification_store import verification_service
+from typing import List
 
 router = APIRouter(prefix="/users", tags=["用户管理"])
 
@@ -19,6 +20,36 @@ def register(data: LoginInput, user_service: UserService = Depends()):
 
     user = user_service.create_user(data)
     return {"msg": "注册成功", "username": user.username}
+
+@router.get("/", summary="获取所有用户", description="管理员可以获取所有用户信息")
+def get_all_users(
+    current_user: User = Depends(get_admin_user),
+    user_service: UserService = Depends()
+) -> List[UserDetailResponse]:
+    """获取所有用户列表"""
+    users = user_service.get_all_users()
+    return users
+
+@router.get("/{username}", summary="获取指定用户信息", description="管理员可以获取指定用户的详细信息")
+def get_user(
+    username: str,
+    current_user: User = Depends(get_admin_user),
+    user_service: UserService = Depends()
+) -> UserDetailResponse:
+    """获取指定用户信息"""
+    user = user_service.get_user_by_username(username)
+    return user
+
+@router.put("/{username}", summary="更新用户信息", description="管理员可以更新用户的角色、姓名、邮箱等信息")
+def update_user(
+    username: str,
+    update_data: UserUpdateRequest,
+    current_user: User = Depends(get_admin_user),
+    user_service: UserService = Depends()
+) -> UserDetailResponse:
+    """更新用户信息"""
+    updated_user = user_service.update_user(username, update_data, current_user)
+    return updated_user
 
 @router.delete("/{username}", summary="删除用户", description="仅管理员可删除普通用户，不能删除管理员")
 def delete_user(

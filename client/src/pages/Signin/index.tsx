@@ -139,7 +139,8 @@ export default defineComponent({
                         username: form.value.username,
                         password: form.value.password,
                         role: 'user',
-                        email: form.value.email
+                        email: form.value.email,
+                        name: form.value.realname
                     }
                 })
                 if(regRes.response.ok){
