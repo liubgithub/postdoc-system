@@ -5,9 +5,9 @@ import useUser from "@/stores/user"
 const menuList = [
     { label: "后台首页", path: "/admin/adminHome" },
     { label: "进站管理", path: "/admin/entryManage" },
-    { label: "权限分配", path: "" },
-    { label: "信息发布", path: "" },
-    { label: "数据统计", path: "" },
+    { label: "权限分配", path: "/admin/premissionManage" },
+    { label: "信息发布", path: "/admin/informationRelease" },
+    { label: "数据统计", path: "/admin/statistics" },
     { label: "在站管理", path: "" },
     { label: "出站管理", path: "" },
     { label: "账号审批", path: "/admin/accountApproval" },

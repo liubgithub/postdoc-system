@@ -24,7 +24,11 @@ import YearCheckPage from '@/pages/Teacher/InManage/YearCheck';
 import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
 import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
 import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
+import PremissionManage from '@/pages/Admin/PremissionManage'
+import Statistics from '@/pages/Admin/Statistics'
+import InformationRelease from '@/pages/Admin/InformationRelease'
 import { authGuard } from './guard'
+
 
 
 
@@ -85,6 +89,21 @@ const router = createRouter({
           name: 'adminAccountApproval',
           component: () => import('@/pages/Admin/AccountApproval/AccountCheck.tsx'),
         },
+        {
+          path:'premissionManage',
+          name:'premissionManage',
+          component: PremissionManage
+        },
+        {
+          path:'statistics',
+          name:'statistics',
+          component:Statistics
+        },
+        {
+          path:'informationRelease',
+          name:'informationRelease',
+          component:InformationRelease
+        }
       ]
     },
     {
