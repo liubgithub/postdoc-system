@@ -283,21 +283,45 @@ export default defineComponent({
 
         const handleDetail = (detailId: string) => {
             // 根据业务类型跳转到对应的详情页面
-            const routeMap: Record<string, string> = {
-                'entry_application': '/UserInfo/entry',
-                'entry_assessment': '/UserInfo/entry',
-                'entry_agreement': '/UserInfo/entry',
-                'midterm_assessment': '/UserInfo/in-station',
-                'annual_assessment': '/UserInfo/in-station',
-                'extension_assessment': '/UserInfo/in-station',
-                'leave_assessment': '/UserInfo/out-station'
+            const routeMap: Record<string, { path: string; query?: Record<string, string> }> = {
+                'entry_application': { 
+                    path: '/UserInfo/entry',
+                    query: { activeTab: 'entry_application' }
+                },
+                'entry_assessment': { 
+                    path: '/UserInfo/entry',
+                    query: { activeTab: 'entry_assessment' }
+                },
+                'entry_agreement': { 
+                    path: '/UserInfo/entry',
+                    query: { activeTab: 'entry_agreement' }
+                },
+                'midterm_assessment': { 
+                    path: '/UserInfo/in-station',
+                    query: { activeTab: 'midterm_assessment' }
+                },
+                'annual_assessment': { 
+                    path: '/UserInfo/in-station',
+                    query: { activeTab: 'annual_assessment' }
+                },
+                'extension_assessment': { 
+                    path: '/UserInfo/in-station',
+                    query: { activeTab: 'extension_assessment' }
+                },
+                'leave_assessment': { 
+                    path: '/UserInfo/out-station',
+                    query: { activeTab: 'leave_assessment' }
+                }
             }
 
-            const route = routeMap[detailId]
-            if (route) {
-                // 使用vue-router进行跳转
-                router.push(route)
-                console.log('跳转到详情页面:', route)
+            const routeConfig = routeMap[detailId]
+            if (routeConfig) {
+                // 使用vue-router进行跳转，传递查询参数
+                router.push({
+                    path: routeConfig.path,
+                    query: routeConfig.query
+                })
+                console.log('跳转到详情页面:', routeConfig.path, '参数:', routeConfig.query)
             } else {
                 ElMessage.warning('页面开发中')
             }

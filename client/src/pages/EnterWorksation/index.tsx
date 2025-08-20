@@ -1,4 +1,6 @@
 import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElDialog, ElMessage } from 'element-plus'
+import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import * as cls from "./styles.css"
 import Application from "./apply"
 import StationAssessment from './coms/StationAssessment'
@@ -25,7 +27,7 @@ const defaultMenuList = [
 export default defineComponent({
     name: "EnterWS",
     setup() {
-
+        const route = useRoute()
         const activeMenu = ref('entry_application')
         const showApplication = ref(true)
         const menuList = ref(defaultMenuList)
@@ -60,6 +62,14 @@ export default defineComponent({
         const dialogVisible = ref(false)
         const viewRow = ref<TableRow | null>(null)
 
+        // 根据路由查询参数设置默认激活的菜单
+        const initActiveMenu = () => {
+            const activeTab = route.query.activeTab as string
+            if (activeTab && defaultMenuList.some(item => item.key === activeTab)) {
+                activeMenu.value = activeTab
+                console.log('根据路由参数设置激活菜单:', activeTab)
+            }
+        }
 
         const handleView = (row: TableRow) => {
             console.log(row, 'row')
@@ -99,6 +109,8 @@ export default defineComponent({
         };
 
         onMounted(async () => {
+            // 初始化激活菜单
+            initActiveMenu()
 
             // 获取进站申请数据
             try {

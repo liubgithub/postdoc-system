@@ -1,4 +1,6 @@
 import { ElContainer, ElAside, ElMain, ElMenu, ElMenuItem, ElButton, ElDialog } from 'element-plus'
+import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import CommonTable from "@/units/CommonTable/index.tsx"
 import type { TableRow } from '@/types/common-table'
@@ -8,16 +10,32 @@ import ExtensionRequest from './coms/ExtensionRequest/index.tsx'
 import ProcessStatus from '@/units/ProcessStatus'
 
 const menuList = [
-    { label: "出站申请", key: "outrequest" },
+    { label: "出站申请", key: "leave_assessment" },
 ]
 
 export default defineComponent({
     name: "OutStation",
     setup() {
-        const activeMenu = ref('outrequest')
+        const route = useRoute()
+        const activeMenu = ref('leave_assessment')
+        
+        // 根据路由查询参数设置默认激活的菜单
+        const initActiveMenu = () => {
+            const activeTab = route.query.activeTab as string
+            if (activeTab && menuList.some(item => item.key === activeTab)) {
+                activeMenu.value = activeTab
+                console.log('根据路由参数设置激活菜单:', activeTab)
+            }
+        }
+        
         const handleMenuClick = (key: string) => {
             activeMenu.value = key
         }
+        
+        onMounted(() => {
+            // 初始化激活菜单
+            initActiveMenu()
+        })
 
         const showDetails = ref(false)
         const showAssessment = ref(true)
@@ -111,7 +129,7 @@ export default defineComponent({
                     </ElMenu>
                 </ElAside>
                 <ElMain style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
-                    {activeMenu.value === 'outrequest' && (
+                    {activeMenu.value === 'leave_assessment' && (
                         showDetails.value ? (
                             <CommonPart onBack={handleBack} showAssessment={showAssessment.value} />
                         ) : (
