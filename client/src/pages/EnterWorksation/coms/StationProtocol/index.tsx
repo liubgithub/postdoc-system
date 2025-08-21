@@ -71,19 +71,14 @@ export default defineComponent({
             <ElFormItem label="所在院系" prop="college" style={{ flex: 1 }}>
               <ElInput v-model={form.college} placeholder="请输入所在院系" />
             </ElFormItem>
-            <ElFormItem label="专业名称" prop="subject" style={{ flex: 1 }}>
-              <ElInput v-model={form.subject} placeholder="请输入专业名称" />
-            </ElFormItem>
-          </div>
-          <div style={{ display: 'flex', gap: '40px', marginBottom: '20px' }}>
             <ElFormItem label="研究方向" prop="research" style={{ flex: 1 }}>
               <ElInput v-model={form.research} placeholder="请输入研究方向" />
             </ElFormItem>
+          </div>
+          <div style={{ display: 'flex', gap: '40px', marginBottom: '20px' }}>
             <ElFormItem label="手机" prop="phone" style={{ flex: 1 }}>
               <ElInput v-model={form.phone} placeholder="请输入手机号" />
             </ElFormItem>
-          </div>
-          <div style={{ marginBottom: '20px' }}>
             <ElFormItem label="邮箱" prop="email" style={{ width: '100%' }}>
               <ElInput v-model={form.email} placeholder="请输入邮箱" />
             </ElFormItem>
@@ -93,12 +88,12 @@ export default defineComponent({
           <div style={{ fontSize: '1.5rem', textAlign: 'left' }}>
             上传相关成果要求和入站协议
           </div>
-          <div style={{ display: 'flex', gap:'10px' }}>
+          <div style={{ display: 'flex', gap: '10px' }}>
             <ElUpload
               action="#"
               fileList={fileList.value}
               auto-upload={false}
-              on-success={handleUploadSuccess} 
+              on-success={handleUploadSuccess}
               on-error={handleUploadError}
               show-file-list={false}
             >

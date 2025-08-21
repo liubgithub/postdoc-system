@@ -11,7 +11,7 @@ const menuList = [
     { label: "在站管理", path: "" },
     { label: "出站管理", path: "" },
     { label: "账号审批", path: "/admin/accountApproval" },
-    { label: "合作导师账号分配", path: "" },
+    { label: "合作导师账号分配", path: "/admin" },
     { label: "科研成果管理", path: "" },
   ];
 export default defineComponent({

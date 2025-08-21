@@ -27,7 +27,9 @@ import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
 import PremissionManage from '@/pages/Admin/PremissionManage'
 import Statistics from '@/pages/Admin/Statistics'
 import InformationRelease from '@/pages/Admin/InformationRelease'
+import CotutorAccount from '@/pages/Admin/CotutorAccount'
 import { authGuard } from './guard'
+
 
 
 
@@ -103,6 +105,11 @@ const router = createRouter({
           path:'informationRelease',
           name:'informationRelease',
           component:InformationRelease
+        },
+        {
+          path:'cototuraccount',
+          name:'cototuraccount',
+          component:CotutorAccount
         }
       ]
     },

@@ -83,7 +83,7 @@ export default defineComponent({
                         </div>
                         <div style={{ display: 'flex', gap: '16px' }}>
                             <ElFormItem label="批准时间" style={{ flex: 1 }}>
-                                <ElInput v-model={projectForm.value.approval_time} />
+                                <ElDatePicker v-model={projectForm.value.approval_time}/>
                             </ElFormItem>
                             <ElFormItem label="项目经费" style={{ flex: 1 }}>
                                 <ElInput v-model={projectForm.value.project_fee} />
