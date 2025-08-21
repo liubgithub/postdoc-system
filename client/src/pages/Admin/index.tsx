@@ -3,7 +3,7 @@ import { ElContainer, ElHeader, ElMain,ElMenu, ElMenuItem} from "element-plus";
 import * as styles from '@/pages/UserInfo/styles.css'
 import useUser from "@/stores/user"
 const menuList = [
-    { label: "后台首页", path: "/admin/adminHome" },
+    { label: "后台首页", path: "/admin" },
     { label: "进站管理", path: "/admin/entryManage" },
     { label: "权限分配", path: "/admin/premissionManage" },
     { label: "信息发布", path: "/admin/informationRelease" },
@@ -11,7 +11,7 @@ const menuList = [
     { label: "在站管理", path: "" },
     { label: "出站管理", path: "" },
     { label: "账号审批", path: "/admin/accountApproval" },
-    { label: "合作导师账号分配", path: "/admin" },
+    { label: "合作导师账号分配", path: "/admin/cototuraccount" },
     { label: "科研成果管理", path: "" },
   ];
 export default defineComponent({

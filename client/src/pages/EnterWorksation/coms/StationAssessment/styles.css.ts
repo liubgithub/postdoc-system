@@ -27,3 +27,15 @@ export const header = style({
     textAlign: 'center',
     marginBottom: '20px',
 })
+
+// 统一表单项的label与控件垂直居中对齐
+export const formAligned = style({
+    selectors: {
+        '& .el-form-item__label': {
+            display: 'flex',
+            alignItems: 'center',
+            lineHeight: '32px',
+            height: '32px'
+        }
+    }
+})

@@ -1,7 +1,6 @@
-import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElSelect, ElOption } from 'element-plus'
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import SignaturePad from '@/units/Signature/index'
-import { signature } from '@/pages/EnterWorksation/styles.css'
 export default defineComponent({
     name: 'AnnualAssessment',
     props: {
@@ -12,7 +11,7 @@ export default defineComponent({
     },
     setup(props) {
         const form = ref({
-            signature:'',
+            signature: '',
             unit: '',
             station: '',
             fillDate: '',
@@ -45,57 +44,81 @@ export default defineComponent({
             schoolSignDate: '',
             remark: ''
         })
-        const onInput = async(val:any)=>{
-            console.log
+        const onInput = async (val: any) => {
+            form.value.signature = val
         }
         return () => (
             <div class={cls.formContainer}>
                 <ElForm model={form.value} labelWidth="120px" style={{ background: '#fff', padding: '24px', borderRadius: '8px' }}>
                     {/* 顶部信息 */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                        <div>单位：<ElInput v-model={form.value.unit} style={{ width: '120px', border: 'none' }} inputStyle={{ border: 'none', background: 'transparent' }} /></div>
-                        <div>流动站名称：<ElInput v-model={form.value.station} style={{ width: '120px', border: 'none' }} inputStyle={{ border: 'none', background: 'transparent' }} /></div>
-                        <div>填表日期：<ElDatePicker v-model={form.value.fillDate} type="date" placeholder="选择日期" style={{ width: '120px' }} /></div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px', marginBottom: '12px' }}>
+                        <ElFormItem label="单位">
+                            <ElInput v-model={form.value.unit} />
+                        </ElFormItem>
+                        <ElFormItem label="流动站名称">
+                            <ElInput v-model={form.value.station} />
+                        </ElFormItem>
+                        <ElFormItem label="填表日期">
+                            <ElDatePicker v-model={form.value.fillDate} type="date" placeholder="选择日期" style={{ width: '160px' }} />
+                        </ElFormItem>
                     </div>
                     <div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px', marginBottom: '8px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ minWidth: '64px' }}>姓名</span>
-                                <ElInput v-model={form.value.name} style={{ flex: 1, border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} />
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ minWidth: '64px' }}>性别</span>
-                                <ElInput v-model={form.value.gender} style={{ flex: 1, border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} />
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ minWidth: '64px' }}>政治面貌</span>
-                                <ElInput v-model={form.value.political} style={{ flex: 1, border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} />
-                            </div>
+                            <ElFormItem label="姓名">
+                                <ElInput v-model={form.value.name} />
+                            </ElFormItem>
+                            <ElFormItem label="性别">
+                                <ElInput v-model={form.value.gender} />
+                            </ElFormItem>
+                            <ElFormItem label="政治面貌">
+                                <ElSelect v-model={form.value.political} placeholder="请选择" style={{ width: '160px' }}>
+                                    <ElOption label="中共党员" value="中共党员" />
+                                    <ElOption label="中共预备党员" value="中共预备党员" />
+                                    <ElOption label="共青团员" value="共青团员" />
+                                    <ElOption label="民革党员" value="民革党员" />
+                                    <ElOption label="民盟盟员" value="民盟盟员" />
+                                    <ElOption label="民建会员" value="民建会员" />
+                                    <ElOption label="民进会员" value="民进会员" />
+                                    <ElOption label="农工党党员" value="农工党党员" />
+                                    <ElOption label="致公党党员" value="致公党党员" />
+                                    <ElOption label="九三学社社员" value="九三学社社员" />
+                                    <ElOption label="台盟盟员" value="台盟盟员" />
+                                    <ElOption label="无党派人士" value="无党派人士" />
+                                    <ElOption label="群众" value="群众" />
+                                </ElSelect>
+                            </ElFormItem>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ minWidth: '64px' }}>合作导师</span>
-                                <ElInput v-model={form.value.tutor} style={{ flex: 1, border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} />
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ minWidth: '64px' }}>进站时间</span>
-                                <ElDatePicker v-model={form.value.entryDate} type="date" placeholder="选择日期" style={{ flex: 1, marginLeft: '8px' }} />
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <span style={{ minWidth: '96px' }}>专业技术职称</span>
-                                <ElInput v-model={form.value.title} style={{ flex: 1, border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} />
-                            </div>
+                            <ElFormItem label="合作导师">
+                                <ElInput v-model={form.value.tutor} />
+                            </ElFormItem>
+                            <ElFormItem label="进站时间">
+                                <ElDatePicker v-model={form.value.entryDate} type="date" placeholder="选择日期" style={{ width: '160px' }} />
+                            </ElFormItem>
+                            <ElFormItem label="专业技术职称">
+                                <ElInput v-model={form.value.title} />
+                            </ElFormItem>
                         </div>
                         {/* 表单大矩形边框 */}
                         <div style={{ border: '1px solid #333', borderRadius: '4px', background: '#fff', padding: 0 }}>
                             {/* 年度总结区块（第一个区块无横线） */}
                             <div style={{ padding: '16px' }}>
-                                <ElFormItem label="个人年度工作总结" style={{ marginBottom: 0 }}>
+                                <ElFormItem label="个人年度工作总结">
                                     <ElInput v-model={form.value.summary} type="textarea" rows={6} autosize={{ minRows: 6 }} />
                                 </ElFormItem>
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-                                    <span>自我鉴定档次：<ElInput v-model={form.value.selfEval} style={{ width: '120px', border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} /></span>
-                                    <SignaturePad onChange={val=>onInput(val)} image={form.value.signature}/>                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '8px' }}>
+                                    <ElFormItem label="自我鉴定档次">
+                                        <ElSelect v-model={form.value.selfEval} placeholder='请选择' style={{ width: '160px' }}>
+                                            <ElOption label="优秀" value="优秀" />
+                                            <ElOption label="合格" value="合格" />
+                                            <ElOption label="基本合格" value="基本合格" />
+                                            <ElOption label="不合格" value="不合格" />
+                                        </ElSelect>
+                                    </ElFormItem>
+                                    <ElFormItem label="本人签名" style={{ marginBottom: 0 }}>
+                                        <SignaturePad mode="compact" onChange={val => onInput(val)} image={form.value.signature} />
+                                    </ElFormItem>
+                                </div>
                             </div>
                             {/* 主要工作区块 */}
                             <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
@@ -122,34 +145,48 @@ export default defineComponent({
                             </div>
                             {/* 单位考核区块 */}
                             <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
-                                <ElFormItem label="单位考核结果以及评语" style={{ marginBottom: 0 }}>
-                                    <ElInput v-model={form.value.unitComment} type="textarea" rows={3} autosize={{ minRows: 3 }} />
+                                <ElFormItem label="单位考核结果以及评语">
+                                    <ElInput v-model={form.value.unitComment} type="textarea" rows={3} autosize={{ minRows: 3 }} disabled/>
                                 </ElFormItem>
-                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
-                                    <span>划分档次<ElInput v-model={form.value.unitGrade} style={{ width: '120px', border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} /></span>
-                                    <span>负责人签名</span>
-                                    <SignaturePad />
-                                    <span><ElDatePicker v-model={form.value.unitSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} /></span>
+                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px', justifyContent: 'flex-end' }}>
+                                    <ElFormItem label="划分档次">
+                                        <ElSelect v-model={form.value.unitGrade} placeholder='请选择' style={{ width: '160px' }} disabled>
+                                            <ElOption label="优秀" value="优秀" />
+                                            <ElOption label="合格" value="合格" />
+                                            <ElOption label="基本合格" value="基本合格" />
+                                            <ElOption label="不合格" value="不合格" />
+                                        </ElSelect>
+                                    </ElFormItem>
+                                    <ElFormItem label="负责人签名日期">
+                                        <ElDatePicker v-model={form.value.unitSignDate} type="date" placeholder="选择日期" style={{ width: '160px' }} disabled/>
+                                    </ElFormItem>
+                                    <ElFormItem label="负责人签名" style={{ marginBottom: 0 }}>
+                                        <SignaturePad mode="compact" disabled/>
+                                    </ElFormItem>
                                 </div>
                             </div>
                             {/* 被考核人意见区块 */}
                             <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
-                                <ElFormItem label="被考核人意见" style={{ marginBottom: 0 }}>
+                                <ElFormItem label="被考核人意见">
                                     <ElInput v-model={form.value.assessedComment} type="textarea" rows={2} autosize={{ minRows: 2 }} />
                                 </ElFormItem>
-                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
-                                    <span>本人签名<ElInput v-model={form.value.assessedSign} style={{ width: '120px', border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} /></span>
-                                    <span><ElDatePicker v-model={form.value.assessedSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} /></span>
+                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px', justifyContent: 'flex-end' }}>
+                                    <ElFormItem label="签名日期" >
+                                        <ElDatePicker v-model={form.value.assessedSignDate} type="date" placeholder="选择日期" style={{ width: '160px' }} />
+                                    </ElFormItem>
+                                    <ElFormItem label="本人签名" style={{ marginBottom: 0 }}>
+                                        <SignaturePad mode="compact" />
+                                    </ElFormItem>
                                 </div>
                             </div>
                             {/* 学校审核意见区块 */}
                             <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
                                 <ElFormItem label="学校审核意见" style={{ marginBottom: 0 }}>
-                                    <ElInput v-model={form.value.schoolComment} type="textarea" rows={2} autosize={{ minRows: 2 }} />
+                                    <ElInput v-model={form.value.schoolComment} type="textarea" rows={2} autosize={{ minRows: 2 }} disabled />
                                 </ElFormItem>
-                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
-                                    <span>盖章<ElInput v-model={form.value.schoolSign} style={{ width: '120px', border: 'none', marginLeft: '8px' }} inputStyle={{ border: 'none', background: 'transparent' }} /></span>
-                                    <span><ElDatePicker v-model={form.value.schoolSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} /></span>
+                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px',justifyContent:'flex-end' }}>
+                                    <span>盖章</span>
+                                    <ElDatePicker v-model={form.value.schoolSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} disabled />
                                 </div>
                             </div>
                             {/* 备注区块（最后一个区块） */}

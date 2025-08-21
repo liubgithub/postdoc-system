@@ -7,7 +7,7 @@ import ExtensionAssessment from './coms/ExtensionAssessment'
 
 const menuList = [
     { label: "中期考核", key: "midterm_assessment" },
-    { label: "年终考核", key: "annual_assessment" },
+    { label: "年度考核", key: "annual_assessment" },
     { label: "延期考核", key: "extension_assessment"}
 ]
 

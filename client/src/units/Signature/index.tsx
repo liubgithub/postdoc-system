@@ -10,6 +10,11 @@ export default defineComponent({
     image: {
       type: String,
       default: ''
+    },
+    // 紧凑模式：将按钮与画布放在同一行并减小高度
+    mode: {
+      type: String as () => 'default' | 'compact',
+      default: 'default'
     }
   },
   emits: ['change'],
@@ -103,14 +108,19 @@ export default defineComponent({
       }
     }
 
+    const canvasSize = computed(() => ({
+      width: props.mode === 'compact' ? 220 : 300,
+      height: props.mode === 'compact' ? 48 : 100
+    }))
+
     return () => (
-      <div>
-        <canvas ref={canvasRef} width={300} height={100}
+      <div style={props.mode === 'compact' ? 'display:flex;align-items:center;gap:8px;' : ''}>
+        <canvas ref={canvasRef} width={canvasSize.value.width} height={canvasSize.value.height}
           style={{
             border: '1px solid #ccc',
             cursor: props.disabled ? 'not-allowed' : 'crosshair'
           }} />
-        <div>
+        <div style={props.mode === 'compact' ? '' : ''}>
           <button type="button" onClick={clear} disabled={props.disabled}>清除</button>
           <button type="button" onClick={confirm} style="margin-left:8px;" disabled={props.disabled}>确认签名</button>
           {/* 新增上传签字按钮 */}

@@ -79,7 +79,7 @@ export default defineComponent({
             <ElFormItem label="手机" prop="phone" style={{ flex: 1 }}>
               <ElInput v-model={form.phone} placeholder="请输入手机号" />
             </ElFormItem>
-            <ElFormItem label="邮箱" prop="email" style={{ width: '100%' }}>
+            <ElFormItem label="邮箱" prop="email" style={{ flex: 1 }}>
               <ElInput v-model={form.email} placeholder="请输入邮箱" />
             </ElFormItem>
           </div>
