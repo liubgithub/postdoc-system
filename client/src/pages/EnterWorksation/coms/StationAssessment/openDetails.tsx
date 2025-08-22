@@ -58,11 +58,26 @@ export default defineComponent({
         const handleSubmit = async() => {
             console.log(projectForm.value,'sssss1')
             try {
-                await fetch.raw.POST('/enterAssessment/assessment',{body:projectForm.value})
+                const res =  await fetch.raw.POST('/enterAssessment/assessment',{body:projectForm.value})
+                if(res.response.ok){
+                    ElMessage.success("提交成功")
+                }
             }catch(error){
                 ElMessage.error('提交失败，请稍后重试')
             }
         }
+        onMounted(async()=>{
+            try{
+                const res =  await fetch.raw.GET('/enterAssessment/assessment')
+                if(res.response.ok){
+                    projectForm.value =  res.data as any
+                }
+            }catch(error){
+                console.log(error)
+            }
+     
+           
+        })
         return () => (
             <div>
                 <UserinfoRegister showOtherDescription={false} showResult={false} />
@@ -83,7 +98,7 @@ export default defineComponent({
                         </div>
                         <div style={{ display: 'flex', gap: '16px' }}>
                             <ElFormItem label="批准时间" style={{ flex: 1 }}>
-                                <ElInput v-model={projectForm.value.approval_time} />
+                                <ElDatePicker v-model={projectForm.value.approval_time}/>
                             </ElFormItem>
                             <ElFormItem label="项目经费" style={{ flex: 1 }}>
                                 <ElInput v-model={projectForm.value.project_fee} />

@@ -46,10 +46,17 @@ export default defineComponent({
       date: ""
     });
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
       console.log(form.value, 'fffff')
-      ElMessage.success('提交成功')
       props.onSubmitSuccess && props.onSubmitSuccess()
+      try{
+        const res = await apiFetch.raw.POST('/enterRelation/',{body:form.value})
+        if(res.response.ok){
+          ElMessage.success('提交成功')
+        }
+      }catch(error){
+        console.log(error)
+      }
     };
 
     const handleBack = () => {

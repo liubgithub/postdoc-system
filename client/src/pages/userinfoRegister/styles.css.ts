@@ -107,3 +107,11 @@ export const btnGroup = style({
   gap: '2em',
   marginTop: '2em',
 }); 
+
+export const formTitle = style({
+  fontSize: '1.5em',
+  fontWeight: 700,
+  textAlign: 'left',
+  marginBottom: '1em',
+  letterSpacing: '0.05em',
+});

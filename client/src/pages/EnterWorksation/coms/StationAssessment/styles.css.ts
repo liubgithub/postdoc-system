@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css'
+import { style,globalStyle } from '@vanilla-extract/css'
 
 
 export const tableWidth = style({
@@ -26,4 +26,12 @@ export const formContainer = style({
 export const header = style({
     textAlign: 'center',
     marginBottom: '20px',
+})
+
+// 统一表单项的label与控件垂直居中对
+globalStyle(`${tableWidth} .el-form-item__label`,{
+    display: 'flex',
+    alignItems: 'center',
+    lineHeight: '32px',
+    height: '32px'
 })
