@@ -18,6 +18,15 @@ export default defineComponent({
     },
     setup(props) {
         // 第二部分表单数据
+        const defaultForm = {
+            project_name: '',//研究项目名称
+            project_source: '',//项目来源
+            project_type: '',//项目性质
+            approval_time: '',//批准时间
+            project_fee: '',//项目经费
+            project_task: '',//研究项目任务
+            project_thought: ''//申请者对研究项目思路
+        }
         const projectForm = ref({
             project_name: '',//研究项目名称
             project_source: '',//项目来源
@@ -70,10 +79,17 @@ export default defineComponent({
             try{
                 const res =  await fetch.raw.GET('/enterAssessment/assessment')
                 if(res.response.ok){
-                    projectForm.value =  res.data as any
+                    projectForm.value =  res.data && typeof res.data === 'object'
+                    ? {
+                        ...defaultForm,
+                        ...res.data
+                    }:{
+                        ...defaultForm
+                    };
                 }
             }catch(error){
                 console.log(error)
+                projectForm.value = {...defaultForm}
             }
      
            

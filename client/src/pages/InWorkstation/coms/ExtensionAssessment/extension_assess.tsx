@@ -20,6 +20,7 @@ import {
     bottomButtons 
 } from './style.css'
 import fetch from '@/api/index'
+import SignaturePad from '@/units/Signature/index'
 
 export default defineComponent({
     name: 'ExtensionAssessment',
@@ -274,20 +275,7 @@ export default defineComponent({
                                 </p>
                                 <div class={signatureSection}>
                                     <ElFormItem label="姓名(签名)">
-                                        <ElInput placeholder="请输入姓名" />
-                                    </ElFormItem>
-                                    <ElFormItem label="上传签名">
-                                        <ElUpload
-                                            action="#"
-                                            accept="image/*"
-                                            showFileList={false}
-                                            beforeUpload={(file) => {
-                                                console.log('上传签名文件', file)
-                                                return false
-                                            }}
-                                        >
-                                            <ElButton type="primary">上传签名</ElButton>
-                                        </ElUpload>
+                                        <SignaturePad />
                                     </ElFormItem>
                                 </div>
                             </div>
