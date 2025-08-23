@@ -11,6 +11,14 @@ export default defineComponent({
     name: "InformationRelease",
     setup() {
         const tableData = ref<TableRow[]>([])
+
+        const handleAddNews = ()=>{
+            
+        }
+        const handleAddColumn = ()=>{
+
+        }
+
         const handleEdit=(row:any)=>{
             console.log(row)
         }
@@ -20,10 +28,10 @@ export default defineComponent({
         return () => (
             <div>
                 <div class={cls.searchPart}>
-                    <ElButton>新增新闻</ElButton>
+                    <ElButton onClick={handleAddNews}>新增新闻</ElButton>
                     <ElButton>搜索</ElButton>
                     <ElInput></ElInput>
-                    <ElButton>新增专栏</ElButton>
+                    <ElButton onClick={handleAddColumn}>新增专栏</ElButton>
                 </div>
                 <div>
                     <ElTable data={tableData.value}>

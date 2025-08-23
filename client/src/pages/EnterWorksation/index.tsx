@@ -73,6 +73,7 @@ export default defineComponent({
 
         const handleView = (row: TableRow) => {
             console.log(row, 'row')
+            console.log(row, 'row')
             viewRow.value = { ...row }
             dialogVisible.value = true
         }

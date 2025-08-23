@@ -68,6 +68,17 @@ export default defineComponent({
             console.log(projectForm.value,'sssss1')
             try {
                 const res =  await fetch.raw.POST('/enterAssessment/assessment',{body:projectForm.value})
+                const response = await fetch.raw.PUT('/workflow/update/{process_type}', {
+                    params: {
+                        path: {
+                            process_type: 'entry_assessment' // 动态注入路径参数
+                        },
+                        query: {
+                            new_status: '导师未审核'
+                        }
+                    }
+                });
+                console.log(response.data, 'ressss')
                 if(res.response.ok){
                     ElMessage.success("提交成功")
                 }
