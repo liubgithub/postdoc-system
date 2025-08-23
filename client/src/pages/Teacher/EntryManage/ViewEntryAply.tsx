@@ -26,7 +26,7 @@ import Audit from "../../../pages/EnterWorksation/audit.tsx";
 
 // 引入API
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
-import { approveApplication, getTeacherApplications } from "@/api/enterWorkstation";
+import { approveApplication, getTeacherApplications, getStudentDetail } from "@/api/enterWorkstation";
 
 const menuList = [
   { label: "进站申请", key: "apply" },
@@ -153,7 +153,7 @@ export default defineComponent({
       loadStudentInfo();
     });
 
-    const handleMenuClick = (key: string) => {
+    const handleMenuClick = async (key: string) => {
       // 根据当前路由和菜单项跳转到对应的详情页面
       if (key === 'assessment') {
         // 跳转到进站考核详情页面，传递当前的userId参数
@@ -166,6 +166,22 @@ export default defineComponent({
           query: query
         });
       } else if (key === 'apply') {
+        // 检查用户是否提交了进站申请
+        if (userId) {
+          try {
+            const response = await getStudentDetail(parseInt(userId), "进站申请");
+            if (!response.data || !response.data.workflow_status || response.data.workflow_status === "未提交") {
+              // 用户没有提交进站申请，显示警告消息
+              ElMessage.warning("此学生还未提交进站申请");
+              return;
+            }
+          } catch (error) {
+            console.error('检查进站申请数据失败:', error);
+            // 如果检查失败，也显示警告消息
+            ElMessage.warning("此学生还未提交进站申请");
+            return;
+          }
+        }
         // 跳转到进站申请详情页面
         router.push('/teacher/entryManage/approval');
       }

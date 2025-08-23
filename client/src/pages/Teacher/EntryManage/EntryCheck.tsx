@@ -1,4 +1,4 @@
-import { defineComponent, ref, watch, computed } from "vue";
+import { defineComponent, ref, watch, computed, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 import TeacherHeader from "../TeacherHeader";
 import * as styles from "../../UserInfo/styles.css.ts";
@@ -17,69 +17,38 @@ import {
   ElMenuItem,
   ElMain,
   ElDialog,
+  ElMessage,
 } from "element-plus";
 import ProcessStatus from "@/units/ProcessStatus";
+import { getTeacherApplications } from "@/api/enterWorkstation";
+
+// 定义进站考核数据的类型
+interface AssessmentData {
+  id: number;
+  studentId: string; // 学号
+  name: string; // 姓名
+  college: string; // 学院
+  major: string; // 专业
+  applyTime: string; // 申请时间
+  status: string; // 状态
+  node: string; // 当前节点
+  currentApproval: string; // 当前审核
+  steps: any[]; // 流程步骤
+  user_id: number;
+  workflow_status: string;
+  business_type: string; // 业务类型：进站考核
+}
 
 export default defineComponent({
   name: "EntryCheckPage",
   setup() {
     const searchValue = ref("");
     const router = useRouter();
-    // 示例数据
-    const allTableData = [
-      {
-        id: 1,
-        studentId: "20230001",
-        name: "张三",
-        college: "园艺林学学院",
-        major: "园艺学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "合作导师",
-        currentApproval: "考核小组负责人（通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '审核中' as const, role: '合作导师', time: '2025-09-02 12:00' },
-          { status: '审核中' as const, role: '分管领导' },
-          { status: '审核中' as const, role: '学院管理员' }
-        ]
-      },
-      {
-        id: 2,
-        studentId: "20230002",
-        name: "李四",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "分管领导",
-        currentApproval: "设站单位负责人（不通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 09:00' },
-          { status: '通过' as const, role: '合作导师', time: '2025-09-01 10:00' },
-          { status: '拒绝' as const, role: '分管领导', time: '2025-09-02 11:00' },
-          { status: '审核中' as const, role: '学院管理员' }
-        ]
-      },
-      {
-        id: 3,
-        studentId: "20230003",
-        name: "王五",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "学院管理员",
-        currentApproval: "学院管理员审核（通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 08:00' },
-          { status: '通过' as const, role: '合作导师', time: '2025-09-01 09:00' },
-          { status: '通过' as const, role: '分管领导', time: '2025-09-01 10:00' },
-          { status: '通过' as const, role: '学院管理员', time: '2025-09-01 11:00' }
-        ]
-      },
-    ];
-    const tableData = ref([...allTableData]);
+    const loading = ref(false);
+    
+    // 真实数据
+    const allTableData = ref<AssessmentData[]>([]);
+    const tableData = ref<AssessmentData[]>([]);
     // 分页相关
     const pageSize = 10;
     const currentPage = ref(1);
@@ -88,14 +57,37 @@ export default defineComponent({
       return tableData.value.slice(start, start + pageSize);
     });
 
+    // 获取进站考核列表
+    const fetchAssessmentData = async () => {
+      loading.value = true;
+      try {
+        const response = await getTeacherApplications();
+        console.log("API响应:", response);
+        if (response.data) {
+          // 过滤出进站考核数据
+          const assessmentData = response.data.filter((item: any) => item.business_type === "进站考核");
+          allTableData.value = assessmentData;
+          tableData.value = assessmentData;
+          console.log("进站考核数据:", assessmentData);
+        } else if (response.error) {
+          ElMessage.error("获取进站考核列表失败");
+        }
+      } catch (error) {
+        console.error("获取进站考核列表失败:", error);
+        ElMessage.error("获取进站考核列表失败");
+      } finally {
+        loading.value = false;
+      }
+    };
+
     // 搜索功能
     const handleSearch = () => {
       const keyword = searchValue.value.trim().toLowerCase();
       if (!keyword) {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
         return;
       }
-      tableData.value = allTableData.filter(
+      tableData.value = allTableData.value.filter(
         (row) =>
           row.studentId.toLowerCase().includes(keyword) ||
           row.name.toLowerCase().includes(keyword)
@@ -104,17 +96,49 @@ export default defineComponent({
 
     watch(searchValue, (val) => {
       if (val === "") {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
       }
     });
 
+    // 页面加载时获取数据
+    onMounted(() => {
+      fetchAssessmentData();
+    });
+
+    // 处理详情按钮点击
+    const handleDetail = (row: AssessmentData) => {
+      console.log("查看详情:", row);
+      
+      // 根据业务类型跳转到不同的详情页面
+      if (row.business_type === "进站申请") {
+        // 跳转到进站申请详情页面
+        router.push({
+          path: "/teacher/entryManage/approval",
+          query: {
+            userId: row.user_id.toString(),
+            type: "detail",
+          },
+        });
+      } else if (row.business_type === "进站考核") {
+        // 跳转到进站考核详情页面
+        router.push({
+          path: "/teacher/entryManage/check-detail",
+          query: {
+            userId: row.user_id.toString(),
+            type: "detail",
+            business_type: "进站考核",
+          },
+        });
+      } else {
+        ElMessage.warning("未知的业务类型");
+      }
+    };
+
     // 流程状态弹窗逻辑
     const showProcessDialog = ref(false);
-    const currentSteps = ref([]);
-    const currentSelectedRow = ref<any>(null);
-    const handleShowProcess = (row: any) => {
+    const currentSelectedRow = ref<AssessmentData | null>(null);
+    const handleShowProcess = (row: AssessmentData) => {
       currentSelectedRow.value = row;
-      currentSteps.value = row.steps;
       showProcessDialog.value = true;
     };
 
@@ -183,6 +207,11 @@ export default defineComponent({
                 </ElRow>
 
                 <div style={{ marginTop: 24, width: "100%" }}>
+                  {loading.value && (
+                    <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                      加载中...
+                    </div>
+                  )}
                   <ElTable
                     data={pagedData.value}
                     border
@@ -197,10 +226,13 @@ export default defineComponent({
                     cellStyle={{ textAlign: "center", fontSize: 15, color: "#222" }}
                   >
                     <ElTableColumn
-                      prop="id"
                       label="序号"
                       width={80}
                       align="center"
+                      v-slots={{
+                        default: (scope: { $index: number }) =>
+                          (currentPage.value - 1) * pageSize + scope.$index + 1,
+                      }}
                     />
                     <ElTableColumn prop="studentId" label="学号" align="center" />
                     <ElTableColumn prop="name" label="姓名" align="center" />
@@ -234,17 +266,26 @@ export default defineComponent({
                       align="center"
                     />
                     <ElTableColumn
-                      label="操作"
-                      width={150}
+                      prop="business_type"
+                      label="业务类型"
                       align="center"
-                      v-slots={{
-                        default: () => (
-                          <ElButton type="primary" size="small" onClick={() => router.push('/teacher/entryManage/check-detail')}>
-                            查看
-                          </ElButton>
-                        ),
-                      }}
                     />
+                                         <ElTableColumn
+                       label="操作"
+                       width={150}
+                       align="center"
+                       v-slots={{
+                         default: (scope: { row: AssessmentData }) => (
+                           <ElButton 
+                             type="primary" 
+                             size="small" 
+                             onClick={() => handleDetail(scope.row)}
+                           >
+                             详情
+                           </ElButton>
+                         ),
+                       }}
+                     />
                   </ElTable>
                 </div>
 
@@ -282,11 +323,11 @@ export default defineComponent({
           </ElMain>
         </ElContainer>
         <ProcessStatus
-                            modelValue={showProcessDialog.value}
-                            onUpdate:modelValue={(val) => showProcessDialog.value = val}
-                            processType='进站考核'
-                            studentId={currentSelectedRow.value?.user_id}
-                        />
+          modelValue={showProcessDialog.value}
+          onUpdate:modelValue={(val) => showProcessDialog.value = val}
+          processType={currentSelectedRow.value?.business_type || "进站考核"}
+          studentId={currentSelectedRow.value?.user_id}
+        />
       </ElContainer>
     );
   },

@@ -39,6 +39,7 @@ interface StudentData {
   cotutor: string;
   allitutor: string;  // 添加allitutor字段
   workflow_status: string;
+  business_type: string; // 业务类型：进站申请 或 进站考核
 }
 
 export default defineComponent({
@@ -58,7 +59,12 @@ export default defineComponent({
         const response = await getTeacherApplications();
         console.log('API响应:', response);
         if (response.data) {
-          tableData.value = response.data as StudentData[];
+          // 过滤出只属于进站申请的数据
+          const applicationData = response.data.filter((item: any) => 
+            item.business_type === "进站申请"
+          );
+          tableData.value = applicationData as StudentData[];
+          console.log('过滤后的进站申请数据:', applicationData);
         } else if (response.error) {
           ElMessage.error('获取学生列表失败');
         }
@@ -202,10 +208,13 @@ export default defineComponent({
                       cellStyle={{ textAlign: "center", fontSize: 15, color: "#222" }}
                     >
                       <ElTableColumn
-                        prop="id"
                         label="序号"
                         width={80}
                         align="center"
+                        v-slots={{
+                          default: (scope: { $index: number }) =>
+                            (currentPage.value - 1) * pageSize + scope.$index + 1,
+                        }}
                       />
                       <ElTableColumn prop="studentId" label="学号" align="center" />
                       <ElTableColumn prop="name" label="姓名" align="center" />

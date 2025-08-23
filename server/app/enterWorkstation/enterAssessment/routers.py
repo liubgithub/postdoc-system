@@ -37,8 +37,24 @@ def get_enter_assessment_by_user_id(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """获取当前用户的进站评估记录（无则返回null）"""
+    """获取当前用户的进站评估记录"""
     record = db.query(EnterAssessment).filter_by(user_id=current_user.id).first()
+    if not record:
+        return None
+    return record
+
+@router.get("/assessment/{student_id}", response_model=EnterAssessmentOut | None)
+def get_enter_assessment_by_student_id(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """导师获取指定学生的进站评估记录"""
+    # 检查当前用户是否为导师
+    if current_user.role != "teacher":
+        raise HTTPException(status_code=403, detail="需要导师权限")
+    
+    record = db.query(EnterAssessment).filter_by(user_id=student_id).first()
     if not record:
         return None
     return record

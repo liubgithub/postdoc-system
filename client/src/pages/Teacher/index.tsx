@@ -41,6 +41,7 @@ interface ApplicationData {
   cotutor: string;
   allitutor: string; // 联合导师
   workflow_status: string;
+  business_type: string; // 业务类型：进站申请 或 进站考核
 }
 
 
@@ -107,14 +108,29 @@ export default defineComponent({
     const handleDetail = (row: ApplicationData) => {
       console.log("查看详情:", row);
 
-      // 跳转到进站申请查看页面
-      router.push({
-        path: "/teacher/entryManage/approval",
-        query: {
-          userId: row.user_id.toString(),
-          type: "detail",
-        },
-      });
+      // 根据业务类型跳转到不同的详情页面
+      if (row.business_type === "进站申请") {
+        // 跳转到进站申请详情页面
+        router.push({
+          path: "/teacher/entryManage/approval",
+          query: {
+            userId: row.user_id.toString(),
+            type: "detail",
+          },
+        });
+      } else if (row.business_type === "进站考核") {
+        // 跳转到进站考核详情页面
+        router.push({
+          path: "/teacher/entryManage/check-detail",
+          query: {
+            userId: row.user_id.toString(),
+            type: "detail",
+            business_type: "进站考核",
+          },
+        });
+      } else {
+        ElMessage.warning("未知的业务类型");
+      }
     };
 
     const handleView = (row: ApplicationData) => {
@@ -210,7 +226,7 @@ export default defineComponent({
                   label="业务类型"
                   align="center"
                   v-slots={{
-                    default: () => "进站申请",
+                    default: (scope: { row: ApplicationData }) => scope.row.business_type || "进站申请",
                   }}
                 />
                 <ElTableColumn prop="name" label="发起人" align="center" />
@@ -341,7 +357,7 @@ export default defineComponent({
         <ProcessStatus
           modelValue={showProcessDialog.value}
           onUpdate:modelValue={(val) => (showProcessDialog.value = val)}
-          processType="进站申请"
+          processType={currentSelectedRow.value?.business_type || "进站申请"}
           studentId={currentSelectedRow.value?.user_id}
         />
       </ElContainer>

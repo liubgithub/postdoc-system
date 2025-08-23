@@ -32,7 +32,7 @@ export const getTeacherApplications = async () => {
 };
 
 // 导师获取特定学生详细信息
-export const getStudentDetail = async (userId: number) => {
+export const getStudentDetail = async (userId: number, businessType: string = "进站申请") => {
   try {
     const token = localStorage.getItem('token');
     
@@ -41,7 +41,7 @@ export const getStudentDetail = async (userId: number) => {
       return { data: null, error: new Error('请先登录') };
     }
     
-    const response = await fetch(`/api/entryMange/teacher/student/${userId}`, {
+    const response = await fetch(`/api/entryMange/teacher/student/${userId}?business_type=${businessType}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ export const getStudentDetail = async (userId: number) => {
 };
 
 // 导师审核申请
-export const approveApplication = async (userId: number, approved: boolean, comment?: string) => {
+export const approveApplication = async (userId: number, approved: boolean, comment?: string, businessType: string = "进站申请") => {
   try {
     const token = localStorage.getItem('token');
     
@@ -78,7 +78,8 @@ export const approveApplication = async (userId: number, approved: boolean, comm
       },
       body: JSON.stringify({
         approved,
-        comment: comment || ''
+        comment: comment || '',
+        business_type: businessType
       }),
     });
     
@@ -206,6 +207,36 @@ export const getProcessTypesByUserId = async (userId: number) => {
     const data = await response.json();
     return { data, error: null };
   } catch (error) {
+    return { data: null, error };
+  }
+};
+
+// 导师获取指定学生的进站考核数据
+export const getStudentEnterAssessment = async (studentId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    const response = await fetch(`/api/enterAssessment/assessment/${studentId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error('获取学生进站考核数据失败:', error);
     return { data: null, error };
   }
 };

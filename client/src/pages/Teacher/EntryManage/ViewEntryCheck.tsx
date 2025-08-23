@@ -21,6 +21,7 @@ import {
 import * as styles from "./styles.css";
 import ResearchForm from "@/pages/EnterWorksation/researchForm";
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
+import { getStudentEnterAssessment } from "@/api/enterWorkstation";
 
 const menuList = [
   { label: "进站申请", key: "apply" },
@@ -40,6 +41,7 @@ export default defineComponent({
 
     const loading = ref(false);
     const studentInfo = ref<any>(null);
+    const assessmentData = ref<any>(null);
 
     // 加载学生信息
     const loadStudentInfo = async () => {
@@ -62,12 +64,43 @@ export default defineComponent({
       }
     };
 
-    // 页面加载时获取学生信息
+    // 加载学生进站考核数据
+    const loadAssessmentData = async () => {
+      if (!userId) {
+        return;
+      }
+
+      try {
+        const response = await getStudentEnterAssessment(parseInt(userId));
+        if (response.data) {
+          assessmentData.value = response.data;
+          console.log("加载的进站考核数据:", response.data);
+          
+          // 将后端数据映射到表单字段
+          projectForm.value.projectName = response.data.project_name || "";
+          projectForm.value.projectSource = response.data.project_source || "";
+          projectForm.value.projectType = response.data.project_type || "";
+          projectForm.value.approvalTime = response.data.approval_time || "";
+          projectForm.value.projectFee = response.data.project_fee || "";
+          projectForm.value.projectTask = response.data.project_task || "";
+          projectForm.value.projectThought = response.data.project_thought || "";
+        } else if (response.error) {
+          console.error("获取进站考核数据失败:", response.error);
+          ElMessage.warning("未找到对应的进站考核数据");
+        }
+      } catch (error) {
+        console.error("加载进站考核数据失败:", error);
+        ElMessage.warning("获取进站考核数据失败");
+      }
+    };
+
+    // 页面加载时获取学生信息和进站考核数据
     onMounted(() => {
       loadStudentInfo();
+      loadAssessmentData();
     });
 
-    const handleMenuClick = (key: string) => {
+    const handleMenuClick = async (key: string) => {
       // 根据当前路由和菜单项跳转到对应的详情页面
       if (key === 'apply') {
         // 跳转到进站申请详情页面，传递当前的userId参数
@@ -82,6 +115,22 @@ export default defineComponent({
           query: query
         });
       } else if (key === 'assessment') {
+        // 检查用户是否提交了进站考核
+        if (userId) {
+          try {
+            const response = await getStudentEnterAssessment(parseInt(userId));
+            if (!response.data) {
+              // 用户没有提交进站考核，显示警告消息
+              ElMessage.warning("此学生还未提交进站考核");
+              return;
+            }
+          } catch (error) {
+            console.error('检查进站考核数据失败:', error);
+            // 如果检查失败，也显示警告消息
+            ElMessage.warning("此学生还未提交进站考核");
+            return;
+          }
+        }
         // 跳转到进站考核详情页面
         router.push('/teacher/entryManage/check-detail');
       }
@@ -206,22 +255,47 @@ export default defineComponent({
                   </div>
                   <ElForm model={projectForm.value} labelWidth="120px">
                     <ElFormItem label="研究项目名称">
-                      <ElInput v-model={projectForm.value.projectName} />
+                      <ElInput 
+                        v-model={projectForm.value.projectName} 
+                        readonly 
+                        disabled
+                        style={{ backgroundColor: "#f5f5f5", color: "#999" }}
+                      />
                     </ElFormItem>
                     <div style={{ display: "flex", gap: "16px" }}>
                       <ElFormItem label="项目来源" style={{ flex: 1 }}>
-                        <ElInput v-model={projectForm.value.projectSource} />
+                        <ElInput 
+                          v-model={projectForm.value.projectSource} 
+                          readonly 
+                          disabled
+                          style={{ backgroundColor: "#f5f5f5", color: "#999" }}
+                        />
                       </ElFormItem>
                       <ElFormItem label="项目性质" style={{ flex: 1 }}>
-                        <ElInput v-model={projectForm.value.projectType} />
+                        <ElInput 
+                          v-model={projectForm.value.projectType} 
+                          readonly 
+                          disabled
+                          style={{ backgroundColor: "#f5f5f5", color: "#999" }}
+                        />
                       </ElFormItem>
                     </div>
                     <div style={{ display: "flex", gap: "16px" }}>
                       <ElFormItem label="批准时间" style={{ flex: 1 }}>
-                        <ElInput v-model={projectForm.value.approvalTime} />
+                        <ElInput 
+                          v-model={projectForm.value.approvalTime} 
+                          readonly 
+                          disabled
+                          style={{ backgroundColor: "#f5f5f5", color: "#999" }}
+                        />
                       </ElFormItem>
                       <ElFormItem label="项目经费" style={{ flex: 1 }}>
-                        <ElInput v-model={projectForm.value.projectFee} />
+                        <ElInput 
+                          v-model={projectForm.value.projectFee} 
+                          readonly 
+                          disabled
+                          style={{ backgroundColor: "#f5f5f5", color: "#999" }}
+                        />
                       </ElFormItem>
                     </div>
                     <ElFormItem label="研究项目任务">
@@ -229,6 +303,9 @@ export default defineComponent({
                         v-model={projectForm.value.projectTask}
                         type="textarea"
                         rows={4}
+                        readonly
+                        disabled
+                        style={{ backgroundColor: "#f5f5f5", color: "#999" }}
                       />
                     </ElFormItem>
                     <ElFormItem label="申请者对研究项目思路">
@@ -236,6 +313,9 @@ export default defineComponent({
                         v-model={projectForm.value.projectThought}
                         type="textarea"
                         rows={4}
+                        readonly
+                        disabled
+                        style={{ backgroundColor: "#f5f5f5", color: "#999" }}
                       />
                     </ElFormItem>
                   </ElForm>
