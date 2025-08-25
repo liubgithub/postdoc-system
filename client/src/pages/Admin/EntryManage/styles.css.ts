@@ -33,9 +33,6 @@ export const sidebarMenu = style({
 })
 
 export const sidebarMenuItem = style({
-    fontSize: '16px',
-    height: '50px',
-    lineHeight: '50px',
     borderBottom: '1px solid #f0f0f0',
     transition: 'all 0.3s ease',
     ':hover': {
@@ -47,5 +44,4 @@ export const sidebarMenuItem = style({
 export const sidebarMenuItemActive = style({
     background: '#e6f7ff',
     color: '#409eff',
-    borderRight: '3px solid #409eff',
 })

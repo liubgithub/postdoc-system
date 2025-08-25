@@ -73,17 +73,17 @@ const router = createRouter({
           path: 'entryManage',
           name: 'entryManage',
           component: () => import('@/pages/Admin/EntryManage/index.tsx'),
-          redirect: '/admin/entryManage/approval', // 默认重定向到approval
+          redirect: '/admin/entryManage/Application', // 默认重定向到Application
           children: [
             {
-              path: 'approval',
+              path: 'Application',
               name: 'adminEntryApproval',
-              component: () => import('@/pages/Admin/EntryManage/approval.tsx'),
+              component: () => import('@/pages/Admin/EntryManage/Application'),
             },
             {
-              path: 'check-detail',
+              path: 'Assessment',
               name: 'adminEntryCheckDetail',
-              component: () => import('@/pages/Admin/EntryManage/check-detail.tsx'),
+              component: () => import('@/pages/Admin/EntryManage/Assessment'),
             },
           ]
         },

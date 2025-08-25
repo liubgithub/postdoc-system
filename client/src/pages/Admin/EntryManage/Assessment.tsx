@@ -245,7 +245,7 @@ export default defineComponent({
     };
 
     return () => (
-      <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.1)' }}>
+      <div>
         {!showDetail.value ? (
           // 显示考核申请列表
           <>
@@ -443,10 +443,11 @@ export default defineComponent({
               </div>
             </div>
           </>
-        )}
+        )
+        }
 
         {/* 操作按钮 */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
+        {/* <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
           <ElButton onClick={handleBack}>
             {showDetail.value ? '返回列表' : '返回'}
           </ElButton>
@@ -456,7 +457,7 @@ export default defineComponent({
               <ElButton type="success">导出</ElButton>
             </>
           )}
-        </div>
+        </div> */}
       </div>
     );
   },
