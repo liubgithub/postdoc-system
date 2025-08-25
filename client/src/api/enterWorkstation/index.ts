@@ -1,15 +1,23 @@
 // 获取导师的申请列表
-export const getTeacherApplications = async () => {
+export const getTeacherApplications = async (businessType?: string) => {
   try {
     const token = localStorage.getItem('token');
     console.log('当前token:', token); // 调试信息
+    console.log('请求的业务类型:', businessType); // 调试信息
     
     if (!token) {
       console.error('没有找到token，请先登录');
       return { data: null, error: new Error('请先登录') };
     }
     
-    const response = await fetch('/api/entryMange/teacher/students', {
+    // 构建URL，如果没有指定businessType，则不传递business_type参数
+    const url = businessType 
+      ? `/api/entryMange/teacher/students?business_type=${encodeURIComponent(businessType)}`
+      : '/api/entryMange/teacher/students';
+    
+    console.log('请求URL:', url); // 调试信息
+    
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

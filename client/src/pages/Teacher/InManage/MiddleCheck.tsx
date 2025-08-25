@@ -44,7 +44,7 @@ export default defineComponent({
     const fetchStudents = async () => {
       loading.value = true;
       try {
-        const response = await getTeacherApplications();
+        const response = await getTeacherApplications("中期考核");
         console.log('API响应:', response);
         if (response.data) {
           console.log('API返回的数据:', response.data);
