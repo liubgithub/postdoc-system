@@ -3,6 +3,7 @@ import * as cls from '../StationAssessment/styles.css'
 import { mubanContent } from './muban'
 import { muban2Content } from './muban2'
 import { ref, reactive } from 'vue'
+import fetch from '@/api/index'
 
 export default defineComponent({
   name: 'StationProtocol',

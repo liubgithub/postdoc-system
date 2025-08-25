@@ -1,4 +1,4 @@
-import { ElForm, ElFormItem, ElInput, ElRadioGroup, ElRadio, ElButton, ElSelect, ElOption } from "element-plus"
+import { ElForm, ElFormItem, ElInput, ElRadioGroup, ElRadio, ElButton, ElSelect, ElOption, ElDatePicker } from "element-plus"
 import * as styles from "@/pages/userinfoRegister/styles.css"
 
 
@@ -31,12 +31,9 @@ export default defineComponent({
         const rules = {
             name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
             gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-            birth_year: [
-                { required: true, message: "请输入出生年", trigger: "blur" },
-            ],
         };
         const handleAdd = ()=>{
-
+            console.log(form.value,'fff')
         }
         const handleCancel = ()=>{
             props.onBack && props.onBack()
@@ -64,7 +61,7 @@ export default defineComponent({
                         </div>
                         <div class={styles.formCol}>
                             <ElFormItem label="出生年" prop="birth_year">
-                                <ElInput v-model={form.value.birth_year} />
+                                <ElDatePicker v-model={form.value.birth_year} />
                             </ElFormItem>
                         </div>
                     </div>

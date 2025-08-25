@@ -3,7 +3,7 @@ import * as cls from './styles.css'
 import OpenDetails from './openDetails'
 import CommonTable from '@/units/CommonTable'
 import type { TableRow } from '@/types/common-table'
-import { ElButton, ElDialog } from 'element-plus'
+import { ElButton } from 'element-plus'
 import ProcessStatus from '@/units/ProcessStatus'
 import fetch from '@/api/index.ts'
 
