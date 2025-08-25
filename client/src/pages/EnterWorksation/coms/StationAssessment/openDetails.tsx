@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElDatePicker, ElMessage } from 'element-plus'
 import * as styles from './styles.css.ts'
 import fetch from '@/api/index.ts'
+import SignaturePad from '@/units/Signature/index.tsx'
 
 export default defineComponent({
     name: 'OpenDetails',
@@ -192,7 +193,7 @@ export default defineComponent({
                             </ElFormItem>
                             <div style={{ display: 'flex', gap: '16px', position: 'absolute', right: '20px', bottom: '5px' }}>
                                 <ElFormItem label="指导小组负责人(合作导师)签字" prop="guideGroupLeader" labelWidth={300}>
-                                    <ElInput v-model={form.guideGroupLeader} />
+                                    <SignaturePad />
                                 </ElFormItem>
                                 <ElFormItem label="日期" prop="guideGroupDate">
                                     <ElDatePicker v-model={form.guideGroupDate} type="date" placeholder="选择日期" style={{ width: '100%' }} />

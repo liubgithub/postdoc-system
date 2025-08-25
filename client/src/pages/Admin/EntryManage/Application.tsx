@@ -194,35 +194,6 @@ export default defineComponent({
       loadStudentInfo();
     });
 
-    const handleMenuClick = (key: string) => {
-      // 根据当前路由和菜单项跳转到对应的详情页面
-      if (key === 'check-detail') {
-        // 跳转到进站考核详情页面，传递当前的userId参数
-        const query: any = {};
-        if (userId) {
-          query.userId = userId;
-        }
-        router.push({
-          path: '/admin/entryManage/check-detail',
-          query: query
-        });
-      } else if (key === 'approval') {
-        // 跳转到进站申请详情页面
-        router.push('/admin/entryManage/approval');
-      }
-    };
-
-    // 根据当前路由路径确定菜单高亮
-    const getActiveMenu = () => {
-      const currentPath = route.path;
-      if (currentPath.includes('/approval')) {
-        return 'approval';
-      } else if (currentPath.includes('/check-detail')) {
-        return 'check-detail';
-      }
-      return 'approval'; // 默认
-    };
-
     const handleBack = () => {
       if (showDetail.value) {
         showDetail.value = false;
@@ -261,7 +232,7 @@ export default defineComponent({
     };
 
     return () => (
-      <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.1)' }}>
+      <div>
         {!showDetail.value ? (
           // 显示申请列表
           <>
@@ -366,7 +337,7 @@ export default defineComponent({
         )}
 
         {/* 操作按钮 */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
+        {/* <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
           <ElButton onClick={handleBack}>
             {showDetail.value ? '返回列表' : '返回'}
           </ElButton>
@@ -376,7 +347,7 @@ export default defineComponent({
               <ElButton type="primary" onClick={handleApprove}>通过</ElButton>
             </>
           )}
-        </div>
+        </div> */}
       </div>
     );
   },

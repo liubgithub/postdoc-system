@@ -1113,7 +1113,7 @@ export interface paths {
         };
         /**
          * Get Enter Assessment By User Id
-         * @description 获取当前用户的进站评估记录（无则返回null）
+         * @description 获取当前用户的进站评估记录
          */
         get: operations["get_enter_assessment_by_user_id_enterAssessment_assessment_get"];
         put?: never;
@@ -1127,6 +1127,67 @@ export interface paths {
          * @description 删除当前用户的进站评估记录
          */
         delete: operations["delete_enter_assessment_by_user_id_enterAssessment_assessment_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterAssessment/assessment/{student_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Enter Assessment By Student Id
+         * @description 导师获取指定学生的进站评估记录
+         */
+        get: operations["get_enter_assessment_by_student_id_enterAssessment_assessment__student_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterProtocol/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Enter Workstation By User Id
+         * @description 获取当前用户的进站申请记录（无则返回null）
+         */
+        get: operations["get_enter_workstation_by_user_id_enterProtocol__get"];
+        put?: never;
+        /** Upset Enter Protocol */
+        post: operations["upset_enter_protocol_enterProtocol__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/enterProtocol/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Enter Workstation By User Id
+         * @description 删除当前用户的进站申请记录
+         */
+        delete: operations["delete_enter_workstation_by_user_id_enterProtocol_apply_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1159,8 +1220,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Teacher Students
-         * @description 导师获取学生信息列表
+         * 获取学生进站申请和进站考核列表
+         * @description 导师获取所有申请自己的学生进站申请信息，以及有师生关系的学生进站考核信息，包含学生基本信息、申请状态和流程进度
          */
         get: operations["get_teacher_students_entryMange_teacher_students_get"];
         put?: never;
@@ -1179,8 +1240,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Student Detail
-         * @description 导师获取特定学生的详细信息
+         * 通过id查看学生进站申请或进站考核的信息
+         * @description 导师获取指定学生的详细进站申请或进站考核信息，需要根据业务类型参数确定查看内容
          */
         get: operations["get_student_detail_entryMange_teacher_student__user_id__get"];
         put?: never;
@@ -1200,12 +1261,64 @@ export interface paths {
         };
         get?: never;
         /**
-         * Approve Student
-         * @description 导师审核学生申请
+         * 审核学生进站申请或进站考核
+         * @description 导师审核学生的进站申请或进站考核，可以选择通过或驳回，并添加审核意见
          */
         put: operations["approve_student_entryMange_teacher_student__user_id__approve_put"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teacherinfo/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get All Teacher Info
+         * @description 获取所有老师信息列表
+         */
+        get: operations["get_all_teacher_info_teacherinfo__get"];
+        put?: never;
+        /**
+         * Create Teacher Info
+         * @description 管理员创建老师信息
+         */
+        post: operations["create_teacher_info_teacherinfo__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teacherinfo/{teacher_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Teacher Info
+         * @description 根据老师ID获取老师信息
+         */
+        get: operations["get_teacher_info_teacherinfo__teacher_id__get"];
+        /**
+         * Update Teacher Info
+         * @description 更新老师信息
+         */
+        put: operations["update_teacher_info_teacherinfo__teacher_id__put"];
+        post?: never;
+        /**
+         * Delete Teacher Info
+         * @description 删除老师信息
+         */
+        delete: operations["delete_teacher_info_teacherinfo__teacher_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1293,6 +1406,11 @@ export interface components {
              * @default
              */
             comment: string;
+            /**
+             * Business Type
+             * @default 进站申请
+             */
+            business_type: string;
         };
         /** AttachmentIn */
         AttachmentIn: {
@@ -2788,6 +2906,52 @@ export interface components {
             /** Updated At */
             updated_at?: string | null;
         };
+        /** EnterProtocolIn */
+        EnterProtocolIn: {
+            /** Stuid */
+            stuId: string;
+            /** Name */
+            name: string;
+            /** Cotutor */
+            cotutor: string;
+            /** Entryyear */
+            entryYear: string;
+            /** College */
+            college: string;
+            /** Subject */
+            subject: string;
+            /** Phone */
+            phone: string;
+            /** Email */
+            email: string;
+        };
+        /** EnterProtocolOut */
+        EnterProtocolOut: {
+            /** Stuid */
+            stuId: string;
+            /** Name */
+            name: string;
+            /** Cotutor */
+            cotutor: string;
+            /** Entryyear */
+            entryYear: string;
+            /** College */
+            college: string;
+            /** Subject */
+            subject: string;
+            /** Phone */
+            phone: string;
+            /** Email */
+            email: string;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+        };
         /** EnterRelationBase */
         EnterRelationBase: {
             /** Base Work */
@@ -3857,6 +4021,70 @@ export interface components {
             pending_count: number;
             /** Pending Processes */
             pending_processes: components["schemas"]["PendingTaskItem"][];
+        };
+        /** TeacherInfoIn */
+        TeacherInfoIn: {
+            /** Name */
+            name: string;
+            /** Gender */
+            gender: string;
+            /** Birth Year */
+            birth_year?: number | null;
+            /** Nationality */
+            nationality: string;
+            /** Political Status */
+            political_status: string;
+            /** Phone */
+            phone: string;
+            /** Work Id */
+            work_id: string;
+            /** Unit */
+            unit: string;
+            /** Id Card */
+            ID_card: string;
+            /** Email */
+            email: string;
+            /** College */
+            college: string;
+            /** Title Position */
+            title_position: string;
+            /** Res Direction */
+            res_direction: string;
+        };
+        /** TeacherInfoOut */
+        TeacherInfoOut: {
+            /** Name */
+            name: string;
+            /** Gender */
+            gender: string;
+            /** Birth Year */
+            birth_year?: number | null;
+            /** Nationality */
+            nationality: string;
+            /** Political Status */
+            political_status: string;
+            /** Phone */
+            phone: string;
+            /** Work Id */
+            work_id: string;
+            /** Unit */
+            unit: string;
+            /** Id Card */
+            ID_card: string;
+            /** Email */
+            email: string;
+            /** College */
+            college: string;
+            /** Title Position */
+            title_position: string;
+            /** Res Direction */
+            res_direction: string;
+            /** Id */
+            id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
         };
         /** Token */
         Token: {
@@ -6551,6 +6779,110 @@ export interface operations {
             };
         };
     };
+    get_enter_assessment_by_student_id_enterAssessment_assessment__student_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                student_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterAssessmentOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_enter_workstation_by_user_id_enterProtocol__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterProtocolOut"] | null;
+                };
+            };
+        };
+    };
+    upset_enter_protocol_enterProtocol__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnterProtocolIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterProtocolOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_enter_workstation_by_user_id_enterProtocol_apply_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
     get_student_by_user_id_assessment_student__get: {
         parameters: {
             query?: never;
@@ -6648,7 +6980,9 @@ export interface operations {
     };
     get_student_detail_entryMange_teacher_student__user_id__get: {
         parameters: {
-            query?: never;
+            query?: {
+                business_type?: string;
+            };
             header?: never;
             path: {
                 user_id: number;
@@ -6693,6 +7027,170 @@ export interface operations {
                 "application/json": components["schemas"]["ApproveRequest"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_all_teacher_info_teacherinfo__get: {
+        parameters: {
+            query?: {
+                /** @description 跳过记录数 */
+                skip?: number;
+                /** @description 限制返回记录数 */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeacherInfoOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_teacher_info_teacherinfo__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeacherInfoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeacherInfoOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_teacher_info_teacherinfo__teacher_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                teacher_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeacherInfoOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_teacher_info_teacherinfo__teacher_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                teacher_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeacherInfoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeacherInfoOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_teacher_info_teacherinfo__teacher_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                teacher_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
