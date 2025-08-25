@@ -1,8 +1,10 @@
-import { ElForm, ElButton } from 'element-plus'
+import { ElButton } from 'element-plus'
 import UserinfoRegister from '@/pages/EnterWorksation/form.tsx'
 import Achievement from './achres_instation'
 import Achievement_1 from './achres_1'
 import Assessment from './assessment'
+import fetch from "@/api/index"
+import { reactive, onMounted } from 'vue'
 
 export default defineComponent({
     name: "MidForm",
@@ -17,46 +19,53 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const form = ref({
-            achievement: {
-                paper_title: '',
-                journal_name: '',
-                journal_type: '',
-                first_author_unit: '',
-                publish_time: '',
-                paper_rank: '',
-                project_title: '',
-                fund_name: '',
-                fund_amount: '',
-                project_unit: '',
-                approval_time: '',
-                project_rank: '',
-                patent_title: '',
-                patent_type_number: '',
-                patent_unit: '',
-                patent_other: '',
-                patent_apply_time: '',
-                patent_rank: '',
-                award_title: '',
-                award_dept_level: '',
-                award_other: '',
-                award_other2: '',
-                award_time: '',
-                award_rank: ''
+        const form = reactive<{ subNamePlan: string; subDescription: string; subType: string } >({
+            subNamePlan: '',
+            subDescription: '',
+            subType: '中期考核',
+        })
+
+        onMounted(async () => {
+            try {
+                const res = await fetch.raw.GET('/researchStatus/', { 
+                    params: { query: { subType: '中期考核' } } 
+                })
+                const maybeData = (res as any)?.data ?? res
+                const payload = maybeData?.Target ?? maybeData
+                
+                if (payload) {
+                    if (payload.subNamePlan) form.subNamePlan = payload[0].subNamePlan
+                    if (payload.subDescription) form.subDescription = payload[0].subDescription
+
+                }
+            } catch (error) {
+                console.log(error)
             }
         })
-        const handleSubmit = () => {
-
+        
+        const handleSubmit = async () => {
+            console.log(form, 'sss1')
+            try {
+                const res = await fetch.raw.POST('/researchStatus/', { body: form })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        const handleBack = () => {
+            props.onBack && props.onBack()
         }
         return () => (
             <div>
-                <UserinfoRegister showResult={false}/>
+                <UserinfoRegister showResult={false} />
                 {/* 科研成果表单 */}
                 <Achievement />
-                <Achievement_1 model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />
+                <Achievement_1 model={form} onUpdate:model={val => Object.assign(form, val)} />
                 {props.showAssessment ? <Assessment /> : null}
                 {/* 按钮组 */}
-
+                <div>
+                    <ElButton onClick={handleSubmit}>提交</ElButton>
+                    <ElButton onClick={handleBack}>返回</ElButton>
+                </div>
             </div>
         )
     }
