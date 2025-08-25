@@ -20,6 +20,7 @@ import OutManageAssessment from '@/pages/Teacher/OutManage/Assessment';
 import OutManageDelay from '@/pages/Teacher/OutManage/Delay';
 import OutManageOut from '@/pages/Teacher/OutManage/Out';
 import MiddleCheckPage from '@/pages/Teacher/InManage/MiddleCheck';
+import ViewMiddleCheckPage from '@/pages/Teacher/InManage/ViewMiddleCheck';
 import YearCheckPage from '@/pages/Teacher/InManage/YearCheck';
 import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
 import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
@@ -146,6 +147,10 @@ const router = createRouter({
     {
       path: '/teacher/inManage/middle',
       component: MiddleCheckPage,
+    },
+    {
+      path: '/teacher/inManage/viewMiddleCheck',
+      component: ViewMiddleCheckPage,
     },
     {
       path: '/teacher/inManage/year',

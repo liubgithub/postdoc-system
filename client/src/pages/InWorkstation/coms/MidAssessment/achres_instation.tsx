@@ -12,7 +12,14 @@ import fetch from '@/api/index'
 
 export default defineComponent({
   name: 'Achievement',
-  setup() {
+  props: {
+    // 外部传入的科研成果数据
+    externalData: {
+      type: Object,
+      default: null
+    }
+  },
+  setup(props) {
     const time = ref('1000-06-10')
     const tables = ref<any>({})
     const totalCount = ref(0)
@@ -23,6 +30,17 @@ export default defineComponent({
     const fetchData = async () => {
       try {
         loading.value = true
+        
+        // 如果有外部传入的数据，优先使用外部数据
+        if (props.externalData) {
+          tables.value = props.externalData
+          totalCount.value = Object.values(props.externalData).reduce((sum: number, table: any) => sum + (table.count || 0), 0)
+          hasData.value = totalCount.value > 0
+          loading.value = false
+          return
+        }
+        
+        // 否则调用API获取数据
         const res = await fetch.raw.GET(`/time-filter/get-data-after-time`, {
           params: { query: { target_time: time.value } }
         })
@@ -38,6 +56,15 @@ export default defineComponent({
         loading.value = false
       }
     }
+
+    // 监听外部数据变化
+    watch(() => props.externalData, (newData) => {
+      if (newData) {
+        tables.value = newData
+        totalCount.value = Object.values(newData).reduce((sum: number, table: any) => sum + (table.count || 0), 0)
+        hasData.value = totalCount.value > 0
+      }
+    }, { immediate: true })
 
     onMounted(fetchData)
 

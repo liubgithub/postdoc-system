@@ -1,5 +1,5 @@
 import UserinfoRegister from "@/pages/EnterWorksation/form.tsx";
-import { ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import TeacherHeader from "../TeacherHeader";
 import {
@@ -21,7 +21,7 @@ import {
 import * as styles from "./styles.css";
 import ResearchForm from "@/pages/EnterWorksation/researchForm";
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
-import { getStudentEnterAssessment } from "@/api/enterWorkstation";
+import { getStudentEnterAssessment, approveApplication } from "@/api/enterWorkstation";
 
 const menuList = [
   { label: "进站申请", key: "apply" },
@@ -151,6 +151,42 @@ export default defineComponent({
       router.push("/teacher");
     };
 
+    const handleApprove = async () => {
+      try {
+        const response = await approveApplication(parseInt(userId), true, "进站考核通过", "进站考核");
+        if (response.data) {
+          ElMessage.success("进站考核审核通过成功");
+          // 延迟跳转，让用户看到成功消息
+          setTimeout(() => {
+            router.push("/teacher");
+          }, 1500);
+        } else {
+          ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
+        }
+      } catch (error) {
+        console.error("审核失败:", error);
+        ElMessage.error("审核失败");
+      }
+    };
+
+    const handleReject = async () => {
+      try {
+        const response = await approveApplication(parseInt(userId), false, "进站考核不通过", "进站考核");
+        if (response.data) {
+          ElMessage.warning("进站考核审核驳回成功");
+          // 延迟跳转，让用户看到成功消息
+          setTimeout(() => {
+            router.push("/teacher");
+          }, 1500);
+        } else {
+          ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
+        }
+      } catch (error) {
+        console.error("审核失败:", error);
+        ElMessage.error("审核失败");
+      }
+    };
+
     // 第二部分表单数据
     const projectForm = ref({
       projectName: "", //研究项目名称
@@ -185,8 +221,6 @@ export default defineComponent({
     const removeStaff = (index: number) => {
       if (form.staff.length > 1) form.staff.splice(index, 1);
     };
-
-    const handleSubmit = () => {};
 
     return () => (
       <ElContainer style={{ minHeight: "100vh" }}>
@@ -504,10 +538,16 @@ export default defineComponent({
                 }}
               >
                 <ElButton onClick={handleBack}>返回</ElButton>
-                <ElButton onClick={handleSubmit} type="primary">
-                  提交
-                </ElButton>
-                <ElButton type="success">导出</ElButton>
+                {userId && (
+                  <>
+                    <ElButton type="danger" onClick={handleReject}>
+                      不通过
+                    </ElButton>
+                    <ElButton type="primary" onClick={handleApprove}>
+                      通过
+                    </ElButton>
+                  </>
+                )}
               </div>
             </div>
           </ElMain>

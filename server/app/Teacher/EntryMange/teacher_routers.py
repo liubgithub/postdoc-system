@@ -11,7 +11,165 @@ from typing import List, Dict, Any
 from datetime import datetime
 from pydantic import BaseModel
 
+# 导入科研成果相关的模型
+from app.userinfoRegister.pre_entry_book.models import PreEntryBook
+from app.userinfoRegister.pre_entry_competition_award.models import PreEntryCompetitionAward
+from app.userinfoRegister.pre_entry_conference.models import PreEntryConference
+from app.userinfoRegister.pre_entry_new_variety.models import PreEntryNewVariety
+from app.userinfoRegister.pre_entry_paper.models import PreEntryPaper
+from app.userinfoRegister.pre_entry_patent.models import PreEntryPatent
+from app.userinfoRegister.pre_entry_project.models import PreEntryProject
+from app.userinfoRegister.pre_entry_subject_research.models import PreEntrySubjectResearch
+from app.userinfoRegister.pre_entry_industry_standard.models import PreEntryIndustryStandard
+
+# 导入教育经历和工作经历相关的模型
+from app.userinfoRegister.bs_user_profile.models import EducationExperience, WorkExperience
+
 router = APIRouter(prefix="/entryMange/teacher", tags=["合作导师管理学生进站申请和进站考核"])
+
+# 定义所有bs_pre_entry_表及其模型
+PRE_ENTRY_TABLES = [
+    {
+        "table_name": "bs_pre_entry_book",
+        "model": PreEntryBook,
+        "display_name": "著作"
+    },
+    {
+        "table_name": "bs_pre_entry_competition_award", 
+        "model": PreEntryCompetitionAward,
+        "display_name": "竞赛获奖"
+    },
+    {
+        "table_name": "bs_pre_entry_conference",
+        "model": PreEntryConference,
+        "display_name": "会议"
+    },
+    {
+        "table_name": "bs_pre_entry_new_variety",
+        "model": PreEntryNewVariety,
+        "display_name": "新品种"
+    },
+    {
+        "table_name": "bs_pre_entry_paper",
+        "model": PreEntryPaper,
+        "display_name": "论文"
+    },
+    {
+        "table_name": "bs_pre_entry_patent",
+        "model": PreEntryPatent,
+        "display_name": "专利"
+    },
+    {
+        "table_name": "bs_pre_entry_project",
+        "model": PreEntryProject,
+        "display_name": "项目"
+    },
+    {
+        "table_name": "bs_pre_entry_subject_research",
+        "model": PreEntrySubjectResearch,
+        "display_name": "课题研究"
+    },
+    {
+        "table_name": "bs_pre_entry_industry_standard",
+        "model": PreEntryIndustryStandard,
+        "display_name": "行业标准"
+    }
+]
+
+def get_student_achievement_data(user_id: int, db: Session) -> Dict[str, Any]:
+    """
+    获取指定学生的科研成果数据
+    
+    Args:
+        user_id: 用户ID
+        db: 数据库会话
+    
+    Returns:
+        包含所有表数据的字典
+    """
+    result = {}
+    
+    for table_info in PRE_ENTRY_TABLES:
+        model = table_info["model"]
+        table_name = table_info["table_name"]
+        display_name = table_info["display_name"]
+        
+        try:
+            # 获取该用户的所有数据
+            query = db.query(model).filter(model.user_id == user_id)
+            data = query.all()
+            
+            # 转换为字典格式
+            data_list = []
+            for item in data:
+                item_dict = {}
+                for column in model.__table__.columns:
+                    value = getattr(item, column.name)
+                    if isinstance(value, datetime):
+                        value = value.isoformat()
+                    item_dict[column.name] = value
+                data_list.append(item_dict)
+            
+            result[table_name] = {
+                "display_name": display_name,
+                "count": len(data_list),
+                "data": data_list
+            }
+            
+        except Exception as e:
+            result[table_name] = {
+                "display_name": display_name,
+                "count": 0,
+                "data": [],
+                "error": str(e)
+            }
+    
+    return result
+
+def get_student_education_work_data(user_profile_id: int, db: Session) -> Dict[str, Any]:
+    """
+    获取指定学生的教育经历和工作经历数据
+    
+    Args:
+        user_profile_id: 用户档案ID (Info表的id)
+        db: 数据库会话
+    
+    Returns:
+        包含教育经历和工作经历数据的字典
+    """
+    result = {
+        "education_experience": [],
+        "work_experience": []
+    }
+    
+    try:
+        # 获取教育经历
+        education_data = db.query(EducationExperience).filter(
+            EducationExperience.user_id == user_profile_id
+        ).all()
+        
+        for edu in education_data:
+            result["education_experience"].append({
+                "start_end": edu.start_end or "",
+                "school_major": edu.school_major or "",
+                "supervisor": edu.supervisor or ""
+            })
+        
+        # 获取工作经历
+        work_data = db.query(WorkExperience).filter(
+            WorkExperience.user_id == user_profile_id
+        ).all()
+        
+        for work in work_data:
+            result["work_experience"].append({
+                "start_end": work.start_end or "",
+                "company_position": work.company_position or ""
+            })
+            
+    except Exception as e:
+        print(f"获取教育经历和工作经历数据失败: {str(e)}")
+    
+    return result
 
 def get_workflow_status_info(workflow: PostdocWorkflow, postdoc: EnterWorkstation) -> Dict[str, Any]:
     """根据工作流状态获取状态信息"""
@@ -107,8 +265,22 @@ def get_workflow_status_info(workflow: PostdocWorkflow, postdoc: EnterWorkstatio
             ]
         }
 
-def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workflow: PostdocWorkflow, business_type: str = "进站申请", assessment_data: EnterAssessment = None) -> Dict[str, Any]:
+def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workflow: PostdocWorkflow, business_type: str = "进站申请", assessment_data: EnterAssessment = None, db: Session = None) -> Dict[str, Any]:
     """构建学生响应数据"""
+    # 定义支持的业务类型映射
+    business_type_mapping = {
+        "进站申请": "entry_application",
+        "进站考核": "entry_assessment", 
+        "中期考核": "midterm_assessment",
+        "年度考核": "annual_assessment",
+        "延期考核": "extension_assessment",
+        "出站考核": "leave_assessment"
+    }
+    
+    # 获取对应的workflow字段
+    workflow_field = business_type_mapping.get(business_type, "entry_application")
+    workflow_status = getattr(workflow, workflow_field) if workflow else "未提交"
+    
     if business_type == "进站申请":
         status_info = get_workflow_status_info(workflow, postdoc)
         
@@ -120,20 +292,20 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
             "user_id": postdoc.user_id,  # 从bs_enter_workstation表获取user_id
             "cotutor": postdoc.cotutor,  # 从bs_enter_workstation表获取cotutor
             "allitutor": postdoc.allitutor,  # 从bs_enter_workstation表获取allitutor
-            "workflow_status": workflow.entry_application if workflow else "未提交",
+            "workflow_status": workflow_status,
             "business_type": business_type,
             **status_info  # 展开状态信息
         }
-    else:  # 进站考核
-        # 获取进站考核状态
-        assessment_status = workflow.entry_assessment if workflow else "未提交"
+    else:  # 其他业务类型（进站考核、中期考核、年度考核等）
+        # 获取对应业务类型的状态
+        assessment_status = workflow_status
         
-        # 构建进站考核的状态信息
+        # 构建业务类型的状态信息
         if assessment_status == "未提交":
             status_info = {
                 "status": "未提交",
                 "node": "学生",
-                "currentApproval": "学生未提交进站考核",
+                "currentApproval": f"学生未提交{business_type}",
                 "steps": [
                     {"status": "未开始", "role": "学生申请", "time": ""},
                     {"status": "等待中", "role": "导师审核", "time": ""},
@@ -214,6 +386,14 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
         elif postdoc.created_at:
             assessment_time = postdoc.created_at.strftime("%Y-%m-%d")
         
+        # 获取科研成果数据
+        achievement_data = get_student_achievement_data(postdoc.user_id, db)
+        
+        # 获取教育经历和工作经历数据
+        education_work_data = {}
+        if user_profile:
+            education_work_data = get_student_education_work_data(user_profile.id, db)
+        
         return {
             "id": postdoc.id,
             "studentId": postdoc.user_id,
@@ -224,6 +404,22 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
             "allitutor": postdoc.allitutor,
             "workflow_status": assessment_status,
             "business_type": business_type,
+            "user_info": {
+                "name": user_profile.name if user_profile else "",
+                "gender": user_profile.gender if user_profile else "",
+                "birth_year": user_profile.birth_year if user_profile else "",
+                "nationality": user_profile.nationality if user_profile else "",
+                "political_status": user_profile.political_status if user_profile else "",
+                "phone": user_profile.phone if user_profile else "",
+                "religion": user_profile.religion if user_profile else "",
+                "id_number": user_profile.id_number if user_profile else "",
+                "is_religious_staff": user_profile.is_religious_staff if user_profile else "",
+                "research_direction": user_profile.research_direction if user_profile else "",
+                "other": user_profile.other if user_profile else "",
+                "education_experience": education_work_data.get("education_experience", []),
+                "work_experience": education_work_data.get("work_experience", [])
+            } if user_profile else None,  # 添加用户详细信息
+            "achievement_data": achievement_data,  # 添加科研成果数据
             **status_info
         }
 
@@ -277,7 +473,7 @@ def get_teacher_students(
         # 检查进站申请状态：不是未提交就说明有进站申请数据
         if workflow and workflow.entry_application and workflow.entry_application != "未提交":
             # 构建进站申请响应数据
-            result.append(build_student_response(postdoc, user_profile, workflow, "进站申请"))
+            result.append(build_student_response(postdoc, user_profile, workflow, "进站申请", None, db))
             print(f"添加进站申请记录: 学生ID {student_id}, 状态: {workflow.entry_application}")
         else:
             print(f"跳过学生 {student_id}: 进站申请状态为未提交或无workflow记录")
@@ -309,7 +505,7 @@ def get_teacher_students(
             # 获取进站考核数据
             assessment_data = db.query(EnterAssessment).filter(EnterAssessment.user_id == student_id).first()
             # 构建进站考核响应数据
-            result.append(build_student_response(postdoc, user_profile, workflow, "进站考核", assessment_data))
+            result.append(build_student_response(postdoc, user_profile, workflow, "进站考核", assessment_data, db))
             print(f"添加进站考核记录: 学生ID {student_id}, 状态: {workflow.entry_assessment}")
         else:
             print(f"跳过学生 {student_id}: 进站考核状态为未提交或无workflow记录")
@@ -355,6 +551,20 @@ def get_student_detail(
     # 获取workflow状态
     workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == user_id).first()
     
+    # 定义支持的业务类型映射
+    business_type_mapping = {
+        "进站申请": "entry_application",
+        "进站考核": "entry_assessment", 
+        "中期考核": "midterm_assessment",
+        "年度考核": "annual_assessment",
+        "延期考核": "extension_assessment",
+        "出站考核": "leave_assessment"
+    }
+    
+    # 验证业务类型是否支持
+    if business_type not in business_type_mapping:
+        raise HTTPException(status_code=400, detail=f"不支持的业务类型: {business_type}")
+    
     # 根据业务类型进行不同的验证
     if business_type == "进站申请":
         # 验证博士后是否申请了该导师
@@ -362,20 +572,18 @@ def get_student_detail(
         
         if postdoc.cotutor != teacher_name:
             raise HTTPException(status_code=403, detail="该博士后没有申请您作为导师")
-    elif business_type == "进站考核":
-        # 验证是否有师生关系
+    else:
+        # 对于其他业务类型（进站考核、中期考核、年度考核等），验证是否有师生关系
         existing_relationship = db.query(SupervisorStudent).filter(
             SupervisorStudent.supervisor_id == current_user.id,
             SupervisorStudent.student_id == user_id
         ).first()
         
         if not existing_relationship:
-            raise HTTPException(status_code=403, detail="该学生与您没有师生关系，无法查看进站考核信息")
-    else:
-        raise HTTPException(status_code=400, detail="无效的业务类型")
+            raise HTTPException(status_code=403, detail="该学生与您没有师生关系，无法查看相关信息")
     
     # 根据workflow状态确定显示状态
-    return build_student_response(postdoc, user_profile, workflow, business_type)
+    return build_student_response(postdoc, user_profile, workflow, business_type, None, db)
 
 class ApproveRequest(BaseModel):
     approved: bool
@@ -423,6 +631,23 @@ def approve_student(
         db.commit()
         db.refresh(workflow)
     
+    # 定义支持的业务类型映射
+    business_type_mapping = {
+        "进站申请": "entry_application",
+        "进站考核": "entry_assessment", 
+        "中期考核": "midterm_assessment",
+        "年度考核": "annual_assessment",
+        "延期考核": "extension_assessment",
+        "出站考核": "leave_assessment"
+    }
+    
+    # 验证业务类型是否支持
+    if request.business_type not in business_type_mapping:
+        raise HTTPException(status_code=400, detail=f"不支持的业务类型: {request.business_type}")
+    
+    # 获取对应的workflow字段
+    workflow_field = business_type_mapping[request.business_type]
+    
     # 根据业务类型进行不同的验证和处理
     if request.business_type == "进站申请":
         # 验证博士后是否申请了该导师
@@ -434,7 +659,7 @@ def approve_student(
         # 根据审核结果更新workflow状态
         if request.approved:
             # 导师通过，更新为学院未审核状态
-            workflow.entry_application = "学院未审核"
+            setattr(workflow, workflow_field, "学院未审核")
             status_message = "进站申请审核通过，已提交学院审核"
             
             # 创建师生关系记录到SupervisorStudent表
@@ -452,7 +677,7 @@ def approve_student(
                 print(f"创建师生关系: 导师ID {current_user.id}, 学生ID {user_id}")
         else:
             # 导师驳回
-            workflow.entry_application = "导师驳回"
+            setattr(workflow, workflow_field, "导师驳回")
             status_message = "进站申请审核驳回"
             
             # 如果驳回，删除师生关系记录（如果存在）
@@ -465,32 +690,29 @@ def approve_student(
                 db.delete(existing_relationship)
                 print(f"删除师生关系: 导师ID {current_user.id}, 学生ID {user_id}")
         
-        workflow_status = workflow.entry_application
+        workflow_status = getattr(workflow, workflow_field)
         
-    elif request.business_type == "进站考核":
-        # 验证是否有师生关系
+    else:
+        # 对于其他业务类型（进站考核、中期考核、年度考核等），验证是否有师生关系
         existing_relationship = db.query(SupervisorStudent).filter(
             SupervisorStudent.supervisor_id == current_user.id,
             SupervisorStudent.student_id == user_id
         ).first()
         
         if not existing_relationship:
-            raise HTTPException(status_code=403, detail="该学生与您没有师生关系，无法审核进站考核")
+            raise HTTPException(status_code=403, detail="该学生与您没有师生关系，无法审核")
         
         # 根据审核结果更新workflow状态
         if request.approved:
             # 导师通过，更新为学院未审核状态
-            workflow.entry_assessment = "学院未审核"
-            status_message = "进站考核审核通过，已提交学院审核"
+            setattr(workflow, workflow_field, "学院未审核")
+            status_message = f"{request.business_type}审核通过，已提交学院审核"
         else:
             # 导师驳回
-            workflow.entry_assessment = "导师驳回"
-            status_message = "进站考核审核驳回"
+            setattr(workflow, workflow_field, "导师驳回")
+            status_message = f"{request.business_type}审核驳回"
         
-        workflow_status = workflow.entry_assessment
-        
-    else:
-        raise HTTPException(status_code=400, detail="无效的业务类型")
+        workflow_status = getattr(workflow, workflow_field)
     
     workflow.updated_at = datetime.utcnow()
     db.commit()
