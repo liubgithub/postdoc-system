@@ -1,0 +1,48 @@
+### 创建老师信息
+POST http://localhost:8000/teacherinfo/
+Content-Type: application/json
+
+{
+  "name": "张教授",
+  "gender": "男",
+  "birth_year": 1980,
+  "nationality": "中国",
+  "political_status": "中共党员",
+  "phone": "13800138000",
+  "work_id": "T2024001",
+  "unit": "计算机学院",
+  "ID_card": "110101198001011234",
+  "email": "zhang@university.edu.cn",
+  "college": "计算机科学与技术学院",
+  "title_position": "教授",
+  "res_direction": "人工智能、机器学习"
+}
+
+### 获取所有老师信息
+GET http://localhost:8000/teacherinfo/
+
+### 根据老师ID获取老师信息
+GET http://localhost:8000/teacherinfo/1
+
+### 更新老师信息
+PUT http://localhost:8000/teacherinfo/1
+Content-Type: application/json
+
+{
+  "name": "张教授",
+  "gender": "男",
+  "birth_year": 1980,
+  "nationality": "中国",
+  "political_status": "中共党员",
+  "phone": "13800138001",
+  "work_id": "T2024001",
+  "unit": "计算机学院",
+  "ID_card": "110101198001011234",
+  "email": "zhang.updated@university.edu.cn",
+  "college": "计算机科学与技术学院",
+  "title_position": "教授",
+  "res_direction": "人工智能、机器学习、深度学习"
+}
+
+### 删除老师信息
+DELETE http://localhost:8000/teacherinfo/1

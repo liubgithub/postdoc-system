@@ -3,13 +3,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, 
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import Dict, Optional, Union, List
-from datetime import datetime
-import shutil
-import base64
-import base64
-from pathlib import Path
-from .models import uploadSign
-from .schemas import AttachmentIn, AttachmentOut
 import base64
 from .models import uploadSign
 from .schemas import AttachmentIn, AttachmentOut

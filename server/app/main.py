@@ -10,9 +10,11 @@ from app.userinfoRegister import routers as info_routers
 from app.enterWorkstation import routers as enter_workstation
 from app.assessment import routers as assment_info
 from app.Teacher.EntryMange import teacher_routers
+from app.Teacher.TeacherInfo import routers as teacher_info_routers
 from app.postdocProcess import routers as postdocProcess
 from app.uploadSign import routers as upload_sign
 from app.resStatus import routers as res_status
+
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -58,6 +60,9 @@ app.include_router(assment_info.router)
 
 # 导师管理路由
 app.include_router(teacher_routers.router)
+
+# 导师信息路由
+app.include_router(teacher_info_routers.router)
 
 #服务器文件夹签名
 app.include_router(upload_sign.router)
