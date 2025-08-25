@@ -1,5 +1,6 @@
-import { ElForm, ElFormItem, ElInput } from 'element-plus'
-
+import { ElForm, ElFormItem, ElInput,ElDatePicker } from 'element-plus'
+import fetch from '@/api/index'
+import SignaturePad from '@/units/Signature/index'
 export default defineComponent({
     name: 'Achievement_1',
     props: {
@@ -10,9 +11,26 @@ export default defineComponent({
     },
     emits: ['update:model'],
     setup(props, { emit }) {
+        const localModel = ref({ ...props.model })
         const onInput = (key: string, value: any) => {
             emit('update:model', { ...props.model, [key]: value })
         }
+        onMounted(async()=>{
+            try{
+                const res = await fetch.raw.GET('/researchStatus/', { 
+                    params: { query: { subType: '中期考核' } } 
+                })
+                const maybeData = (res as any)?.data ?? res
+                const payload = maybeData?.Target ?? maybeData
+                
+                if(payload){
+                    localModel.value.subNamePlan = payload[0].subNamePlan
+                    localModel.value.subDescription = payload[0].subDescription
+                }
+            }catch(error){
+                console.log(error)
+            }
+        }) 
         return () => (
             <div>
                 <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>博士后项目研究情况</div>
@@ -25,6 +43,8 @@ export default defineComponent({
                                     type="textarea"
                                     autosize={{ minRows: 5 }}
                                     rows={6}
+                                    modelValue={localModel.value.subNamePlan || ''}
+									onInput={val => onInput('subNamePlan', val)}
                                 />
                             </ElFormItem>
 
@@ -36,12 +56,14 @@ export default defineComponent({
                                     type="textarea"
                                     autosize={{ minRows: 6 }}
                                     rows={6}
+                                    modelValue={localModel.value.subDescription || ''}
+									onInput={val => onInput('subDescription', val)}
                                 />
                             </ElFormItem>
                             {/* 签字和日期 */}
                             <div style={{ position: 'absolute', right: '30px', bottom: '20px', textAlign: 'right', width: '300px', color: '#333' }}>
                                 <div style={{ marginBottom: '10px' }}>博士后签字</div>
-                                <div>年 月 日</div>
+                                <SignaturePad />
                             </div>
                         </div>
                     </div>

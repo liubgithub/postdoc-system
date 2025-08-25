@@ -1,6 +1,7 @@
 import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElSelect, ElOption } from 'element-plus'
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import SignaturePad from '@/units/Signature/index'
+import fetch from '@/api/index'
 export default defineComponent({
     name: 'AnnualAssessment',
     props: {

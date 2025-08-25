@@ -39,7 +39,7 @@ export default defineComponent({
             }catch(error){
                 console.log(error)
             }
-        })
+        }) 
 		return () => (
 			<div>
 				<div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>博士后项目研究情况</div>

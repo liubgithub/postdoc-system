@@ -4,7 +4,7 @@ import UserinfoRegister from '@/pages/EnterWorksation/form.tsx'
 import Achievement from '../InWorkstation/coms/MidAssessment/achres_instation'
 import Achievement_1 from './achres_1'
 import Assessment from './assessment'
-
+import fetch from '@/api/index'
 export default defineComponent({
     name: "CommonPart",
     props: {
@@ -18,38 +18,21 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const form = ref({
-            achievement: {
-                paper_title: '',
-                journal_name: '',
-                journal_type: '',
-                first_author_unit: '',
-                publish_time: '',
-                paper_rank: '',
-                project_title: '',
-                fund_name: '',
-                fund_amount: '',
-                project_unit: '',
-                approval_time: '',
-                project_rank: '',
-                patent_title: '',
-                patent_type_number: '',
-                patent_unit: '',
-                patent_other: '',
-                patent_apply_time: '',
-                patent_rank: '',
-                award_title: '',
-                award_dept_level: '',
-                award_other: '',
-                award_other2: '',
-                award_time: '',
-                award_rank: ''
-            }
+        const form = reactive<{ subNamePlan: string; subDescription: string; subType: string } >({
+            subNamePlan: '',
+            subDescription: '',
+            subType: '出站考核',
         })
         const handleSubmit = async () => {
-            // 提交form.value，包括form.value.achievement
-            // await api.submitForm(form.value)
+            try {
+                const res = await fetch.raw.POST('/researchStatus/', { body: form })
+            } catch (error) {
+                console.log(error)
+            }
             ElMessage.success('提交成功！')
+            props.onBack && props.onBack()
+        }
+        const handleBack = () =>{
             props.onBack && props.onBack()
         }
         return () => (
@@ -57,11 +40,12 @@ export default defineComponent({
                 <UserinfoRegister showResult={false}/>
                 {/* 科研成果表单 */}
                 <Achievement />
-                <Achievement_1 model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />
+                <Achievement_1 model={form} onUpdate:model={val => Object.assign(form, val)} />
                 {props.showAssessment ? <Assessment /> : null}
                 {/* 按钮组 */}
                 <div class={styles.btnGroup}>
                     <ElButton type="primary" onClick={handleSubmit}>提交</ElButton>
+                    <ElButton onClick={handleBack}>返回</ElButton>
                 </div>
 
             </div>

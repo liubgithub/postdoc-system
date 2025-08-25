@@ -25,23 +25,6 @@ export default defineComponent({
             subType: '中期考核',
         })
 
-        onMounted(async () => {
-            try {
-                const res = await fetch.raw.GET('/researchStatus/', { 
-                    params: { query: { subType: '中期考核' } } 
-                })
-                const maybeData = (res as any)?.data ?? res
-                const payload = maybeData?.Target ?? maybeData
-                
-                if (payload) {
-                    if (payload.subNamePlan) form.subNamePlan = payload[0].subNamePlan
-                    if (payload.subDescription) form.subDescription = payload[0].subDescription
-
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        })
         
         const handleSubmit = async () => {
             console.log(form, 'sss1')
