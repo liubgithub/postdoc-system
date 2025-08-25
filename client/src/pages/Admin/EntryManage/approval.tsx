@@ -9,26 +9,14 @@ import {
   ElTable,
   ElTableColumn,
   ElPagination,
-  ElForm,
-  ElFormItem,
-  ElDatePicker,
 } from "element-plus";
 
 // 引入博士后的申请页面组件
-import UserinfoRegister from "../../../pages/EnterWorksation/form.tsx";
-import ResearchForm from "../../../pages/EnterWorksation/researchForm.tsx";
-import Audit from "../../../pages/EnterWorksation/audit.tsx";
+import UserinfoRegister from "@/pages/EnterWorksation/form.tsx";
+import ResearchForm from "@/pages/EnterWorksation/researchForm.tsx";
 
 // 引入API
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
-
-// 引入样式
-import * as styles from "./styles.css.ts";
-
-const menuList = [
-  { label: "进站申请", key: "apply" },
-  { label: "进站考核", key: "assessment" },
-];
 
 // 定义数据类型
 interface StudentData {
@@ -344,21 +332,33 @@ export default defineComponent({
                 <div style={{ textAlign: "center", padding: "20px" }}>加载中...</div>
               ) : (
                 <>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px" }}>1. 基本信息</h3>
-                  <UserinfoRegister 
-                    showResult={false}
-                    externalUserInfo={studentInfo.value}
-                    userRole="admin"
-                  />
-                  <ResearchForm
-                    onSubmitSuccess={() => {
-                      // 这里不需要做任何操作，因为管理员只是查看
-                    }}
-                    onBack={() => {}}
-                    showButtons={false}
-                    externalUserId={userId ? parseInt(userId) : undefined}
-                    userRole="admin"
-                  />
+                  {/* 第一部分 基本信息 */}
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
+                    <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
+                      一、基本信息
+                    </div>
+                    <UserinfoRegister 
+                      showResult={false}
+                      externalUserInfo={studentInfo.value}
+                      userRole="admin"
+                    />
+                  </div>
+
+                  {/* 第二部分 研究项目情况 */}
+                  <div style={{ marginTop: "32px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
+                    <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
+                      二、博士后研究项目情况
+                    </div>
+                    <ResearchForm
+                      onSubmitSuccess={() => {
+                        // 这里不需要做任何操作，因为管理员只是查看
+                      }}
+                      onBack={() => {}}
+                      showButtons={false}
+                      externalUserId={userId ? parseInt(userId) : undefined}
+                      userRole="admin"
+                    />
+                  </div>
                 </>
               )}
             </div>
