@@ -17,9 +17,9 @@ export default defineComponent({
 
     const menuList = [
       { label: '进站申请', key: 'approval' },
-      { label: '进站考核', key: 'check-detail' },  
+      { label: '进站考核', key: 'check-detail' },
     ];
-    
+
     // 根据当前路由确定菜单高亮
     const getActiveMenu = () => {
       const currentPath = route.path;
@@ -30,14 +30,14 @@ export default defineComponent({
       }
       return 'approval'; // 默认高亮进站申请
     };
-    
+
     const activeMenu = ref(getActiveMenu());
-    
+
     // 监听路由变化更新activeMenu
     watch(() => route.path, () => {
       activeMenu.value = getActiveMenu();
     });
-    
+
     const handleMenuClick = (key: string) => {
       activeMenu.value = key;
       if (key === 'check-detail') {
@@ -57,8 +57,8 @@ export default defineComponent({
               onSelect={handleMenuClick}
             >
               {menuList.map(item => (
-                <ElMenuItem 
-                  index={item.key} 
+                <ElMenuItem
+                  index={item.key}
                   class={activeMenu.value === item.key ? styles.sidebarMenuItemActive : styles.sidebarMenuItem}
                 >
                   {item.label}

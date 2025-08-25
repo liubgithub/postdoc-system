@@ -194,35 +194,6 @@ export default defineComponent({
       loadStudentInfo();
     });
 
-    const handleMenuClick = (key: string) => {
-      // 根据当前路由和菜单项跳转到对应的详情页面
-      if (key === 'check-detail') {
-        // 跳转到进站考核详情页面，传递当前的userId参数
-        const query: any = {};
-        if (userId) {
-          query.userId = userId;
-        }
-        router.push({
-          path: '/admin/entryManage/check-detail',
-          query: query
-        });
-      } else if (key === 'approval') {
-        // 跳转到进站申请详情页面
-        router.push('/admin/entryManage/approval');
-      }
-    };
-
-    // 根据当前路由路径确定菜单高亮
-    const getActiveMenu = () => {
-      const currentPath = route.path;
-      if (currentPath.includes('/approval')) {
-        return 'approval';
-      } else if (currentPath.includes('/check-detail')) {
-        return 'check-detail';
-      }
-      return 'approval'; // 默认
-    };
-
     const handleBack = () => {
       if (showDetail.value) {
         showDetail.value = false;
