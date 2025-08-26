@@ -136,3 +136,7 @@ export const bottomButtons = style({
   paddingTop: '20px',
   borderTop: '1px solid #e4e7ed',
 }); 
+
+export const kaohe = style({
+  display:'flex'
+})

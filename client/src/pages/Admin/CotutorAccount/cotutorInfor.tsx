@@ -1,6 +1,7 @@
-import { ElForm, ElFormItem, ElInput, ElRadioGroup, ElRadio, ElButton, ElSelect, ElOption, ElDatePicker } from "element-plus"
+import { ElForm, ElFormItem, ElInput, ElRadioGroup, ElRadio, ElButton, ElSelect, ElOption, ElDatePicker, ElMessage } from "element-plus"
+import { ref, watch, onMounted } from 'vue'
 import * as styles from "@/pages/userinfoRegister/styles.css"
-
+import fetch from '@/api/index'
 
 export default defineComponent({
     name: 'cototurInfor',
@@ -8,13 +9,17 @@ export default defineComponent({
         onBack:{
             type:Function,
             required:true
+        },
+        editData: {
+            type: Object,
+            default: null
         }
     },
     setup(props) {
         const form = ref({
             name: "",
             gender: "",
-            birth_year: "",
+            birth_year: 1980,
             nationality: "",
             political_status: "",
             phone: "",
@@ -27,21 +32,89 @@ export default defineComponent({
             res_direction: ""
         })
 
+        // 监听编辑数据变化，填充表单
+        watch(() => props.editData, (newData) => {
+            if (newData) {
+                // 填充表单数据
+                form.value = {
+                    name: newData.name || "",
+                    gender: newData.gender || "",
+                    birth_year: newData.birth_year || 1980,
+                    nationality: newData.nationality || "",
+                    political_status: newData.political_status || "",
+                    phone: newData.phone || "",
+                    work_id: newData.work_id || "",
+                    unit: newData.unit || "",
+                    ID_card: newData.ID_card || "",
+                    email: newData.email || "",
+                    college: newData.college || "",
+                    title_position: newData.title_position || "",
+                    res_direction: newData.res_direction || ""
+                }
+            } else {
+                // 重置表单
+                form.value = {
+                    name: "",
+                    gender: "",
+                    birth_year: 1980,
+                    nationality: "",
+                    political_status: "",
+                    phone: "",
+                    work_id: "",
+                    unit: "",
+                    ID_card: "",
+                    email: "",
+                    college: "",
+                    title_position: "",
+                    res_direction: ""
+                }
+            }
+        }, { immediate: true })
+
         // 表单校验规则
         const rules = {
             name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
             gender: [{ required: true, message: "请选择性别", trigger: "change" }],
         };
-        const handleAdd = ()=>{
+
+        const handleAdd = async()=>{
             console.log(form.value,'fff')
+            try{
+                if (props.editData) {
+                    // 编辑模式，使用PUT请求
+                    const res = await fetch.raw.PUT('/teacherinfo/{teacher_id}', {
+                        params: {
+                            path: {
+                                teacher_id: props.editData.id
+                            }
+                        },
+                        body: form.value
+                    })
+                    if(res.response.ok){
+                        ElMessage.success('更新成功！')
+                        props.onBack && props.onBack()
+                    }
+                } else {
+                    // 新增模式，使用POST请求
+                    const res = await fetch.raw.POST('/teacherinfo/',{body:form.value})
+                    if(res.response.ok){
+                        ElMessage.success('添加成功！')
+                        props.onBack && props.onBack()
+                    }
+                }
+            }catch(error){
+                ElMessage.error(props.editData ? '更新失败' : '添加失败')
+            }
         }
+
         const handleCancel = ()=>{
             props.onBack && props.onBack()
         }
+
         return () => (
             <div class={styles.formWrappers}>
                 <div class={styles.formTitle}>
-                    基本信息表
+                    {props.editData ? '编辑基本信息' : '基本信息表'}
                 </div>
                 <ElForm model={form.value} rules={rules} labelWidth="100px">
                     {/* 基本信息两列 */}
@@ -61,7 +134,7 @@ export default defineComponent({
                         </div>
                         <div class={styles.formCol}>
                             <ElFormItem label="出生年" prop="birth_year">
-                                <ElDatePicker v-model={form.value.birth_year} />
+                                <ElInput v-model={form.value.birth_year} />
                             </ElFormItem>
                         </div>
                     </div>
@@ -139,7 +212,9 @@ export default defineComponent({
                     </ElFormItem>
                 </ElForm>
                 <div class={styles.btnGroup}>
-                    <ElButton type="primary" onClick={handleAdd}>添加</ElButton>
+                    <ElButton type="primary" onClick={handleAdd}>
+                        {props.editData ? '更新' : '添加'}
+                    </ElButton>
                     <ElButton onClick={handleCancel}>取消</ElButton>
                 </div>
             </div>

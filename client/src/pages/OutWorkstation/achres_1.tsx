@@ -54,8 +54,8 @@ export default defineComponent({
                             <ElFormItem label='博士后本人在站工作小结（包括项目进展情况、后期研究计划及参与的其它工作等' >
                                 <ElInput
                                     type="textarea"
-                                    autosize={{ minRows: 6 }}
-                                    rows={6}
+                                    autosize={{ minRows: 12 }}
+                                    rows={12}
                                     modelValue={localModel.value.subDescription || ''}
 									onInput={val => onInput('subDescription', val)}
                                 />
