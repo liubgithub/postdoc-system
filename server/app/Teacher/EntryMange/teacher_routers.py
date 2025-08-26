@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
@@ -430,6 +430,7 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
     description="导师获取所有申请自己的学生进站申请信息，以及有师生关系的学生进站考核信息，包含学生基本信息、申请状态和流程进度"
 )
 def get_teacher_students(
+    business_type: str = Query(None, description="业务类型过滤"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -454,61 +455,95 @@ def get_teacher_students(
     
     result = []
     
+    # 定义支持的业务类型映射
+    business_type_mapping = {
+        "进站申请": "entry_application",
+        "进站考核": "entry_assessment", 
+        "中期考核": "midterm_assessment",
+        "年度考核": "annual_assessment",
+        "延期考核": "extension_assessment",
+        "出站考核": "leave_assessment"
+    }
+    
+    # 如果指定了业务类型，验证是否支持
+    if business_type and business_type not in business_type_mapping:
+        raise HTTPException(status_code=400, detail=f"不支持的业务类型: {business_type}")
+    
     # 1. 获取申请该导师的博士后信息（进站申请）
-    # 匹配逻辑：博士后填写的cotutor字段与导师的username字段匹配
-    postdocs = db.query(EnterWorkstation).join(Info, EnterWorkstation.user_id == Info.user_id).filter(
-        EnterWorkstation.cotutor == teacher_name
-    ).all()
-    print(f"找到 {len(postdocs)} 个申请该导师的博士后记录")  # 调试信息
+    if not business_type or business_type == "进站申请":
+        # 匹配逻辑：博士后填写的cotutor字段与导师的username字段匹配
+        postdocs = db.query(EnterWorkstation).join(Info, EnterWorkstation.user_id == Info.user_id).filter(
+            EnterWorkstation.cotutor == teacher_name
+        ).all()
+        print(f"找到 {len(postdocs)} 个申请该导师的博士后记录")  # 调试信息
+        
+        for postdoc in postdocs:
+            student_id = postdoc.user_id
+            
+            # 获取用户详细信息
+            user_profile = db.query(Info).filter(Info.user_id == student_id).first()
+            
+            # 获取workflow状态
+            workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == student_id).first()
+            
+            # 检查进站申请状态：不是未提交就说明有进站申请数据
+            if workflow and workflow.entry_application and workflow.entry_application != "未提交":
+                # 构建进站申请响应数据
+                result.append(build_student_response(postdoc, user_profile, workflow, "进站申请", None, db))
+                print(f"添加进站申请记录: 学生ID {student_id}, 状态: {workflow.entry_application}")
+            else:
+                print(f"跳过学生 {student_id}: 进站申请状态为未提交或无workflow记录")
     
-    for postdoc in postdocs:
-        student_id = postdoc.user_id
+    # 2. 获取与该导师有师生关系的学生（其他考核类型）
+    if not business_type or business_type in ["进站考核", "中期考核", "年度考核", "延期考核", "出站考核"]:
+        # 通过SupervisorStudent表查找师生关系
+        supervisor_students = db.query(SupervisorStudent).filter(
+            SupervisorStudent.supervisor_id == current_user.id
+        ).all()
+        print(f"找到 {len(supervisor_students)} 个师生关系记录")  # 调试信息
         
-        # 获取用户详细信息
-        user_profile = db.query(Info).filter(Info.user_id == student_id).first()
-        
-        # 获取workflow状态
-        workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == student_id).first()
-        
-        # 检查进站申请状态：不是未提交就说明有进站申请数据
-        if workflow and workflow.entry_application and workflow.entry_application != "未提交":
-            # 构建进站申请响应数据
-            result.append(build_student_response(postdoc, user_profile, workflow, "进站申请", None, db))
-            print(f"添加进站申请记录: 学生ID {student_id}, 状态: {workflow.entry_application}")
-        else:
-            print(f"跳过学生 {student_id}: 进站申请状态为未提交或无workflow记录")
-    
-    # 2. 获取与该导师有师生关系的学生（进站考核）
-    # 通过SupervisorStudent表查找师生关系
-    supervisor_students = db.query(SupervisorStudent).filter(
-        SupervisorStudent.supervisor_id == current_user.id
-    ).all()
-    print(f"找到 {len(supervisor_students)} 个师生关系记录")  # 调试信息
-    
-    for supervisor_student in supervisor_students:
-        student_id = supervisor_student.student_id
-        
-        # 获取学生的进站申请信息（用于获取基本信息）
-        postdoc = db.query(EnterWorkstation).filter(EnterWorkstation.user_id == student_id).first()
-        if not postdoc:
-            print(f"跳过学生 {student_id}: 没有进站申请记录")
-            continue
-        
-        # 获取用户详细信息
-        user_profile = db.query(Info).filter(Info.user_id == student_id).first()
-        
-        # 获取workflow状态
-        workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == student_id).first()
-        
-        # 检查进站考核状态：不是未提交就说明有进站考核数据
-        if workflow and workflow.entry_assessment and workflow.entry_assessment != "未提交":
-            # 获取进站考核数据
-            assessment_data = db.query(EnterAssessment).filter(EnterAssessment.user_id == student_id).first()
-            # 构建进站考核响应数据
-            result.append(build_student_response(postdoc, user_profile, workflow, "进站考核", assessment_data, db))
-            print(f"添加进站考核记录: 学生ID {student_id}, 状态: {workflow.entry_assessment}")
-        else:
-            print(f"跳过学生 {student_id}: 进站考核状态为未提交或无workflow记录")
+        for supervisor_student in supervisor_students:
+            student_id = supervisor_student.student_id
+            
+            # 获取学生的进站申请信息（用于获取基本信息）
+            postdoc = db.query(EnterWorkstation).filter(EnterWorkstation.user_id == student_id).first()
+            if not postdoc:
+                print(f"跳过学生 {student_id}: 没有进站申请记录")
+                continue
+            
+            # 获取用户详细信息
+            user_profile = db.query(Info).filter(Info.user_id == student_id).first()
+            
+            # 获取workflow状态
+            workflow = db.query(PostdocWorkflow).filter(PostdocWorkflow.student_id == student_id).first()
+            
+            # 根据业务类型检查相应的状态
+            if business_type:
+                # 如果指定了业务类型，只检查该类型的状态
+                workflow_field = business_type_mapping[business_type]
+                if workflow and getattr(workflow, workflow_field) and getattr(workflow, workflow_field) != "未提交":
+                    # 获取考核数据（如果有的话）
+                    assessment_data = None
+                    if business_type == "进站考核":
+                        assessment_data = db.query(EnterAssessment).filter(EnterAssessment.user_id == student_id).first()
+                    
+                    # 构建响应数据
+                    result.append(build_student_response(postdoc, user_profile, workflow, business_type, assessment_data, db))
+                    print(f"添加{business_type}记录: 学生ID {student_id}, 状态: {getattr(workflow, workflow_field)}")
+                else:
+                    print(f"跳过学生 {student_id}: {business_type}状态为未提交或无workflow记录")
+            else:
+                # 如果没有指定业务类型，检查所有考核类型
+                for bt, wf in business_type_mapping.items():
+                    if bt != "进站申请" and workflow and getattr(workflow, wf) and getattr(workflow, wf) != "未提交":
+                        # 获取考核数据（如果有的话）
+                        assessment_data = None
+                        if bt == "进站考核":
+                            assessment_data = db.query(EnterAssessment).filter(EnterAssessment.user_id == student_id).first()
+                        
+                        # 构建响应数据
+                        result.append(build_student_response(postdoc, user_profile, workflow, bt, assessment_data, db))
+                        print(f"添加{bt}记录: 学生ID {student_id}, 状态: {getattr(workflow, wf)}")
     
 
     

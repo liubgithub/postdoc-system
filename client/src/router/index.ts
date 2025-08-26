@@ -22,7 +22,9 @@ import OutManageOut from '@/pages/Teacher/OutManage/Out';
 import MiddleCheckPage from '@/pages/Teacher/InManage/MiddleCheck';
 import ViewMiddleCheckPage from '@/pages/Teacher/InManage/ViewMiddleCheck';
 import YearCheckPage from '@/pages/Teacher/InManage/YearCheck';
+import ViewYearCheckPage from '@/pages/Teacher/InManage/ViewYearCheck';
 import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
+import ViewExtensionCheckPage from '@/pages/Teacher/InManage/ViewExtentionCheck';
 import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
 import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
 import PremissionManage from '@/pages/Admin/PremissionManage'
@@ -157,8 +159,16 @@ const router = createRouter({
       component: YearCheckPage,
     },
     {
+      path: '/teacher/inManage/viewYearCheck',
+      component: ViewYearCheckPage,
+    },
+    {
       path: '/teacher/inManage/extension',
       component: ExtensionCheckPage,
+    },
+    {
+      path: '/teacher/inManage/viewExtensionCheck',
+      component: ViewExtensionCheckPage,
     },
     {
       path: '/teacher/accountApproval',

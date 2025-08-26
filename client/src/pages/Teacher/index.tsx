@@ -128,6 +128,45 @@ export default defineComponent({
             business_type: "进站考核",
           },
         });
+      } else if (row.business_type === "中期考核") {
+        // 跳转到中期考核详情页面
+        router.push({
+          path: "/teacher/inManage/viewMiddleCheck",
+          query: {
+            userId: row.user_id.toString(),
+            studentId: row.studentId,
+            name: row.name,
+            college: row.college || "",
+            major: row.major || "",
+            applyTime: row.applyTime,
+          },
+        });
+      } else if (row.business_type === "年度考核") {
+        // 跳转到年度考核详情页面
+        router.push({
+          path: "/teacher/inManage/viewYearCheck",
+          query: {
+            userId: row.user_id.toString(),
+            studentId: row.studentId,
+            name: row.name,
+            college: row.college || "",
+            major: row.major || "",
+            applyTime: row.applyTime,
+          },
+        });
+      } else if (row.business_type === "延期考核") {
+        // 跳转到延期考核详情页面
+        router.push({
+          path: "/teacher/inManage/viewExtensionCheck",
+          query: {
+            userId: row.user_id.toString(),
+            studentId: row.studentId,
+            name: row.name,
+            college: row.college || "",
+            major: row.major || "",
+            applyTime: row.applyTime,
+          },
+        });
       } else {
         ElMessage.warning("未知的业务类型");
       }

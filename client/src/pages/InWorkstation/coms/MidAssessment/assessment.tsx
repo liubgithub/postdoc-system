@@ -4,7 +4,13 @@ import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElRadioG
 
 export default defineComponent({
     name: 'Assessment',
-    setup() {
+    props: {
+        showButtons: {
+            type: Boolean,
+            default: true
+        }
+    },
+    setup(props) {
         // 表单数据
         const form = reactive({
             guideGroupOpinion: '',
@@ -162,10 +168,12 @@ export default defineComponent({
                             </div>
                         </div>
                         {/* 操作按钮 */}
-                        <div style={{ textAlign: 'center', marginTop: '32px' }}>
-                            <ElButton type="primary" onClick={onSubmit}>提交</ElButton>
-                            <ElButton style={{ marginLeft: '16px' }} onClick={onBack}>返回</ElButton>
-                        </div>
+                        {props.showButtons && (
+                            <div style={{ textAlign: 'center', marginTop: '32px' }}>
+                                <ElButton type="primary" onClick={onSubmit}>提交</ElButton>
+                                <ElButton style={{ marginLeft: '16px' }} onClick={onBack}>返回</ElButton>
+                            </div>
+                        )}
                     </div>
                 </ElForm>
             </div>

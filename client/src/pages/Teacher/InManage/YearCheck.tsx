@@ -236,18 +236,28 @@ export default defineComponent({
                       label="当前考核结果"
                       align="center"
                     />
-                    <ElTableColumn
-                      label="操作"
-                      width={150}
-                      align="center"
-                      v-slots={{
-                        default: () => (
-                          <ElButton type="primary" size="small" onClick={() => router.push('/teacher/entryManage/check-detail')}>
-                            查看
-                          </ElButton>
-                        ),
-                      }}
-                    />
+                                         <ElTableColumn
+                       label="操作"
+                       width={150}
+                       align="center"
+                       v-slots={{
+                         default: (scope: { row: any }) => (
+                           <ElButton type="primary" size="small" onClick={() => router.push({
+                             path: '/teacher/inManage/viewYearCheck',
+                             query: {
+                               studentId: scope.row.studentId,
+                               name: scope.row.name,
+                               college: scope.row.college,
+                               major: scope.row.major,
+                               applyTime: scope.row.applyTime,
+                               userId: scope.row.id
+                             }
+                           })}>
+                             查看
+                           </ElButton>
+                         ),
+                       }}
+                     />
                   </ElTable>
                 </div>
 
