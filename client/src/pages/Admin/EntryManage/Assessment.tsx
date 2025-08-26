@@ -2,19 +2,23 @@ import { defineComponent, ref, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   ElButton,
-  ElForm,
-  ElFormItem,
-  ElInput,
-  ElTable,
-  ElTableColumn,
-  ElDatePicker,
   ElMessage,
   ElRow,
   ElCol,
+  ElInput,
+  ElTable,
+  ElTableColumn,
   ElPagination,
 } from "element-plus";
+
+// 引入博士后的申请页面组件
 import UserinfoRegister from "@/pages/EnterWorksation/form.tsx";
-import ResearchForm from "@/pages/EnterWorksation/researchForm";
+import ResearchForm from "@/pages/EnterWorksation/researchForm.tsx";
+
+// 引入API
+// 获取所有需要管理员处理的学生的信息
+import fetch from "@/api";
+// 获取特定学生id的信息
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
 
 // 定义考核申请数据类型
@@ -37,7 +41,7 @@ interface AssessmentData {
 }
 
 export default defineComponent({
-  name: "AdminEntryCheckDetail",
+  name: "AdminEntryAssessment",
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -45,11 +49,12 @@ export default defineComponent({
     // 获取路由参数
     const userId = route.query.userId as string;
 
-    const loading = ref(false);
+    // 学生信息
     const studentInfo = ref<any>(null);
+    const loading = ref(false);
     const showDetail = ref(false);
 
-    // 考核申请列表数据
+    // 列表数据
     const tableData = ref<AssessmentData[]>([]);
     const searchValue = ref("");
 
@@ -65,75 +70,66 @@ export default defineComponent({
     const fetchAssessmentList = async () => {
       loading.value = true;
       try {
-        // 这里应该调用管理员的考核申请API接口
-        // const response = await getAdminAssessmentList();
-        // 暂时使用模拟数据
-        const mockData: AssessmentData[] = [
-          {
-            id: 1,
-            studentId: "20230001",
-            name: "张三",
-            college: "园艺林学学院",
-            major: "园艺学",
-            applyTime: "2025-09-01",
-            status: "考核中",
-            node: "考核小组",
-            currentApproval: "考核小组（待处理）",
-            steps: [
-              { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-              { status: '通过' as const, role: '合作导师', time: '2025-09-02 12:00' },
-              { status: '考核中' as const, role: '考核小组' }
-            ],
-            user_id: 1,
-            subject: "园艺学",
-            cotutor: "李导师",
-            allitutor: "王导师",
-            workflow_status: "考核中"
-          },
-          {
-            id: 2,
-            studentId: "20230002",
-            name: "李四",
-            college: "园艺林学学院",
-            major: "林学",
-            applyTime: "2025-09-01",
-            status: "考核中",
-            node: "考核小组",
-            currentApproval: "考核小组（待处理）",
-            steps: [
-              { status: '发起' as const, role: '学生申请', time: '2025-09-01 09:00' },
-              { status: '通过' as const, role: '合作导师', time: '2025-09-01 10:00' },
-              { status: '考核中' as const, role: '考核小组' }
-            ],
-            user_id: 2,
-            subject: "林学",
-            cotutor: "张导师",
-            allitutor: "刘导师",
-            workflow_status: "考核中"
-          },
-          {
-            id: 3,
-            studentId: "20230003",
-            name: "王五",
-            college: "园艺林学学院",
-            major: "林学",
-            applyTime: "2025-09-01",
-            status: "考核中",
-            node: "考核小组",
-            currentApproval: "考核小组（待处理）",
-            steps: [
-              { status: '发起' as const, role: '学生申请', time: '2025-09-01 08:00' },
-              { status: '通过' as const, role: '合作导师', time: '2025-09-01 09:00' },
-              { status: '考核中' as const, role: '考核小组' }
-            ],
-            user_id: 3,
-            subject: "林学",
-            cotutor: "陈导师",
-            allitutor: "赵导师",
-            workflow_status: "考核中"
+        console.log("Fetching assessment data for admin...", fetch.raw.GET);
+        const res = await fetch.raw.GET("/workflow/my-pending-tasks");
+        console.log("考核列表数据:", res.data);
+        
+        // 先打印出完整的响应数据结构，方便调试
+        console.log('完整的API响应:', JSON.stringify(res.data, null, 2));
+        
+        // 使用类型断言处理数据
+        const responseData = res.data as any;
+        
+        // 尝试提取workflows数据，不管它在哪个层级
+        let workflows: any[] = [];
+        
+        // 检查可能的数据结构
+        if (responseData) {
+          if (Array.isArray(responseData)) {
+            workflows = responseData;
+          } else if (responseData.pending_workflows && Array.isArray(responseData.pending_workflows)) {
+            workflows = responseData.pending_workflows;
+          } else if (responseData.pending_processes && Array.isArray(responseData.pending_processes)) {
+            workflows = responseData.pending_processes;
+          } else if (responseData.data && Array.isArray(responseData.data)) {
+            workflows = responseData.data;
           }
-        ];
-        tableData.value = mockData;
+        }
+        
+        // 只过滤出进站考核相关的数据
+        workflows = workflows.filter(item => {
+          // 检查process_type字段是否包含entry_assessment或assessment字样
+          return item.process_type === 'entry_assessment'
+        });
+        
+        console.log('过滤后的进站考核数据:', workflows);
+        
+        // 转换数据格式
+        const formattedData: AssessmentData[] = workflows.map((item: any, index: number) => {
+          return {
+            id: index + 1,
+            studentId: String(item.student_id || ''),
+            name: item.student_name || '',
+            college: '',  // 这些字段在API中可能没有，先设置为空
+            major: '',
+            applyTime: new Date().toLocaleDateString(),  // 可能需要从其他字段获取
+            status: item.current_status || '',
+            node: item.description || '',
+            currentApproval: item.current_status || '',
+            steps: [],
+            user_id: item.student_id || 0,
+            subject: '',
+            cotutor: '',
+            allitutor: '',
+            workflow_status: item.current_status || '',
+          };
+        });
+        
+        tableData.value = formattedData;
+        
+        if (formattedData.length === 0) {
+          console.warn('未找到有效数据或数据格式不符合预期', res.data);
+        }
       } catch (error) {
         console.error('获取考核申请列表失败:', error);
         ElMessage.error('获取考核申请列表失败');
@@ -154,10 +150,25 @@ export default defineComponent({
     };
 
     // 处理详情按钮点击
-    const handleDetail = (row: AssessmentData) => {
+    const handleDetail = async (row: AssessmentData) => {
       console.log('查看考核详情:', row);
-      studentInfo.value = row;
-      showDetail.value = true;
+      
+      try {
+        loading.value = true;
+        // 使用学生ID获取完整的学生信息
+        const data = await getUserProfileById(row.user_id);
+        studentInfo.value = data;
+        console.log("加载的学生详细信息:", data);
+        showDetail.value = true;
+      } catch (error) {
+        console.error("加载学生详细信息失败:", error);
+        ElMessage.error("获取学生详细信息失败");
+        // 如果获取失败，仍然显示基本信息
+        studentInfo.value = row;
+        showDetail.value = true;
+      } finally {
+        loading.value = false;
+      }
     };
 
     // 加载学生信息
@@ -198,50 +209,32 @@ export default defineComponent({
       }
     };
 
-    // 第二部分表单数据
-    const projectForm = ref({
-      projectName: "", //研究项目名称
-      projectSource: "", //项目来源
-      projectType: "", //项目性质
-      approvalTime: "", //批准时间
-      projectFee: "", //项目经费
-      projectTask: "", //研究项目任务
-      projectThought: "", //申请者对研究项目思路
-    });
-    
-    const form = ref({
-      guideGroupOpinion: "",
-      guideGroupDate: "",
-      guideGroupLeader: "",
-      staff: [
-        { name: "", org: "", job: "", major: "", sign: "" },
-        { name: "", org: "", job: "", major: "", sign: "" },
-        { name: "", org: "", job: "", major: "", sign: "" },
-      ],
-      recordCheck: "",
-      assessmentOpinion: "",
-      assessmentLeader: "",
-      assessmentDate: "",
-      vote: "",
-      stationOpinion: "",
-      stationLeader: "",
-      stationDate: "",
-    });
-    
-    const addStaff = () => {
-      form.value.staff.push({ name: "", org: "", job: "", major: "", sign: "" });
-    };
-    
-    const removeStaff = (index: number) => {
-      if (form.value.staff.length > 1) form.value.staff.splice(index, 1);
+    const handleApprove = async () => {
+      try {
+        ElMessage.success("考核通过成功");
+        // 延迟跳转，让用户看到成功消息
+        setTimeout(() => {
+          showDetail.value = false;
+          studentInfo.value = null;
+        }, 1500);
+      } catch (error) {
+        console.error("考核失败:", error);
+        ElMessage.error("考核失败");
+      }
     };
 
-    const handleSubmit = () => {
-      ElMessage.success("提交成功");
-      setTimeout(() => {
-        showDetail.value = false;
-        studentInfo.value = null;
-      }, 1500);
+    const handleReject = async () => {
+      try {
+        ElMessage.warning("考核驳回成功");
+        // 延迟跳转，让用户看到成功消息
+        setTimeout(() => {
+          showDetail.value = false;
+          studentInfo.value = null;
+        }, 1500);
+      } catch (error) {
+        console.error("考核失败:", error);
+        ElMessage.error("考核失败");
+      }
     };
 
     return () => (
@@ -305,159 +298,149 @@ export default defineComponent({
           </>
         ) : (
           // 显示考核详情表单
-          <>
+          <div style={{ height: "100vh", overflowY: "auto", padding: "0 20px" }}>
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ margin: '0 0 20px 0', color: '#333', fontSize: '24px', fontWeight: '600', textAlign: 'center' }}>进站考核详情</h2>
             </div>
 
-            {/* 进站考核内容 */}
-            <div style={{ flex: 1, overflowY: "auto" }}>
+            {/* 考核申请内容 */}
+            <div style={{ paddingBottom: "40px" }}>
               {loading.value ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>加载中...</div>
               ) : (
-                <UserinfoRegister 
-                  showOtherDescription={false}
-                  externalUserInfo={studentInfo.value}
-                  userRole="admin"
-                />
-              )}
-
-              {/* 第二部分 博士后研究项目情况 */}
-              <div style={{ marginTop: "32px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
-                <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
-                  二、博士后研究项目情况
-                </div>
-                <ElForm model={projectForm.value} labelWidth="120px">
-                  <ElFormItem label="研究项目名称">
-                    <ElInput v-model={projectForm.value.projectName} />
-                  </ElFormItem>
-                  <div style={{ display: "flex", gap: "16px" }}>
-                    <ElFormItem label="项目来源" style={{ flex: 1 }}>
-                      <ElInput v-model={projectForm.value.projectSource} />
-                    </ElFormItem>
-                    <ElFormItem label="项目性质" style={{ flex: 1 }}>
-                      <ElInput v-model={projectForm.value.projectType} />
-                    </ElFormItem>
+                <>
+                  {/* 第一部分 基本信息 */}
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
+                    <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
+                      一、基本信息
+                    </div>
+                    <UserinfoRegister 
+                      showResult={false}
+                      externalUserInfo={studentInfo.value}
+                      userRole="admin"
+                    />
                   </div>
-                  <div style={{ display: "flex", gap: "16px" }}>
-                    <ElFormItem label="批准时间" style={{ flex: 1 }}>
-                      <ElInput v-model={projectForm.value.approvalTime} />
-                    </ElFormItem>
-                    <ElFormItem label="项目经费" style={{ flex: 1 }}>
-                      <ElInput v-model={projectForm.value.projectFee} />
-                    </ElFormItem>
+
+                  {/* 第二部分 研究项目情况 */}
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
+                    <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
+                      二、博士后研究项目情况
+                    </div>
+                    <ResearchForm
+                      onSubmitSuccess={() => {
+                        // 这里不需要做任何操作，因为管理员只是查看
+                      }}
+                      onBack={() => {}}
+                      showButtons={false}
+                      externalUserId={userId ? parseInt(userId) : undefined}
+                      userRole="admin"
+                    />
                   </div>
-                  <ElFormItem label="研究项目任务">
-                    <ElInput v-model={projectForm.value.projectTask} type="textarea" rows={4} />
-                  </ElFormItem>
-                  <ElFormItem label="申请者对研究项目思路">
-                    <ElInput v-model={projectForm.value.projectThought} type="textarea" rows={4} />
-                  </ElFormItem>
-                </ElForm>
-              </div>
 
-              {/* 第三部分 考核情况 */}
-              <div style={{ marginTop: "32px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
-                <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
-                  三、考核情况
-                </div>
+                  {/* 第三部分 考核评估信息 */}
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
+                    <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
+                      三、考核评估
+                    </div>
+                    
+                    {/* 基本状态信息 */}
+                    <div style={{ padding: '20px', border: '1px solid #e4e7ed', borderRadius: '8px', background: '#f8f9fa', marginBottom: '20px' }}>
+                      <div style={{ fontSize: '16px', marginBottom: '15px' }}>
+                        <strong>考核状态：</strong>
+                        <span style={{ color: '#409eff', fontWeight: 'bold' }}>{studentInfo.value?.workflow_status || '待考核'}</span>
+                      </div>
+                      <div style={{ fontSize: '16px', marginBottom: '15px' }}>
+                        <strong>当前节点：</strong>{studentInfo.value?.node || '考核小组'}
+                      </div>
+                      <div style={{ fontSize: '16px', marginBottom: '15px' }}>
+                        <strong>申请时间：</strong>{studentInfo.value?.applyTime || new Date().toLocaleDateString()}
+                      </div>
+                    </div>
 
-                <div style={{ borderTop: "1px solid #333", padding: "16px", display: "flex" }}>
-                  <ElFormItem label="考核组人员基本情况" style={{ marginBottom: 0 }}></ElFormItem>
-                  <div>
-                    <ElTable data={form.value.staff} border style={{ width: "100%", marginBottom: "8px" }}>
-                      <ElTableColumn prop="name" label="姓名" width="120">
-                        {{
-                          default: ({ row, $index }: { row: any; $index: number }) => (
-                            <ElInput v-model={row.name} placeholder="姓名" />
-                          ),
-                        }}
-                      </ElTableColumn>
-                      <ElTableColumn prop="org" label="工作单位" width="220">
-                        {{
-                          default: ({ row }: { row: any }) => (
-                            <ElInput v-model={row.org} placeholder="工作单位" />
-                          ),
-                        }}
-                      </ElTableColumn>
-                      <ElTableColumn prop="job" label="职务或职称" width="140">
-                        {{
-                          default: ({ row }: { row: any }) => (
-                            <ElInput v-model={row.job} placeholder="职务或职称" />
-                          ),
-                        }}
-                      </ElTableColumn>
-                      <ElTableColumn prop="major" label="专业及研究方向" width="240">
-                        {{
-                          default: ({ row }: { row: any }) => (
-                            <ElInput v-model={row.major} placeholder="专业及研究方向" />
-                          ),
-                        }}
-                      </ElTableColumn>
-                      <ElTableColumn prop="sign" label="签字" width="150">
-                        {{
-                          default: ({ row }: { row: any }) => (
-                            <ElInput v-model={row.sign} placeholder="签字" />
-                          ),
-                        }}
-                      </ElTableColumn>
-                      <ElTableColumn label="操作" width="100">
-                        {{
-                          default: ({ $index }: { $index: number }) => (
-                            <ElButton
-                              type="danger"
-                              size="small"
-                              onClick={() => removeStaff($index)}
-                              disabled={form.value.staff.length === 1}
-                            >
-                              删除
-                            </ElButton>
-                          ),
-                        }}
-                      </ElTableColumn>
-                    </ElTable>
-                    <ElButton type="primary" plain onClick={addStaff} style={{ marginBottom: "16px" }}>
-                      添加人员
+                    {/* 考核评估标准 */}
+                    <div style={{ marginBottom: '25px' }}>
+                      <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px', color: '#333' }}>考核评估标准：</h3>
+                      <div style={{ background: '#fff', border: '1px solid #e1e6eb', borderRadius: '8px', padding: '20px' }}>
+                        <div style={{ marginBottom: '15px' }}>
+                          <strong>1. 学术背景评估：</strong>
+                          <ul style={{ margin: '5px 0', paddingLeft: '20px', color: '#666' }}>
+                            <li>博士学位获得情况及学术水平</li>
+                            <li>相关研究经历和学术成果</li>
+                            <li>专业知识储备和研究能力</li>
+                          </ul>
+                        </div>
+                        <div style={{ marginBottom: '15px' }}>
+                          <strong>2. 研究计划评估：</strong>
+                          <ul style={{ margin: '5px 0', paddingLeft: '20px', color: '#666' }}>
+                            <li>研究目标的明确性和可行性</li>
+                            <li>研究方法的科学性和创新性</li>
+                            <li>预期成果的价值和意义</li>
+                          </ul>
+                        </div>
+                        <div style={{ marginBottom: '15px' }}>
+                          <strong>3. 综合素质评估：</strong>
+                          <ul style={{ margin: '5px 0', paddingLeft: '20px', color: '#666' }}>
+                            <li>学术道德和职业素养</li>
+                            <li>团队协作和沟通能力</li>
+                            <li>独立研究和创新潜力</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 管理员评估区域 */}
+                    <div style={{ background: '#f0f9ff', border: '2px solid #3b82f6', borderRadius: '8px', padding: '20px' }}>
+                      <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px', color: '#1e40af' }}>
+                        📋 管理员评估决策
+                      </h3>
+                      <div style={{ marginBottom: '15px' }}>
+                        <div style={{ fontSize: '16px', color: '#374151', lineHeight: '1.6' }}>
+                          请根据以上学生的基本信息、研究项目情况以及考核评估标准，对该学生的进站考核申请做出评估：
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                        <div style={{ padding: '15px', background: '#ffffff', borderRadius: '6px', border: '1px solid #d1d5db' }}>
+                          <div style={{ fontWeight: 'bold', color: '#059669', marginBottom: '8px' }}>✅ 建议通过条件：</div>
+                          <ul style={{ margin: 0, paddingLeft: '16px', color: '#4b5563', fontSize: '14px' }}>
+                            <li>学术背景符合要求</li>
+                            <li>研究计划可行且有价值</li>
+                            <li>材料完整真实</li>
+                            <li>具备独立研究能力</li>
+                          </ul>
+                        </div>
+                        <div style={{ padding: '15px', background: '#ffffff', borderRadius: '6px', border: '1px solid #d1d5db' }}>
+                          <div style={{ fontWeight: 'bold', color: '#dc2626', marginBottom: '8px' }}>❌ 建议驳回条件：</div>
+                          <ul style={{ margin: 0, paddingLeft: '16px', color: '#4b5563', fontSize: '14px' }}>
+                            <li>学术背景不符合要求</li>
+                            <li>研究计划不够完善</li>
+                            <li>材料不完整或有问题</li>
+                            <li>不具备相应研究能力</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div style={{ background: '#fef3c7', padding: '12px', borderRadius: '6px', border: '1px solid #f59e0b' }}>
+                        <div style={{ fontSize: '14px', color: '#92400e', fontWeight: '500' }}>
+                          💡 提示：请仔细审查学生提交的材料，确保信息的真实性和完整性，并根据本站的招收标准做出客观公正的评估。
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 操作按钮区域 */}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "20px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)' }}>
+                    <ElButton onClick={handleBack} size="large">
+                      返回列表
                     </ElButton>
+                    <ElButton type="danger" onClick={handleReject} size="large">不通过</ElButton>
+                    <ElButton type="primary" onClick={handleApprove} size="large">通过</ElButton>
                   </div>
-                </div>
-                
-                <div style={{ padding: "16px", minHeight: "180px", borderTop: "1px solid #333", borderBottom: "1px solid #333", position: "relative" }}>
-                  <ElFormItem label="指导小组意见" style={{ marginBottom: 0 }}>
-                    <ElInput type="textarea" v-model={form.value.guideGroupOpinion} autosize={{ minRows: 5 }} />
-                  </ElFormItem>
-                  <div style={{ display: "flex", gap: "16px", position: "absolute", right: "20px", bottom: "5px" }}>
-                    <ElFormItem label="指导小组负责人(合作导师)签字" prop="guideGroupLeader" labelWidth={300}>
-                      <ElInput v-model={form.value.guideGroupLeader} />
-                    </ElFormItem>
-                    <ElFormItem label="日期" prop="guideGroupDate">
-                      <ElDatePicker
-                        v-model={form.value.guideGroupDate}
-                        type="date"
-                        placeholder="选择日期"
-                        style={{ width: "100%" }}
-                      />
-                    </ElFormItem>
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
-          </>
-        )
-        }
-
-        {/* 操作按钮 */}
-        {/* <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
-          <ElButton onClick={handleBack}>
-            {showDetail.value ? '返回列表' : '返回'}
-          </ElButton>
-          {showDetail.value && (
-            <>
-              <ElButton onClick={handleSubmit} type="primary">提交</ElButton>
-              <ElButton type="success">导出</ElButton>
-            </>
-          )}
-        </div> */}
+          </div>
+        )}
       </div>
     );
   },

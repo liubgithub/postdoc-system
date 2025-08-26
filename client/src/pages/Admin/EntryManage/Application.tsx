@@ -150,10 +150,25 @@ export default defineComponent({
     };
 
     // 处理详情按钮点击
-    const handleDetail = (row: StudentData) => {
+    const handleDetail = async (row: StudentData) => {
       console.log('查看详情:', row);
-      studentInfo.value = row;
-      showDetail.value = true;
+      
+      try {
+        loading.value = true;
+        // 使用学生ID获取完整的学生信息
+        const data = await getUserProfileById(row.user_id);
+        studentInfo.value = data;
+        console.log("加载的学生详细信息:", data);
+        showDetail.value = true;
+      } catch (error) {
+        console.error("加载学生详细信息失败:", error);
+        ElMessage.error("获取学生详细信息失败");
+        // 如果获取失败，仍然显示基本信息
+        studentInfo.value = row;
+        showDetail.value = true;
+      } finally {
+        loading.value = false;
+      }
     };
 
     // 加载学生信息
@@ -283,19 +298,19 @@ export default defineComponent({
           </>
         ) : (
           // 显示申请详情表单
-          <>
+          <div style={{ height: "100vh", overflowY: "auto", padding: "0 20px" }}>
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ margin: '0 0 20px 0', color: '#333', fontSize: '24px', fontWeight: '600', textAlign: 'center' }}>进站申请详情</h2>
             </div>
 
             {/* 进站申请内容 */}
-            <div style={{ flex: 1, overflowY: "auto" }}>
+            <div style={{ paddingBottom: "40px" }}>
               {loading.value ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>加载中...</div>
               ) : (
                 <>
                   {/* 第一部分 基本信息 */}
-                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
                     <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
                       一、基本信息
                     </div>
@@ -307,7 +322,7 @@ export default defineComponent({
                   </div>
 
                   {/* 第二部分 研究项目情况 */}
-                  <div style={{ marginTop: "32px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
                     <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
                       二、博士后研究项目情况
                     </div>
@@ -321,24 +336,20 @@ export default defineComponent({
                       userRole="admin"
                     />
                   </div>
+
+                  {/* 操作按钮区域 */}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "20px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)' }}>
+                    <ElButton onClick={handleBack} size="large">
+                      返回列表
+                    </ElButton>
+                    <ElButton type="danger" onClick={handleReject} size="large">不通过</ElButton>
+                    <ElButton type="primary" onClick={handleApprove} size="large">通过</ElButton>
+                  </div>
                 </>
               )}
             </div>
-          </>
+          </div>
         )}
-
-        {/* 操作按钮 */}
-        {/* <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
-          <ElButton onClick={handleBack}>
-            {showDetail.value ? '返回列表' : '返回'}
-          </ElButton>
-          {showDetail.value && (
-            <>
-              <ElButton type="danger" onClick={handleReject}>不通过</ElButton>
-              <ElButton type="primary" onClick={handleApprove}>通过</ElButton>
-            </>
-          )}
-        </div> */}
       </div>
     );
   },
