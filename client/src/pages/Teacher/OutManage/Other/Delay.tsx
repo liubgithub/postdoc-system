@@ -1,6 +1,6 @@
 import { defineComponent, ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import * as styles from "../../UserInfo/styles.css.ts";
+import * as styles from "../../../UserInfo/styles.css.ts";
 import {
   ElRow,
   ElCol,
@@ -13,7 +13,7 @@ import {
 } from "element-plus";
 
 export default defineComponent({
-  name: 'OutManageOut',
+  name: 'OutManageDelay',
   setup() {
     const searchValue = ref("");
     const router = useRouter();
@@ -134,9 +134,9 @@ export default defineComponent({
                       <ElTableColumn
                         label="操作"
                         align="center"
-                        width={150}
+                        width={100}
                         v-slots={{ default: (scope: any) => (
-                          <ElButton type="primary" size="small" onClick={() => alert('审核功能开发中')}>查看详情</ElButton>
+                          <ElButton type="primary" size="small" onClick={() => alert('审核功能开发中')}>审核</ElButton>
                         )}}
                       />
                     </ElTable>

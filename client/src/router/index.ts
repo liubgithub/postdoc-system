@@ -15,10 +15,10 @@ import EntryApplyPage from '@/pages/Teacher/EntryManage/EntryAply';
 import EntryApprovalPage from '@/pages/Teacher/EntryManage/ViewEntryAply';
 import EntryCheckPage from '@/pages/Teacher/EntryManage/EntryCheck';
 import ViewEntryCheckPage from '@/pages/Teacher/EntryManage/ViewEntryCheck';
-import OutManagePage from '@/pages/Teacher/OutManage/OutManage';
-import OutManageAssessment from '@/pages/Teacher/OutManage/Assessment';
-import OutManageDelay from '@/pages/Teacher/OutManage/Delay';
-import OutManageOut from '@/pages/Teacher/OutManage/Out';
+import OutManagePage from '@/pages/Teacher/OutManage/Other/OutManage';
+import OutManageAssessment from '@/pages/Teacher/OutManage/Other/Assessment';
+import OutManageDelay from '@/pages/Teacher/OutManage/Other/Delay';
+import OutManageOut from '@/pages/Teacher/OutManage/Other/Out';
 import MiddleCheckPage from '@/pages/Teacher/InManage/MiddleCheck';
 import ViewMiddleCheckPage from '@/pages/Teacher/InManage/ViewMiddleCheck';
 import YearCheckPage from '@/pages/Teacher/InManage/YearCheck';
@@ -27,6 +27,7 @@ import ExtensionCheckPage from '@/pages/Teacher/InManage/ExtentionCheck';
 import ViewExtensionCheckPage from '@/pages/Teacher/InManage/ViewExtentionCheck';
 import AccountCheckPage from '@/pages/Teacher/AccountApproval/AccountCheck';
 import OutCheckPage from '@/pages/Teacher/OutManage/OutCheck';
+import ViewOutCheckPage from '@/pages/Teacher/OutManage/ViewOutCheck';
 import PremissionManage from '@/pages/Admin/PremissionManage'
 import Statistics from '@/pages/Admin/Statistics'
 import InformationRelease from '@/pages/Admin/InformationRelease'
@@ -179,11 +180,15 @@ const router = createRouter({
       component: OutCheckPage,
     },
     {
+      path: '/teacher/outCheck/detail',
+      component: ViewOutCheckPage,
+    },
+    {
       path: '/teacher/outManage',
       component: OutManagePage,
       children: [
         { path: 'assessment', component: OutManageAssessment },
-        { path: 'assessment/:id', component: () => import('@/pages/Teacher/OutManage/AssessmentDetail') },
+        { path: 'assessment/:id', component: () => import('@/pages/Teacher/OutManage/Other/AssessmentDetail') },
         { path: 'delay', component: OutManageDelay },
         { path: 'out', component: OutManageOut },
         { path: 'out', component: OutCheckPage },

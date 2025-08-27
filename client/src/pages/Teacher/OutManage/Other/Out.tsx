@@ -1,7 +1,6 @@
 import { defineComponent, ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-
-import * as styles from "../../UserInfo/styles.css.ts";
+import * as styles from "../../../UserInfo/styles.css.ts";
 import {
   ElRow,
   ElCol,
@@ -14,7 +13,7 @@ import {
 } from "element-plus";
 
 export default defineComponent({
-  name: 'OutManageAssessment',
+  name: 'OutManageOut',
   setup() {
     const searchValue = ref("");
     const router = useRouter();
@@ -26,13 +25,20 @@ export default defineComponent({
       { id: 3, studentId: '20230003', name: '王五', teacherName: '赵老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-03', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
       { id: 4, studentId: '20230004', name: '赵六', teacherName: '钱老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-04', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
       { id: 5, studentId: '20230005', name: '孙七', teacherName: '孙老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-05', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
-      { id: 6, studentId: '20230006', name: '周八', teacherName: '周老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-06', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 6, studentId: '20230006', name: '周八', teacherName: '周老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-06', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
       { id: 7, studentId: '20230007', name: '吴九', teacherName: '吴老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-07', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
-      { id: 8, studentId: '20230008', name: '郑十', teacherName: '郑老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-08', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
-      { id: 9, studentId: '20230009', name: '钱十一', teacherName: '钱老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-09', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
-      { id: 10, studentId: '20230010', name: '周十二', teacherName: '周老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-10', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
-      { id: 11, studentId: '20230011', name: '周十三', teacherName: '周老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-11', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
-      { id: 12, studentId: '20230012', name: '周十四', teacherName: '周老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-12', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 8, studentId: '20230008', name: '郑十', teacherName: '郑老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-08', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
+      { id: 9, studentId: '20230009', name: '陈十一', teacherName: '陈老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-09', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 10, studentId: '20230010', name: '王十二', teacherName: '王老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-10', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
+      { id: 11, studentId: '20230011', name: '张十三', teacherName: '张老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-11', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 12, studentId: '20230012', name: '李十四', teacherName: '李老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-12', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
+      { id: 13, studentId: '20230013', name: '王十五', teacherName: '王老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-13', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 14, studentId: '20230014', name: '张十六', teacherName: '张老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-14', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
+      { id: 15, studentId: '20230015', name: '李十七', teacherName: '李老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-15', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 16, studentId: '20230016', name: '王十八', teacherName: '王老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-16', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
+      { id: 17, studentId: '20230017', name: '张十九', teacherName: '张老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-17', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
+      { id: 18, studentId: '20230018', name: '李二十', teacherName: '李老师', college: '园艺林学学院', major: '园艺学', applyTime: '2024-06-18', processStatus: '已审核', nodeName: '学院审核', currentResult: '通过' },
+      { id: 19, studentId: '20230019', name: '王二十一', teacherName: '王老师', college: '园艺林学学院', major: '林学', applyTime: '2024-06-19', processStatus: '待审核', nodeName: '导师审核', currentResult: '未通过' },
     ];
     const tableData = ref([...allTableData]);
     // 分页相关
@@ -124,13 +130,13 @@ export default defineComponent({
                       <ElTableColumn prop="applyTime" label="申请时间" align="center" />
                       <ElTableColumn prop="processStatus" label="流程状态" align="center" />
                       <ElTableColumn prop="nodeName" label="节点名称" align="center" />
-                      <ElTableColumn prop="currentResult" label="当前考核结果" align="center" />
+                      <ElTableColumn prop="currentResult" label="当前审批结果" align="center" />
                       <ElTableColumn
                         label="操作"
                         align="center"
-                        width={100}
+                        width={150}
                         v-slots={{ default: (scope: any) => (
-                          <ElButton type="primary" size="small" onClick={() => router.push(`/teacher/outManage/assessment/${scope.row.id}`)}>审核</ElButton>
+                          <ElButton type="primary" size="small" onClick={() => alert('审核功能开发中')}>查看详情</ElButton>
                         )}}
                       />
                     </ElTable>
@@ -167,7 +173,7 @@ export default defineComponent({
                     <ElButton
                       style={{ width: 120 }}
                       plain
-                      onClick={() => router.push("/teacher")}
+                      onClick={() => router.push("/teacher/outManage")}
                     >
                       返回
                     </ElButton>
