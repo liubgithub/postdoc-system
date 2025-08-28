@@ -8,6 +8,10 @@ export default defineComponent({
         onBack: {
             type: Function,
             required: true
+        },
+        isViewMode: {
+            type: Boolean,
+            default: false
         }
     },
     setup(props) {
@@ -60,7 +64,13 @@ export default defineComponent({
                             <ElInput v-model={form.value.station} />
                         </ElFormItem>
                         <ElFormItem label="填表日期">
-                            <ElDatePicker v-model={form.value.fillDate} type="date" placeholder="选择日期" style={{ width: '160px' }} />
+                            <ElDatePicker 
+                            v-model={form.value.fillDate} 
+                            type="date" 
+                            placeholder="选择日期" 
+                            style={{ width: '160px' }} 
+                            valueFormat='YYYY-MM-DD'
+                            />
                         </ElFormItem>
                     </div>
                     <div>
@@ -144,28 +154,30 @@ export default defineComponent({
                                     <span>其他<ElInput v-model={form.value.attendance.other} style={{ width: '60px', border: 'none', marginLeft: '4px' }} inputStyle={{ border: 'none', background: 'transparent' }} /></span>
                                 </div>
                             </div>
-                            {/* 单位考核区块 */}
-                            <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
-                                <ElFormItem label="单位考核结果以及评语">
-                                    <ElInput v-model={form.value.unitComment} type="textarea" rows={3} autosize={{ minRows: 3 }} disabled/>
-                                </ElFormItem>
-                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px', justifyContent: 'flex-end' }}>
-                                    <ElFormItem label="划分档次">
-                                        <ElSelect v-model={form.value.unitGrade} placeholder='请选择' style={{ width: '160px' }} disabled>
-                                            <ElOption label="优秀" value="优秀" />
-                                            <ElOption label="合格" value="合格" />
-                                            <ElOption label="基本合格" value="基本合格" />
-                                            <ElOption label="不合格" value="不合格" />
-                                        </ElSelect>
+                            {/* 单位考核区块 - 仅在查看模式下显示 */}
+                            {props.isViewMode && (
+                                <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
+                                    <ElFormItem label="单位考核结果以及评语">
+                                        <ElInput v-model={form.value.unitComment} type="textarea" rows={3} autosize={{ minRows: 3 }} disabled/>
                                     </ElFormItem>
-                                    <ElFormItem label="负责人签名日期">
-                                        <ElDatePicker v-model={form.value.unitSignDate} type="date" placeholder="选择日期" style={{ width: '160px' }} disabled/>
-                                    </ElFormItem>
-                                    <ElFormItem label="负责人签名" style={{ marginBottom: 0 }}>
-                                        <SignaturePad mode="compact" disabled/>
-                                    </ElFormItem>
+                                    <div style={{ display: 'flex', gap: '16px', marginTop: '8px', justifyContent: 'flex-end' }}>
+                                        <ElFormItem label="划分档次">
+                                            <ElSelect v-model={form.value.unitGrade} placeholder='请选择' style={{ width: '160px' }} disabled>
+                                                <ElOption label="优秀" value="优秀" />
+                                                <ElOption label="合格" value="合格" />
+                                                <ElOption label="基本合格" value="基本合格" />
+                                                <ElOption label="不合格" value="不合格" />
+                                            </ElSelect>
+                                        </ElFormItem>
+                                        <ElFormItem label="负责人签名日期">
+                                            <ElDatePicker v-model={form.value.unitSignDate} type="date" placeholder="选择日期" style={{ width: '160px' }} disabled/>
+                                        </ElFormItem>
+                                        <ElFormItem label="负责人签名" style={{ marginBottom: 0 }}>
+                                            <SignaturePad mode="compact" disabled/>
+                                        </ElFormItem>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                             {/* 被考核人意见区块 */}
                             <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
                                 <ElFormItem label="被考核人意见">
@@ -180,16 +192,18 @@ export default defineComponent({
                                     </ElFormItem>
                                 </div>
                             </div>
-                            {/* 学校审核意见区块 */}
-                            <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
-                                <ElFormItem label="学校审核意见" style={{ marginBottom: 0 }}>
-                                    <ElInput v-model={form.value.schoolComment} type="textarea" rows={2} autosize={{ minRows: 2 }} disabled />
-                                </ElFormItem>
-                                <div style={{ display: 'flex', gap: '16px', marginTop: '8px',justifyContent:'flex-end' }}>
-                                    <span>盖章</span>
-                                    <ElDatePicker v-model={form.value.schoolSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} disabled />
+                            {/* 学校审核意见区块 - 仅在查看模式下显示 */}
+                            {props.isViewMode && (
+                                <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
+                                    <ElFormItem label="学校审核意见" style={{ marginBottom: 0 }}>
+                                        <ElInput v-model={form.value.schoolComment} type="textarea" rows={2} autosize={{ minRows: 2 }} disabled />
+                                    </ElFormItem>
+                                    <div style={{ display: 'flex', gap: '16px', marginTop: '8px',justifyContent:'flex-end' }}>
+                                        <span>盖章</span>
+                                        <ElDatePicker v-model={form.value.schoolSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} disabled />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                             {/* 备注区块（最后一个区块） */}
                             <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
                                 <ElFormItem label="备注" style={{ marginBottom: 0 }}>
@@ -205,7 +219,7 @@ export default defineComponent({
                     {/* 按钮 */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
                         <ElButton onClick={() => props.onBack()}>返回</ElButton>
-                        <ElButton type="primary">申请</ElButton>
+                        {!props.isViewMode && <ElButton type="primary">申请</ElButton>}
                     </div>
                 </ElForm>
             </div>

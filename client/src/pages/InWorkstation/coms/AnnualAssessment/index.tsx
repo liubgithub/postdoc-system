@@ -8,6 +8,7 @@ export default defineComponent({
     name: "AnnualAssessment",
     setup() {
         const showDetails = ref(false)
+        const isViewMode = ref(false)
 
         const showProcess = ref(false)
 
@@ -65,21 +66,24 @@ export default defineComponent({
         // const editableFields = ['stuId', 'name', 'cotutor', 'college', 'subject']
         const handleView = (row: TableRow) => {
             console.log('View data:', row)
+            isViewMode.value = true
             showDetails.value = true
         }
 
         const handleBack = () => {
             showDetails.value = false
+            isViewMode.value = false
         }
 
         const handleApply = () => {
+            isViewMode.value = false
             showDetails.value = true
         }
 
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <AnnualAssessment onBack={handleBack} />
+                    <AnnualAssessment onBack={handleBack} isViewMode={isViewMode.value} />
                 ) : (
                     <>
                         <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>

@@ -1,5 +1,5 @@
 from app.database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, DateTime, Date
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -10,7 +10,7 @@ class EnterAssessment(Base):
     project_name = Column(String(255), nullable=False)  # 研究项目名称
     project_source = Column(String(255), nullable=False)  # 项目来源
     project_type = Column(String(255), nullable=False)  # 项目性质
-    approval_time = Column(String(255), nullable=False)  # 批准时间
+    approval_time = Column(Date, nullable=False)  # 批准时间
     project_fee = Column(String(255), nullable=False)  # 项目经费
     project_task = Column(Text, nullable=False)  # 研究项目任务
     project_thought = Column(Text, nullable=False)  # 申请者对研究项目思路
