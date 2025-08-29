@@ -241,8 +241,18 @@ export default defineComponent({
                       width={150}
                       align="center"
                       v-slots={{
-                        default: () => (
-                          <ElButton type="primary" size="small" onClick={() => router.push('/teacher/entryManage/check-detail')}>
+                        default: (scope: { row: any }) => (
+                          <ElButton type="primary" size="small" onClick={() => router.push({
+                            path: '/teacher/inManage/viewExtensionCheck',
+                            query: {
+                              studentId: scope.row.studentId,
+                              name: scope.row.name,
+                              college: scope.row.college,
+                              major: scope.row.major,
+                              applyTime: scope.row.applyTime,
+                              userId: scope.row.id
+                            }
+                          })}>
                             查看
                           </ElButton>
                         ),

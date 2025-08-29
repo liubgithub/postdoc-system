@@ -16,6 +16,9 @@ import UserinfoRegister from "@/pages/EnterWorksation/form.tsx";
 import ResearchForm from "@/pages/EnterWorksation/researchForm.tsx";
 
 // 引入API
+// 获取所有需要管理员处理的学生的信息
+import fetch from "@/api";
+// 获取特定学生id的信息
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
 
 // 定义数据类型
@@ -67,78 +70,66 @@ export default defineComponent({
     const fetchStudents = async () => {
       loading.value = true;
       try {
-        // 这里应该调用管理员的API接口
-        // const response = await getAdminApplications();
-        // 暂时使用模拟数据
-        const mockData: StudentData[] = [
-          {
-            id: 1,
-            studentId: "20230001",
-            name: "张三",
-            college: "园艺林学学院",
-            major: "园艺学",
-            applyTime: "2025-09-01",
-            status: "审核中",
-            node: "学院管理员",
-            currentApproval: "学院管理员（待处理）",
-            steps: [
-              { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-              { status: '通过' as const, role: '合作导师', time: '2025-09-02 12:00' },
-              { status: '通过' as const, role: '分管领导', time: '2025-09-03 09:30' },
-              { status: '审核中' as const, role: '学院管理员' }
-            ],
-            user_id: 1,
-            subject: "园艺学",
-            cotutor: "李导师",
-            allitutor: "王导师",
-            workflow_status: "审核中"
-          },
-          {
-            id: 2,
-            studentId: "20230002",
-            name: "李四",
-            college: "园艺林学学院",
-            major: "林学",
-            applyTime: "2025-09-01",
-            status: "审核中",
-            node: "学院管理员",
-            currentApproval: "学院管理员（待处理）",
-            steps: [
-              { status: '发起' as const, role: '学生申请', time: '2025-09-01 09:00' },
-              { status: '通过' as const, role: '合作导师', time: '2025-09-01 10:00' },
-              { status: '通过' as const, role: '分管领导', time: '2025-09-02 11:00' },
-              { status: '审核中' as const, role: '学院管理员' }
-            ],
-            user_id: 2,
-            subject: "林学",
-            cotutor: "张导师",
-            allitutor: "刘导师",
-            workflow_status: "审核中"
-          },
-          {
-            id: 3,
-            studentId: "20230003",
-            name: "王五",
-            college: "园艺林学学院",
-            major: "林学",
-            applyTime: "2025-09-01",
-            status: "审核中",
-            node: "学院管理员",
-            currentApproval: "学院管理员（待处理）",
-            steps: [
-              { status: '发起' as const, role: '学生申请', time: '2025-09-01 08:00' },
-              { status: '通过' as const, role: '合作导师', time: '2025-09-01 09:00' },
-              { status: '通过' as const, role: '分管领导', time: '2025-09-01 10:00' },
-              { status: '审核中' as const, role: '学院管理员' }
-            ],
-            user_id: 3,
-            subject: "林学",
-            cotutor: "陈导师",
-            allitutor: "赵导师",
-            workflow_status: "审核中"
+        console.log("Fetching students for admin...",fetch.raw.GET);
+        const res = await fetch.raw.GET("/workflow/my-pending-tasks");
+        console.log("学生列表数据:", res.data);
+        
+        // 先打印出完整的响应数据结构，方便调试
+        console.log('完整的API响应:', JSON.stringify(res.data, null, 2));
+        
+        // 使用类型断言处理数据
+        const responseData = res.data as any;
+        
+        // 尝试提取workflows数据，不管它在哪个层级
+        let workflows: any[] = [];
+        
+        // 检查可能的数据结构
+        if (responseData) {
+          if (Array.isArray(responseData)) {
+            workflows = responseData;
+          } else if (responseData.pending_workflows && Array.isArray(responseData.pending_workflows)) {
+            workflows = responseData.pending_workflows;
+          } else if (responseData.pending_processes && Array.isArray(responseData.pending_processes)) {
+            workflows = responseData.pending_processes;
+          } else if (responseData.data && Array.isArray(responseData.data)) {
+            workflows = responseData.data;
           }
-        ];
-        tableData.value = mockData;
+        }
+        
+        // 只过滤出进站申请相关的数据
+        workflows = workflows.filter(item => {
+          // 检查process_type字段是否包含entry_application或entry字样
+          return item.process_type === 'entry_application'
+        });
+        
+        console.log('过滤后的进站申请数据:', workflows);
+        
+        // 转换数据格式
+        const formattedData: StudentData[] = workflows.map((item: any, index: number) => {
+          return {
+            id: index + 1,
+            studentId: String(item.student_id || ''),
+            name: item.student_name || '',
+            college: '',  // 这些字段在API中可能没有，先设置为空
+            major: '',
+            applyTime: new Date().toLocaleDateString(),  // 可能需要从其他字段获取
+            status: item.current_status || '',
+            node: item.description || '',
+            currentApproval: item.current_status || '',
+            steps: [],
+            user_id: item.student_id || 0,
+            subject: '',
+            cotutor: '',
+            allitutor: '',
+            workflow_status: item.current_status || '',
+          };
+        });
+        
+        tableData.value = formattedData;
+        
+        if (formattedData.length === 0) {
+          console.warn('未找到有效数据或数据格式不符合预期', res.data);
+        }
       } catch (error) {
         console.error('获取学生列表失败:', error);
         ElMessage.error('获取学生列表失败');
@@ -159,10 +150,25 @@ export default defineComponent({
     };
 
     // 处理详情按钮点击
-    const handleDetail = (row: StudentData) => {
+    const handleDetail = async (row: StudentData) => {
       console.log('查看详情:', row);
-      studentInfo.value = row;
-      showDetail.value = true;
+      
+      try {
+        loading.value = true;
+        // 使用学生ID获取完整的学生信息
+        const data = await getUserProfileById(row.user_id);
+        studentInfo.value = data;
+        console.log("加载的学生详细信息:", data);
+        showDetail.value = true;
+      } catch (error) {
+        console.error("加载学生详细信息失败:", error);
+        ElMessage.error("获取学生详细信息失败");
+        // 如果获取失败，仍然显示基本信息
+        studentInfo.value = row;
+        showDetail.value = true;
+      } finally {
+        loading.value = false;
+      }
     };
 
     // 加载学生信息
@@ -292,19 +298,19 @@ export default defineComponent({
           </>
         ) : (
           // 显示申请详情表单
-          <>
+          <div style={{ height: "100vh", overflowY: "auto", padding: "0 20px" }}>
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ margin: '0 0 20px 0', color: '#333', fontSize: '24px', fontWeight: '600', textAlign: 'center' }}>进站申请详情</h2>
             </div>
 
             {/* 进站申请内容 */}
-            <div style={{ flex: 1, overflowY: "auto" }}>
+            <div style={{ paddingBottom: "40px" }}>
               {loading.value ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>加载中...</div>
               ) : (
                 <>
                   {/* 第一部分 基本信息 */}
-                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
                     <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
                       一、基本信息
                     </div>
@@ -316,7 +322,7 @@ export default defineComponent({
                   </div>
 
                   {/* 第二部分 研究项目情况 */}
-                  <div style={{ marginTop: "32px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em' }}>
+                  <div style={{ background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)', padding: '2em 4em', marginBottom: '20px' }}>
                     <div style={{ fontSize: "1.5em", fontWeight: 700, textAlign: "left", marginBottom: "1em", letterSpacing: "0.05em" }}>
                       二、博士后研究项目情况
                     </div>
@@ -330,24 +336,23 @@ export default defineComponent({
                       userRole="admin"
                     />
                   </div>
+
+                  {/* 操作按钮区域 */}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "20px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)' }}>
+                    <ElButton onClick={handleBack} size="large">
+                      返回列表
+                    </ElButton>
+                    <ElButton type="danger" onClick={handleReject} size="large">不通过</ElButton>
+                    <ElButton type="primary" onClick={handleApprove} size="large">通过</ElButton>
+                  </div>
                 </>
+
+
+
               )}
             </div>
-          </>
+          </div>
         )}
-
-        {/* 操作按钮 */}
-        {/* <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "auto" }}>
-          <ElButton onClick={handleBack}>
-            {showDetail.value ? '返回列表' : '返回'}
-          </ElButton>
-          {showDetail.value && (
-            <>
-              <ElButton type="danger" onClick={handleReject}>不通过</ElButton>
-              <ElButton type="primary" onClick={handleApprove}>通过</ElButton>
-            </>
-          )}
-        </div> */}
       </div>
     );
   },

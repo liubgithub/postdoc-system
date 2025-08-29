@@ -9,6 +9,10 @@ export default defineComponent({
             type: Function,
             required: true
         },
+        showYearButtons: {
+            type: Boolean,
+            default: true
+        },
         isViewMode: {
             type: Boolean,
             default: false
@@ -217,10 +221,12 @@ export default defineComponent({
                         说明：考核档次分为优秀、合格、基本合格、不合格
                     </div>
                     {/* 按钮 */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
-                        <ElButton onClick={() => props.onBack()}>返回</ElButton>
-                        {!props.isViewMode && <ElButton type="primary">申请</ElButton>}
-                    </div>
+                    {props.showYearButtons && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+                            <ElButton onClick={() => props.onBack()}>返回</ElButton>
+                            {!props.isViewMode && <ElButton type="primary">申请</ElButton>}
+                        </div>
+                    )}
                 </ElForm>
             </div>
         )

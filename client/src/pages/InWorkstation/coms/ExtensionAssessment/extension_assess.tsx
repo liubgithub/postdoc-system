@@ -1,4 +1,5 @@
 
+import { defineComponent, ref } from 'vue'
 import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElRadio, ElRadioGroup, ElCheckbox, ElCheckboxGroup, ElButton, ElTable, ElTableColumn, ElDatePicker, ElUpload } from 'element-plus'
 import * as cls from './style.css'
 import fetch from '@/api/index'
@@ -10,6 +11,14 @@ export default defineComponent({
         onBack: {
             type: Function as () => any,
             required: true,
+        },
+        externalData: {
+            type: Object as () => any,
+            default: () => ({})
+        },
+        showExtensionButtons: {
+            type: Boolean,
+            default: true
         }
     },
     setup(props) {
@@ -40,6 +49,16 @@ export default defineComponent({
             researchBrief: '',//科研工作简述
             extensionPlan: '',//延期工作内容，预期研究成果
         })
+
+        // 如果有外部数据，使用外部数据初始化表单
+        if (props.externalData && Object.keys(props.externalData).length > 0) {
+            if (props.externalData.basicInfo) {
+                basicInfo.value = { ...basicInfo.value, ...props.externalData.basicInfo };
+            }
+            if (props.externalData.extensionInfo) {
+                extensionInfo.value = { ...extensionInfo.value, ...props.externalData.extensionInfo };
+            }
+        }
 
         // 延期时间选项
         const extensionOptions = [
@@ -295,7 +314,7 @@ export default defineComponent({
                                 <div>
                                 <p class={cls.confirmationText}>
                                         建议结果：按实际票数填写。
-                                    </p>
+                                </p>
                                 </div>
                             </div>
                         </div>
@@ -322,10 +341,12 @@ export default defineComponent({
                 </div>
 
                 {/* 底部按钮 */}
-                <div class={cls.bottomButtons}>
-                    <ElButton onClick={props.onBack}>返回</ElButton>
-                    <ElButton type="primary" onClick={submitForm}>申请</ElButton>
-                </div>
+                {props.showExtensionButtons && (
+                    <div class={cls.bottomButtons}>
+                        <ElButton onClick={props.onBack}>返回</ElButton>
+                        <ElButton type="primary" onClick={submitForm}>申请</ElButton>
+                    </div>
+                )}
             </div>
         )
     },

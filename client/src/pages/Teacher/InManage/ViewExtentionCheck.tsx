@@ -17,9 +17,7 @@ import {
 } from "element-plus";
 import ProcessStatus from "@/units/ProcessStatus";
 import UserinfoRegister from '@/pages/EnterWorksation/form.tsx';
-import Achievement from '@/pages/InWorkstation/coms/MidAssessment/achres_instation';
-import Achievement_1 from '@/pages/InWorkstation/coms/MidAssessment/achres_1';
-import Assessment from '@/pages/InWorkstation/coms/MidAssessment/assessment';
+import ExtensionAssessment from '@/pages/InWorkstation/coms/ExtensionAssessment/extension_assess';
 import { getUserProfile } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
 import { getStudentDetail, approveApplication } from "@/api/enterWorkstation";
 import { getProcessTypesByUserId } from "@/api/enterWorkstation";
@@ -27,7 +25,7 @@ import { getProcessTypesByUserId } from "@/api/enterWorkstation";
 
 
 export default defineComponent({
-  name: "ViewMiddleCheckPage",
+  name: "ViewExtentionCheck",
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -42,66 +40,70 @@ export default defineComponent({
       userId: route.query.userId as string || ''
     });
 
-    // 表单数据
-    const form = ref({
-      achievement: {
-        paper_title: '',
-        journal_name: '',
-        journal_type: '',
-        first_author_unit: '',
-        publish_time: '',
-        paper_rank: '',
-        project_title: '',
-        fund_name: '',
-        fund_amount: '',
-        project_unit: '',
-        approval_time: '',
-        project_rank: '',
-        patent_title: '',
-        patent_type_number: '',
-        patent_unit: '',
-        patent_other: '',
-        patent_apply_time: '',
-        patent_rank: '',
-        award_title: '',
-        award_dept_level: '',
-        award_other: '',
-        award_other2: '',
-        award_time: '',
-        award_rank: ''
+    // 延期考核表单数据
+    const extensionForm = ref({
+      // 基础信息
+      basicInfo: {
+        name: '',
+        nationality: '',
+        gender: '',
+        birthDate: '',
+        researchDirection: '',
+        entryDate: '',
+        doctoralSupervisor: '',
+        postdocSupervisor: '',
+        agreementDate: '',
+        hasExtensionBefore: false,
+        extensionTimes: 0,
+        extensionFunding: '',
+        extensionDuration: [] as string[],
+        applicationContent: ''
+      },
+      // 延期信息
+      extensionInfo: {
+        researchProgress: '',
+        academicAchievements: '',
+        patents: '',
+        consultationReports: '',
+        researchBrief: '',
+        extensionPlan: ''
       }
     });
 
     // 用户信息
     const userInfo = ref<any>(null);
-    // 中期考核数据
-    const midtermData = ref<any>(null);
+    // 延期考核数据
+    const extensionData = ref<any>(null);
     const loading = ref(false);
 
-    // 获取学生中期考核数据
-    const fetchStudentMidtermData = async () => {
+    // 获取学生延期考核数据
+    const fetchStudentExtensionData = async () => {
       if (!studentInfo.value.userId) {
         return;
       }
 
       try {
         loading.value = true;
-        const response = await getStudentDetail(parseInt(studentInfo.value.userId), "中期考核");
+        const response = await getStudentDetail(parseInt(studentInfo.value.userId), "延期考核");
         
         if (response.data) {
-          midtermData.value = response.data;
-          console.log("获取的中期考核数据:", response.data);
+          extensionData.value = response.data;
+          console.log("获取的延期考核数据:", response.data);
           
           // 如果有用户信息，设置到userInfo中
           if (response.data.user_info) {
             userInfo.value = response.data.user_info;
           }
           
-          // 如果有科研成果数据，设置到form中
-          if (response.data.achievement_data) {
-            console.log("获取的科研成果数据:", response.data.achievement_data);
-            // 将科研成果数据传递给Achievement组件
-            form.value.achievement = response.data.achievement_data;
+          // 如果有延期考核数据，设置到extensionForm中
+          if (response.data.extension_assessment_data) {
+            console.log("获取的延期考核数据:", response.data.extension_assessment_data);
+            if (response.data.extension_assessment_data.basicInfo) {
+              extensionForm.value.basicInfo = { ...extensionForm.value.basicInfo, ...response.data.extension_assessment_data.basicInfo };
+            }
+            if (response.data.extension_assessment_data.extensionInfo) {
+              extensionForm.value.extensionInfo = { ...extensionForm.value.extensionInfo, ...response.data.extension_assessment_data.extensionInfo };
+            }
           }
           
           // 如果有教育经历和工作经历数据，设置到userInfo中
@@ -115,12 +117,12 @@ export default defineComponent({
             }
           }
         } else if (response.error) {
-          console.error("获取中期考核数据失败:", response.error);
-          ElMessage.warning("未找到对应的中期考核数据");
+          console.error("获取延期考核数据失败:", response.error);
+          ElMessage.warning("未找到对应的延期考核数据");
         }
       } catch (error) {
-        console.error("获取中期考核数据失败:", error);
-        ElMessage.warning("获取中期考核数据失败");
+        console.error("获取延期考核数据失败:", error);
+        ElMessage.warning("获取延期考核数据失败");
       } finally {
         loading.value = false;
       }
@@ -128,12 +130,12 @@ export default defineComponent({
 
     // 页面加载时获取学生数据
     onMounted(() => {
-      fetchStudentMidtermData();
+      fetchStudentExtensionData();
     });
 
     // 返回按钮处理
     const handleBack = () => {
-      router.push('/teacher/inManage/middle');
+      router.push('/teacher/inManage/extension');
     };
 
     // 审核通过处理
@@ -148,13 +150,13 @@ export default defineComponent({
           parseInt(studentInfo.value.userId),
           true,
           '导师审核通过',
-          '中期考核'
+          '延期考核'
         );
         
         if (response.data) {
           ElMessage.success('审核通过成功');
           // 重新获取数据以更新状态
-          await fetchStudentMidtermData();
+          await fetchStudentExtensionData();
         } else if (response.error) {
           ElMessage.error('审核失败: ' + (response.error as Error).message);
         }
@@ -176,13 +178,13 @@ export default defineComponent({
           parseInt(studentInfo.value.userId),
           false,
           '导师审核不通过',
-          '中期考核'
+          '延期考核'
         );
         
         if (response.data) {
           ElMessage.success('审核不通过成功');
           // 重新获取数据以更新状态
-          await fetchStudentMidtermData();
+          await fetchStudentExtensionData();
         } else if (response.error) {
           ElMessage.error('审核失败: ' + (response.error as Error).message);
         }
@@ -208,7 +210,7 @@ export default defineComponent({
       { label: '年度考核', key: 'year' },
       { label: '延期考核', key: 'extension' },  
     ];
-    const activeMenu = ref('middle');
+    const activeMenu = ref('extension');
     const handleMenuClick = (key: string) => {
       activeMenu.value = key;
       if (key === 'year') {
@@ -246,7 +248,7 @@ export default defineComponent({
                 flexDirection: "column",
               }}
             >
-              {/* 中期考核内容 */}
+              {/* 延期考核内容 */}
               <div style={{ flex: 1, overflowY: "auto" }}>
                 <h2
                   style={{
@@ -256,24 +258,21 @@ export default defineComponent({
                     textAlign: "center",
                   }}
                 >
-                  中期考核
+                 
                 </h2>
-                {/* 中期考核表单内容 */}
+                {/* 延期考核表单内容 */}
                 {loading.value ? (
                   <div style={{ textAlign: "center", padding: "20px" }}>
                     加载中...
                   </div>
                 ) : (
                   <div>
-                    <UserinfoRegister 
-                      showResult={false} 
-                      externalUserInfo={userInfo.value}
-                      userRole="teacher"
+                    {/* 延期考核表单 */}
+                    <ExtensionAssessment 
+                      onBack={handleBack} 
+                      externalData={extensionForm.value}
+                      showExtensionButtons={false}
                     />
-                    {/* 科研成果表单 */}
-                    <Achievement externalData={form.value.achievement} />
-                    <Achievement_1 model={form.value.achievement} onUpdate:model={val => form.value.achievement = val} />
-                    <Assessment showButtons={false} />
                   </div>
                 )}
               </div>
@@ -317,7 +316,7 @@ export default defineComponent({
                                        <ProcessStatus
                       modelValue={showProcessDialog.value}
                       onUpdate:modelValue={(val) => showProcessDialog.value = val}
-                      processType='中期考核'
+                      processType='延期考核'
                       studentId={currentRow.value?.user_id}
                     />
                  );
