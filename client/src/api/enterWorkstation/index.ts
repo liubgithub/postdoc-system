@@ -253,34 +253,43 @@ export const getStudentEnterAssessment = async (studentId: number) => {
 export const adminApproveApplication = async (processType: string, newStatus: string, studentId?: number, comment?: string) => {
   try {
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
       console.error('没有找到token，请先登录');
       return { data: null, error: new Error('请先登录') };
     }
-    
+
+    // 根据传入的中文状态转换为后端期望的枚举值
+    let backendStatus: string;
+    if (newStatus === "通过") {
+      backendStatus = "已审核"; // 对应 ProcessStatus.COMPLETED
+    } else if (newStatus === "不通过") {
+      backendStatus = "学院驳回"; // 对应 ProcessStatus.COLLEGE_REJECTED
+    } else {
+      // 如果传入的是其他状态，直接使用
+      backendStatus = newStatus;
+    }
+
     // 构建查询参数
     const queryParams = new URLSearchParams();
-    queryParams.append('new_status', newStatus);
+    queryParams.append('new_status', backendStatus);
     if (studentId) {
       queryParams.append('student_id', studentId.toString());
     }
-    
+
     const response = await fetch(`/api/workflow/update/${processType}?${queryParams.toString()}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({
-        comment: comment || ''
-      }),
+      // 移除 body，因为后端API不需要请求体
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return { data, error: null };
   } catch (error) {
