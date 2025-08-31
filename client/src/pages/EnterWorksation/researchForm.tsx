@@ -46,15 +46,15 @@ export default defineComponent({
       date: ""
     });
 
-    const handleSubmit = async() => {
+    const handleSubmit = async () => {
       console.log(form.value, 'fffff')
       props.onSubmitSuccess && props.onSubmitSuccess()
-      try{
-        const res = await apiFetch.raw.POST('/enterRelation/',{body:form.value})
-        if(res.response.ok){
+      try {
+        const res = await apiFetch.raw.POST('/enterRelation/', { body: form.value })
+        if (res.response.ok) {
           ElMessage.success('提交成功')
         }
-      }catch(error){
+      } catch (error) {
         console.log(error)
       }
     };
@@ -74,7 +74,7 @@ export default defineComponent({
         }
       )
       console.log(res, 'sssss')
-     
+
     }
 
     const fetchSignature = async () => {
@@ -195,7 +195,7 @@ export default defineComponent({
               </ElAlert>
               <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
                 <div>
-                  <SignaturePad onChange={val => onInput(val)} image={form.value.signature}/>
+                  <SignaturePad disabled={props.userRole !== 'student'} onChange={val => onInput(val)} image={form.value.signature} />
                   <ElDatePicker
                     v-model={form.value.date}
                     type="date"

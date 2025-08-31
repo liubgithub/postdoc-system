@@ -1212,6 +1212,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/annulAssessment/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Annul Assessment */
+        get: operations["get_annul_assessment_annulAssessment__get"];
+        put?: never;
+        /** Upsert Annul Assessment */
+        post: operations["upsert_annul_assessment_annulAssessment__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/extension/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Extension By User Id
+         * @description 获取当前用户的延期申请记录（无则返回null）
+         */
+        get: operations["get_extension_by_user_id_extension__get"];
+        put?: never;
+        /**
+         * Upsert Extension
+         * @description 创建或更新延期申请记录（有则更新，无则创建）
+         */
+        post: operations["upsert_extension_extension__post"];
+        /**
+         * Delete Extension By User Id
+         * @description 删除当前用户的延期申请记录
+         */
+        delete: operations["delete_extension_by_user_id_extension__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/extensionInfo/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Extension Baseinfo */
+        get: operations["get_extension_baseinfo_extensionInfo__get"];
+        put?: never;
+        /** Upsert Extension Baseinfo */
+        post: operations["upsert_extension_baseinfo_extensionInfo__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/entryMange/teacher/students": {
         parameters: {
             query?: never;
@@ -1397,6 +1461,102 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnnulAssessmentIn */
+        AnnulAssessmentIn: {
+            /** Unit */
+            unit?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Filldate */
+            fillDate?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Gender */
+            gender?: string | null;
+            /** Political */
+            political?: string | null;
+            /** Tutor */
+            tutor?: string | null;
+            /** Entrydate */
+            entryDate?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Summary */
+            summary?: string | null;
+            /** Selfeval */
+            selfEval?: string | null;
+            /** Mainwork */
+            mainWork?: string | null;
+            /** Papers */
+            papers?: string | null;
+            attendance?: components["schemas"]["Attendance"];
+            /** Unitcomment */
+            unitComment?: string | null;
+            /** Unitsigndate */
+            unitSignDate?: string | null;
+            /** Assessedcomment */
+            assessedComment?: string | null;
+            /** Assessedsigndate */
+            assessedSignDate?: string | null;
+            /** Schoolcomment */
+            schoolComment?: string | null;
+            /** Schoolsigndate */
+            schoolSignDate?: string | null;
+            /** Remark */
+            remark?: string | null;
+        };
+        /** AnnulAssessmentOut */
+        AnnulAssessmentOut: {
+            /** Unit */
+            unit?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Filldate */
+            fillDate?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Gender */
+            gender?: string | null;
+            /** Political */
+            political?: string | null;
+            /** Tutor */
+            tutor?: string | null;
+            /** Entrydate */
+            entryDate?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Summary */
+            summary?: string | null;
+            /** Selfeval */
+            selfEval?: string | null;
+            /** Mainwork */
+            mainWork?: string | null;
+            /** Papers */
+            papers?: string | null;
+            attendance?: components["schemas"]["Attendance"];
+            /** Unitcomment */
+            unitComment?: string | null;
+            /** Unitsigndate */
+            unitSignDate?: string | null;
+            /** Assessedcomment */
+            assessedComment?: string | null;
+            /** Assessedsigndate */
+            assessedSignDate?: string | null;
+            /** Schoolcomment */
+            schoolComment?: string | null;
+            /** Schoolsigndate */
+            schoolSignDate?: string | null;
+            /** Remark */
+            remark?: string | null;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+        };
         /** ApproveRequest */
         ApproveRequest: {
             /** Approved */
@@ -1449,6 +1609,39 @@ export interface components {
              * @default []
              */
             attachments: components["schemas"]["AttachmentIn"][];
+        };
+        /** Attendance */
+        Attendance: {
+            /**
+             * Sick
+             * @description 病假天数
+             * @default
+             */
+            sick: string;
+            /**
+             * Personal
+             * @description 事假天数
+             * @default
+             */
+            personal: string;
+            /**
+             * Absenteeism
+             * @description 旷工天数
+             * @default
+             */
+            absenteeism: string;
+            /**
+             * Leave
+             * @description 休假天数
+             * @default
+             */
+            leave: string;
+            /**
+             * Other
+             * @description 其他缺勤天数
+             * @default
+             */
+            other: string;
         };
         /** Body_create_book_pre_entry_book__post */
         Body_create_book_pre_entry_book__post: {
@@ -2872,7 +3065,10 @@ export interface components {
             project_source: string;
             /** Project Type */
             project_type: string;
-            /** Approval Time */
+            /**
+             * Approval Time
+             * Format: date
+             */
             approval_time: string;
             /** Project Fee */
             project_fee: string;
@@ -2889,7 +3085,10 @@ export interface components {
             project_source: string;
             /** Project Type */
             project_type: string;
-            /** Approval Time */
+            /**
+             * Approval Time
+             * Format: date
+             */
             approval_time: string;
             /** Project Fee */
             project_fee: string;
@@ -3023,6 +3222,138 @@ export interface components {
             allitutor: string;
             /** Remark */
             remark?: string | null;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** ExtenBaseInfoIn */
+        ExtenBaseInfoIn: {
+            /** Name */
+            name?: string | null;
+            /** Nationality */
+            nationality?: string | null;
+            /** Gender */
+            gender?: string | null;
+            /** Birthdate */
+            birthDate?: string | null;
+            /** Researchdirection */
+            researchDirection?: string | null;
+            /** Entrydate */
+            entryDate?: string | null;
+            /** Doctoralsupervisor */
+            doctoralSupervisor?: string | null;
+            /** Postdocsupervisor */
+            postdocSupervisor?: string | null;
+            /** Agreementdate */
+            agreementDate?: string | null;
+            /**
+             * Hasextensionbefore
+             * @default false
+             */
+            hasExtensionBefore: boolean;
+            /**
+             * Extensiontimes
+             * @default 0
+             */
+            extensionTimes: number;
+            /** Extensionfunding */
+            extensionFunding?: string | null;
+            /**
+             * Extensionduration
+             * @default []
+             */
+            extensionDuration: string[];
+            /** Applicationcontent */
+            applicationContent?: string | null;
+        };
+        /** ExtenBaseInfoOut */
+        ExtenBaseInfoOut: {
+            /** Name */
+            name?: string | null;
+            /** Nationality */
+            nationality?: string | null;
+            /** Gender */
+            gender?: string | null;
+            /** Birthdate */
+            birthDate?: string | null;
+            /** Researchdirection */
+            researchDirection?: string | null;
+            /** Entrydate */
+            entryDate?: string | null;
+            /** Doctoralsupervisor */
+            doctoralSupervisor?: string | null;
+            /** Postdocsupervisor */
+            postdocSupervisor?: string | null;
+            /** Agreementdate */
+            agreementDate?: string | null;
+            /**
+             * Hasextensionbefore
+             * @default false
+             */
+            hasExtensionBefore: boolean;
+            /**
+             * Extensiontimes
+             * @default 0
+             */
+            extensionTimes: number;
+            /** Extensionfunding */
+            extensionFunding?: string | null;
+            /**
+             * Extensionduration
+             * @default []
+             */
+            extensionDuration: string[];
+            /** Applicationcontent */
+            applicationContent?: string | null;
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** ExtensionIn */
+        ExtensionIn: {
+            /** Research Progress */
+            research_progress: string;
+            /** Academic Achievements */
+            academic_achievements: string;
+            /** Patents */
+            patents: string;
+            /** Consultation Reports */
+            consultation_reports: string;
+            /** Research Brief */
+            research_brief: string;
+            /** Extension Plan */
+            extension_plan: string;
+        };
+        /** ExtensionOut */
+        ExtensionOut: {
+            /** Research Progress */
+            research_progress: string;
+            /** Academic Achievements */
+            academic_achievements: string;
+            /** Patents */
+            patents: string;
+            /** Consultation Reports */
+            consultation_reports: string;
+            /** Research Brief */
+            research_brief: string;
+            /** Extension Plan */
+            extension_plan: string;
             /** Id */
             id: number;
             /** User Id */
@@ -6956,9 +7287,191 @@ export interface operations {
             };
         };
     };
-    get_teacher_students_entryMange_teacher_students_get: {
+    get_annul_assessment_annulAssessment__get: {
         parameters: {
             query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnulAssessmentOut"] | null;
+                };
+            };
+        };
+    };
+    upsert_annul_assessment_annulAssessment__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnnulAssessmentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnulAssessmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_extension_by_user_id_extension__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtensionOut"] | null;
+                };
+            };
+        };
+    };
+    upsert_extension_extension__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExtensionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtensionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_extension_by_user_id_extension__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_extension_baseinfo_extensionInfo__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtenBaseInfoOut"];
+                };
+            };
+        };
+    };
+    upsert_extension_baseinfo_extensionInfo__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExtenBaseInfoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtenBaseInfoOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_teacher_students_entryMange_teacher_students_get: {
+        parameters: {
+            query?: {
+                /** @description 业务类型过滤 */
+                business_type?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -6974,6 +7487,15 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     }[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -15,7 +15,7 @@ def upsert_extension(
     current_user: User = Depends(get_current_user)
 ):
     """创建或更新延期申请记录（有则更新，无则创建）"""
-    record = db.query(PostdoctoralExtension).filter_by(user_id=current_user.id).first()
+    record = db.query(PostdoctoralExtension).filter_by(user_id = current_user.id).first()
     if record:
         # 更新现有记录
         update_data = data.dict(exclude_unset=True)
@@ -39,6 +39,8 @@ def get_extension_by_user_id(
 ):
     """获取当前用户的延期申请记录（无则返回null）"""
     record = db.query(PostdoctoralExtension).filter_by(user_id=current_user.id).first()
+    if not record:
+        return None
     return record
 
 @router.delete("/")

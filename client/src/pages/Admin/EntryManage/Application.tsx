@@ -140,13 +140,18 @@ export default defineComponent({
 
     // 搜索功能
     const handleSearch = () => {
+      // trim() 删除字符串的前导和尾随空格以及行终止符 
+      // toLowerCase() 将字符串转换为小写
       const keyword = searchValue.value.trim().toLowerCase();
       if (!keyword) {
         fetchStudents(); // 重新获取所有数据
         return;
       }
       // 这里可以添加搜索逻辑，或者直接重新获取数据
-      fetchStudents();
+      tableData.value = tableData.value.filter(item => {
+        return item.studentId.includes(keyword) || item.name.includes(keyword);
+      });
+      
     };
 
     // 处理详情按钮点击

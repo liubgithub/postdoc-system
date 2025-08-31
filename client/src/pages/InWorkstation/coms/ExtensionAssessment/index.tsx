@@ -8,8 +8,8 @@ export default defineComponent({
     name: "ExtensionAssessment",
     setup() {
         const showDetails = ref(false)
-
         const showProcess = ref(false)
+        const isViewMode = ref(false)
 
         const tableData = ref<TableRow[]>([{
             stuId: '',
@@ -66,20 +66,23 @@ export default defineComponent({
         const handleView = (row: TableRow) => {
             console.log('View data:', row)
             showDetails.value = true
+            isViewMode.value = true
         }
 
         const handleBack = () => {
             showDetails.value = false
+            isViewMode.value = false
         }
 
         const handleApply = () => {
             showDetails.value = true
+            isViewMode.value = false
         }
 
         return () => (
             <div style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
                 {showDetails.value ? (
-                    <ExtensionAssessment onBack={handleBack} />
+                    <ExtensionAssessment onBack={handleBack} isViewMode={isViewMode.value}/>
                 ) : (
                     <>
                         <ElButton style={{ marginBottom: '20px' }} onClick={handleApply}>申请考核</ElButton>

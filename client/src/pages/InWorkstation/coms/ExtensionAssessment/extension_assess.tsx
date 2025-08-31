@@ -1,6 +1,6 @@
 
 import { defineComponent, ref } from 'vue'
-import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElRadio, ElRadioGroup, ElCheckbox, ElCheckboxGroup, ElButton, ElTable, ElTableColumn, ElDatePicker, ElUpload } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElRadio, ElRadioGroup, ElCheckbox, ElCheckboxGroup, ElButton, ElTable, ElTableColumn, ElDatePicker, ElUpload, ElInputNumber,ElMessage } from 'element-plus'
 import * as cls from './style.css'
 import fetch from '@/api/index'
 import SignaturePad from '@/units/Signature/index'
@@ -19,6 +19,10 @@ export default defineComponent({
         showExtensionButtons: {
             type: Boolean,
             default: true
+        },
+        isViewMode: {
+            type: Boolean,
+            default: false
         }
     },
     setup(props) {
@@ -35,19 +39,19 @@ export default defineComponent({
             agreementDate: '',
             hasExtensionBefore: false,
             extensionTimes: 0,
-            extensionFunding:'',
+            extensionFunding: '',
             extensionDuration: [] as string[],
             applicationContent: ''
         })
 
         // 延期信息表单数据
         const extensionInfo = ref({
-            researchProgress: '',//主持或参与科研项目情况
-            academicAchievements: '',//发表学术成果情况
+            research_progress: '',//主持或参与科研项目情况
+            academic_achievements: '',//发表学术成果情况
             patents: '',//授权专利、科技成果转让情况
-            consultationReports: '',//咨询报告采纳与批示情况
-            researchBrief: '',//科研工作简述
-            extensionPlan: '',//延期工作内容，预期研究成果
+            consultation_reports: '',//咨询报告采纳与批示情况
+            research_brief: '',//科研工作简述
+            extension_plan: '',//延期工作内容，预期研究成果
         })
 
         // 如果有外部数据，使用外部数据初始化表单
@@ -69,10 +73,46 @@ export default defineComponent({
         ]
 
         // 提交表单
-        const submitForm = () => {
+        const submitForm = async () => {
             console.log('提交延期申请', { basicInfo: basicInfo.value, extensionInfo: extensionInfo.value })
+            try {
+                const res = await fetch.raw.POST('/extensionInfo/', { body: basicInfo.value })
+                const ress = await fetch.raw.POST('/extension/', { body: extensionInfo.value })
+                if (res.response.ok && ress.response.ok) {
+                    ElMessage.success('提交成功')
+                }
+            } catch (error) {
+
+            }
         }
 
+        onMounted(async() => {
+            try{
+                // 获取基础信息数据
+                const basicInfoRes = await fetch.raw.GET('/extensionInfo/')
+                if(basicInfoRes.response.ok){
+                    // 如果res.data为null或不是对象，则保持默认空值
+                    if(basicInfoRes.data && typeof basicInfoRes.data === 'object'){
+                        // 有数据则直接赋值给basicInfo
+                        basicInfo.value = basicInfoRes.data as any
+                    }
+                }
+
+                // 获取延期信息数据
+                const extensionRes = await fetch.raw.GET('/extension/')
+                if(extensionRes.response.ok){
+                    // 如果res.data为null或不是对象，则保持默认空值
+                    if(extensionRes.data && typeof extensionRes.data === 'object'){
+                        // 有数据则直接赋值给extensionInfo
+                        extensionInfo.value = extensionRes.data as any
+                    }
+                }
+                // 没有数据则保持空值，不需要额外处理
+            }catch(error){
+                console.error('获取延期申请数据失败:', error)
+                ElMessage.error('获取数据失败，请稍后重试')
+            }
+        })
         return () => (
             <div class={cls.extensionAssessmentContainer}>
                 <div class={cls.pageHeader}>
@@ -144,7 +184,7 @@ export default defineComponent({
                             <ElFormItem label="之前是否获批延期资助">
                                 <ElRadioGroup v-model={basicInfo.value.hasExtensionBefore}>
                                     <ElRadio value={true}>
-                                        是 (已延期 {basicInfo.value.extensionTimes} 次)
+                                        是 (已延期 <ElInputNumber v-model={basicInfo.value.extensionTimes} min={0} max={10} />次)
                                     </ElRadio>
                                     <ElRadio value={false}>否</ElRadio>
                                 </ElRadioGroup>
@@ -183,7 +223,7 @@ export default defineComponent({
                                 <ElFormItem>
                                     <ElInput
                                         type="textarea"
-                                        v-model={extensionInfo.value.researchProgress}
+                                        v-model={extensionInfo.value.research_progress}
                                         rows={4}
                                         placeholder="请填写主持或参与的科研项目情况"
                                     />
@@ -198,7 +238,7 @@ export default defineComponent({
                                 <ElFormItem>
                                     <ElInput
                                         type="textarea"
-                                        v-model={extensionInfo.value.academicAchievements}
+                                        v-model={extensionInfo.value.academic_achievements}
                                         rows={6}
                                         placeholder="请填写学术成果情况"
                                     />
@@ -228,7 +268,7 @@ export default defineComponent({
                                 <ElFormItem>
                                     <ElInput
                                         type="textarea"
-                                        v-model={extensionInfo.value.consultationReports}
+                                        v-model={extensionInfo.value.consultation_reports}
                                         rows={4}
                                         placeholder="请填写咨询报告采纳与批示情况"
                                     />
@@ -244,7 +284,7 @@ export default defineComponent({
                                 <ElFormItem>
                                     <ElInput
                                         type="textarea"
-                                        v-model={extensionInfo.value.researchBrief}
+                                        v-model={extensionInfo.value.research_brief}
                                         rows={6}
                                         maxlength={500}
                                         showWordLimit={true}
@@ -261,7 +301,7 @@ export default defineComponent({
                                 <ElFormItem>
                                     <ElInput
                                         type="textarea"
-                                        v-model={extensionInfo.value.extensionPlan}
+                                        v-model={extensionInfo.value.extension_plan}
                                         rows={6}
                                         placeholder="请填写延期工作内容和预期研究成果"
                                     />
@@ -282,61 +322,65 @@ export default defineComponent({
                                 </div>
                             </div>
                         </div>
-                        <div class={cls.formSection}>
-                            <h4 class={cls.formSectionTitle}>五、合作导师意见</h4>
-                            <div class={cls.confirmationSection}>
-                                <p class={cls.confirmationText}>
-                                    是否同意博士后申请内容，如同意博士后申请延期资助，承诺在站时长不超过4年的延期资助期内，提供不低于6万/年的资助额度；若在站时长超过4年，则原有学校负责薪酬部分由导师全额承担（如有挂名导师，挂名导师和实际导师均需签字）。同意学校从*****（项目负责人）的经费账号********划拨**万资助额度。
-                                </p>
-                                <div class={cls.signatureSection}>
-                                    <ElFormItem label="姓名(签名)">
-                                        <SignaturePad />
-                                    </ElFormItem>
+                        {props.isViewMode && (
+                            <div>
+                                <div class={cls.formSection}>
+                                    <h4 class={cls.formSectionTitle}>五、合作导师意见</h4>
+                                    <div class={cls.confirmationSection}>
+                                        <p class={cls.confirmationText}>
+                                            是否同意博士后申请内容，如同意博士后申请延期资助，承诺在站时长不超过4年的延期资助期内，提供不低于6万/年的资助额度；若在站时长超过4年，则原有学校负责薪酬部分由导师全额承担（如有挂名导师，挂名导师和实际导师均需签字）。同意学校从*****（项目负责人）的经费账号********划拨**万资助额度。
+                                        </p>
+                                        <div class={cls.signatureSection}>
+                                            <ElFormItem label="姓名(签名)">
+                                                <SignaturePad />
+                                            </ElFormItem>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class={cls.formSection}>
+                                    <h4 class={cls.formSectionTitle}>六、考核小组意见</h4>
+                                    <div class={cls.confirmationSection}>
+                                        <div class={cls.kaohe}>
+                                            <p>考核小组成员名单</p>
+                                            <ElInput></ElInput>
+                                        </div>
+                                        <div>
+                                            <p class={cls.confirmationText}>
+                                                考核组意见：须体现实验记录本或工作记录本检查情况，研究进展情况和发展潜力情况。
+                                            </p>
+                                            <ElInput
+                                                type="textarea"
+                                                rows={3}
+                                            />
+                                        </div>
+                                        <div>
+                                            <p class={cls.confirmationText}>
+                                                建议结果：按实际票数填写。
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class={cls.formSection}>
+                                    <h4 class={cls.formSectionTitle}>七、学院（流动站）审核意见</h4>
+                                    <div class={cls.confirmationSection}>
+                                        <p class={cls.confirmationText}>
+                                            是否同意博士后申请延期资助，承诺在资助期内提供包括相应支持措施。
+                                        </p>
+                                        <div class={cls.signatureSection}>
+                                            <ElFormItem label="学院（流动站）负责人(签名)">
+                                                <SignaturePad />
+                                            </ElFormItem>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class={cls.formSection}>
+                                    <h4 class={cls.formSectionTitle}>八、学校意见</h4>
+                                    <div class={cls.confirmationSection}>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class={cls.formSection}>
-                            <h4 class={cls.formSectionTitle}>六、考核小组意见</h4>
-                            <div class={cls.confirmationSection}>
-                                <div class={cls.kaohe}>
-                                    <p>考核小组成员名单</p>
-                                    <ElInput></ElInput>
-                                </div>
-                                <div>
-                                    <p class={cls.confirmationText}>
-                                        考核组意见：须体现实验记录本或工作记录本检查情况，研究进展情况和发展潜力情况。
-                                    </p>
-                                    <ElInput
-                                        type="textarea"
-                                        rows={3}
-                                    />
-                                </div>
-                                <div>
-                                <p class={cls.confirmationText}>
-                                        建议结果：按实际票数填写。
-                                </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class={cls.formSection}>
-                            <h4 class={cls.formSectionTitle}>七、学院（流动站）审核意见</h4>
-                            <div class={cls.confirmationSection}>
-                                <p class={cls.confirmationText}>
-                                是否同意博士后申请延期资助，承诺在资助期内提供包括相应支持措施。
-                                </p>
-                                <div class={cls.signatureSection}>
-                                    <ElFormItem label="学院（流动站）负责人(签名)">
-                                        <SignaturePad />
-                                    </ElFormItem>
-                                </div>
-                            </div>
-                        </div>
-                        <div class={cls.formSection}>
-                            <h4 class={cls.formSectionTitle}>八、学校意见</h4>
-                            <div class={cls.confirmationSection}>
-            
-                            </div>
-                        </div>
+                        )}
                     </ElForm>
                 </div>
 
