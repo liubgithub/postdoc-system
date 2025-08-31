@@ -248,3 +248,42 @@ export const getStudentEnterAssessment = async (studentId: number) => {
     return { data: null, error };
   }
 };
+
+// 管理员审批申请 - 使用工作流更新接口
+export const adminApproveApplication = async (processType: string, newStatus: string, studentId?: number, comment?: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('没有找到token，请先登录');
+      return { data: null, error: new Error('请先登录') };
+    }
+    
+    // 构建查询参数
+    const queryParams = new URLSearchParams();
+    queryParams.append('new_status', newStatus);
+    if (studentId) {
+      queryParams.append('student_id', studentId.toString());
+    }
+    
+    const response = await fetch(`/api/workflow/update/${processType}?${queryParams.toString()}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        comment: comment || ''
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};

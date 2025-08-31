@@ -20,7 +20,7 @@ import ResearchForm from "@/pages/EnterWorksation/researchForm.tsx";
 import fetch from "@/api";
 // 获取特定学生id的信息
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
-import { approveApplication } from "@/api/enterWorkstation";
+import { approveApplication, adminApproveApplication } from "@/api/enterWorkstation";
 
 // 定义数据类型
 interface StudentData {
@@ -223,20 +223,27 @@ export default defineComponent({
       }
 
       try {
-        const response = await approveApplication(parseInt(userIdToUse), true, "进站申请通过", "进站申请");
+        loading.value = true;
+        // 使用管理员审批接口，更新进站申请状态为"通过"
+        const response = await adminApproveApplication("entry_application", "通过", parseInt(userIdToUse), "进站申请通过");
         if (response.data) {
           ElMessage.success("进站申请审核通过成功");
           // 延迟跳转，让用户看到成功消息
           setTimeout(() => {
             showDetail.value = false;
             studentInfo.value = null;
+            // 重新获取列表数据
+            fetchStudents();
           }, 1500);
-        } else {
+        } else if (response.error) {
+          console.error("审核失败:", response.error);
           ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
         }
       } catch (error) {
         console.error("审核失败:", error);
-        ElMessage.error("审核失败");
+        ElMessage.error("审核失败: " + (error as Error)?.message || "未知错误");
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -248,20 +255,27 @@ export default defineComponent({
       }
 
       try {
-        const response = await approveApplication(parseInt(userIdToUse), false, "进站申请不通过", "进站申请");
+        loading.value = true;
+        // 使用管理员审批接口，更新进站申请状态为"不通过"
+        const response = await adminApproveApplication("entry_application", "不通过", parseInt(userIdToUse), "进站申请不通过");
         if (response.data) {
           ElMessage.warning("进站申请审核驳回成功");
           // 延迟跳转，让用户看到成功消息
           setTimeout(() => {
             showDetail.value = false;
             studentInfo.value = null;
+            // 重新获取列表数据
+            fetchStudents();
           }, 1500);
-        } else {
+        } else if (response.error) {
+          console.error("审核失败:", response.error);
           ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
         }
       } catch (error) {
         console.error("审核失败:", error);
-        ElMessage.error("审核失败");
+        ElMessage.error("审核失败: " + (error as Error)?.message || "未知错误");
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -326,7 +340,7 @@ export default defineComponent({
           </>
         ) : (
           // 显示申请详情表单
-          <div style={{ height: "100vh", overflowY: "auto", padding: "0 20px" }}>
+          <div style={{ height: "80vh", overflowY: "auto", padding: "0 20px" }}>
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ margin: '0 0 20px 0', color: '#333', fontSize: '24px', fontWeight: '600', textAlign: 'center' }}>进站申请详情</h2>
             </div>
@@ -372,11 +386,6 @@ export default defineComponent({
                     </ElButton>
                     <ElButton type="danger" onClick={handleReject} size="large">不通过</ElButton>
                     <ElButton type="primary" onClick={handleApprove} size="large">通过</ElButton>
-                  </div>
-                  
-                  {/* 调试信息 */}
-                  <div style={{ padding: "10px", background: "#f0f0f0", marginTop: "10px", fontSize: "12px", color: "#666" }}>
-                    调试信息: showDetail={String(showDetail.value)}, loading={String(loading.value)}, userId={userId || '无'}, studentInfo.user_id={studentInfo.value?.user_id || '无'}
                   </div>
                 </>
               )}

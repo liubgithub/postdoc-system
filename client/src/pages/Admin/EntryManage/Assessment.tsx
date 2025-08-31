@@ -23,7 +23,7 @@ import ResearchForm from "@/pages/EnterWorksation/researchForm.tsx";
 import fetch from "@/api";
 // 获取特定学生id的信息
 import { getUserProfileById } from "@/api/postdoctor/userinfoRegister/bs_user_profile";
-import { getStudentEnterAssessment, approveApplication } from "@/api/enterWorkstation";
+import { getStudentEnterAssessment, adminApproveApplication } from "@/api/enterWorkstation";
 
 // 定义考核申请数据类型
 interface AssessmentData {
@@ -280,6 +280,7 @@ export default defineComponent({
       }
     };
 
+    // 管理员审批通过
     const handleApprove = async () => {
       if (!userId && !studentInfo.value?.user_id) {
         ElMessage.error("缺少用户ID");
@@ -289,23 +290,31 @@ export default defineComponent({
       const userIdToUse = userId ? parseInt(userId) : studentInfo.value.user_id;
 
       try {
-        const response = await approveApplication(userIdToUse, true, "进站考核通过", "进站考核");
+        loading.value = true;
+        // 使用管理员审批接口，更新进站考核状态为"通过"
+        const response = await adminApproveApplication("entry_assessment", "通过", userIdToUse, "进站考核通过");
         if (response.data) {
           ElMessage.success("进站考核审核通过成功");
           // 延迟跳转，让用户看到成功消息
           setTimeout(() => {
             showDetail.value = false;
             studentInfo.value = null;
+            // 重新获取列表数据
+            fetchAssessmentList();
           }, 1500);
-        } else {
-          ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
+        } else if (response.error) {
+          console.error("考核失败:", response.error);
+          ElMessage.error("考核失败: " + (response.error as Error)?.message || "未知错误");
         }
       } catch (error) {
         console.error("考核失败:", error);
-        ElMessage.error("考核失败");
+        ElMessage.error("考核失败: " + (error as Error)?.message || "未知错误");
+      } finally {
+        loading.value = false;
       }
     };
 
+    // 管理员审批不通过
     const handleReject = async () => {
       if (!userId && !studentInfo.value?.user_id) {
         ElMessage.error("缺少用户ID");
@@ -315,20 +324,27 @@ export default defineComponent({
       const userIdToUse = userId ? parseInt(userId) : studentInfo.value.user_id;
 
       try {
-        const response = await approveApplication(userIdToUse, false, "进站考核不通过", "进站考核");
+        loading.value = true;
+        // 使用管理员审批接口，更新进站考核状态为"不通过"
+        const response = await adminApproveApplication("entry_assessment", "不通过", userIdToUse, "进站考核不通过");
         if (response.data) {
           ElMessage.warning("进站考核审核驳回成功");
           // 延迟跳转，让用户看到成功消息
           setTimeout(() => {
             showDetail.value = false;
             studentInfo.value = null;
+            // 重新获取列表数据
+            fetchAssessmentList();
           }, 1500);
-        } else {
-          ElMessage.error("审核失败: " + (response.error as Error)?.message || "未知错误");
+        } else if (response.error) {
+          console.error("考核失败:", response.error);
+          ElMessage.error("考核失败: " + (response.error as Error)?.message || "未知错误");
         }
       } catch (error) {
         console.error("考核失败:", error);
-        ElMessage.error("考核失败");
+        ElMessage.error("考核失败: " + (error as Error)?.message || "未知错误");
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -393,13 +409,13 @@ export default defineComponent({
           </>
         ) : (
           // 显示考核详情表单
-          <div style={{ height: "100vh", overflowY: "auto", padding: "0 20px" }}>
+          <div style={{ height: "80vh", display: "flex", flexDirection: "column", padding: "0 20px" }}>
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ margin: '0 0 20px 0', color: '#333', fontSize: '24px', fontWeight: '600', textAlign: 'center' }}>进站考核详情</h2>
             </div>
 
-            {/* 考核申请内容 */}
-            <div style={{ paddingBottom: "40px" }}>
+            {/* 考核申请内容 - 可滚动区域 */}
+            <div style={{ flex: 1, overflowY: "auto", paddingBottom: "20px" }}>
               {loading.value ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>加载中...</div>
               ) : (
@@ -602,18 +618,19 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-
                   {/* 操作按钮区域 */}
                   <div style={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px 0", borderTop: "1px solid #e4e7ed", marginTop: "20px", background: '#fff', borderRadius: '0.5em', boxShadow: '0 0.125em 0.75em 0 rgba(0,0,0,0.08)' }}>
                     <ElButton onClick={handleBack} size="large">
-                      返回列表
-                    </ElButton>
-                    <ElButton type="danger" onClick={handleReject} size="large">不通过</ElButton>
-                    <ElButton type="primary" onClick={handleApprove} size="large">通过</ElButton>
+                返回列表
+              </ElButton>
+              <ElButton type="danger" onClick={handleReject} size="large">不通过</ElButton>
+              <ElButton type="primary" onClick={handleApprove} size="large">通过</ElButton>
                   </div>
                 </>
               )}
             </div>
+
+          
           </div>
         )}
       </div>
