@@ -386,6 +386,19 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
         elif postdoc.created_at:
             assessment_time = postdoc.created_at.strftime("%Y-%m-%d")
         
+        # 根据业务类型获取相应的考核数据
+        assessment_data = None
+        if business_type == "进站考核":
+            assessment_data = db.query(EnterAssessment).filter(EnterAssessment.user_id == postdoc.user_id).first()
+        elif business_type == "年度考核":
+            # 获取年度考核数据
+            from app.assessment.inAssessment.annulAssessment.models import AnnulAssessment
+            assessment_data = db.query(AnnulAssessment).filter(AnnulAssessment.user_id == postdoc.user_id).first()
+        elif business_type == "延期考核":
+            # 获取延期考核数据
+            from app.assessment.inAssessment.extenAssessment.models import PostdoctoralExtension
+            assessment_data = db.query(PostdoctoralExtension).filter(PostdoctoralExtension.user_id == postdoc.user_id).first()
+        
         # 获取科研成果数据
         achievement_data = get_student_achievement_data(postdoc.user_id, db)
         
@@ -394,7 +407,8 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
         if user_profile:
             education_work_data = get_student_education_work_data(user_profile.id, db)
         
-        return {
+        # 构建基础响应数据
+        response_data = {
             "id": postdoc.id,
             "studentId": postdoc.user_id,
             "name": user_profile.name if user_profile else "",
@@ -422,6 +436,66 @@ def build_student_response(postdoc: EnterWorkstation, user_profile: Info, workfl
             "achievement_data": achievement_data,  # 添加科研成果数据
             **status_info
         }
+        
+        # 根据业务类型添加相应的考核数据
+        if business_type == "进站考核" and assessment_data:
+            response_data["entry_assessment_data"] = {
+                "project_name": assessment_data.project_name,
+                "project_source": assessment_data.project_source,
+                "project_type": assessment_data.project_type,
+                "approval_time": assessment_data.approval_time.strftime("%Y-%m-%d") if assessment_data.approval_time else "",
+                "project_fee": assessment_data.project_fee,
+                "project_task": assessment_data.project_task,
+                "project_thought": assessment_data.project_thought
+            }
+        elif business_type == "年度考核" and assessment_data:
+            response_data["annual_assessment_data"] = {
+                "unit": assessment_data.unit,
+                "station": assessment_data.station,
+                "fillDate": assessment_data.fillDate.strftime("%Y-%m-%d") if assessment_data.fillDate else "",
+                "name": assessment_data.name,
+                "gender": assessment_data.gender,
+                "political": assessment_data.political,
+                "tutor": assessment_data.tutor,
+                "entryDate": assessment_data.entryDate.strftime("%Y-%m-%d") if assessment_data.entryDate else "",
+                "title": assessment_data.title,
+                "summary": assessment_data.summary,
+                "selfEval": assessment_data.selfEval,
+                "mainWork": assessment_data.mainWork,
+                "papers": assessment_data.papers,
+                "attendance": assessment_data.attendance,
+                "unitComment": assessment_data.unitComment,
+                "unitGrade": assessment_data.unitGrade,
+                "unitSignDate": assessment_data.unitSignDate.strftime("%Y-%m-%d") if assessment_data.unitSignDate else "",
+                "assessedComment": assessment_data.assessedComment,
+                "assessedSignDate": assessment_data.assessedSignDate.strftime("%Y-%m-%d") if assessment_data.assessedSignDate else "",
+                "schoolComment": assessment_data.schoolComment,
+                "schoolSignDate": assessment_data.schoolSignDate.strftime("%Y-%m-%d") if assessment_data.schoolSignDate else "",
+                "remark": assessment_data.remark
+            }
+        elif business_type == "延期考核" and assessment_data:
+            response_data["extension_assessment_data"] = {
+                "basicInfo": {
+                    "name": user_profile.name if user_profile else "",
+                    "gender": user_profile.gender if user_profile else "",
+                    "nationality": user_profile.nationality if user_profile else "",
+                    "researchDirection": user_profile.research_direction if user_profile else "",
+                    "entryDate": postdoc.created_at.strftime("%Y-%m-%d") if postdoc.created_at else "",
+                    "doctoralSupervisor": "",  # 需要从其他地方获取
+                    "postdocSupervisor": postdoc.cotutor if postdoc else "",
+                    "agreementDate": postdoc.created_at.strftime("%Y-%m-%d") if postdoc.created_at else "",
+                },
+                "extensionInfo": {
+                    "research_progress": assessment_data.research_progress,
+                    "academic_achievements": assessment_data.academic_achievements,
+                    "patents": assessment_data.patents,
+                    "consultation_reports": assessment_data.consultation_reports,
+                    "research_brief": assessment_data.research_brief,
+                    "extension_plan": assessment_data.extension_plan
+                }
+            }
+        
+        return response_data
 
 @router.get(
     "/students", 

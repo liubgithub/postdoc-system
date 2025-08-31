@@ -1,4 +1,4 @@
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, watch, nextTick } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import TeacherHeader from "../TeacherHeader.tsx";
 import * as styles from "../../UserInfo/styles.css.ts";
@@ -75,6 +75,9 @@ export default defineComponent({
     // 延期考核数据
     const extensionData = ref<any>(null);
     const loading = ref(false);
+    
+    // 延期考核组件引用
+    const extensionAssessmentRef = ref<any>(null);
 
     // 获取学生延期考核数据
     const fetchStudentExtensionData = async () => {
@@ -84,11 +87,13 @@ export default defineComponent({
 
       try {
         loading.value = true;
+        console.log("调用getStudentDetail，userId:", studentInfo.value.userId, "businessType: 延期考核");
         const response = await getStudentDetail(parseInt(studentInfo.value.userId), "延期考核");
         
         if (response.data) {
           extensionData.value = response.data;
           console.log("获取的延期考核数据:", response.data);
+          console.log("完整的API响应:", response);
           
           // 如果有用户信息，设置到userInfo中
           if (response.data.user_info) {
@@ -103,6 +108,26 @@ export default defineComponent({
             }
             if (response.data.extension_assessment_data.extensionInfo) {
               extensionForm.value.extensionInfo = { ...extensionForm.value.extensionInfo, ...response.data.extension_assessment_data.extensionInfo };
+            }
+          } else if (response.data.extension_info_data) {
+            // 如果没有延期考核数据，但有延期信息数据，也设置到extensionForm中
+            console.log("获取的延期信息数据:", response.data.extension_info_data);
+            extensionForm.value.basicInfo = { ...extensionForm.value.basicInfo, ...response.data.extension_info_data };
+          } else {
+            console.log("没有找到延期考核数据，检查其他可能的数据字段");
+            console.log("可用的数据字段:", Object.keys(response.data));
+            
+            // 尝试从用户信息中获取基本信息
+            if (response.data.user_info) {
+              console.log("从用户信息中获取基本信息");
+              const userInfo = response.data.user_info;
+              extensionForm.value.basicInfo = {
+                ...extensionForm.value.basicInfo,
+                name: userInfo.name || '',
+                gender: userInfo.gender || '',
+                nationality: userInfo.nationality || '',
+                // 其他可以从用户信息中获取的字段
+              };
             }
           }
           
@@ -127,6 +152,8 @@ export default defineComponent({
         loading.value = false;
       }
     };
+
+
 
     // 页面加载时获取学生数据
     onMounted(() => {
@@ -269,9 +296,11 @@ export default defineComponent({
                   <div>
                     {/* 延期考核表单 */}
                     <ExtensionAssessment 
+                      ref={extensionAssessmentRef}
                       onBack={handleBack} 
                       externalData={extensionForm.value}
                       showExtensionButtons={false}
+                      isViewMode={true}
                     />
                   </div>
                 )}

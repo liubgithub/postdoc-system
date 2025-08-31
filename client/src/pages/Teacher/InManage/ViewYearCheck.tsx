@@ -1,4 +1,4 @@
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, watch, nextTick } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import TeacherHeader from "../TeacherHeader.tsx";
 import * as styles from "../../UserInfo/styles.css.ts";
@@ -76,6 +76,9 @@ export default defineComponent({
       remark: ''
     });
 
+    // 年度考核组件引用
+    const annualAssessmentRef = ref<any>(null);
+
     // 用户信息
     const userInfo = ref<any>(null);
     // 年度考核数据
@@ -90,11 +93,13 @@ export default defineComponent({
 
       try {
         loading.value = true;
+        console.log("调用getStudentDetail，userId:", studentInfo.value.userId, "businessType: 年度考核");
         const response = await getStudentDetail(parseInt(studentInfo.value.userId), "年度考核");
         
         if (response.data) {
           annualData.value = response.data;
           console.log("获取的年度考核数据:", response.data);
+          console.log("完整的API响应:", response);
           
           // 如果有用户信息，设置到userInfo中
           if (response.data.user_info) {
@@ -105,6 +110,26 @@ export default defineComponent({
           if (response.data.annual_assessment_data) {
             console.log("获取的年度考核数据:", response.data.annual_assessment_data);
             annualForm.value = { ...annualForm.value, ...response.data.annual_assessment_data };
+          } else if (response.data.achievement_data) {
+            // 尝试使用 achievement_data 字段
+            console.log("获取的成就数据:", response.data.achievement_data);
+            annualForm.value = { ...annualForm.value, ...response.data.achievement_data };
+          } else {
+            console.log("没有找到年度考核数据，检查其他可能的数据字段");
+            console.log("可用的数据字段:", Object.keys(response.data));
+            
+            // 尝试从用户信息中获取基本信息
+            if (response.data.user_info) {
+              console.log("从用户信息中获取基本信息");
+              const userInfo = response.data.user_info;
+              annualForm.value = {
+                ...annualForm.value,
+                name: userInfo.name || '',
+                gender: userInfo.gender || '',
+                political: userInfo.political_status || '',
+                // 其他可以从用户信息中获取的字段
+              };
+            }
           }
           
           // 如果有教育经历和工作经历数据，设置到userInfo中
@@ -128,6 +153,8 @@ export default defineComponent({
         loading.value = false;
       }
     };
+
+
 
     // 页面加载时获取学生数据
     onMounted(() => {
@@ -269,7 +296,12 @@ export default defineComponent({
                 ) : (
                   <div>
                     {/* 年度考核表单 */}
-                    <AnnualAssessment onBack={handleBack} showYearButtons={false} />
+                    <AnnualAssessment 
+                      ref={annualAssessmentRef}
+                      onBack={handleBack} 
+                      showYearButtons={false}
+                      externalData={annualForm.value}
+                    />
                   </div>
                 )}
               </div>

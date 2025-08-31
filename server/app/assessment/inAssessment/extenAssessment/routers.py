@@ -43,6 +43,22 @@ def get_extension_by_user_id(
         return None
     return record
 
+@router.get("/{student_id}", response_model=ExtensionOut | None)
+def get_extension_by_student_id(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """导师获取指定学生的延期考核记录"""
+    # 检查当前用户是否为导师
+    if current_user.role != "teacher":
+        raise HTTPException(status_code=403, detail="需要导师权限")
+    
+    record = db.query(PostdoctoralExtension).filter_by(user_id=student_id).first()
+    if not record:
+        return None
+    return record
+
 @router.delete("/")
 def delete_extension_by_user_id(
     db: Session = Depends(get_db),

@@ -1,4 +1,4 @@
-import { defineComponent, ref, watch, computed } from "vue";
+import { defineComponent, ref, watch, computed, onMounted } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import TeacherHeader from "../TeacherHeader";
 import * as styles from "../../UserInfo/styles.css.ts";
@@ -17,8 +17,17 @@ import {
   ElMenu,
   ElMenuItem,
   ElMain,
+  ElMessage,
 } from "element-plus";
 import ProcessStatus from "@/units/ProcessStatus";
+import { getTeacherApplications } from "@/api/enterWorkstation";
+
+// 添加表格行数据类型定义
+interface TableRow {
+  studentId: string;
+  name: string;
+  [key: string]: any;
+}
 
 export default defineComponent({
   name: "OutCheckPage",
@@ -26,61 +35,38 @@ export default defineComponent({
     const searchValue = ref("");
     const router = useRouter();
     const route = useRoute();
-    // 示例数据
-    const allTableData = [
-      {
-        id: 1,
-        studentId: "20230001",
-        name: "张三",
-        college: "园艺林学学院",
-        major: "园艺学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "合作导师",
-        currentApproval: "考核小组负责人（通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 10:00' },
-          { status: '审核中' as const, role: '合作导师', time: '2025-09-02 12:00' },
-          { status: '审核中' as const, role: '分管领导' },
-          { status: '审核中' as const, role: '学院管理员' }
-        ]
-      },
-      {
-        id: 2,
-        studentId: "20230002",
-        name: "李四",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "分管领导",
-        currentApproval: "设站单位负责人（不通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 09:00' },
-          { status: '通过' as const, role: '合作导师', time: '2025-09-01 10:00' },
-          { status: '拒绝' as const, role: '分管领导', time: '2025-09-02 11:00' },
-          { status: '审核中' as const, role: '学院管理员' }
-        ]
-      },
-      {
-        id: 3,
-        studentId: "20230003",
-        name: "王五",
-        college: "园艺林学学院",
-        major: "林学",
-        applyTime: "2025-09-01",
-        status: "审核中",
-        node: "学院管理员",
-        currentApproval: "学院管理员审核（通过）",
-        steps: [
-          { status: '发起' as const, role: '学生申请', time: '2025-09-01 08:00' },
-          { status: '通过' as const, role: '合作导师', time: '2025-09-01 09:00' },
-          { status: '通过' as const, role: '分管领导', time: '2025-09-01 10:00' },
-          { status: '通过' as const, role: '学院管理员', time: '2025-09-01 11:00' }
-        ]
-      },
-    ];
-    const tableData = ref([...allTableData]);
+    const loading = ref(false);
+    
+    // 从API获取的数据
+    const allTableData = ref<TableRow[]>([]);
+    const tableData = ref<TableRow[]>([]);
+
+    // 获取学生列表
+    const fetchStudents = async () => {
+      loading.value = true;
+      try {
+        const response = await getTeacherApplications("出站考核");
+        console.log('API响应:', response);
+        if (response.data) {
+          console.log('API返回的数据:', response.data);
+          console.log('第一条数据:', response.data[0]);
+          allTableData.value = response.data;
+          tableData.value = [...allTableData.value];
+        } else if (response.error) {
+          ElMessage.error('获取学生列表失败');
+        }
+      } catch (error) {
+        console.error('获取学生列表失败:', error);
+        ElMessage.error('获取学生列表失败');
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // 页面加载时获取数据
+    onMounted(() => {
+      fetchStudents();
+    });
     // 分页相关
     const pageSize = 10;
     const currentPage = ref(1);
@@ -93,11 +79,11 @@ export default defineComponent({
     const handleSearch = () => {
       const keyword = searchValue.value.trim().toLowerCase();
       if (!keyword) {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
         return;
       }
-      tableData.value = allTableData.filter(
-        (row) =>
+      tableData.value = allTableData.value.filter(
+        (row: TableRow) =>
           row.studentId.toLowerCase().includes(keyword) ||
           row.name.toLowerCase().includes(keyword)
       );
@@ -105,17 +91,18 @@ export default defineComponent({
 
     watch(searchValue, (val) => {
       if (val === "") {
-        tableData.value = [...allTableData];
+        tableData.value = [...allTableData.value];
       }
     });
 
     // 流程状态弹窗逻辑
     const showProcessDialog = ref(false);
     const currentSteps = ref([]);
-    const currentSelectedRow = ref<any>(null);
+    const currentRow = ref<any>(null);
     const handleShowProcess = (row: any) => {
-      currentSelectedRow.value = row;
+      console.log('点击查看流程，行数据:', row);
       currentSteps.value = row.steps;
+      currentRow.value = row;
       showProcessDialog.value = true;
     };
 
@@ -231,32 +218,32 @@ export default defineComponent({
                       label="当前审批结果"
                       align="center"
                     />
-                                    <ElTableColumn
-                  label="操作"
-                  width={150}
-                  align="center"
-                  v-slots={{
-                    default: (scope: { row: any }) => (
-                      <ElButton 
-                        type="primary" 
-                        size="small" 
-                        onClick={() => router.push({
-                          path: '/teacher/outCheck/detail',
-                          query: {
-                            studentId: scope.row.studentId,
-                            name: scope.row.name,
-                            college: scope.row.college,
-                            major: scope.row.major,
-                            applyTime: scope.row.applyTime,
-                            userId: scope.row.id
-                          }
-                        })}
-                      >
-                        查看
-                      </ElButton>
-                    ),
-                  }}
-                />
+                    <ElTableColumn
+                      label="操作"
+                      width={150}
+                      align="center"
+                      v-slots={{
+                        default: (scope: { row: any }) => (
+                          <ElButton 
+                            type="primary" 
+                            size="small" 
+                            onClick={() => router.push({
+                              path: '/teacher/outCheck/detail',
+                              query: { 
+                                studentId: scope.row.studentId,
+                                name: scope.row.name,
+                                college: scope.row.college,
+                                major: scope.row.major,
+                                applyTime: scope.row.applyTime,
+                                userId: scope.row.user_id
+                              }
+                            })}
+                          >
+                            查看
+                          </ElButton>
+                        ),
+                      }}
+                    />
                   </ElTable>
                 </div>
 
@@ -293,12 +280,25 @@ export default defineComponent({
             </div>
           </ElMain>
         </ElContainer>
-        <ProcessStatus
-          modelValue={showProcessDialog.value}
-          onUpdate:modelValue={(val) => showProcessDialog.value = val}
-          processType='出站考核'
-          studentId={currentSelectedRow.value?.user_id}
-        />
+        <ElDialog
+          v-model={showProcessDialog.value}
+          title="流程状态"
+          width="600px"
+          destroyOnClose
+        >
+          {(() => {
+            console.log('当前行数据:', currentRow.value);
+            console.log('学生ID:', currentRow.value?.user_id);
+            return (
+              <ProcessStatus
+                modelValue={showProcessDialog.value}
+                onUpdate:modelValue={(val) => showProcessDialog.value = val}
+                processType='出站考核'
+                studentId={currentRow.value?.user_id}
+              />
+            );
+          })()}
+        </ElDialog>
       </ElContainer>
     );
   },

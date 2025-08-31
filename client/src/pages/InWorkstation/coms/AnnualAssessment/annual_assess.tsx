@@ -2,6 +2,7 @@ import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElSelect, ElOption
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import SignaturePad from '@/units/Signature/index'
 import fetch from '@/api/index'
+import { watch } from 'vue'
 export default defineComponent({
     name: 'AnnualAssessment',
     props: {
@@ -16,6 +17,10 @@ export default defineComponent({
         isViewMode: {
             type: Boolean,
             default: false
+        },
+        externalData: {
+            type: Object,
+            default: () => ({})
         }
     },
     setup(props) {
@@ -61,22 +66,37 @@ export default defineComponent({
 
             }
         }
+        // 监听外部数据变化
+        watch(() => props.externalData, (newData) => {
+            if (newData && Object.keys(newData).length > 0) {
+                console.log('外部数据变化:', newData);
+                form.value = { ...form.value, ...newData };
+            }
+        }, { deep: true });
+
         onMounted(async()=>{
-            try{
-                const res = await fetch.raw.GET('/annulAssessment/')
-                if(res.response.ok){
-                    // 如果res.data为null或不是对象，则保持默认空值
-                    if(res.data && typeof res.data === 'object'){
-                        // 有数据则直接赋值给form
-                        form.value = res.data as any
+            // 如果有外部数据，优先使用外部数据
+            if (props.externalData && Object.keys(props.externalData).length > 0) {
+                console.log('使用外部数据:', props.externalData);
+                form.value = { ...form.value, ...props.externalData };
+            } else {
+                // 否则从接口获取数据
+                try{
+                    const res = await fetch.raw.GET('/annulAssessment/')
+                    if(res.response.ok){
+                        // 如果res.data为null或不是对象，则保持默认空值
+                        if(res.data && typeof res.data === 'object'){
+                            // 有数据则直接赋值给form
+                            form.value = res.data as any
+                        }
+                        // 没有数据则保持空值，不需要额外处理
+                    }else{
+                        ElMessage.warning('获取数据失败')
                     }
-                    // 没有数据则保持空值，不需要额外处理
-                }else{
-                    ElMessage.warning('获取数据失败')
+                }catch(error){
+                    console.error('获取年度考核数据失败:', error)
+                    ElMessage.error('获取数据失败，请稍后重试')
                 }
-            }catch(error){
-                console.error('获取年度考核数据失败:', error)
-                ElMessage.error('获取数据失败，请稍后重试')
             }
         })
         return () => (
