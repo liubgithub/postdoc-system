@@ -1,6 +1,6 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { ElForm, ElFormItem, ElInput, ElButton, ElTable, ElTableColumn, ElRadioGroup, ElRadio, ElDatePicker, ElMessage } from 'element-plus';
-
+import SignaturePad from '@/units/Signature/index';
 
 export default defineComponent({
     name: 'Assessment',
@@ -55,7 +55,7 @@ export default defineComponent({
 
         // 返回
         const onBack = () => {
-            
+
         };
 
         return () => (
@@ -66,11 +66,11 @@ export default defineComponent({
                     <div style={{ border: '1px solid #333', borderRadius: '4px', background: '#fff', padding: 0, position: 'relative', minHeight: '500px' }}>
                         <div style={{ padding: '16px', minHeight: '180px', borderBottom: '1px solid #666', position: 'relative' }}>
                             <ElFormItem label="指导小组意见" style={{ marginBottom: 0 }}>
-                                <ElInput type="textarea" v-model={form.guideGroupOpinion} autosize={{ minRows: 5 }} />
+                                <ElInput></ElInput>
                             </ElFormItem>
                             <div style={{ display: 'flex', gap: '16px', position: 'absolute', right: '20px', bottom: '5px' }}>
                                 <ElFormItem label="指导小组负责人(合作导师)签字" prop="guideGroupLeader" labelWidth={300}>
-                                    <ElInput v-model={form.guideGroupLeader} />
+                                    <SignaturePad />
                                 </ElFormItem>
                                 <ElFormItem label="日期" prop="guideGroupDate">
                                     <ElDatePicker v-model={form.guideGroupDate} type="date" placeholder="选择日期" style={{ width: '100%' }} />
@@ -124,8 +124,6 @@ export default defineComponent({
 
                         {/* 记录本检查情况 */}
                         <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
-
-
                             <ElFormItem label="须体现实验记录本或工作记录本检查情况" prop="recordCheck">
                                 <ElInput type="textarea" v-model={form.recordCheck} autosize={{ minRows: 3 }} />
                             </ElFormItem>
@@ -137,7 +135,7 @@ export default defineComponent({
                             </ElFormItem>
                             <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
                                 <ElFormItem label="考核组长签字(盖章)" prop="assessmentLeader">
-                                    <ElInput v-model={form.assessmentLeader} />
+                                    <SignaturePad />
                                 </ElFormItem>
                                 <ElFormItem label="日期" prop="assessmentDate">
                                     <ElDatePicker v-model={form.assessmentDate} type="date" placeholder="选择日期" style={{ width: '100%' }} />
@@ -145,10 +143,10 @@ export default defineComponent({
                             </div>
                             <ElFormItem label="投票情况" prop="vote">
                                 <ElRadioGroup v-model={form.vote}>
-                                                    <ElRadio value="优秀">优秀</ElRadio>
-                <ElRadio value="良好">良好</ElRadio>
-                <ElRadio value="合格">合格</ElRadio>
-                <ElRadio value="不合格">不合格</ElRadio>
+                                    <ElRadio value="优秀">优秀</ElRadio>
+                                    <ElRadio value="良好">良好</ElRadio>
+                                    <ElRadio value="合格">合格</ElRadio>
+                                    <ElRadio value="不合格">不合格</ElRadio>
                                 </ElRadioGroup>
                             </ElFormItem>
                         </div>

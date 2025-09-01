@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Form
 from fastapi.responses import JSONResponse
@@ -31,17 +32,28 @@ def upload_image(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # 查找该学生对应的老师
+    # 先检查是否已经有这个sign_type的记录
+    existing_sign = db.query(uploadSign).filter(
+        uploadSign.user_id == current_user.id,
+        uploadSign.sign_type == sign_type
+    ).first()
+
+    # 创建目录路径 - 如果没有导师关系，使用默认路径
+    base_dir = os.path.join(UPLOAD_ROOT, "default", sign_type, str(current_user.id))
+    
+    # 尝试查找导师关系（如果有）
     relation = db.query(SupervisorStudent).filter(
         SupervisorStudent.student_id == current_user.id
     ).first()
-    if not relation:
-        raise HTTPException(status_code=403, detail="未找到该学生的导师关系")
-    supervisor_id = relation.supervisor_id
-    student_id = current_user.id
+    
+    if relation:
+        # 如果有导师关系，使用导师ID创建路径
+        supervisor_id = relation.supervisor_id
+        base_dir = os.path.join(UPLOAD_ROOT, str(supervisor_id), sign_type, str(current_user.id))
+    else:
+        # 如果没有导师关系，记录日志但不阻止上传
+        print(f"Warning: No supervisor relationship found for user {current_user.id}, using default path")
 
-    # 创建完整的服务器路径
-    base_dir = os.path.join(UPLOAD_ROOT,str(supervisor_id) , sign_type , str(student_id))
     try:
         os.makedirs(base_dir, exist_ok=True)
     except Exception as e:
@@ -67,25 +79,37 @@ def upload_image(
         print(f"文件写入失败: {file_path}, 错误: {e}")
         raise HTTPException(status_code=400, detail=f"文件写入失败: {str(e)}")
 
-    # 数据库记录
-    new_sign = uploadSign(
-        user_id=current_user.id,
-        sign_type=sign_type,
-        sign_name="sign.png",
-        sign_road=str(file_path),
-    )
-    db.add(new_sign)
+    # 数据库记录 - 如果已存在则更新，否则新建
+    if existing_sign:
+        existing_sign.sign_name = "sign.png"
+        existing_sign.sign_road = str(file_path)
+        existing_sign.updated_at = datetime.now()
+    else:
+        new_sign = uploadSign(
+            user_id=current_user.id,
+            sign_type=sign_type,
+            sign_name="sign.png",
+            sign_road=str(file_path),
+        )
+        db.add(new_sign)
+    
     db.commit()
-    db.refresh(new_sign)
+    
+    if existing_sign:
+        db.refresh(existing_sign)
+        sign_record = existing_sign
+    else:
+        db.refresh(new_sign)
+        sign_record = new_sign
 
     return AttachmentOut(
-        id=new_sign.id,
-        user_id=new_sign.user_id,
-        filename=new_sign.sign_name,
-        filepath=new_sign.sign_road,
+        id=sign_record.id,
+        user_id=sign_record.user_id,
+        filename=sign_record.sign_name,
+        filepath=sign_record.sign_road,
         filetype="png",
-        created_at=new_sign.created_at,
-        updated_at=new_sign.updated_at,
+        created_at=sign_record.created_at,
+        updated_at=sign_record.updated_at,
         attachments=[]
     )
 
@@ -98,21 +122,34 @@ def get_image_base64(
 ):
     query_student_id = student_id if student_id is not None else current_user.id
 
-    relation = db.query(SupervisorStudent).filter(
-        SupervisorStudent.student_id == query_student_id
+    # 先尝试从数据库获取记录
+    sign_record = db.query(uploadSign).filter(
+        uploadSign.user_id == query_student_id,
+        uploadSign.sign_type == sign_type
     ).first()
-    if not relation:
-        raise HTTPException(status_code=404, detail="未找到该学生的导师关系")
-    supervisor_id = relation.supervisor_id
 
-    # 这里用 query_student_id
-    file_path = os.path.join(UPLOAD_ROOT, str(supervisor_id), sign_type, str(query_student_id), "sign.png")
-    print(file_path)
+    if not sign_record:
+        raise HTTPException(status_code=404, detail="未找到签名记录")
+
+    # 检查文件是否存在
+    file_path = sign_record.sign_road
+    print(f"Looking for file at: {file_path}")
+    
     if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="图片不存在")
+        # 如果文件不存在，尝试在默认路径查找
+        default_path = os.path.join(UPLOAD_ROOT, "default", sign_type, str(query_student_id), "sign.png")
+        print(f"Original path not found, trying default path: {default_path}")
+        
+        if os.path.exists(default_path):
+            file_path = default_path
+        else:
+            raise HTTPException(status_code=404, detail="图片不存在")
 
-    with open(file_path, "rb") as f:
-        img_bytes = f.read()
-        base64_str = base64.b64encode(img_bytes).decode('utf-8')
-        data_url = f"data:image/png;base64,{base64_str}"
-        return JSONResponse(content={"image_base64": data_url})
+    try:
+        with open(file_path, "rb") as f:
+            img_bytes = f.read()
+            base64_str = base64.b64encode(img_bytes).decode('utf-8')
+            data_url = f"data:image/png;base64,{base64_str}"
+            return JSONResponse(content={"image_base64": data_url})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"读取图片失败: {str(e)}")

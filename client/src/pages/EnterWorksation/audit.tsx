@@ -1,7 +1,6 @@
 import { ElInput, ElCheckboxGroup, ElCheckbox, ElCard, ElDatePicker } from 'element-plus'
 import * as cls from './styles.css'
 import SignaturePad from '@/units/Signature/index'
-import { ca } from 'element-plus/es/locales.mjs'
 export default defineComponent({
     name: "Audit",
     props: {

@@ -9,17 +9,26 @@ export default defineComponent({
   name: 'StationProtocol',
   setup() {
     const fileList = ref([])
-    const form = reactive({
+    const form = ref({
       stuId: '',
       name: '',
       cotutor: '',
       entryYear: '',
       college: '',
       subject: '',
-      research: '',
       phone: '',
       email: ''
     })
+    const handleSubmit = async() =>{
+      try{
+        const res = await fetch.raw.POST('/enterProtocol/', { body: form.value })
+        if(res.response.ok){
+          ElMessage.success('提交成功')
+        }
+      }catch(error){
+        console.log(error)
+      }
+    }
     const handleDownload = () => {
       // TODO: Replace with real Word generation logic
       const blob = new Blob([mubanContent], { type: 'application/msword' })
@@ -46,43 +55,69 @@ export default defineComponent({
     const handleUploadError = () => {
       ElMessage.error('上传失败')
     }
+    onMounted(async () => {
+      try {
+        const res = await fetch.raw.GET('/enterProtocol/')
+        if (res.response.ok && res.data && typeof res.data === 'object') {
+          // 只有当接口返回有效数据时才更新表单
+          // 使用原始表单作为默认值，然后用接口数据覆盖
+          form.value = {
+            stuId: res.data.stuId || '',
+            name: res.data.name || '',
+            cotutor: res.data.cotutor || '',
+            entryYear: res.data.entryYear || '',
+            college: res.data.college || '',
+            subject: res.data.subject || '',
+            phone: res.data.phone || '',
+            email: res.data.email || ''
+          }
+        }
+        // 如果没有数据或接口调用失败，保持原始的空值表单
+      } catch (error) {
+        console.error('获取进站协议数据失败:', error)
+        // 保持原始的空值表单，不进行任何赋值操作
+      }
+    })
     return () => (
       <div class={cls.formContainer} style={{ width: '80vw', margin: '0 auto' }}>
         <div class={cls.header} style={{ textAlign: 'left', margin: '30px 0 20px 0' }}>
           <h1>基础信息</h1>
         </div>
-        <ElForm model={form} labelWidth="100px" style={{ marginBottom: '40px' }}>
+        <ElForm model={form.value} labelWidth="100px" style={{ marginBottom: '40px' }}>
           <div style={{ display: 'flex', gap: '40px', marginBottom: '20px' }}>
             <ElFormItem label="学号" prop="stuId" style={{ flex: 1 }}>
-              <ElInput v-model={form.stuId} placeholder="请输入学号" />
+              <ElInput v-model={form.value.stuId} placeholder="请输入学号" />
             </ElFormItem>
             <ElFormItem label="姓名" prop="name" style={{ flex: 1 }}>
-              <ElInput v-model={form.name} placeholder="请输入姓名" />
+              <ElInput v-model={form.value.name} placeholder="请输入姓名" />
             </ElFormItem>
           </div>
           <div style={{ display: 'flex', gap: '40px', marginBottom: '20px' }}>
             <ElFormItem label="合作导师" prop="cotutor" style={{ flex: 1 }}>
-              <ElInput v-model={form.cotutor} placeholder="请输入合作导师" />
+              <ElInput v-model={form.value.cotutor} placeholder="请输入合作导师" />
             </ElFormItem>
             <ElFormItem label="入站年份" prop="entryYear" style={{ flex: 1 }}>
-              <ElInput v-model={form.entryYear} placeholder="请输入入站年份" />
+              <ElInput v-model={form.value.entryYear} placeholder="请输入入站年份" />
             </ElFormItem>
           </div>
           <div style={{ display: 'flex', gap: '40px', marginBottom: '20px' }}>
             <ElFormItem label="所在院系" prop="college" style={{ flex: 1 }}>
-              <ElInput v-model={form.college} placeholder="请输入所在院系" />
+              <ElInput v-model={form.value.college} placeholder="请输入所在院系" />
             </ElFormItem>
-            <ElFormItem label="研究方向" prop="research" style={{ flex: 1 }}>
-              <ElInput v-model={form.research} placeholder="请输入研究方向" />
+            <ElFormItem label="研究方向" prop="subject" style={{ flex: 1 }}>
+              <ElInput v-model={form.value.subject} placeholder="请输入研究方向" />
             </ElFormItem>
           </div>
           <div style={{ display: 'flex', gap: '40px', marginBottom: '20px' }}>
             <ElFormItem label="手机" prop="phone" style={{ flex: 1 }}>
-              <ElInput v-model={form.phone} placeholder="请输入手机号" />
+              <ElInput v-model={form.value.phone} placeholder="请输入手机号" />
             </ElFormItem>
             <ElFormItem label="邮箱" prop="email" style={{ flex: 1 }}>
-              <ElInput v-model={form.email} placeholder="请输入邮箱" />
+              <ElInput v-model={form.value.email} placeholder="请输入邮箱" />
             </ElFormItem>
+          </div>
+          <div style={{ marginBottom: '20px',textAlign: 'center' }}>
+            <ElButton type='primary' onClick={handleSubmit}>提交信息</ElButton>
           </div>
         </ElForm>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>

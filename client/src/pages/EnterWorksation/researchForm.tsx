@@ -34,6 +34,8 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const hasSignature = ref(false)
+    const isLoading = ref(false)
     const form = ref({
       base_work: "",
       necessity_analysis: "",
@@ -62,33 +64,110 @@ export default defineComponent({
     const handleBack = () => {
       props.onBack && props.onBack()
     }
+    const formFetchWithToken = async (url: string, options: RequestInit = {}) => {
+      const token = localStorage.getItem('token');
+      const headers = new Headers(options.headers);
+      
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      
+      // 如果是 FormData，让浏览器自动设置 Content-Type
+      if (options.body instanceof FormData) {
+        headers.delete('Content-Type');
+      }
+      
+      return fetch(`/api${url}`, {
+        ...options,
+        headers
+      });
+    };
     const onInput = async (val: any) => {
-      console.log(val, 'signature')
-      // 假设 externalUserId 作为 student_id，val 作为 image_base64
-      const res = await apiFetch.raw.POST('/uploadSign/upload_image',
-        {
-          body: {
-            sign_type: '进站申请',
-            image_base64: val
-          }
-        }
-      )
-      console.log(res, 'sssss')
+      console.log('Signature changed:', val ? 'has signature' : 'no signature');
+      form.value.signature = val;
+      hasSignature.value = !!val;
+    }
 
+    const onSignatureUpload = async (val: string) => {
+      if (val) {
+        try {
+          const formData = new FormData();
+          formData.append('sign_type', '进站申请');
+          formData.append('image_base64', val);
+    
+          const res = await formFetchWithToken('/uploadSign/upload_image', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (res.ok) {
+            console.log('Signature uploaded successfully');
+            hasSignature.value = true;
+            ElMessage.success('签名上传成功');
+          }
+        } catch (error) {
+          console.error('Failed to upload signature:', error);
+          ElMessage.error('签名上传失败');
+        }
+      }
+    }
+
+    const onSignatureConfirm = async (val: string) => {
+      if (val) {
+        try {
+          const formData = new FormData();
+          formData.append('sign_type', '进站申请');
+          formData.append('image_base64', val);
+    
+          const res = await formFetchWithToken('/uploadSign/upload_image', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (res.ok) {
+            console.log('Signature uploaded successfully');
+            hasSignature.value = true;
+            ElMessage.success('签名成功');
+          }
+        } catch (error) {
+          console.error('Failed to upload signature:', error);
+          ElMessage.error('签名失败');
+        }
+      } else {
+        hasSignature.value = false;
+      }
     }
 
     const fetchSignature = async () => {
-      const res = await apiFetch.raw.GET('/uploadSign/get_image_base64', { params: { query: { sign_type: '进站申请' } } });
-      const imgBase64 = (res.data as { image_base64: string }).image_base64;
-      form.value.signature = imgBase64
+      try {
+        const res = await apiFetch.raw.GET('/uploadSign/get_image_base64', {
+          params: { query: { sign_type: '进站申请' } }
+        });
+        console.log(res,'fff')
+        if (res.data && (res.data as any).image_base64) {
+          const imgBase64 = (res.data as { image_base64: string }).image_base64;
+          form.value.signature = imgBase64;
+          hasSignature.value = true;
+        }
+      } catch (error: any) {
+        // 404错误是正常情况（新用户没有签名）
+        if (error.response?.status === 404) {
+          console.log('No signature found for new user');
+          form.value.signature = '';
+          hasSignature.value = false;
+        } else {
+          console.error('Error fetching signature:', error);
+          ElMessage.error('获取签名失败');
+        }
+      }
     };
-
     onMounted(async () => {
       let res;
       const userStore = useUser();
-      fetchSignature()
+      isLoading.value = true
       try {
         // 如果有外部传入的用户ID，使用对应的接口
+        await fetchSignature()
         if (props.externalUserId) {
           const response = await fetch(`/api/enterRelation/user/${props.externalUserId}`, {
             headers: {
@@ -107,10 +186,15 @@ export default defineComponent({
 
         if (res) {
           Object.assign(form.value, res);
+          if (res.signature) {
+            hasSignature.value = true;
+          }
         }
         console.log(res, form.value, 'biao')
       } catch (error) {
         console.error('获取数据失败:', error);
+      } finally {
+        isLoading.value = false;
       }
     });
     return () => (
@@ -195,7 +279,13 @@ export default defineComponent({
               </ElAlert>
               <div style={{ display: 'flex', justifyContent: 'flex-end', textAlign: 'right' }}>
                 <div>
-                  <SignaturePad disabled={props.userRole !== 'student'} onChange={val => onInput(val)} image={form.value.signature} />
+                  <SignaturePad
+                    disabled={props.userRole !== 'student'}
+                    onChange={val => onInput(val)}
+                    onUpload={onSignatureUpload}
+                    onConfirm={onSignatureConfirm}
+                    image={form.value.signature}
+                  />
                   <ElDatePicker
                     v-model={form.value.date}
                     type="date"
