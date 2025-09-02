@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage, ElSelect, ElOption } from "element-plus";
 import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
@@ -123,12 +123,28 @@ export default defineComponent({
       "出版社": "",
       "总期号": "",
       "刊物编号": "",
+      "备注": "",
       "论文发表证书": null,
       "论文接收函": null,
       "论文电子版": null,
-      "备注": "",
-      time: "",
+      "time": "",
     });
+
+    // 作者名单管理
+    const authorList = ref<string[]>([]);
+    const newAuthor = ref("");
+
+    const addAuthor = (name?: string) => {
+      if (name) {
+        authorList.value.push(name);
+        editData.value["作者名单"] = authorList.value.join("、");
+      }
+    };
+
+    const removeAuthor = (index: number) => {
+      authorList.value.splice(index, 1);
+      editData.value["作者名单"] = authorList.value.join("、");
+    };
 
     const loadPapers = async () => {
       const data = await getMyPapers();
@@ -138,7 +154,7 @@ export default defineComponent({
 
     const handleAdd = () => {
       editData.value = {
-        id: null,
+        id: tableData.value.length + 1,
         "论文名称": "",
         "刊物名称": "",
         "发表日期": "",
@@ -162,22 +178,31 @@ export default defineComponent({
         "出版社": "",
         "总期号": "",
         "刊物编号": "",
+        "备注": "",
         "论文发表证书": null,
         "论文接收函": null,
         "论文电子版": null,
-        "备注": "",
-        time: "",
+        "time": ""
       };
+      
+      // 清空作者列表
+      authorList.value = [];
+      
       editIndex.value = -1;
       showForm.value = true;
     };
 
     const handleEdit = async (row: any, index: number) => {
-      console.log('Edit row:', row);
       const res = await getPaperById(row.id);
-      console.log('API response:', res);
       editData.value = db2form(res);
-      console.log('Transformed data:', editData.value);
+      
+      // 解析作者名单并设置到authorList中
+      if (editData.value["作者名单"]) {
+        authorList.value = editData.value["作者名单"].split("、").filter((name: string) => name.trim());
+      } else {
+        authorList.value = [];
+      }
+      
       editIndex.value = index;
       showForm.value = true;
     };
@@ -296,22 +321,163 @@ export default defineComponent({
                 <ElCol span={12}><ElFormItem label="发表日期">
                   <ElDatePicker v-model={editData.value["发表日期"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="本人署名排序"><ElInput v-model={editData.value["本人署名排序"]} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="本人署名排序">
+                    <ElSelect v-model={editData.value["本人署名排序"]} placeholder="请选择署名排序" style={{ width: '100%' }} clearable>
+                      <ElOption label="独立作者" value="独立作者" />
+                      <ElOption label="专著或书籍参与者" value="专著或书籍参与者" />
+                      <ElOption label="共同第一作者" value="共同第一作者" />
+                      <ElOption label="1" value="1" />
+                      <ElOption label="2" value="2" />
+                      <ElOption label="3" value="3" />
+                      <ElOption label="4" value="4" />
+                      <ElOption label="5" value="5" />
+                      <ElOption label="6" value="6" />
+                      <ElOption label="7" value="7" />
+                      <ElOption label="8" value="8" />
+                      <ElOption label="9" value="9" />
+                      <ElOption label="10" value="10" />
+                      <ElOption label="11" value="11" />
+                      <ElOption label="12" value="12" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="起始页号"><ElInput v-model={editData.value["起始页号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="刊物级别"><ElInput v-model={editData.value["刊物级别"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="是否共同第一"><ElInput v-model={editData.value["是否共同第一"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="通讯作者"><ElInput v-model={editData.value["通讯作者"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="论文类型"><ElInput v-model={editData.value["论文类型"]} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="是否共同第一作者">
+                    <ElSelect v-model={editData.value["是否共同第一"]} placeholder="请选择" style={{ width: '100%' }} clearable>
+                      <ElOption label="是" value="是" />
+                      <ElOption label="否" value="否" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="通讯作者">
+                    <ElInput 
+                      v-model={editData.value["通讯作者"]} 
+                      placeholder="有中文姓名，请填写中文，不要填写拼音！多个通讯作者，中间用顿号"
+                    />
+                  </ElFormItem>
+                </ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="论文类型">
+                    <ElSelect v-model={editData.value["论文类型"]} placeholder="请选择论文类型" style={{ width: '100%' }} clearable>
+                      <ElOption label="SCI" value="SCI" />
+                      <ElOption label="SSCI" value="SSCI" />
+                      <ElOption label="EI" value="EI" />
+                      <ElOption label="CSCD" value="CSCD" />
+                      <ElOption label="CSSCI" value="CSSCI" />
+                      <ElOption label="中文核心" value="中文核心" />
+                      <ElOption label="一级期刊" value="一级期刊" />
+                      <ElOption label="二级期刊" value="二级期刊" />
+                      <ElOption label="三级期刊" value="三级期刊" />
+                      <ElOption label="会议论文" value="会议论文" />
+                      <ElOption label="其他" value="其他" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="影响因子"><ElInput v-model={editData.value["影响因子"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="作者名单"><ElInput v-model={editData.value["作者名单"]} /></ElFormItem></ElCol>
+                <ElCol span={24}>
+                  <ElFormItem label="作者名单">
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+                      {authorList.value.map((author, index) => (
+                        <div key={index} style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          background: '#20B2AA', 
+                          color: 'white',
+                          padding: '4px 8px', 
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}>
+                          <span style={{ marginRight: '6px' }}>{author}</span>
+                          <span 
+                            style={{ 
+                              cursor: 'pointer', 
+                              fontSize: '12px',
+                              fontWeight: 'bold'
+                            }}
+                            onClick={() => removeAuthor(index)}
+                          >
+                            ×
+                          </span>
+                        </div>
+                      ))}
+                      <div 
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          background: '#20B2AA', 
+                          color: 'white',
+                          padding: '4px 8px', 
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '14px'
+                        }}
+                        onClick={() => {
+                          const name = prompt('请输入作者姓名:');
+                          if (name && name.trim()) {
+                            addAuthor(name.trim());
+                          }
+                        }}
+                      >
+                        <span style={{ marginRight: '4px' }}>+</span>
+                        <span>添加</span>
+                      </div>
+                    </div>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="第一作者"><ElInput v-model={editData.value["第一作者"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="导师署名排序"><ElInput v-model={editData.value["导师署名排序"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="本校是否第一"><ElInput v-model={editData.value["本校是否第一"]} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="导师署名排序">
+                    <ElSelect v-model={editData.value["导师署名排序"]} placeholder="请选择署名排序" style={{ width: '100%' }} clearable>
+                      <ElOption label="独立作者" value="独立作者" />
+                      <ElOption label="专著或书籍参与者" value="专著或书籍参与者" />
+                      <ElOption label="共同第一作者" value="共同第一作者" />
+                      <ElOption label="1" value="1" />
+                      <ElOption label="2" value="2" />
+                      <ElOption label="3" value="3" />
+                      <ElOption label="4" value="4" />
+                      <ElOption label="5" value="5" />
+                      <ElOption label="6" value="6" />
+                      <ElOption label="7" value="7" />
+                      <ElOption label="8" value="8" />
+                      <ElOption label="9" value="9" />
+                      <ElOption label="10" value="10" />
+                      <ElOption label="11" value="11" />
+                      <ElOption label="12" value="12" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="本校是否第一署名单位">
+                    <ElSelect v-model={editData.value["本校是否第一"]} placeholder="请选择" style={{ width: '100%' }} clearable>
+                      <ElOption label="是" value="是" />
+                      <ElOption label="否" value="否" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="第一署名单位"><ElInput v-model={editData.value["第一署名单位"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="发表状态"><ElInput v-model={editData.value["发表状态"]} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="发表状态">
+                    <ElSelect v-model={editData.value["发表状态"]} placeholder="请选择发表状态" style={{ width: '100%' }} clearable>
+                      <ElOption label="已收录" value="已收录" />
+                      <ElOption label="已公开发表" value="已公开发表" />
+                      <ElOption label="未发表提供录用通知" value="未发表提供录用通知" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="论文收录检索"><ElInput v-model={editData.value["论文收录检索"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="他引次数"><ElInput v-model={editData.value["他引次数"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="是否和学位论文相关"><ElInput v-model={editData.value["是否和学位论文相关"]} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="是否和学位论文相关">
+                    <ElSelect v-model={editData.value["是否和学位论文相关"]} placeholder="请选择" style={{ width: '100%' }} clearable>
+                      <ElOption label="是" value="是" />
+                      <ElOption label="否" value="否" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="出版号"><ElInput v-model={editData.value["出版号"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="出版社"><ElInput v-model={editData.value["出版社"]} /></ElFormItem></ElCol>
                 <ElCol span={12}><ElFormItem label="总期号"><ElInput v-model={editData.value["总期号"]} /></ElFormItem></ElCol>
@@ -324,46 +490,64 @@ export default defineComponent({
                 </ElFormItem></ElCol>
               </ElRow>
 
-              <ElFormItem label="论文发表证书">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文发表证书")}>
-                  <ElButton>选择文件</ElButton>
-                </ElUpload>
+              <ElFormItem label="论文发表扫描件">
                 {/* 新文件名 */}
                 {editData.value["论文发表证书"] && editData.value["论文发表证书"] instanceof File && (
-                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["论文发表证书"].name}</span>
+                  <div style={{ marginBottom: '8px', color: '#409EFF' }}>{editData.value["论文发表证书"].name}</div>
                 )}
                 {/* 原文件名 */}
                 {editData.value["论文发表证书"] && typeof editData.value["论文发表证书"] === 'string' && (
-                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文发表证书"].split('/').pop()}</span>
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value["论文发表证书"].split('/').pop()}</div>
                 )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文发表证书")}>
+                    <ElButton>选择文件</ElButton>
+                  </ElUpload>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' }}>
+                    <span>ℹ️</span>
+                    <span>允许上传zip,pdf,doc,docx格式的文件*</span>
+                  </div>
+                </div>
               </ElFormItem>
 
               <ElFormItem label="论文接收函">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文接收函")}>
-                  <ElButton>选择文件</ElButton>
-                </ElUpload>
                 {/* 新文件名 */}
                 {editData.value["论文接收函"] && editData.value["论文接收函"] instanceof File && (
-                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["论文接收函"].name}</span>
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#409EFF' }}>{editData.value["论文接收函"].name}</div>
                 )}
                 {/* 原文件名 */}
                 {editData.value["论文接收函"] && typeof editData.value["论文接收函"] === 'string' && (
-                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文接收函"].split('/').pop()}</span>
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value["论文接收函"].split('/').pop()}</div>
                 )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文接收函")}>
+                    <ElButton>选择文件</ElButton>
+                  </ElUpload>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' }}>
+                    <span>ℹ️</span>
+                    <span>允许上传zip,pdf,doc,docx格式的文件*</span>
+                  </div>
+                </div>
               </ElFormItem>
 
-              <ElFormItem label="论文电子版">
-                <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文电子版")}>
-                  <ElButton>选择文件</ElButton>
-                </ElUpload>
+              <ElFormItem label="论文电子版地址">
                 {/* 新文件名 */}
-                {editData.value["论文电子版"] && editData.value["论文电子版"] instanceof File && (
-                  <span style={{ marginLeft: 10, color: '#409EFF' }}>{editData.value["论文电子版"].name}</span>
+                {editData.value["论文电子版地址"] && editData.value["论文电子版地址"] instanceof File && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#409EFF' }}>{editData.value["论文电子版地址"].name}</div>
                 )}
                 {/* 原文件名 */}
-                {editData.value["论文电子版"] && typeof editData.value["论文电子版"] === 'string' && (
-                  <span style={{ marginLeft: 10, color: '#666' }}>{editData.value["论文电子版"].split('/').pop()}</span>
+                {editData.value["论文电子版地址"] && typeof editData.value["论文电子版地址"] === 'string' && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value["论文电子版地址"].split('/').pop()}</div>
                 )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文电子版地址")}>
+                    <ElButton>选择文件</ElButton>
+                  </ElUpload>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' }}>
+                    <span>ℹ️</span>
+                    <span>允许上传zip,pdf,doc,docx格式的文件*</span>
+                  </div>
+                </div>
               </ElFormItem>
 
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
