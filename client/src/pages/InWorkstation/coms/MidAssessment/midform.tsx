@@ -43,10 +43,10 @@ export default defineComponent({
                 {/* 科研成果表单 */}
                 <Achievement />
                 <Achievement_1 model={form} onUpdate:model={val => Object.assign(form, val)} />
-                {props.showAssessment ? <Assessment /> : null}
+                {props.showAssessment ? <Assessment showButtons={!props.showAssessment} /> : null}
                 {/* 按钮组 */}
-                <div>
-                    <ElButton onClick={handleSubmit}>提交</ElButton>
+                <div style={{display:'flex',justifyContent:'center',gap:'2rem'}}>
+                    <ElButton type='primary' onClick={handleSubmit}>提交</ElButton>
                     <ElButton onClick={handleBack}>返回</ElButton>
                 </div>
             </div>
