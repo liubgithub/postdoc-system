@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage, ElSelect, ElOption } from "element-plus";
 import {
   getConferenceById,
   uploadConference,
@@ -241,22 +241,80 @@ export default defineComponent({
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议举办形式">
-                    <ElInput v-model={editData.value.会议举办形式} />
+                    <ElSelect v-model={editData.value.会议举办形式} placeholder="请选择会议举办形式" style={{ width: '100%' }} clearable>
+                      <ElOption label="本校独立举办" value="本校独立举办" />
+                      <ElOption label="与外单位合办" value="与外单位合办" />
+                      <ElOption label="主办" value="主办" />
+                      <ElOption label="协办" value="协办" />
+                      <ElOption label="承办" value="承办" />
+                      <ElOption label="其他" value="其他" />
+                    </ElSelect>
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="会议等级">
-                    <ElInput v-model={editData.value.会议等级} />
+                    <ElSelect v-model={editData.value.会议等级} placeholder="请选择会议等级" style={{ width: '100%' }} clearable>
+                      <ElOption label="世界性、区域性、国际间学术会议" value="世界性、区域性、国际间学术会议" />
+                      <ElOption label="两国间双边学习会议" value="两国间双边学习会议" />
+                      <ElOption label="全国、地区性学术会议" value="全国、地区性学术会议" />
+                      <ElOption label="省内学术会议" value="省内学术会议" />
+                      <ElOption label="港、澳、台学术会议" value="港、澳、台学术会议" />
+                      <ElOption label="校内学术会议" value="校内学术会议" />
+                      <ElOption label="其他" value="其他" />
+                    </ElSelect>
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="国家或地区">
-                    <ElInput v-model={editData.value.国家或地区} />
+                    <ElSelect v-model={editData.value.国家或地区} placeholder="请选择国家或地区" style={{ width: '100%' }} clearable>
+                      <ElOption label="中国" value="中国" />
+                      <ElOption label="美国" value="美国" />
+                      <ElOption label="英国" value="英国" />
+                      <ElOption label="法国" value="法国" />
+                      <ElOption label="德国" value="德国" />
+                      <ElOption label="日本" value="日本" />
+                      <ElOption label="韩国" value="韩国" />
+                      <ElOption label="俄罗斯" value="俄罗斯" />
+                      <ElOption label="加拿大" value="加拿大" />
+                      <ElOption label="澳大利亚" value="澳大利亚" />
+                      <ElOption label="新西兰" value="新西兰" />
+                      <ElOption label="新加坡" value="新加坡" />
+                      <ElOption label="马来西亚" value="马来西亚" />
+                      <ElOption label="泰国" value="泰国" />
+                      <ElOption label="印度" value="印度" />
+                      <ElOption label="巴西" value="巴西" />
+                      <ElOption label="阿根廷" value="阿根廷" />
+                      <ElOption label="意大利" value="意大利" />
+                      <ElOption label="西班牙" value="西班牙" />
+                      <ElOption label="荷兰" value="荷兰" />
+                      <ElOption label="瑞典" value="瑞典" />
+                      <ElOption label="挪威" value="挪威" />
+                      <ElOption label="丹麦" value="丹麦" />
+                      <ElOption label="芬兰" value="芬兰" />
+                      <ElOption label="瑞士" value="瑞士" />
+                      <ElOption label="奥地利" value="奥地利" />
+                      <ElOption label="比利时" value="比利时" />
+                      <ElOption label="葡萄牙" value="葡萄牙" />
+                      <ElOption label="希腊" value="希腊" />
+                      <ElOption label="土耳其" value="土耳其" />
+                      <ElOption label="以色列" value="以色列" />
+                      <ElOption label="南非" value="南非" />
+                      <ElOption label="埃及" value="埃及" />
+                      <ElOption label="尼日利亚" value="尼日利亚" />
+                      <ElOption label="肯尼亚" value="肯尼亚" />
+                      <ElOption label="香港" value="香港" />
+                      <ElOption label="澳门" value="澳门" />
+                      <ElOption label="台湾" value="台湾" />
+                      <ElOption label="其他" value="其他" />
+                    </ElSelect>
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
                   <ElFormItem label="是否境外">
-                    <ElInput v-model={editData.value.是否境外} />
+                    <ElSelect v-model={editData.value.是否境外} placeholder="请选择是否境外" style={{ width: '100%' }} clearable>
+                      <ElOption label="是" value="是" />
+                      <ElOption label="否" value="否" />
+                    </ElSelect>
                   </ElFormItem>
                 </ElCol>
                 <ElCol span={12}>
@@ -321,6 +379,7 @@ export default defineComponent({
                 <ElInput type="textarea" rows={4} v-model={editData.value.备注} />
               </ElFormItem>
               <ElFormItem label="会议报告文件">
+
                 <ElUpload
                   show-file-list={false}
                   before-upload={() => false}
@@ -328,6 +387,9 @@ export default defineComponent({
                 >
                   <ElButton>选择文件</ElButton>
                 </ElUpload>
+                <div style={{  marginLeft: '10px', fontSize: '12px', color: '#666' }}>
+                  支持的文件格式：PDF、DOC、DOCX、TXT、JPG、PNG、GIF
+                </div>
                 {editData.value.会议报告文件 && <span style={{ marginLeft: 10 }}>{editData.value.会议报告文件.name}</span>}
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
