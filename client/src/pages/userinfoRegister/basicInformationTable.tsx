@@ -14,7 +14,7 @@ export default defineComponent({
     const form = ref({
       name: "",
       gender: "",
-      birth_year: "",
+      birth_year_month: "", // 改为出生年月
       nationality: "",
       political_status: "",
       phone: "",
@@ -38,9 +38,8 @@ export default defineComponent({
         { required: false, message: "请输入姓名", trigger: "blur" },
         { pattern: /^[\u4e00-\u9fa5a-zA-Z]+$/, message: "姓名只能包含中文或英文字符", trigger: "blur" },
       ],
-      birth_year: [
-        { required: false, message: "请输入出生年", trigger: "blur" },
-        { pattern: /^(19|20)\d{2}$/, message: "请输入有效的年份（1900-2099）", trigger: "blur" },
+      birth_year_month: [
+        { required: false, message: "请选择出生年月", trigger: "change" },
       ],
       nationality: [
         { required: false, message: "请输入国籍", trigger: "blur" },
@@ -67,7 +66,7 @@ export default defineComponent({
             ...data,
             name: data.name ?? "",
             gender: data.gender ?? "",
-            birth_year: data.birth_year ? String(data.birth_year) : "",
+            birth_year_month: data.birth_year ? `${data.birth_year}-01` : "", // 转换为YYYY-MM格式
             nationality: data.nationality ?? "",
             political_status: data.political_status ?? "",
             phone: data.phone ?? "",
@@ -130,7 +129,7 @@ export default defineComponent({
       // 数据格式转换
       const payload = {
         ...form.value,
-        birth_year: form.value.birth_year ? Number(form.value.birth_year) : undefined,
+        birth_year: form.value.birth_year_month ? Number(form.value.birth_year_month.split('-')[0]) : undefined, // 提取年份
         is_religious_staff: form.value.is_religious_staff === '是',
         education_experience: form.value.education_experience.map(e => ({
           start_end: `${e.start}-${e.end}`,
@@ -195,15 +194,59 @@ export default defineComponent({
               </ElFormItem>
             </div>
             <div class={styles.formCol}>
-              <ElFormItem label="出生年" prop="birth_year">
-                <ElInput v-model={form.value.birth_year} />
+              <ElFormItem label="出生年月" prop="birth_year_month">
+                <ElDatePicker
+                  v-model={form.value.birth_year_month}
+                  type="month"
+                  placeholder="请选择出生年月"
+                  style={{ width: "100%" }}
+                  format="YYYY-MM"
+                  value-format="YYYY-MM"
+                />
               </ElFormItem>
             </div>
           </div>
           <div class={styles.formRow}>
             <div class={styles.formCol}>
               <ElFormItem label="国籍" prop="nationality">
-                <ElInput v-model={form.value.nationality} />
+                <ElSelect v-model={form.value.nationality} placeholder="请选择国籍" style={{ width: "100%" }} clearable>
+                  <ElOption label="中国" value="中国" />
+                  <ElOption label="美国" value="美国" />
+                  <ElOption label="英国" value="英国" />
+                  <ElOption label="法国" value="法国" />
+                  <ElOption label="德国" value="德国" />
+                  <ElOption label="日本" value="日本" />
+                  <ElOption label="韩国" value="韩国" />
+                  <ElOption label="俄罗斯" value="俄罗斯" />
+                  <ElOption label="加拿大" value="加拿大" />
+                  <ElOption label="澳大利亚" value="澳大利亚" />
+                  <ElOption label="新西兰" value="新西兰" />
+                  <ElOption label="新加坡" value="新加坡" />
+                  <ElOption label="马来西亚" value="马来西亚" />
+                  <ElOption label="泰国" value="泰国" />
+                  <ElOption label="印度" value="印度" />
+                  <ElOption label="巴西" value="巴西" />
+                  <ElOption label="阿根廷" value="阿根廷" />
+                  <ElOption label="意大利" value="意大利" />
+                  <ElOption label="西班牙" value="西班牙" />
+                  <ElOption label="荷兰" value="荷兰" />
+                  <ElOption label="瑞典" value="瑞典" />
+                  <ElOption label="挪威" value="挪威" />
+                  <ElOption label="丹麦" value="丹麦" />
+                  <ElOption label="芬兰" value="芬兰" />
+                  <ElOption label="瑞士" value="瑞士" />
+                  <ElOption label="奥地利" value="奥地利" />
+                  <ElOption label="比利时" value="比利时" />
+                  <ElOption label="葡萄牙" value="葡萄牙" />
+                  <ElOption label="希腊" value="希腊" />
+                  <ElOption label="土耳其" value="土耳其" />
+                  <ElOption label="以色列" value="以色列" />
+                  <ElOption label="南非" value="南非" />
+                  <ElOption label="埃及" value="埃及" />
+                  <ElOption label="尼日利亚" value="尼日利亚" />
+                  <ElOption label="肯尼亚" value="肯尼亚" />
+                  <ElOption label="其他" value="其他" />
+                </ElSelect>
               </ElFormItem>
             </div>
             <div class={styles.formCol}>
@@ -235,6 +278,7 @@ export default defineComponent({
             <div class={styles.formCol}>
               <ElFormItem label="宗教信仰" prop="religion">
                 <ElSelect v-model={form.value.religion} placeholder="请选择宗教信仰" style={{ width: "100%" }} clearable>
+                  <ElOption label="无" value="无" />
                   <ElOption label="佛教" value="佛教" />
                   <ElOption label="道教" value="道教" />
                   <ElOption label="伊斯兰教" value="伊斯兰教" />
