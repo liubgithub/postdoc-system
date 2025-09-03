@@ -1,5 +1,5 @@
 import { defineComponent, ref, onMounted } from "vue";
-import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage } from "element-plus";
+import { ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElUpload, ElDatePicker, ElMessageBox, ElMessage, ElSelect, ElOption } from "element-plus";
 import { Edit, Delete, Download } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import {
@@ -192,7 +192,16 @@ export default defineComponent({
             <ElForm model={editData.value} label-width="120px">
               <ElRow gutter={20}>
                 <ElCol span={12}><ElFormItem label="专利名称"><ElInput v-model={editData.value["专利名称"]} /></ElFormItem></ElCol>
-                <ElCol span={12}><ElFormItem label="专利类型"><ElInput v-model={editData.value["专利类型"]} /></ElFormItem></ElCol>
+                <ElCol span={12}>
+                  <ElFormItem label="专利类型">
+                    <ElSelect v-model={editData.value["专利类型"]} placeholder="请选择专利类型" style={{ width: '100%' }} clearable>
+                      <ElOption label="发明" value="发明" />
+                      <ElOption label="实用新型" value="实用新型" />
+                      <ElOption label="外观设计" value="外观设计" />
+                      <ElOption label="PCT或外国申请" value="PCT或外国申请" />
+                    </ElSelect>
+                  </ElFormItem>
+                </ElCol>
                 <ElCol span={12}><ElFormItem label="申请日期">
                   <ElDatePicker v-model={editData.value["申请日期"]} type="date" value-format="YYYY-MM-DD" placeholder="选择日期" style={{ width: '100%' }} />
                 </ElFormItem></ElCol>
@@ -218,14 +227,27 @@ export default defineComponent({
                 <ElInput type="textarea" rows={4} v-model={editData.value["备注"]} />
               </ElFormItem>
               <ElFormItem label="上传文件">
-                <ElUpload
-                  show-file-list={false}
-                  before-upload={() => false}
-                  on-change={handleFileChange}
-                >
-                  <ElButton>选择文件</ElButton>
-                </ElUpload>
-                {editData.value["上传文件"] && <span style={{ marginLeft: 10 }}>{editData.value["上传文件"].name}</span>}
+                {/* 新文件名 */}
+                {editData.value["上传文件"] && editData.value["上传文件"] instanceof File && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#409EFF' }}>{editData.value["上传文件"].name}</div>
+                )}
+                {/* 原文件名 */}
+                {editData.value["上传文件"] && typeof editData.value["上传文件"] === 'string' && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value["上传文件"].split('/').pop()}</div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ElUpload
+                    show-file-list={false}
+                    before-upload={() => false}
+                    on-change={handleFileChange}
+                  >
+                    <ElButton>选择文件</ElButton>
+                  </ElUpload>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' }}>
+                    <span>ℹ️</span>
+                    <span>允许上传gif,jpg,jpeg,bmp,png,zip,rar,pdf,xls,xlsx,doc,docx格式的文件</span>
+                  </div>
+                </div>
               </ElFormItem>
 
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
