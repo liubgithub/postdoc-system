@@ -379,18 +379,27 @@ export default defineComponent({
                 <ElInput type="textarea" rows={4} v-model={editData.value.备注} />
               </ElFormItem>
               <ElFormItem label="会议报告文件">
-
-                <ElUpload
-                  show-file-list={false}
-                  before-upload={() => false}
-                  on-change={handleFileChange}
-                >
-                  <ElButton>选择文件</ElButton>
-                </ElUpload>
-                <div style={{  marginLeft: '10px', fontSize: '12px', color: '#666' }}>
-                  支持的文件格式：PDF、DOC、DOCX、TXT、JPG、PNG、GIF
+                {/* 新文件名 */}
+                {editData.value.会议报告文件 && editData.value.会议报告文件 instanceof File && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#409EFF' }}>{editData.value.会议报告文件.name}</div>
+                )}
+                {/* 原文件名 */}
+                {editData.value.会议报告文件 && typeof editData.value.会议报告文件 === 'string' && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value.会议报告文件.split('/').pop()}</div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <ElUpload
+                    show-file-list={false}
+                    before-upload={() => false}
+                    on-change={handleFileChange}
+                  >
+                    <ElButton>选择文件</ElButton>
+                  </ElUpload>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' }}>
+                    <span>ℹ️</span>
+                    <span>允许上传PDF、DOC、DOCX、TXT、JPG、PNG、GIF格式的文件</span>
+                  </div>
                 </div>
-                {editData.value.会议报告文件 && <span style={{ marginLeft: 10 }}>{editData.value.会议报告文件.name}</span>}
               </ElFormItem>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2em' }}>
                 <ElButton type="primary" onClick={handleSave} style={{ marginRight: '2em' }}>提交</ElButton>
