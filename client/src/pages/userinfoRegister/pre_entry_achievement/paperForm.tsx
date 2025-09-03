@@ -530,17 +530,17 @@ export default defineComponent({
                 </div>
               </ElFormItem>
 
-              <ElFormItem label="论文电子版地址">
+              <ElFormItem label="论文电子版">
                 {/* 新文件名 */}
-                {editData.value["论文电子版地址"] && editData.value["论文电子版地址"] instanceof File && (
-                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#409EFF' }}>{editData.value["论文电子版地址"].name}</div>
+                {editData.value["论文电子版"] && editData.value["论文电子版"] instanceof File && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#409EFF' }}>{editData.value["论文电子版"].name}</div>
                 )}
                 {/* 原文件名 */}
-                {editData.value["论文电子版地址"] && typeof editData.value["论文电子版地址"] === 'string' && (
-                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value["论文电子版地址"].split('/').pop()}</div>
+                {editData.value["论文电子版"] && typeof editData.value["论文电子版"] === 'string' && (
+                  <div style={{ marginBottom: '8px', marginRight: '10px', color: '#666' }}>{editData.value["论文电子版"].split('/').pop()}</div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文电子版地址")}>
+                  <ElUpload show-file-list={false} before-upload={() => false} on-change={handleFileChange("论文电子版")}>
                     <ElButton>选择文件</ElButton>
                   </ElUpload>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666' }}>
