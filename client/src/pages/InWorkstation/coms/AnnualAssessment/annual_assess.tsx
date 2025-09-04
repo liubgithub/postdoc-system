@@ -1,7 +1,7 @@
-import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElSelect, ElOption,ElMessage } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElDatePicker, ElButton, ElSelect, ElOption, ElMessage } from 'element-plus'
 import * as cls from '@/pages/EnterWorksation/coms/StationAssessment/styles.css.ts'
 import SignaturePad from '@/units/Signature/index'
-import fetch from '@/api/index'
+import apiFetch from '@/api/index'
 import { watch } from 'vue'
 export default defineComponent({
     name: 'AnnualAssessment',
@@ -54,15 +54,109 @@ export default defineComponent({
             schoolSignDate: '',
             remark: ''
         })
+        const hasSignature = ref(false)
+        const signature = ref('')
         const onInput = async (val: any) => {
+            signature.value = val
+            hasSignature.value = !!val
         }
-        const handleApply = async()=>{
-            try{
-                const res = await fetch.raw.POST('/annulAssessment/',{body:form.value})
-                if(res.response.ok){
+        const formFetchWithToken = async (url: string, options: RequestInit = {}) => {
+            const token = localStorage.getItem('token');
+            const headers = new Headers(options.headers);
+
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+
+            // 如果是 FormData，让浏览器自动设置 Content-Type
+            if (options.body instanceof FormData) {
+                headers.delete('Content-Type');
+            }
+
+            return fetch(`/api${url}`, {
+                ...options,
+                headers
+            });
+        };
+        const onSignatureUpload = async (val: string) => {
+            if (val) {
+                try {
+                    const formData = new FormData();
+                    formData.append('sign_type', '年度考核');
+                    formData.append('image_base64', val);
+
+                    const res = await formFetchWithToken('/uploadSign/upload_image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        console.log('Signature uploaded successfully');
+                        hasSignature.value = true;
+                        ElMessage.success('签名上传成功');
+                    }
+                } catch (error) {
+                    console.error('Failed to upload signature:', error);
+                    ElMessage.error('签名上传失败');
+                }
+            }
+        }
+
+        const onSignatureConfirm = async (val: string) => {
+            if (val) {
+                try {
+                    const formData = new FormData();
+                    formData.append('sign_type', '年度考核');
+                    formData.append('image_base64', val);
+
+                    const res = await formFetchWithToken('/uploadSign/upload_image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        console.log('Signature uploaded successfully');
+                        hasSignature.value = true;
+                        ElMessage.success('签名成功');
+                    }
+                } catch (error) {
+                    console.error('Failed to upload signature:', error);
+                    ElMessage.error('签名失败');
+                }
+            } else {
+                hasSignature.value = false;
+            }
+        }
+        const fetchSignature = async () => {
+            try {
+                const res = await apiFetch.raw.GET('/uploadSign/get_image_base64', {
+                    params: { query: { sign_type: '年度考核' } }
+                });
+                console.log(res, 'fff')
+                if (res.data && (res.data as any).image_base64) {
+                    const imgBase64 = (res.data as { image_base64: string }).image_base64;
+                    signature.value = imgBase64;
+                    hasSignature.value = true;
+                }
+            } catch (error: any) {
+                // 404错误是正常情况（新用户没有签名）
+                if (error.response?.status === 404) {
+                    console.log('No signature found for new user');
+                    signature.value = '';
+                    hasSignature.value = false;
+                } else {
+                    console.error('Error fetching signature:', error);
+                    ElMessage.error('获取签名失败');
+                }
+            }
+        };
+        const handleApply = async () => {
+            try {
+                const res = await apiFetch.raw.POST('/annulAssessment/', { body: form.value })
+                if (res.response.ok) {
                     ElMessage.success("提交成功")
                 }
-            }catch(error){
+            } catch (error) {
 
             }
         }
@@ -74,26 +168,27 @@ export default defineComponent({
             }
         }, { deep: true });
 
-        onMounted(async()=>{
+        onMounted(async () => {
             // 如果有外部数据，优先使用外部数据
+            await fetchSignature()
             if (props.externalData && Object.keys(props.externalData).length > 0) {
                 console.log('使用外部数据:', props.externalData);
                 form.value = { ...form.value, ...props.externalData };
             } else {
                 // 否则从接口获取数据
-                try{
-                    const res = await fetch.raw.GET('/annulAssessment/')
-                    if(res.response.ok){
+                try {
+                    const res = await apiFetch.raw.GET('/annulAssessment/')
+                    if (res.response.ok) {
                         // 如果res.data为null或不是对象，则保持默认空值
-                        if(res.data && typeof res.data === 'object'){
+                        if (res.data && typeof res.data === 'object') {
                             // 有数据则直接赋值给form
                             form.value = res.data as any
                         }
                         // 没有数据则保持空值，不需要额外处理
-                    }else{
+                    } else {
                         ElMessage.warning('获取数据失败')
                     }
-                }catch(error){
+                } catch (error) {
                     console.error('获取年度考核数据失败:', error)
                     ElMessage.error('获取数据失败，请稍后重试')
                 }
@@ -111,12 +206,12 @@ export default defineComponent({
                             <ElInput v-model={form.value.station} />
                         </ElFormItem>
                         <ElFormItem label="填表日期">
-                            <ElDatePicker 
-                            v-model={form.value.fillDate} 
-                            type="date" 
-                            placeholder="选择日期" 
-                            style={{ width: '160px' }} 
-                            valueFormat='YYYY-MM-DD'
+                            <ElDatePicker
+                                v-model={form.value.fillDate}
+                                type="date"
+                                placeholder="选择日期"
+                                style={{ width: '160px' }}
+                                valueFormat='YYYY-MM-DD'
                             />
                         </ElFormItem>
                     </div>
@@ -174,7 +269,13 @@ export default defineComponent({
                                         </ElSelect>
                                     </ElFormItem>
                                     <ElFormItem label="本人签名" style={{ marginBottom: 0 }}>
-                                        <SignaturePad mode="compact" onChange={val => onInput(val)} />
+                                        <SignaturePad 
+                                        mode="compact" 
+                                        onChange={val => onInput(val)}
+                                        onUpload={onSignatureUpload}
+                                        onConfirm={onSignatureConfirm}
+                                        image={signature.value} 
+                                        />
                                     </ElFormItem>
                                 </div>
                             </div>
@@ -205,7 +306,7 @@ export default defineComponent({
                             {props.isViewMode && (
                                 <div style={{ borderTop: '1px solid #333', padding: '16px' }}>
                                     <ElFormItem label="单位考核结果以及评语">
-                                        <ElInput v-model={form.value.unitComment} type="textarea" rows={3} autosize={{ minRows: 3 }} disabled/>
+                                        <ElInput v-model={form.value.unitComment} type="textarea" rows={3} autosize={{ minRows: 3 }} disabled />
                                     </ElFormItem>
                                     <div style={{ display: 'flex', gap: '16px', marginTop: '8px', justifyContent: 'flex-end' }}>
                                         <ElFormItem label="划分档次">
@@ -217,10 +318,10 @@ export default defineComponent({
                                             </ElSelect>
                                         </ElFormItem>
                                         <ElFormItem label="负责人签名日期">
-                                            <ElDatePicker v-model={form.value.unitSignDate} type="date" placeholder="选择日期" style={{ width: '160px' }} disabled/>
+                                            <ElDatePicker v-model={form.value.unitSignDate} type="date" placeholder="选择日期" style={{ width: '160px' }} disabled />
                                         </ElFormItem>
                                         <ElFormItem label="负责人签名" style={{ marginBottom: 0 }}>
-                                            <SignaturePad mode="compact" disabled/>
+                                            <SignaturePad mode="compact" disabled />
                                         </ElFormItem>
                                     </div>
                                 </div>
@@ -245,7 +346,7 @@ export default defineComponent({
                                     <ElFormItem label="学校审核意见" style={{ marginBottom: 0 }}>
                                         <ElInput v-model={form.value.schoolComment} type="textarea" rows={2} autosize={{ minRows: 2 }} disabled />
                                     </ElFormItem>
-                                    <div style={{ display: 'flex', gap: '16px', marginTop: '8px',justifyContent:'flex-end' }}>
+                                    <div style={{ display: 'flex', gap: '16px', marginTop: '8px', justifyContent: 'flex-end' }}>
                                         <span>盖章</span>
                                         <ElDatePicker v-model={form.value.schoolSignDate} type="date" placeholder="选择日期" style={{ width: '120px', marginLeft: '8px' }} disabled />
                                     </div>
