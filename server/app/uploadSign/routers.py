@@ -128,9 +128,6 @@ def get_image_base64(
         uploadSign.sign_type == sign_type
     ).first()
 
-    if not sign_record:
-        raise HTTPException(status_code=404, detail="未找到签名记录")
-
     # 检查文件是否存在
     file_path = sign_record.sign_road
     print(f"Looking for file at: {file_path}")

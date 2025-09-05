@@ -1,8 +1,9 @@
 
 import { defineComponent, ref, watch } from 'vue'
-import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElRadio, ElRadioGroup, ElCheckbox, ElCheckboxGroup, ElButton, ElTable, ElTableColumn, ElDatePicker, ElUpload, ElInputNumber,ElMessage } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElRadio, ElRadioGroup, ElCheckbox, ElCheckboxGroup, ElButton, ElTable, ElTableColumn, ElDatePicker, ElUpload, ElInputNumber, ElMessage } from 'element-plus'
 import * as cls from './style.css'
 import fetch from '@/api/index'
+import { useSignature } from '@/units/Signature/useSignature'
 import SignaturePad from '@/units/Signature/index'
 
 export default defineComponent({
@@ -98,45 +99,59 @@ export default defineComponent({
 
             }
         }
+        const { hasSignature, signature, isLoading, onSignatureUpload, onSignatureConfirm, fetchSignature } = useSignature('延期考核')
+        const onInput = async (val: any) => {
+            signature.value = val
+            hasSignature.value = !!val
+        }
 
-        onMounted(async() => {
+        onMounted(async () => {
             // 如果有外部数据，优先使用外部数据
-            if (props.externalData && Object.keys(props.externalData).length > 0) {
-                console.log('使用外部数据:', props.externalData);
-                if (props.externalData.basicInfo) {
-                    basicInfo.value = { ...basicInfo.value, ...props.externalData.basicInfo };
-                }
-                if (props.externalData.extensionInfo) {
-                    extensionInfo.value = { ...extensionInfo.value, ...props.externalData.extensionInfo };
-                }
-            } else {
-                // 否则从接口获取数据
-                try{
-                    // 获取基础信息数据
-                    const basicInfoRes = await fetch.raw.GET('/extensionInfo/')
-                    if(basicInfoRes.response.ok){
-                        // 如果res.data为null或不是对象，则保持默认空值
-                        if(basicInfoRes.data && typeof basicInfoRes.data === 'object'){
-                            // 有数据则直接赋值给basicInfo
-                            basicInfo.value = basicInfoRes.data as any
-                        }
+            isLoading.value = true
+            try {
+                await fetchSignature()
+                if (props.externalData && Object.keys(props.externalData).length > 0) {
+                    console.log('使用外部数据:', props.externalData);
+                    if (props.externalData.basicInfo) {
+                        basicInfo.value = { ...basicInfo.value, ...props.externalData.basicInfo };
                     }
+                    if (props.externalData.extensionInfo) {
+                        extensionInfo.value = { ...extensionInfo.value, ...props.externalData.extensionInfo };
+                    }
+                } else {
+                    // 否则从接口获取数据
+                    try {
+                        // 获取基础信息数据
+                        const basicInfoRes = await fetch.raw.GET('/extensionInfo/')
+                        if (basicInfoRes.response.ok) {
+                            // 如果res.data为null或不是对象，则保持默认空值
+                            if (basicInfoRes.data && typeof basicInfoRes.data === 'object') {
+                                // 有数据则直接赋值给basicInfo
+                                basicInfo.value = basicInfoRes.data as any
+                            }
+                        }
 
-                    // 获取延期信息数据
-                    const extensionRes = await fetch.raw.GET('/extension/')
-                    if(extensionRes.response.ok){
-                        // 如果res.data为null或不是对象，则保持默认空值
-                        if(extensionRes.data && typeof extensionRes.data === 'object'){
-                            // 有数据则直接赋值给extensionInfo
-                            extensionInfo.value = extensionRes.data as any
+                        // 获取延期信息数据
+                        const extensionRes = await fetch.raw.GET('/extension/')
+                        if (extensionRes.response.ok) {
+                            // 如果res.data为null或不是对象，则保持默认空值
+                            if (extensionRes.data && typeof extensionRes.data === 'object') {
+                                // 有数据则直接赋值给extensionInfo
+                                extensionInfo.value = extensionRes.data as any
+                            }
                         }
+                        // 没有数据则保持空值，不需要额外处理
+                    } catch (error) {
+                        console.error('获取延期申请数据失败:', error)
+                        ElMessage.error('获取数据失败，请稍后重试')
                     }
-                    // 没有数据则保持空值，不需要额外处理
-                }catch(error){
-                    console.error('获取延期申请数据失败:', error)
-                    ElMessage.error('获取数据失败，请稍后重试')
                 }
+            } catch (error) {
+                console.log(error)
+            } finally {
+                isLoading.value = false
             }
+
         })
         return () => (
             <div class={cls.extensionAssessmentContainer}>
@@ -342,7 +357,12 @@ export default defineComponent({
                                 </p>
                                 <div class={cls.signatureSection}>
                                     <ElFormItem label="姓名(签名)">
-                                        <SignaturePad />
+                                        <SignaturePad
+                                            onChange={val => onInput(val)}
+                                            onUpload={onSignatureUpload}
+                                            onConfirm={onSignatureConfirm}
+                                            image={signature.value}
+                                        />
                                     </ElFormItem>
                                 </div>
                             </div>

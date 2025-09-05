@@ -1,6 +1,7 @@
-import { ElForm, ElFormItem, ElInput,ElDatePicker } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElDatePicker, ElMessage } from 'element-plus'
 import fetch from '@/api/index'
 import SignaturePad from '@/units/Signature/index'
+import { useSignature } from '@/units/Signature/useSignature'
 export default defineComponent({
     name: 'Achievement_1',
     props: {
@@ -12,25 +13,35 @@ export default defineComponent({
     emits: ['update:model'],
     setup(props, { emit }) {
         const localModel = ref({ ...props.model })
+        const { hasSignature, signature, isLoading, onSignatureUpload, onSignatureConfirm, fetchSignature } = useSignature('出站考核')
         const onInput = (key: string, value: any) => {
             emit('update:model', { ...props.model, [key]: value })
         }
-        onMounted(async()=>{
-            try{
-                const res = await fetch.raw.GET('/researchStatus/', { 
-                    params: { query: { subType: '中期考核' } } 
+        const onSign = async (val: any) => {
+            signature.value = val
+            hasSignature.value = !!val;
+        }
+
+        onMounted(async () => {
+            isLoading.value = true
+            try {
+                await fetchSignature()
+                const res = await fetch.raw.GET('/researchStatus/', {
+                    params: { query: { subType: '出站考核' } }
                 })
                 const maybeData = (res as any)?.data ?? res
                 const payload = maybeData?.Target ?? maybeData
-                
-                if(payload){
+
+                if (payload) {
                     localModel.value.subNamePlan = payload[0].subNamePlan
                     localModel.value.subDescription = payload[0].subDescription
                 }
-            }catch(error){
+            } catch (error) {
                 console.log(error)
+            } finally {
+                isLoading.value = false
             }
-        }) 
+        })
         return () => (
             <div>
                 <div style={{ fontSize: '1.5em', fontWeight: 700, textAlign: 'left', marginBottom: '1em', letterSpacing: '0.05em' }}>博士后项目研究情况</div>
@@ -44,7 +55,7 @@ export default defineComponent({
                                     autosize={{ minRows: 5 }}
                                     rows={6}
                                     modelValue={localModel.value.subNamePlan || ''}
-									onInput={val => onInput('subNamePlan', val)}
+                                    onInput={val => onInput('subNamePlan', val)}
                                 />
                             </ElFormItem>
 
@@ -57,13 +68,27 @@ export default defineComponent({
                                     autosize={{ minRows: 12 }}
                                     rows={12}
                                     modelValue={localModel.value.subDescription || ''}
-									onInput={val => onInput('subDescription', val)}
+                                    onInput={val => onInput('subDescription', val)}
                                 />
                             </ElFormItem>
                             {/* 签字和日期 */}
                             <div style={{ position: 'absolute', right: '30px', bottom: '20px', textAlign: 'right', width: '300px', color: '#333' }}>
-                                <div style={{ marginBottom: '10px' }}>博士后签字</div>
-                                <SignaturePad />
+                                <div style={{ marginBottom: '10px', marginRight: '220px' }}>博士后签字</div>
+                                <SignaturePad
+                                    onChange={val => onSign(val)}
+                                    onUpload={onSignatureUpload}
+                                    onConfirm={onSignatureConfirm}
+                                    image={signature.value}
+                                />
+                                <ElFormItem label="日期" prop="guideGroupDate">
+                                    <ElDatePicker
+                                        type="date"
+                                        placeholder="选择日期"
+                                        modelValue={localModel.value.date || ''}
+                                        onUpdate:modelValue={val => onInput('date', val)}
+                                        style={{ width: '100%' }}
+                                    />
+                                </ElFormItem>
                             </div>
                         </div>
                     </div>
