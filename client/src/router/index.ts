@@ -69,7 +69,12 @@ const router = createRouter({
       component: AdminPage,
       children: [
         {
-          path: 'adminHome', // 默认子路由
+          path: '', // 默认子路由
+          name: 'adminDashboard',
+          component: () => import('@/pages/Admin/Dashboard/index.tsx'),
+        },
+        {
+          path: 'adminHome', // 原来的子路由
           name: 'adminHome',
           component: () => import('@/pages/Admin/PostdocProcess/index.tsx'),
         },
