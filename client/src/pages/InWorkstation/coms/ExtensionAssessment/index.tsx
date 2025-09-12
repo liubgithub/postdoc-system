@@ -26,6 +26,7 @@ export default defineComponent({
                 { status: '通过', role: '导师审核', time: '' },
                 { status: '结束', role: '学院审核', time: '' }
             ]
+            
         }])
         const columns = [
             { prop: 'stuId', label: '学号' },
