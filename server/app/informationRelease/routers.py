@@ -25,7 +25,7 @@ def create_information_release(
     # 创建新记录
     new_record = InformationRelease(
         newsName=data.newsName,
-        belongT=data.belongTo,  # 注意：模型中是belongT，schema中是belongTo
+        belongTo=data.belongTo,  # 注意：模型中是belongTo，schema中是belongTo
         content=data.content
     )
     
@@ -92,7 +92,7 @@ def update_information_release(
     # 更新记录
     try:
         record.newsName = data.newsName
-        record.belongT = data.belongTo  # 注意字段名映射
+        record.belongTo = data.belongTo  # 注意字段名映射
         record.content = data.content
         
         db.commit()

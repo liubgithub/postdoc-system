@@ -14,7 +14,7 @@ from app.Teacher.TeacherInfo import routers as teacher_info_routers
 from app.postdocProcess import routers as postdocProcess
 from app.uploadSign import routers as upload_sign
 from app.resStatus import routers as res_status
-
+from app.informationRelease import routers as information_release
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -69,6 +69,9 @@ app.include_router(upload_sign.router)
 
 # 博士后项目研究情况
 app.include_router(res_status.router)
+
+# infomation release
+app.include_router(information_release.router)
 
 @app.get("/", summary="服务状态")
 def root():
