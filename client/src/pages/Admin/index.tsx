@@ -8,7 +8,7 @@ const menuList = [
     { label: "权限分配", path: "/admin/premissionManage" },
     { label: "信息发布", path: "/admin/informationRelease" },
     { label: "数据统计", path: "/admin/statistics" },
-    { label: "在站管理", path: "" },
+    { label: "在站管理", path: "/admin/inWorkstationManage" },
     { label: "出站管理", path: "" },
     { label: "账号审批", path: "/admin/accountApproval" },
     { label: "合作导师账号分配", path: "/admin/cototuraccount" },

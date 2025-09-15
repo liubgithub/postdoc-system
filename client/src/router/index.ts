@@ -120,6 +120,11 @@ const router = createRouter({
           path:'cototuraccount',
           name:'cototuraccount',
           component:CotutorAccount
+        },
+        {
+          path:'inWorkstationManage',
+          name:'inWorkstationManage',
+          component: () => import('@/pages/Admin/InWorkstationManage/index.tsx')
         }
       ]
     },
