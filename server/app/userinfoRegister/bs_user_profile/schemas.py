@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
 from typing import List, Optional
 
 class EducationExperienceIn(BaseModel):
@@ -29,14 +29,12 @@ class InfoIn(BaseModel):
 class EducationExperienceOut(EducationExperienceIn):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class WorkExperienceOut(WorkExperienceIn):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class InfoOut(BaseModel):
     id: int
@@ -56,5 +54,4 @@ class InfoOut(BaseModel):
     work_experience: List[WorkExperienceOut]
     otherachievements: Optional[str]
 
-    class Config:
-        from_attributes = True 
+    model_config = ConfigDict(from_attributes=True)

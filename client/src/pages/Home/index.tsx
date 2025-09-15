@@ -1,17 +1,26 @@
 import { defineComponent } from "vue"
 import { ElButton, ElCard } from "element-plus"
-
 import { jobs, news } from "./demo"
 
 import JobInfo from "./coms/JobInfo"
 import NewsInfo from "./coms/NewsInfo"
+import Carousel from "./Carousel"
 import * as cls from "./styles.css"
 
 export default defineComponent({
   name: "Home",
   setup() {
+    const carouselImages = Array.from({ length: 5 }, (_, index) => ({
+      id: index + 1,
+      imageUrl: `${import.meta.env.BASE_URL}images/${index + 1}.png`,
+      title: `幻灯片 ${index + 1}`,
+      description: `这是第 ${index + 1} 张幻灯片`
+    }))
     return () => (
       <div class={cls.page}>
+        <div>
+          <Carousel items={carouselImages} autoplay={true}/>
+        </div>
         <div class={cls.jobs}>
           <div class={cls.jobs_title}>招聘信息</div>
           <div class={cls.jobs_title_line}></div>

@@ -1,15 +1,14 @@
 from pydantic import BaseModel,ConfigDict
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 
-class ResStatusIn(BaseModel):
-    subNamePlan:str
-    subDescription: str
-    subType: str
+class InformationReleaseIn(BaseModel):
+    newsName:str
+    belongTo:str
+    content:str
 
-class ResStatusOut(ResStatusIn):
-    id: int
-    user_id: int
+class InformationReleaseOut(InformationReleaseIn):
+    id:int
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

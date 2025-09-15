@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
 from typing import Optional, List
 from datetime import datetime
 
@@ -19,5 +19,4 @@ class AttachmentOut(AttachmentIn):
     updated_at: Optional[datetime] = None
     attachments: List[AttachmentIn] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

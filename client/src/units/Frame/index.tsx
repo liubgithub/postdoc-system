@@ -1,5 +1,5 @@
 import { RouterView } from "vue-router"
-import { ElAside, ElContainer, ElHeader, ElMain, ElMenu, ElMenuItem } from "element-plus"
+import { ElAside, ElContainer, ElHeader, ElMain, ElMenu, ElMenuItem, ElSubMenu } from "element-plus"
 import { images } from "@/styles/images"
 import useFrame from "@/stores/frame"
 import useUser from "@/stores/user"
@@ -13,26 +13,42 @@ export default defineComponent({
     const s_frame = useFrame()
     const userStore = useUser()
 
-    const teacherMenuItems = [
-      { label: '首页', path: '/teacher' },
-      { label: '学生管理', path: '/teacher/students' },
-      { label: '申请审核', path: '/teacher/applications' },
-      { label: '成果管理', path: '/teacher/achievements' },
-      { label: '考核管理', path: '/teacher/assessments' }
-    ]
 
-    const userMenuItems = [
+    const menuList = [
       { label: '首页', path: '/' },
-      { label: '个人信息', path: '/UserInfo' },
-      { label: '进站申请', path: '/UserInfo/entry' },
-      { label: '在站管理', path: '/UserInfo/in-station' },
-      { label: '出站管理', path: '/UserInfo/out-station' }
+      {
+        label: '流动站',
+        children: [
+          { label: '流动站介绍', },
+          { label: '流动站列表', },
+          { label: '流动站申请', },
+          { label: '流动站管理', }
+        ]
+      },
+      {
+        label: '规章制度',
+        children: [
+          { label: '国家文件', },
+          { label: '地方文件', },
+          { label: '校内文件', },
+        ]
+      },
+      { label: '项目申报', },
+      { label: '进出站',
+        children:[
+          {label: '进站',},
+          {label: '出站',},
+        ]
+       },
+      { label: '在站管理',
+        children:[
+          { label: '考核',},
+          { label: '退站',},
+        ]
+       },
+      { label: '招聘信息', },
+      { label: '联系我们', },
     ]
-
-    const currentMenuItems = computed(() => {
-      return userStore.isTeacher ? teacherMenuItems : userMenuItems
-    })
-
     return () => (
       <ElContainer class={cls.frame}>
         <ElHeader class={cls.header}>
@@ -43,25 +59,43 @@ export default defineComponent({
             <div class={cls.header_left_title}>{s_frame.title}</div>
           </div>
           <div class={cls.header_right}>
-            <UserMenu/>
+            <UserMenu />
           </div>
         </ElHeader>
         <ElContainer>
-          <ElAside class={cls.aside} width="200px">
+          <ElMain class={cls.main}>
             <ElMenu
+              mode="horizontal"
+              class={cls.horizontalMenu}
               defaultActive={window.location.pathname}
               router
-              style="height: 100%; border-right: none;"
             >
-              {currentMenuItems.value.map(item => (
-                <ElMenuItem key={item.path} index={item.path}>
-                  {item.label}
-                </ElMenuItem>
-              ))}
+              {menuList.map((item, index) => {
+                if (item.children) {
+                  return (
+                    <ElSubMenu key={index} index={item.label}>
+                      {{
+                        title: () => item.label,
+                        default: () => item.children?.map((child, childIndex) => (
+                          <ElMenuItem key={childIndex}>
+                            {child.label}
+                          </ElMenuItem>
+                        ))
+                      }}
+                    </ElSubMenu>
+                  )
+                } else {
+                  return (
+                    <ElMenuItem key={index} index={item.path}>
+                      {item.label}
+                    </ElMenuItem>
+                  )
+                }
+              })}
             </ElMenu>
-          </ElAside>
-          <ElMain class={cls.main}>
-            <RouterView />
+            <div>
+              <RouterView />
+            </div>
           </ElMain>
         </ElContainer>
       </ElContainer>
