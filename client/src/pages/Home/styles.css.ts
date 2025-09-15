@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css'
 
+
 export const page = style({
     //flex
     display: "flex",
@@ -7,6 +8,10 @@ export const page = style({
     gap: "10px",
 })
 export const jobs = style({
+    background: `url(${import.meta.env.BASE_URL}logos/news_bg.png)`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
 })
 export const jobs_title = style({
     margin: "10px",

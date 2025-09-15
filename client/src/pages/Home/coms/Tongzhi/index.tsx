@@ -50,7 +50,7 @@ export default defineComponent({
                     return (
                         <ElCard shadow="hover" style={{marginBottom:'16px'}}>
                             <div style={{display:'flex',alignItems:'stretch'}}>
-                                <div style={{width:'140px',background:'#165DFF',color:'#fff',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'16px 0'}}>
+                                <div style={{width:'140px',background:'#004ea1',color:'#fff',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'16px 0'}}>
                                     <div style={{fontSize:'56px',fontWeight:800,lineHeight:1}}>{dt.day}</div>
                                     <div style={{marginTop:'8px',opacity:0.9}}>{dt.ym}</div>
                                 </div>

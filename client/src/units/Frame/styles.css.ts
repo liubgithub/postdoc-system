@@ -1,6 +1,6 @@
 import { style, globalStyle } from '@vanilla-extract/css'
 
-const header_hight = 60
+const header_hight = 100
 
 export const frame = style({
     width: "100%",
@@ -10,7 +10,6 @@ export const frame = style({
 })
 
 export const image = style({
-    backgroundColor: '#004ea1',
     marginRight: '1rem',
 })
 
@@ -19,6 +18,7 @@ export const header = style({
     top: 0,
     zIndex: 100,
     display: 'flex',
+    paddingLeft:'200px',
     flexWrap: "nowrap",
     alignItems: 'center',
     height: `${header_hight}px`,
@@ -52,6 +52,7 @@ export const horizontalMenu = style({
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
+    height:'70px',
     borderBottom: 'none',
     backgroundColor: 'transparent',
 })
@@ -87,7 +88,7 @@ globalStyle(`${horizontalMenu} .el-sub-menu .el-sub-menu__title`, {
     padding: '0 30px', // 增加左右内边距，使有子菜单的项目更宽
     color: '#333',
     transition: 'all 0.3s ease',
-    minWidth: '120px', // 设置最小宽度
+    minWidth: '140px', // 设置最小宽度
 })
 
 globalStyle(`${horizontalMenu} .el-sub-menu .el-sub-menu__title:hover`, {
@@ -101,7 +102,7 @@ globalStyle(`.el-popper .el-menu--popup`, {
     border: 'none',
     borderRadius: '4px',
     padding: '5px 0',
-    minWidth: '120px', // 与父菜单项最小宽度保持一致
+    minWidth: '140px', // 与父菜单项最小宽度保持一致
     boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)',
 })
 

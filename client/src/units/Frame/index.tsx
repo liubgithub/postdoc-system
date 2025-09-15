@@ -1,6 +1,6 @@
 import { RouterView } from "vue-router"
 import { ElAside, ElContainer, ElHeader, ElMain, ElMenu, ElMenuItem, ElSubMenu } from "element-plus"
-import { images } from "@/styles/images"
+
 import useFrame from "@/stores/frame"
 import useUser from "@/stores/user"
 
@@ -13,7 +13,7 @@ export default defineComponent({
     const s_frame = useFrame()
     const userStore = useUser()
 
-
+    const img = `${import.meta.env.BASE_URL}logos/天空蓝.png`
     const menuList = [
       { label: '首页', path: '/' },
       {
@@ -53,7 +53,7 @@ export default defineComponent({
       <ElContainer class={cls.frame}>
         <ElHeader class={cls.header}>
           <div class={cls.image}>
-            <img src={images.LOGO} alt="logo" />
+            <img src={img} style={{width:'296px',height:'71px'}} alt="logo" />
           </div>
           <div class={cls.header_left}>
             <div class={cls.header_left_title}>{s_frame.title}</div>

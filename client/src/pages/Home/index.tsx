@@ -3,7 +3,7 @@ import { ElButton, ElCard } from "element-plus"
 import { jobs, news } from "./demo"
 
 import JobInfo from "./coms/JobInfo"
-import NewsInfo from "./coms/NewsInfo"
+// import NewsInfo from "./coms/NewsInfo"
 import Carousel from "./Carousel"
 import Tongzhi from "./coms/Tongzhi"
 import BoshiZq from "./coms/BoshiZq"
@@ -46,7 +46,7 @@ export default defineComponent({
             ))}
           </div>
         </div>
-        <div class={cls.news}>
+        {/* <div class={cls.news}>
           <div class={cls.jobs_title}>新闻动态</div>
           <div class={cls.jobs_title_line}></div>
           <div class={cls.news_cards}>
@@ -63,7 +63,7 @@ export default defineComponent({
               </ElCard>
             ))}
           </div>
-        </div>
+        </div> */}
         <Footer />
       </div>
     )
