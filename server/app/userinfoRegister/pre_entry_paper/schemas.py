@@ -46,7 +46,7 @@ class PreEntryPaper(PreEntryPaperBase):
     updated_at: datetime
 
     model_config = ConfigDict(
-        from_attributes=True
+        from_attributes=True,
         json_encoders = {
             datetime: lambda v: v.strftime("%Y-%m-%d") if v else None
         }

@@ -11,7 +11,7 @@ class Attendance(BaseModel):
     other: str = Field("", description="其他缺勤天数")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "sick": "2",
                 "personal": "1",
