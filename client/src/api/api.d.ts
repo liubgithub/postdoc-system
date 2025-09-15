@@ -1230,6 +1230,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/annulAssessment/{student_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Annul Assessment By Student Id
+         * @description 导师获取指定学生的年度考核记录
+         */
+        get: operations["get_annul_assessment_by_student_id_annulAssessment__student_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/extension/": {
         parameters: {
             query?: never;
@@ -1253,6 +1273,26 @@ export interface paths {
          * @description 删除当前用户的延期申请记录
          */
         delete: operations["delete_extension_by_user_id_extension__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/extension/{student_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Extension By Student Id
+         * @description 导师获取指定学生的延期考核记录
+         */
+        get: operations["get_extension_by_student_id_extension__student_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1440,6 +1480,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/information/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get All Information Releases
+         * @description 获取所有信息发布（支持分页）
+         */
+        get: operations["get_all_information_releases_information_release_get"];
+        put?: never;
+        /**
+         * Create Information Release
+         * @description 创建新的信息发布
+         */
+        post: operations["create_information_release_information_release_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/information/release/{info_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Information Release By Id
+         * @description 根据ID获取特定信息发布
+         */
+        get: operations["get_information_release_by_id_information_release__info_id__get"];
+        /**
+         * Update Information Release
+         * @description 更新信息发布
+         */
+        put: operations["update_information_release_information_release__info_id__put"];
+        post?: never;
+        /**
+         * Delete Information Release
+         * @description 删除信息发布
+         */
+        delete: operations["delete_information_release_information_release__info_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -1610,7 +1702,16 @@ export interface components {
              */
             attachments: components["schemas"]["AttachmentIn"][];
         };
-        /** Attendance */
+        /**
+         * Attendance
+         * @example {
+         *       "absenteeism": "0",
+         *       "leave": "3",
+         *       "other": "0",
+         *       "personal": "1",
+         *       "sick": "2"
+         *     }
+         */
         Attendance: {
             /**
              * Sick
@@ -3463,6 +3564,30 @@ export interface components {
             work_experience: components["schemas"]["WorkExperienceOut"][];
             /** Otherachievements */
             otherachievements: string | null;
+        };
+        /** InformationReleaseIn */
+        InformationReleaseIn: {
+            /** Newsname */
+            newsName: string;
+            /** Belongto */
+            belongTo: string;
+            /** Content */
+            content: string;
+        };
+        /** InformationReleaseOut */
+        InformationReleaseOut: {
+            /** Newsname */
+            newsName: string;
+            /** Belongto */
+            belongTo: string;
+            /** Content */
+            content: string;
+            /** Id */
+            id: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
         };
         /** LoginInput */
         LoginInput: {
@@ -7340,6 +7465,37 @@ export interface operations {
             };
         };
     };
+    get_annul_assessment_by_student_id_annulAssessment__student_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                student_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnnulAssessmentOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_extension_by_user_id_extension__get: {
         parameters: {
             query?: never;
@@ -7409,6 +7565,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_extension_by_student_id_extension__student_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                student_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtensionOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -7851,6 +8038,166 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ResStatusOut"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_all_information_releases_information_release_get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InformationReleaseOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_information_release_information_release_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InformationReleaseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InformationReleaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_information_release_by_id_information_release__info_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                info_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InformationReleaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_information_release_information_release__info_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                info_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InformationReleaseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InformationReleaseOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_information_release_information_release__info_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                info_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

@@ -5,6 +5,8 @@ import { jobs, news } from "./demo"
 import JobInfo from "./coms/JobInfo"
 import NewsInfo from "./coms/NewsInfo"
 import Carousel from "./Carousel"
+import Tongzhi from "./coms/Tongzhi"
+import BoshiZq from "./coms/BoshiZq"
 import * as cls from "./styles.css"
 
 export default defineComponent({
@@ -20,6 +22,10 @@ export default defineComponent({
       <div class={cls.page}>
         <div>
           <Carousel items={carouselImages} autoplay={true}/>
+        </div>
+        <div class={cls.part}>
+          <Tongzhi />
+          <BoshiZq />
         </div>
         <div class={cls.jobs}>
           <div class={cls.jobs_title}>招聘信息</div>

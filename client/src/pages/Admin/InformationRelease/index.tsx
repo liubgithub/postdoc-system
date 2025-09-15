@@ -3,6 +3,7 @@ import { ElButton, ElTable, ElInput, ElTableColumn, ElMessageBox, ElMessage } fr
 import AddNews from './addNews';
 import AddColumn from './addColumn';
 import * as cls from './style.css';
+import fetch from '@/api/index'
 
 interface TableRow {
   id: number | string;
@@ -70,7 +71,7 @@ export default defineComponent({
     };
 
     // 删除新闻
-    const handleDelete = (row: TableRow) => {
+    const handleDelete = async(row: TableRow) => {
       ElMessageBox.confirm(`确定要删除"${row.newsName}"吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -85,6 +86,11 @@ export default defineComponent({
       }).catch(() => {
         // 取消删除
       });
+      // await fetch.raw.DELETE('/information/release/{info_id}',{params:{
+      //   path:{
+      //     info_id:
+      //   }
+      // }})
     };
 
     // 返回主页面
@@ -94,7 +100,7 @@ export default defineComponent({
     };
 
     // 保存新闻
-    const handleSaveNews = (newsData: any) => {
+    const handleSaveNews = async(newsData: any) => {
       if (editingNews.value) {
         // 编辑现有新闻
         const index = tableData.value.findIndex(item => item.id === editingNews.value!.id);
@@ -108,8 +114,10 @@ export default defineComponent({
           ...newsData,
           id: Date.now(),
           releaseTime: new Date().toLocaleString()
-        };
+        };   
         tableData.value.unshift(newNews);
+        const res =  await fetch.raw.POST('/information/release',{body:newsData})
+        console.log(res,'rrr')
         ElMessage.success('新闻添加成功');
       }
       handleSearch();

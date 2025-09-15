@@ -62,3 +62,8 @@ export const card_content = style({
     flexDirection: "column",
     gap: "10px",
 })
+
+export const part = style({
+    display: "flex",
+    gap:'50px'
+})

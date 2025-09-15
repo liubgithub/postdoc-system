@@ -100,7 +100,6 @@ export default defineComponent({
     // 幻灯片变化时的回调
     const handleChange = (current: number, prev: number) => {
       currentIndex.value = current
-      console.log(`幻灯片从 ${prev} 切换到 ${current}`)
     }
 
     // 自定义自动播放逻辑
