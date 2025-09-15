@@ -10,7 +10,11 @@ export default defineComponent({
         padding: '40px 0 20px 0',
         marginTop: '60px',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        width: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        marginRight: 'calc(-50vw + 50%)',
+        marginBottom: 'calc(-20px)'
       }}>
         {/* 背景网格效果 */}
         <div style={{
@@ -40,58 +44,50 @@ export default defineComponent({
             textAlign: 'center'
           }}>
             <div style={{
-              display: 'inline-block',
-              background: 'rgba(255,255,255,0.1)',
-              padding: '8px 20px',
-              borderRadius: '20px',
-              marginBottom: '15px'
-            }}>
-              <span style={{ fontSize: '16px', fontWeight: '600' }}>友情链接</span>
-            </div>
-            <div style={{
               display: 'flex',
-              justifyContent: 'center',
+              alignItems: 'center',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '30px',
+              padding: '18px 35px',
               gap: '20px',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              width: '100%'
             }}>
+              <span style={{ fontSize: '20px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap' }}>友情链接:</span>
               <a href="/auth/login" style={{
                 color: '#fff',
                 textDecoration: 'none',
-                fontSize: '14px',
-                padding: '5px 10px',
-                borderRadius: '4px',
-                transition: 'background-color 0.3s',
-                background: 'rgba(255,255,255,0.1)'
+                fontSize: '18px',
+                padding: '0',
+                transition: 'color 0.3s ease'
               }}
-              onMouseenter={(e) => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)'}
-              onMouseleave={(e) => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.1)'}>
-                博士后信息管理系统
+              onMouseenter={(e) => (e.target as HTMLElement).style.color = '#FFD700'}
+              onMouseleave={(e) => (e.target as HTMLElement).style.color = '#fff'}>
+                + 博士后信息管理系统
               </a>
               <a href="https://www.hzau.edu.cn/" target="_blank" rel="noopener noreferrer" style={{
                 color: '#fff',
                 textDecoration: 'none',
-                fontSize: '14px',
-                padding: '5px 10px',
-                borderRadius: '4px',
-                transition: 'background-color 0.3s',
-                background: 'rgba(255,255,255,0.1)'
+                fontSize: '18px',
+                padding: '0',
+                transition: 'color 0.3s ease'
               }}
-              onMouseenter={(e) => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)'}
-              onMouseleave={(e) => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.1)'}>
-                华中农业大学
+              onMouseenter={(e) => (e.target as HTMLElement).style.color = '#FFD700'}
+              onMouseleave={(e) => (e.target as HTMLElement).style.color = '#fff'}>
+                + 华中农业大学
               </a>
               <a href="https://rsc.hzau.edu.cn/" target="_blank" rel="noopener noreferrer" style={{
                 color: '#fff',
                 textDecoration: 'none',
-                fontSize: '14px',
-                padding: '5px 10px',
-                borderRadius: '4px',
-                transition: 'background-color 0.3s',
-                background: 'rgba(255,255,255,0.1)'
+                fontSize: '18px',
+                padding: '0',
+                transition: 'color 0.3s ease'
               }}
-              onMouseenter={(e) => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)'}
-              onMouseleave={(e) => (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.1)'}>
-                人力资源部
+              onMouseenter={(e) => (e.target as HTMLElement).style.color = '#FFD700'}
+              onMouseleave={(e) => (e.target as HTMLElement).style.color = '#fff'}>
+                + 人力资源部
               </a>
             </div>
           </div>
@@ -100,32 +96,91 @@ export default defineComponent({
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             flexWrap: 'wrap',
-            gap: '20px'
+            gap: '30px'
           }}>
             {/* 左侧联系信息 */}
             <div style={{ flex: '1', minWidth: '300px' }}>
-              <div style={{ marginBottom: '10px', fontSize: '14px' }}>
-                <strong>信息管理：</strong>华中农业大学博士后管理办公室
+              <div style={{ marginBottom: '12px', fontSize: '18px', lineHeight: '1.6' }}>
+                <span style={{ color: '#87CEEB' }}>信息管理：</span>华中农业大学博士后管理办公室
               </div>
-              <div style={{ marginBottom: '10px', fontSize: '14px' }}>
-                <strong>电子邮箱：</strong>
-                <a href="mailto:bsh@mail.hzau.edu.cn" style={{ color: '#fff', textDecoration: 'none' }}>
+              <div style={{ marginBottom: '12px', fontSize: '18px', lineHeight: '1.6' }}>
+                <span style={{ color: '#87CEEB' }}>电子邮箱：</span>
+                <a href="mailto:bsh@mail.hzau.edu.cn" style={{ 
+                  color: '#fff', 
+                  textDecoration: 'none',
+                  transition: 'color 0.3s'
+                }}
+                onMouseenter={(e) => (e.target as HTMLElement).style.color = '#FFD700'}
+                onMouseleave={(e) => (e.target as HTMLElement).style.color = '#fff'}>
                   bsh@mail.hzau.edu.cn
                 </a>
               </div>
-              <div style={{ fontSize: '14px' }}>
-                <strong>电话传真：</strong>
-                <span style={{ marginLeft: '5px' }}>📞 027-87285113</span>
+            </div>
+
+            {/* 中间电话信息 */}
+            <div style={{ flex: '0 0 auto', textAlign: 'center' }}>
+              <div style={{ fontSize: '18px', marginBottom: '8px', color: '#87CEEB' }}>
+                电话传真：
+              </div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                gap: '8px',
+                fontSize: '18px',
+                fontWeight: '600'
+              }}>
+                <span style={{ color: '#87CEEB', fontSize: '24px' }}>📞</span>
+                <span style={{ color: '#fff' }}>027-87285113</span>
               </div>
             </div>
 
-            {/* 右侧版权信息 */}
-            <div style={{ textAlign: 'right', flex: '1', minWidth: '300px' }}>
-              <div style={{ fontSize: '14px', marginBottom: '10px' }}>
-                © 2011-2025 湖北省武汉市洪山区狮子山街一号
+            {/* 右侧二维码区域 - 暂时留空 */}
+            <div style={{ 
+              flex: '0 0 auto', 
+              textAlign: 'center',
+              minWidth: '160px',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px'
+            }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: 'rgba(255,255,255,0.1)',
+                border: '2px dashed rgba(255,255,255,0.3)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <span style={{ color: '#87CEEB', fontSize: '12px' }}>二维码</span>
               </div>
+              <div style={{ 
+                fontSize: '12px', 
+                color: '#87CEEB',
+                writingMode: 'vertical-rl',
+                textOrientation: 'mixed',
+                lineHeight: '1.4'
+              }}>
+                扫一扫关注我们
+              </div>
+            </div>
+          </div>
+
+          {/* 版权信息 */}
+          <div style={{
+            textAlign: 'right',
+            marginTop: '30px',
+            paddingTop: '20px',
+            borderTop: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            <div style={{ fontSize: '14px', color: '#fff' }}>
+              © 2011-2025 湖北省武汉市洪山区狮子山街一号
             </div>
           </div>
         </div>
