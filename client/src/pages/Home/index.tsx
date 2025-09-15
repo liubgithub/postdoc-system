@@ -7,6 +7,7 @@ import NewsInfo from "./coms/NewsInfo"
 import Carousel from "./Carousel"
 import Tongzhi from "./coms/Tongzhi"
 import BoshiZq from "./coms/BoshiZq"
+import Footer from "./coms/Footer"
 import * as cls from "./styles.css"
 
 export default defineComponent({
@@ -28,7 +29,7 @@ export default defineComponent({
           <BoshiZq />
         </div>
         <div class={cls.jobs}>
-          <div class={cls.jobs_title}>招聘信息</div>
+          <div class={cls.jobs_title}>招聘信息111</div>
           <div class={cls.jobs_title_line}></div>
           <div class={cls.job_cards}>
             {jobs.map(job => (
@@ -63,6 +64,7 @@ export default defineComponent({
             ))}
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
