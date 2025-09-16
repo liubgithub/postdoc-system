@@ -5,7 +5,10 @@ import Carousel from "./Carousel"
 import Tongzhi from "./coms/Tongzhi"
 import BoshiZq from "./coms/BoshiZq"
 import Zhaopin from "./coms/Zhaopin"
+import BoshiFC from "./coms/Fengcai"
+import CommonProblem from "./coms/CommonProblem"
 import Footer from "./coms/Footer"
+
 import * as cls from "./styles.css"
 
 export default defineComponent({
@@ -20,7 +23,7 @@ export default defineComponent({
     return () => (
       <div class={cls.page}>
         <div>
-          <Carousel items={carouselImages} autoplay={true}/>
+          <Carousel items={carouselImages} autoplay={true} />
         </div>
         <div class={cls.part}>
           <Tongzhi />
@@ -29,6 +32,15 @@ export default defineComponent({
         <div class={cls.part2}>
           <Zhaopin />
         </div>
+        <div class={cls.part3}>
+          <div class={cls.part3left}>
+            <BoshiFC />
+          </div>
+          <div class={cls.part3right}>
+            <CommonProblem />
+          </div>
+        </div>
+
         {/* <div class={cls.news}>
           <div class={cls.jobs_title}>新闻动态</div>
           <div class={cls.jobs_title_line}></div>
