@@ -56,7 +56,7 @@ export default defineComponent({
               width: '100%'
             }}>
               <span style={{ fontSize: '20px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap' }}>友情链接:</span>
-              <a href="/auth/login" style={{
+              <a href="`${window.location.origin}/auth/login`" target="_blank" rel="noopener noreferrer" style={{
                 color: '#fff',
                 textDecoration: 'none',
                 fontSize: '18px',

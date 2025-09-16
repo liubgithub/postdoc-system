@@ -73,3 +73,21 @@ export const part2 = style({
     backgroundRepeat: 'no-repeat',
     padding: '0 100px' 
 })
+
+export const part3 = style({
+    // width:'1200px',
+    marginTop:'60px',
+    display: 'flex',
+    gap: '20px',
+    padding: '0 100px'
+})
+
+export const part3left = style({
+    width: '773px',
+    flex: '1'
+})
+
+export const part3right = style({
+    width: '407px',
+    flexShrink: 0
+})
