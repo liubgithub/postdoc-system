@@ -24,15 +24,7 @@ export const jobs_title_line = style({
     marginLeft: "10px",
     background: "#004EA1",
 })
-export const job_cards = style({
-    display: "flex",
-    flexDirection: "row",
-    gap: "10px",
-    height: "500px",
-    marginTop: "20px",
-    overflowY: "hidden",
-    overflowX: "auto",
-})
+
 export const job_card = style({
     width: "35vw",
     flexShrink: 0,
@@ -70,5 +62,14 @@ export const card_content = style({
 
 export const part = style({
     display: "flex",
-    gap:'50px'
+    gap:'50px',
+    padding: '0 100px'
+})
+
+export const part2 = style({
+    background: `url(${import.meta.env.BASE_URL}logos/news_bg.png)`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    padding: '0 100px' 
 })

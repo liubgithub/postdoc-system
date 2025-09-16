@@ -1,6 +1,6 @@
 import fetch from '@/api/index'
-import { ElCard } from 'element-plus'
-
+import { ElCard, ElButton } from 'element-plus'
+import * as cls from './styles.css'
 type InfoItem = {
     id: number
     newsName: string
@@ -18,17 +18,17 @@ function formatDateParts(iso?: string | null) {
 }
 
 export default defineComponent({
-    name:'tongzhi',
+    name: 'tongzhi',
     setup() {
         const list = ref<InfoItem[]>([])
 
         const fetchData = async () => {
             const res = await fetch.raw.GET('/information/release')
-            if(res.response.ok){
+            if (res.response.ok) {
                 const data = (res.data as unknown as InfoItem[]) || []
                 // 可忽略 belongTo 字段的值，但若存在则只取“通知快讯”
                 const filtered = data.filter(item => !item.belongTo || item.belongTo === '通知快讯')
-                filtered.sort((a,b)=>{
+                filtered.sort((a, b) => {
                     const ta = new Date(a.created_at || 0).getTime()
                     const tb = new Date(b.created_at || 0).getTime()
                     return tb - ta
@@ -39,41 +39,49 @@ export default defineComponent({
 
         onMounted(fetchData)
 
-        return()=>(
-            <div style={{marginTop:'16px'}}>
-                <div style={{fontSize:'28px',fontWeight:700,marginBottom:'8px'}}>通知快讯</div>
-                <div style={{width:'50px',height:'4px',background:'#0d6efd',marginBottom:'16px'}}></div>
+        const openNews = () => {
+
+        }
+        return () => (
+            <div style={{ marginTop: '16px' }}>
+                <div class={cls.title}>
+                    <div>通知快讯</div>
+                    <a class={cls.btn} onClick={openNews}>查看更多+</a>
+                </div>
+
                 {/* 第一行：最新一条 */}
-                {list.value.length>0 && (()=>{
+                {list.value.length > 0 && (() => {
                     const first = list.value[0]
                     const dt = formatDateParts(first.created_at)
                     return (
-                        <ElCard shadow="hover" style={{marginBottom:'16px'}}>
-                            <div style={{display:'flex',alignItems:'stretch'}}>
-                                <div style={{width:'140px',background:'#004ea1',color:'#fff',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'16px 0'}}>
-                                    <div style={{fontSize:'56px',fontWeight:800,lineHeight:1}}>{dt.day}</div>
-                                    <div style={{marginTop:'8px',opacity:0.9}}>{dt.ym}</div>
+                        <div class={cls.first}>
+                            <a href="">
+                                <div class={cls.time}>
+                                    <p>{dt.day}</p>
+                                    <span>{dt.ym}</span>
                                 </div>
-                                <div style={{flex:1,padding:'16px 20px'}}>
-                                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                                        <div style={{fontSize:'22px',fontWeight:700,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{first.newsName}</div>
-                                        <div style={{color:'#909399'}}>{dt.ymd}</div>
+                                <div class={cls.con}>
+                                    <span class={cls.tit}>{first.newsName}</span>
+                                    <div class={cls.sj}>
+                                        <font>{dt.ymd}</font>
                                     </div>
-                                    <div style={{marginTop:'12px',color:'#606266'}}>{first.content}</div>
+                                    <div class={cls.txt}>{first.content}</div>
                                 </div>
-                            </div>
-                        </ElCard>
+                            </a>
+                        </div>
                     )
                 })()}
                 {/* 第二行：后面三条 */}
-                <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'16px'}}>
-                    {list.value.slice(1,4).map(item=>{
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px',minWidth:'900px' }}>
+                    {list.value.slice(1, 4).map(item => {
                         const dt = formatDateParts(item.created_at)
                         return (
-                            <ElCard shadow="hover">
-                                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'8px',fontWeight:700}}>{item.newsName}<span style={{color:'#909399',fontWeight:400}}>{dt.ymd}</span></div>
-                                <div style={{color:'#606266'}}>{item.content}</div>
-                            </ElCard>
+                            <a href="" style={{ textDecoration: 'none' }}>
+                                <ElCard shadow="hover">
+                                    <div><span style={{ textOverflow: 'ellipsis'}}>{item.newsName}</span></div>
+                                    <span style={{ color: '#909399', fontWeight: 400 }}>{dt.ymd}</span>
+                                </ElCard>
+                            </a>
                         )
                     })}
                 </div>

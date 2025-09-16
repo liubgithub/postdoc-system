@@ -1,4 +1,5 @@
 import { ElCard } from "element-plus"
+import * as cls from '../Tongzhi/styles.css'
 export default defineComponent({
     name: 'BoshiZq',
     setup(props, ctx) {
@@ -24,8 +25,9 @@ export default defineComponent({
         ]
         return () => (
             <div>
-                <div style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>博士后专区</div>
-                <div style={{ width: '50px', height: '4px', background: '#0d6efd', marginBottom: '16px' }}></div>
+                <div class={cls.title}>
+                    <div>博士后专区</div>
+                </div>
                 <div>
                     {items.map((it, idx) => {
                         const isHover = hoverIdx.value === idx
