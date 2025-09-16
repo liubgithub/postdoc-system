@@ -1,5 +1,5 @@
 import { defineComponent, ref } from "vue"
-import { ElCard, ElButton } from "element-plus"
+import { ElCard, ElButton, ElTooltip } from "element-plus"
 
 export default defineComponent({
   name: 'CommonProblem',
@@ -7,7 +7,7 @@ export default defineComponent({
     const commonProblems = [
       {
         id: 1,
-        question: "中国博士后科学基金资助工作常见问题..."
+        question: "中国博士后科学基金资助工作常见问题解答(2021)"
       },
       {
         id: 2,
@@ -76,8 +76,22 @@ export default defineComponent({
             background: '#004ea1',
             position: 'relative',
             marginTop: '40px',
-            cursor: 'pointer'
-          }}>
+            cursor: 'pointer',
+            transition: 'background-color 0.3s ease'
+          }}
+            onMouseenter={(e) => {
+              const target = e.currentTarget as HTMLDivElement
+              if (target) {
+                target.style.background = '#FF9E21'
+              }
+            }}
+            onMouseleave={(e) => {
+              const target = e.currentTarget as HTMLDivElement
+              if (target) {
+                target.style.background = '#004ea1'
+              }
+            }}
+          >
             查看更多+
           </div>
         </div>
@@ -90,51 +104,64 @@ export default defineComponent({
           boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
         }}>
           {commonProblems.map((item, index) => (
-            <div 
+            <ElTooltip
               key={item.id}
-              style={{ 
-                display: 'flex',
-                alignItems: 'center',
-                gap: '15px',
-                padding: '18px 0',
-                borderBottom: index === commonProblems.length - 1 ? 'none' : '1px solid #f0f0f0',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseenter={(e) => {
-                const target = e.currentTarget as HTMLDivElement
-                if (target) {
-                  target.style.background = '#f8f9fa'
-                  target.style.borderRadius = '6px'
-                  target.style.padding = '18px 12px'
-                }
-              }}
-              onMouseleave={(e) => {
-                const target = e.currentTarget as HTMLDivElement
-                if (target) {
-                  target.style.background = 'transparent'
-                  target.style.borderRadius = '0'
-                  target.style.padding = '18px 0'
-                }
-              }}
+              content={item.question}
+              placement="bottom-end"
+              effect="dark"
+              showAfter={300}
+              hideAfter={100}
+              disabled={item.question.length <= 25}
             >
-              <div style={{ 
-                width: '8px', 
-                height: '8px', 
-                background: '#1e5f99', 
-                borderRadius: '50%',
-                flexShrink: 0
-              }}></div>
-              <div style={{ 
-                fontSize: '16px', 
-                color: '#333',
-                lineHeight: '1.6',
-                flex: 1,
-                fontWeight: '400'
-              }}>
-                {item.question}
+              <div 
+                style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px',
+                  padding: '18px 0',
+                  borderBottom: index === commonProblems.length - 1 ? 'none' : '1px solid #f0f0f0',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseenter={(e) => {
+                  const target = e.currentTarget as HTMLDivElement
+                  if (target) {
+                    target.style.background = '#f8f9fa'
+                    target.style.borderRadius = '6px'
+                    target.style.padding = '18px 12px'
+                  }
+                }}
+                onMouseleave={(e) => {
+                  const target = e.currentTarget as HTMLDivElement
+                  if (target) {
+                    target.style.background = 'transparent'
+                    target.style.borderRadius = '0'
+                    target.style.padding = '18px 0'
+                  }
+                }}
+              >
+                <div style={{ 
+                  width: '8px', 
+                  height: '8px', 
+                  background: '#1e5f99', 
+                  borderRadius: '50%',
+                  flexShrink: 0
+                }}></div>
+                <div style={{ 
+                  fontSize: '16px', 
+                  color: '#333',
+                  lineHeight: '1.6',
+                  flex: 1,
+                  fontWeight: '400',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '500px'
+                }}>
+                  {item.question}
+                </div>
               </div>
-            </div>
+            </ElTooltip>
           ))}
         </div>
       </div>

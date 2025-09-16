@@ -76,7 +76,7 @@ export const part2 = style({
 
 export const part3 = style({
     // width:'1200px',
-    // margin:'0 auto',
+    marginTop:'60px',
     display: 'flex',
     gap: '20px',
     padding: '0 100px'
