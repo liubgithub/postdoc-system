@@ -43,7 +43,7 @@ export default defineComponent({
 
         }
         return () => (
-            <div style={{ marginTop: '16px' }}>
+            <div style={{ marginTop: '16px', maxWidth: '1100px' }}>
                 <div class={cls.title}>
                     <div>通知快讯</div>
                     <a class={cls.btn} onClick={openNews}>查看更多+</a>
@@ -72,20 +72,29 @@ export default defineComponent({
                     )
                 })()}
                 {/* 第二行：后面三条 */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px',minWidth:'900px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', minWidth: '900px' }}>
                     {list.value.slice(1, 4).map(item => {
                         const dt = formatDateParts(item.created_at)
                         return (
                             <a href="" style={{ textDecoration: 'none' }}>
-                                <ElCard shadow="hover">
-                                    <div><span style={{ textOverflow: 'ellipsis'}}>{item.newsName}</span></div>
+                                <ElCard shadow="hover" style={{ overflow: 'hidden' }}>
+                                    <div
+                                        style={{
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            marginBottom: '8px',
+                                            fontWeight: 500,
+                                            maxWidth:'300px'
+                                        }}
+                                    >{item.newsName}</div>
                                     <span style={{ color: '#909399', fontWeight: 400 }}>{dt.ymd}</span>
                                 </ElCard>
                             </a>
                         )
                     })}
                 </div>
-            </div>
+            </div >
         )
     },
 })
