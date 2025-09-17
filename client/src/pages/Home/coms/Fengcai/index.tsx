@@ -10,21 +10,28 @@ export default defineComponent({
     const fengcaiData = [
       {
         id: 1,
-        title: "【博士后风采】国家优秀青年科学基金项目入选者——胡晓宇",
+        title: "【博士后风采】国家优秀青年科学基金项目入选",
         date: "2024-09-28",
         image: `${import.meta.env.BASE_URL}images/fengcai1.png`,
         description: "胡晓宇博士在生物医学领域取得重要突破，获得国家优秀青年科学基金资助..."
       },
       {
         id: 2,
-        title: "【博士后风采】国家优秀青年科学基金项目入选者——阿力木",
+        title: "【博士后风采】求实创新，励志图强",
         date: "2024-09-28",
         image: `${import.meta.env.BASE_URL}images/fengcai2.png`,
         description: "阿力木博士在材料科学领域的研究成果获得国际认可..."
       },
       {
         id: 3,
-        title: "【博士后风采】武松——脚踏实地，坚韧不拔",
+        title: "【博士后风采】坚韧不拔，潜心学术",
+        date: "2022-04-28",
+        image: `${import.meta.env.BASE_URL}images/fengcai3.png`,
+        description: "武松博士在农业科学领域的研究为乡村振兴贡献重要力量..."
+      },
+      {
+        id: 3,
+        title: "【博士后风采】求真务实，砥砺前行",
         date: "2022-04-28",
         image: `${import.meta.env.BASE_URL}images/fengcai3.png`,
         description: "武松博士在农业科学领域的研究为乡村振兴贡献重要力量..."
@@ -139,7 +146,7 @@ export default defineComponent({
               <div style={{ textAlign: 'center' }}>
                 <h2 style={{
                   margin: '0 0 20px 0',
-                  fontSize: '22px',
+                  fontSize: '26px',
                   fontWeight: '600',
                   letterSpacing: '2px',
                   opacity: 0,
@@ -318,6 +325,22 @@ export default defineComponent({
                     borderBottom: item.id === fengcaiData.length ? 'none' : '1px solid #f0f0f0',
                     cursor: 'pointer'
                   }}
+                  onMouseenter={(e) => {
+                    const target = e.currentTarget as HTMLDivElement
+                    if (target) {
+                      target.style.background = '#f8f9fa'
+                      target.style.borderRadius = '6px'
+                      target.style.padding = '6px 8px'
+                    }
+                  }}
+                  onMouseleave={(e) => {
+                    const target = e.currentTarget as HTMLDivElement
+                    if (target) {
+                      target.style.background = 'transparent'
+                      target.style.borderRadius = '0'
+                      target.style.padding = '6px 0'
+                    }
+                  }}
                 >
                   <div style={{
                     width: '6px',
@@ -328,7 +351,7 @@ export default defineComponent({
                   }}></div>
                   <div style={{ flex: 1 }}>
                     <div style={{
-                      fontSize: '14px',
+                      fontSize: '16px',
                       color: '#333',
                       lineHeight: '1.3',
                       marginBottom: '2px'
@@ -337,7 +360,7 @@ export default defineComponent({
                     </div>
                   </div>
                   <div style={{
-                    fontSize: '12px',
+                    fontSize: '16px',
                     color: '#999',
                     flexShrink: 0
                   }}>

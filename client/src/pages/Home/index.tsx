@@ -14,11 +14,11 @@ import * as cls from "./styles.css"
 export default defineComponent({
   name: "Home",
   setup() {
-    const carouselImages = Array.from({ length: 5 }, (_, index) => ({
+    const carouselImages = Array.from({ length: 4 }, (_, index) => ({
       id: index + 1,
-      imageUrl: `${import.meta.env.BASE_URL}images/${index + 1}.png`,
-      title: `幻灯片 ${index + 1}`,
-      description: `这是第 ${index + 1} 张幻灯片`
+      imageUrl: `${import.meta.env.BASE_URL}images/${index + 1}.jpg`,
+      title: `华农 ${index + 1}`,
+      description: `这是第 ${index + 1} 张华农相关信息`
     }))
     return () => (
       <div class={cls.page}>

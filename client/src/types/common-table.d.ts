@@ -1,4 +1,5 @@
 export interface TableRow {
+  id?: number
   stuId: string
   name: string
   cotutor: string

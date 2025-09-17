@@ -68,7 +68,7 @@ export default defineComponent({
         // 审核操作
         const handleApprove = async (row: TableRow, approved: boolean) => {
             try {
-                const { error } = await approveAssessment(row.id || 0, approved)
+                const { error } = await approveAssessment(row.id ?? 0, approved)
                 if (error) {
                     ElMessage.error('操作失败')
                     return
@@ -169,9 +169,9 @@ export default defineComponent({
                         '已通过': 'success',
                         '待审核': 'warning',
                         '已驳回': 'danger'
-                    }
+                    } as const
                     return (
-                        <ElTag type={statusMap[row.processStatus as keyof typeof statusMap] || 'info'}>
+                        <ElTag type={statusMap[row.processStatus as keyof typeof statusMap] ?? 'info'}>
                             {row.processStatus}
                         </ElTag>
                     )
@@ -295,10 +295,8 @@ export default defineComponent({
                         <div class={styles.tableContainer}>
                             <ElTable
                                 data={tableData.value}
-                                loading={loading.value}
                                 stripe
                                 border
-                                style="width: 100%"
                             >
                                 {getColumns().map(column => (
                                     <ElTableColumn
