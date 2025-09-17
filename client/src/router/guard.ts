@@ -2,7 +2,7 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import useUser from '@/stores/user'
 
 // 白名单 - 不需要认证的路径
-const whiteList = ['/auth/login', '/register', '/']
+const whiteList = ['/auth/login', '/register', '/', '/news/']
 
 // 角色权限配置
 const rolePermissions: { [key: string]: string[] } = {
@@ -11,6 +11,14 @@ const rolePermissions: { [key: string]: string[] } = {
   user: ['/', '/UserInfo', '/UserInfo/*'] // 普通用户可以访问的路径
 }
 
+const isWhiteListed = (path: string) => {
+  return whiteList.some(whitePath => {
+    if (whitePath.endsWith('/')) {
+      return path.startsWith(whitePath)
+    }
+    return path === whitePath
+  })
+}
 export const authGuard = (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
@@ -18,6 +26,9 @@ export const authGuard = (
 ) => {
   const userStore = useUser()
   
+  if (isWhiteListed(to.path)) {
+    return next()
+  }
   // 初始化用户状态
   userStore.initUser()
   

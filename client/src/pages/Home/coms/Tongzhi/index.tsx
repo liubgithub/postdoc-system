@@ -1,6 +1,7 @@
 import fetch from '@/api/index'
-import { ElCard, ElButton } from 'element-plus'
+import { ElCard } from 'element-plus'
 import * as cls from './styles.css'
+import { useRouter } from 'vue-router'
 type InfoItem = {
     id: number
     newsName: string
@@ -39,9 +40,11 @@ export default defineComponent({
 
         onMounted(fetchData)
 
+        const base = import.meta.env.BASE_URL || '/'
         const openNews = () => {
-
+       
         }
+  
         return () => (
             <div style={{ marginTop: '16px', maxWidth: '1100px' }}>
                 <div class={cls.title}>
@@ -55,7 +58,7 @@ export default defineComponent({
                     const dt = formatDateParts(first.created_at)
                     return (
                         <div class={cls.first}>
-                            <a href="">
+                            <a href={`${base}news/${first.id}`} target="_blank">
                                 <div class={cls.time}>
                                     <p>{dt.day}</p>
                                     <span>{dt.ym}</span>
@@ -76,7 +79,7 @@ export default defineComponent({
                     {list.value.slice(1, 4).map(item => {
                         const dt = formatDateParts(item.created_at)
                         return (
-                            <a href="" style={{ textDecoration: 'none' }}>
+                            <a href={`${base}news/${item.id}`} target="_blank" style={{ textDecoration: 'none' }}>
                                 <ElCard shadow="hover" style={{ overflow: 'hidden' }}>
                                     <div
                                         style={{

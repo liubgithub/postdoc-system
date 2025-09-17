@@ -1,16 +1,15 @@
-
-import { ElButton, ElTable, ElInput, ElTableColumn, ElMessageBox, ElMessage } from "element-plus";
+import { ElButton, ElTable, ElInput, ElTableColumn, ElMessageBox, ElMessage, ElPagination } from "element-plus";
 import AddNews from './addNews';
 import AddColumn from './addColumn';
 import * as cls from './style.css';
 import fetch from '@/api/index'
 
 interface TableRow {
-  id: number | string;
+  id: number;
   newsName: string;
-  releaseTime: string;
-  belongTo: string;
-  content: string;
+  belongTo: string
+  content: string
+  created_at?: string | null
 }
 
 export default defineComponent({
@@ -20,29 +19,61 @@ export default defineComponent({
     const editingNews = ref<TableRow | null>(null);
     const searchKeyword = ref('');
     
-    // 模拟数据
-    const tableData = ref<TableRow[]>([
-      { id: 1, newsName: '系统升级通知', releaseTime: '2023-10-15 09:30', belongTo: '通知快讯', content: '系统将于本周六凌晨进行升级维护...' },
-      { id: 2, newsName: '前端开发工程师招聘', releaseTime: '2023-10-10 14:20', belongTo: '招聘信息', content: '我司现招聘前端开发工程师，要求3年以上经验...' },
-      { id: 3, newsName: '人工智能研讨会', releaseTime: '2023-10-05 16:45', belongTo: '学术新闻', content: '本周五将举办人工智能前沿技术研讨会...' },
-      { id: 4, newsName: '国庆节放假安排', releaseTime: '2023-09-28 11:10', belongTo: '通知快讯', content: '根据国家规定，国庆节放假安排如下...' },
-      { id: 5, newsName: '后端开发工程师招聘', releaseTime: '2023-09-25 10:30', belongTo: '招聘信息', content: '招聘高级后端开发工程师，精通Java或Go...' },
-    ]);
+    // 表格数据
+    const tableData = ref<TableRow[]>([]);
+    
+    // 分页相关状态
+    const currentPage = ref(1);
+    const pageSize = ref(10);
+    const total = ref(0);
+
+    // 格式化日期，只取年月日
+    const formatDate = (dateString: string | null | undefined) => {
+      if (!dateString) return '-';
+      
+      try {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // 只返回年月日部分
+      } catch (error) {
+        console.error('日期格式化错误:', error);
+        return '-';
+      }
+    };
 
     // 过滤后的数据
-    const filteredData = ref<TableRow[]>(tableData.value);
-
-    // 处理搜索
-    const handleSearch = () => {
+    const filteredData = computed(() => {
       if (!searchKeyword.value) {
-        filteredData.value = tableData.value;
-        return;
+        return tableData.value;
       }
       
-      filteredData.value = tableData.value.filter(item => 
+      return tableData.value.filter(item => 
         item.newsName.includes(searchKeyword.value) || 
         item.belongTo.includes(searchKeyword.value)
       );
+    });
+
+    // 分页后的数据
+    const pagedData = computed(() => {
+      const start = (currentPage.value - 1) * pageSize.value;
+      const end = start + pageSize.value;
+      return filteredData.value.slice(start, end);
+    });
+
+    // 处理搜索
+    const handleSearch = () => {
+      currentPage.value = 1; // 搜索时重置到第一页
+      total.value = filteredData.value.length;
+    };
+
+    // 处理页码变化
+    const handleCurrentChange = (page: number) => {
+      currentPage.value = page;
+    };
+
+    // 处理每页条数变化
+    const handleSizeChange = (size: number) => {
+      pageSize.value = size;
+      currentPage.value = 1;
     };
 
     // 切换到新增新闻
@@ -76,21 +107,31 @@ export default defineComponent({
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-      }).then(() => {
-        const index = tableData.value.findIndex(item => item.id === row.id);
-        if (index !== -1) {
-          tableData.value.splice(index, 1);
-          handleSearch(); // 刷新搜索
-          ElMessage.success('删除成功');
+      }).then(async() => {
+        try {
+          // 使用从API获取的真实id
+          await fetch.raw.DELETE('/information/release/{info_id}', {
+            params: {
+              path: {
+                info_id: row.id // 使用真实的id
+              }
+            }
+          });
+          
+          // 从本地数据中删除
+          const index = tableData.value.findIndex(item => item.id === row.id);
+          if (index !== -1) {
+            tableData.value.splice(index, 1);
+            total.value = tableData.value.length;
+            ElMessage.success('删除成功');
+          }
+        } catch (error) {
+          console.error('删除失败:', error);
+          ElMessage.error('删除失败');
         }
       }).catch(() => {
         // 取消删除
       });
-      // await fetch.raw.DELETE('/information/release/{info_id}',{params:{
-      //   path:{
-      //     info_id:
-      //   }
-      // }})
     };
 
     // 返回主页面
@@ -101,27 +142,35 @@ export default defineComponent({
 
     // 保存新闻
     const handleSaveNews = async(newsData: any) => {
-      if (editingNews.value) {
-        // 编辑现有新闻
-        const index = tableData.value.findIndex(item => item.id === editingNews.value!.id);
-        if (index !== -1) {
-          tableData.value[index] = { ...newsData, id: editingNews.value.id };
+      try {
+        if (editingNews.value) {
+          // 编辑现有新闻
+          const index = tableData.value.findIndex(item => item.id === editingNews.value!.id);
+          if (index !== -1) {
+            tableData.value[index] = { ...newsData, id: editingNews.value.id };
+          }
+          ElMessage.success('新闻更新成功');
+        } else {
+          // 新增新闻
+          const res = await fetch.raw.POST('/information/release', { body: newsData });
+          if (res.response.ok) {
+            // 重新获取数据以确保数据最新
+            const fetchRes = await fetch.raw.GET('/information/release');
+            if (fetchRes.response.ok && fetchRes.data) {
+              // 按照id倒序排列
+              tableData.value = fetchRes.data.sort((a: TableRow, b: TableRow) => 
+                Number(b.id) - Number(a.id)
+              );
+              total.value = tableData.value.length;
+            }
+            ElMessage.success('新闻添加成功');
+          }
         }
-        ElMessage.success('新闻更新成功');
-      } else {
-        // 新增新闻
-        const newNews = {
-          ...newsData,
-          id: Date.now(),
-          releaseTime: new Date().toLocaleString()
-        };   
-        tableData.value.unshift(newNews);
-        const res =  await fetch.raw.POST('/information/release',{body:newsData})
-        console.log(res,'rrr')
-        ElMessage.success('新闻添加成功');
+        handleBack();
+      } catch (error) {
+        console.error('保存失败:', error);
+        ElMessage.error('保存失败');
       }
-      handleSearch();
-      handleBack();
     };
 
     // 保存专栏
@@ -129,6 +178,23 @@ export default defineComponent({
       ElMessage.success(`专栏"${columnData.name}"添加成功`);
       handleBack();
     };
+
+    onMounted(async() => {
+      try {
+        const res = await fetch.raw.GET('/information/release');
+        if (res.response.ok && res.data) {
+          // 按照id倒序排列
+          tableData.value = res.data.sort((a: TableRow, b: TableRow) => 
+            Number(b.id) - Number(a.id)
+          );
+          total.value = tableData.value.length;
+
+        }
+      } catch (error) {
+        console.error('获取数据失败:', error);
+        ElMessage.error('获取数据失败');
+      }
+    });
 
     // 渲染主页面
     const renderMainView = () => (
@@ -153,10 +219,15 @@ export default defineComponent({
         </div>
         
         <div class={cls.tableBox}>
-          <ElTable data={filteredData.value} style={{width: '100%'}}>
+          <ElTable data={pagedData.value} style={{width: '100%', padding:'10px 0'}}>
             <ElTableColumn type="index" label="序号" width="60" align="center" />
             <ElTableColumn prop="newsName" label="新闻名称" minWidth="120" />
-            <ElTableColumn prop="releaseTime" label="发布时间" width="160" />
+            <ElTableColumn 
+              prop="created_at" 
+              label="发布时间" 
+              width="160" 
+              formatter={(row: TableRow) => formatDate(row.created_at)}
+            />
             <ElTableColumn prop="belongTo" label="专栏" width="120" />
             <ElTableColumn label="操作" width="220" align="center" fixed="right">
               {{
@@ -175,9 +246,22 @@ export default defineComponent({
                 )
               }}
             </ElTableColumn>
-          </ElTable>
+          </ElTable>  
+          {/* 分页器 - 使用正确的事件绑定 */}
+          <ElPagination
+            currentPage={currentPage.value}
+            pageSize={pageSize.value}
+            pageSizes={[1,5,10, 20, 50, 100]}
+            layout="total, sizes, prev, pager, next, jumper"
+            total={total.value}
+            {...{
+              'onCurrent-change': handleCurrentChange,
+              'onSize-change': handleSizeChange
+            }}
+            style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}
+          />
         </div>
-        
+
         {filteredData.value.length === 0 && (
           <div class={cls.noData}>暂无数据</div>
         )}

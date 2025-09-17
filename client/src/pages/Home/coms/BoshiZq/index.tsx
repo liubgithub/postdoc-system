@@ -24,7 +24,7 @@ export default defineComponent({
             { link: link4, img1: img4, img2: imga4, text: '博士后管理系统' },
         ]
         return () => (
-            <div>
+            <div style={{minWidth:'320px'}}>
                 <div class={cls.title}>
                     <div>博士后专区</div>
                 </div>

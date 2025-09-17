@@ -7,7 +7,7 @@ import BoshiZq from "./coms/BoshiZq"
 import Zhaopin from "./coms/Zhaopin"
 import BoshiFC from "./coms/Fengcai"
 import CommonProblem from "./coms/CommonProblem"
-import Footer from "./coms/Footer"
+
 
 import * as cls from "./styles.css"
 
@@ -59,7 +59,7 @@ export default defineComponent({
             ))}
           </div>
         </div> */}
-        <Footer />
+
       </div>
     )
   }
