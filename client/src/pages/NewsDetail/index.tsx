@@ -18,6 +18,27 @@ function formatDate(iso?: string | null) {
   return `${year}-${month}-${day}`
 }
 
+function formatContent(content?: string | null) {
+  if (!content) return ''
+  
+  // 先处理超链接，将URL转换为可点击的链接
+  let formattedContent = content.replace(
+    /(https?:\/\/[^\s]+)/g, 
+    '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #409EFF; text-decoration: underline;">$1</a>'
+  )
+  
+  // 将换行符转换为 <br> 标签
+  formattedContent = formattedContent.replace(/\n/g, '<br>')
+  
+  // 处理首行缩进（将多个空格转换为 &nbsp;）
+  formattedContent = formattedContent.replace(/^(\s+)/gm, (match) => {
+    // 将每行开头的空格转换为 &nbsp;
+    return match.replace(/ /g, '&nbsp;')
+  })
+  
+  return formattedContent
+}
+
 export default defineComponent({
   name: 'NewsDetail',
   setup() {
@@ -70,7 +91,7 @@ export default defineComponent({
             <div class={cls.news}>
               <h1 class={cls.title}>{detail.value.newsName}</h1>
               <div class={cls.date}>发布时间：{formatDate(detail.value.created_at)}</div>
-              <div class={cls.content} v-html={detail.value.content || ''}></div>
+              <div class={cls.content} v-html={formatContent(detail.value.content)}></div>
             </div>
 
           </div>

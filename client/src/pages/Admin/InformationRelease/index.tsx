@@ -18,19 +18,19 @@ export default defineComponent({
     const currentView = ref<'main' | 'addNews' | 'addColumn' | 'editNews'>('main');
     const editingNews = ref<TableRow | null>(null);
     const searchKeyword = ref('');
-    
+
     // 表格数据
     const tableData = ref<TableRow[]>([]);
-    
+
     // 分页相关状态
     const currentPage = ref(1);
-    const pageSize = ref(10);
+    const pageSize = ref(6);
     const total = ref(0);
 
     // 格式化日期，只取年月日
     const formatDate = (dateString: string | null | undefined) => {
       if (!dateString) return '-';
-      
+
       try {
         const date = new Date(dateString);
         return date.toISOString().split('T')[0]; // 只返回年月日部分
@@ -45,9 +45,9 @@ export default defineComponent({
       if (!searchKeyword.value) {
         return tableData.value;
       }
-      
-      return tableData.value.filter(item => 
-        item.newsName.includes(searchKeyword.value) || 
+
+      return tableData.value.filter(item =>
+        item.newsName.includes(searchKeyword.value) ||
         item.belongTo.includes(searchKeyword.value)
       );
     });
@@ -102,12 +102,12 @@ export default defineComponent({
     };
 
     // 删除新闻
-    const handleDelete = async(row: TableRow) => {
+    const handleDelete = async (row: TableRow) => {
       ElMessageBox.confirm(`确定要删除"${row.newsName}"吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-      }).then(async() => {
+      }).then(async () => {
         try {
           // 使用从API获取的真实id
           await fetch.raw.DELETE('/information/release/{info_id}', {
@@ -117,7 +117,7 @@ export default defineComponent({
               }
             }
           });
-          
+
           // 从本地数据中删除
           const index = tableData.value.findIndex(item => item.id === row.id);
           if (index !== -1) {
@@ -141,7 +141,7 @@ export default defineComponent({
     };
 
     // 保存新闻
-    const handleSaveNews = async(newsData: any) => {
+    const handleSaveNews = async (newsData: any) => {
       try {
         if (editingNews.value) {
           // 编辑现有新闻
@@ -158,7 +158,7 @@ export default defineComponent({
             const fetchRes = await fetch.raw.GET('/information/release');
             if (fetchRes.response.ok && fetchRes.data) {
               // 按照id倒序排列
-              tableData.value = fetchRes.data.sort((a: TableRow, b: TableRow) => 
+              tableData.value = fetchRes.data.sort((a: TableRow, b: TableRow) =>
                 Number(b.id) - Number(a.id)
               );
               total.value = tableData.value.length;
@@ -179,12 +179,12 @@ export default defineComponent({
       handleBack();
     };
 
-    onMounted(async() => {
+    onMounted(async () => {
       try {
         const res = await fetch.raw.GET('/information/release');
         if (res.response.ok && res.data) {
           // 按照id倒序排列
-          tableData.value = res.data.sort((a: TableRow, b: TableRow) => 
+          tableData.value = res.data.sort((a: TableRow, b: TableRow) =>
             Number(b.id) - Number(a.id)
           );
           total.value = tableData.value.length;
@@ -206,9 +206,9 @@ export default defineComponent({
             <ElButton type="success" onClick={handleAddColumn}>新增专栏</ElButton>
           </div>
         </div>
-        
+
         <div class={cls.searchPart}>
-          <ElInput 
+          <ElInput
             v-model={searchKeyword.value}
             placeholder="请输入关键词搜索"
             clearable
@@ -217,15 +217,15 @@ export default defineComponent({
           />
           <ElButton type="primary" onClick={handleSearch}>搜索</ElButton>
         </div>
-        
+
         <div class={cls.tableBox}>
-          <ElTable data={pagedData.value} style={{width: '100%', padding:'10px 0'}}>
+          <ElTable data={pagedData.value} style={{ width: '100%', padding: '10px 0' }}>
             <ElTableColumn type="index" label="序号" width="60" align="center" />
             <ElTableColumn prop="newsName" label="新闻名称" minWidth="120" />
-            <ElTableColumn 
-              prop="created_at" 
-              label="发布时间" 
-              width="160" 
+            <ElTableColumn
+              prop="created_at"
+              label="发布时间"
+              width="160"
               formatter={(row: TableRow) => formatDate(row.created_at)}
             />
             <ElTableColumn prop="belongTo" label="专栏" width="120" />
@@ -246,20 +246,21 @@ export default defineComponent({
                 )
               }}
             </ElTableColumn>
-          </ElTable>  
+          </ElTable>
           {/* 分页器 - 使用正确的事件绑定 */}
-          <ElPagination
-            currentPage={currentPage.value}
-            pageSize={pageSize.value}
-            pageSizes={[1,5,10, 20, 50, 100]}
-            layout="total, sizes, prev, pager, next, jumper"
-            total={total.value}
-            {...{
-              'onCurrent-change': handleCurrentChange,
-              'onSize-change': handleSizeChange
-            }}
-            style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}
-          />
+          <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+            <ElPagination
+              v-model:current-page={currentPage.value}
+              v-model:page-size={pageSize.value}
+              pageSizes={[1, 5, 10, 20, 50, 100]}
+              layout="total, sizes, prev, pager, next, jumper"
+              total={total.value}
+              {...{
+                'onCurrent-change': handleCurrentChange,
+                'onSize-change': handleSizeChange
+              }}
+              />
+          </div>
         </div>
 
         {filteredData.value.length === 0 && (

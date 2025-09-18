@@ -59,7 +59,7 @@ export default defineComponent({
 
           {/* 左侧蓝色导航卡片 */}
           <div style={{
-            background: 'linear-gradient(135deg, #2E7BC7 0%, #1E4A72 50%, #0F2A44 100%)',
+            background: 'linear-gradient(135deg,rgb(150, 25, 25) 0%, #920000 50%,rgb(105, 15, 15) 100%)',
             borderRadius: '20px',
             width: '200px',
             height: '450px',
@@ -238,7 +238,7 @@ export default defineComponent({
               lineHeight: '40px',
               fontWeight: 'normal',
               textAlign: 'center',
-              background: '#004ea1',
+              background: '#920000',
               position: 'absolute',
               top: '0',
               right: '0',
@@ -255,7 +255,7 @@ export default defineComponent({
               onMouseleave={(e) => {
                 const target = e.currentTarget as HTMLDivElement
                 if (target) {
-                  target.style.background = '#004ea1'
+                  target.style.background = '#920000'
                 }
               }}
             >

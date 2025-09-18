@@ -36,7 +36,7 @@ export const header_left_title = style({
     fontSize: "2.4rem",
     fontWeight: 500,
     marginLeft: '1rem',
-    color: '#004ea1',
+    color: '#920000',
 })
 
 export const header_right = style({
@@ -76,7 +76,7 @@ globalStyle(`${horizontalMenu} .el-menu-item`, {
 })
 
 globalStyle(`${horizontalMenu} .el-menu-item:hover`, {
-    backgroundColor: '#004ea1 !important',
+    backgroundColor: '#920000 !important',
     color: '#fff !important',
 })
 
@@ -92,13 +92,13 @@ globalStyle(`${horizontalMenu} .el-sub-menu .el-sub-menu__title`, {
 })
 
 globalStyle(`${horizontalMenu} .el-sub-menu .el-sub-menu__title:hover`, {
-    backgroundColor: '#004ea1',
+    backgroundColor: ' #920000',
     color: '#fff',
 })
 
 // 下拉菜单样式 - 使用更具体的选择器
 globalStyle(`.el-popper .el-menu--popup`, {
-    backgroundColor: '#2368b1', // 下拉菜单背景色
+    backgroundColor: 'rgb(149, 8, 8)', // 下拉菜单背景色
     border: 'none',
     borderRadius: '4px',
     padding: '5px 0',
@@ -113,13 +113,13 @@ globalStyle(`.el-popper .el-menu--popup .el-menu-item`, {
     height: '40px !important',
     padding: '0 20px !important',
     color: '#fff !important',
-    backgroundColor: '#2368b1 !important',
+    backgroundColor: 'rgba(158, 13, 13, 0.8) !important',
     transition: 'all 0.3s ease !important',
     border: 'none !important',
 })
 
 globalStyle(`.el-popper .el-menu--popup .el-menu-item:hover`, {
-    backgroundColor: '#2f7ccd !important', // hover背景色
+    backgroundColor: 'rgb(184, 44, 44) !important', // hover背景色
     color: '#fff !important',
 })
 

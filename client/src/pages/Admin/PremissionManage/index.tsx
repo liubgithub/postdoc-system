@@ -1,4 +1,4 @@
-import { ElButton, ElInput, ElTable, ElTableColumn, ElDialog, ElMessage, ElSelect, ElOption } from "element-plus"
+import { ElButton, ElInput, ElTable, ElTableColumn, ElDialog, ElMessage, ElSelect, ElOption, ElPagination } from "element-plus"
 import fetch from '@/api/index'
 
 interface TableRow {

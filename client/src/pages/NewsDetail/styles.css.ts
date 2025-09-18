@@ -16,7 +16,7 @@ export const leftpart = style({
 })
 
 export const leftop = style({
-  background:'#004ea1',
+  background:'#920000',
   textAlign:'center',
   color:'#fff',
   fontSize:'30px',
@@ -27,7 +27,7 @@ export const leftop = style({
 export const leftbottom = style({
   background:'#e7e7e7',
   padding:'30px',
-  color:'#004ea1',
+  color:'#920000',
   fontSize:'22px',
   fontWeight:'500'
 })

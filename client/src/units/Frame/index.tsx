@@ -13,27 +13,37 @@ export default defineComponent({
     const s_frame = useFrame()
     const userStore = useUser()
 
-    const img = `${import.meta.env.BASE_URL}logos/天空蓝.png`
+    const img = `${import.meta.env.BASE_URL}logos/庆典红.png`
     const menuList = [
       { label: '首页', path: '/' },
       {
         label: '流动站',
         children: [
-          { label: '流动站介绍', },
-          { label: '流动站列表', },
-          { label: '流动站申请', },
-          { label: '流动站管理', }
+          { label: '生命科学技术学院', },
+          { label: '植物科学技术学院', },
+          { label: '动物科学技术学院', },
+          { label: '动物医学院', },
+          { label: '园艺林学学院', },
+          { label: '资源与环境学院', },
+          { label: '水产学院', },
+          { label: '食品科学技术学院', },
+          { label: '工学院', },
+          { label: '经济管理学院', },
+          { label: '公共管理学院', },
         ]
       },
       {
         label: '规章制度',
         children: [
           { label: '国家文件', },
-          { label: '地方文件', },
           { label: '校内文件', },
         ]
       },
-      { label: '项目申报', },
+      { label: '项目申报', 
+        children:[
+          {label:'qq' },
+        ]
+      },
       {
         label: '进出站',
         children: [

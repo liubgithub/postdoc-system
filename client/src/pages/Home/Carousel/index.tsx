@@ -28,7 +28,7 @@ export default defineComponent({
     // 轮播图高度
     height: {
       type: String,
-      default: '400px'
+      default: '500px'
     },
     // 指示器位置
     indicatorPosition: {

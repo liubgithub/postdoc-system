@@ -5,7 +5,7 @@ export default defineComponent({
   setup() {
     return () => (
       <div style={{
-        background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+        background: 'linear-gradient(135deg,rgb(133, 25, 25) 0%, #920000 100%)',
         color: '#fff',
         padding: '40px 0 20px 0',
         marginTop: '60px',
